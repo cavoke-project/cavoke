@@ -5,7 +5,7 @@
 Пока что сделано:
  - [x] Динамический запуск QML из C++ из ресурсов (Саша)
  - [x] Двусторонний обмен данными QML <--> C++ (Саша)
- - [ ] Отрезать логику крестиков-ноликов от QML
+ - [ ] Отрезать логику крестиков-ноликов от QML и подключить к C++
  - [ ] Загрузка данных для обмена в файл/из файла (альтернативно из TextEdit)
  - [ ] Подгурзка QML по переданному абсолютному пути (см. [QFileDialog](https://doc.qt.io/qt-5/qfiledialog.html) и [пример](https://github.com/waleko/PictureCrypt/blob/master/src/app/view/encryptdialog.cpp#L60))
  - [ ] Загрузка QML из Zip (?) файла в какой-то кеш ([QStandardPaths](https://doc.qt.io/qt-5/qstandardpaths.html#StandardLocation-enum))
