@@ -40,7 +40,7 @@
 
 import QtQuick 2.0
 import "content"
-import "content/tic-tac-toe.js" as Logic
+import "content/interactions.js" as Interact
 
 Rectangle {
     // BEGIN cavoke section
@@ -49,15 +49,12 @@ Rectangle {
 
         function onReceiveUpdate(jsonUpdate) {
             console.log("Received: " + jsonUpdate);
-            // TODO: connect UI
+            Interact.processResponse(jsonUpdate);
         }
     }
     // END cavoke section
 
     id: game
-
-    property bool running: true
-    property real difficulty: 1.0   //chance it will actually think
 
     width: display.width; height: display.height + 10
 
@@ -82,12 +79,7 @@ Rectangle {
                     height: board.height/3
 
                     onClicked: {
-                        if (game.running && Logic.canPlayAtPos(index)) {
-                            if (!Logic.makeMove(index, "X"))
-                                Logic.computerTurn();
-                        }
-                        // TODO: some json
-                        cavoke.sendMove("Clicked on " + String(index) + "!");
+                            cavoke.sendMove("M " + String(index));
                     }
                 }
             }
@@ -99,18 +91,15 @@ Rectangle {
 
             Button {
                 text: "Hard"
-                pressed: game.difficulty == 1.0
-                onClicked: { game.difficulty = 1.0 }
+                onClicked: { cavoke.sendMove("D 1.0"); }
             }
             Button {
                 text: "Moderate"
-                pressed: game.difficulty == 0.8
-                onClicked: { game.difficulty = 0.8 }
+                onClicked: { cavoke.sendMove("D 0.8"); }
             }
             Button {
                 text: "Easy"
-                pressed: game.difficulty == 0.2
-                onClicked: { game.difficulty = 0.2 }
+                onClicked: { cavoke.sendMove("D 0.2"); }
             }
         }
     }
@@ -127,7 +116,7 @@ Rectangle {
             running: messageDisplay.visible
             onTriggered: {
                 messageDisplay.visible = false;
-                Logic.restartGame();
+                Interact.resetField();
             }
         }
     }

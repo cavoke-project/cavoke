@@ -3,7 +3,7 @@
         <file>tictactoe-files/tic-tac-toe.qml</file>
         <file>tictactoe-files/content/Button.qml</file>
         <file>tictactoe-files/content/TicTac.qml</file>
-        <file>tictactoe-files/content/tic-tac-toe.js</file>
+        <file>tictactoe-files/content/interactions.js</file>
         <file>tictactoe-files/content/pics/board.png</file>
         <file>tictactoe-files/content/pics/o.png</file>
         <file>tictactoe-files/content/pics/x.png</file>

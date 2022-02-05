@@ -13,13 +13,15 @@ SOURCES += \
     cavokeclientmodel.cpp \
     cavokeclientview.cpp \
     cavokeqmlgamemodel.cpp \
+    tictactoelogic.cpp \ # FIXME: prototype only
     main.cpp
 
 HEADERS += \
     cavokeclientcontroller.h \
     cavokeclientmodel.h \
     cavokeclientview.h \
-    cavokeqmlgamemodel.h
+    cavokeqmlgamemodel.h \
+    tictactoelogic.h # FIXME: prototype only
 
 FORMS += \
     cavokeclientview.ui
