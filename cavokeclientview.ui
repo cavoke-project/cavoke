@@ -14,17 +14,65 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="tictactoebutton">
+   <widget class="QLineEdit" name="appPathInput">
     <property name="geometry">
      <rect>
-      <x>330</x>
-      <y>220</y>
-      <width>111</width>
-      <height>71</height>
+      <x>150</x>
+      <y>150</y>
+      <width>331</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="statusTip">
+     <string/>
+    </property>
+    <property name="whatsThis">
+     <string/>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="placeholderText">
+     <string>Your app folder or archive</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="selectAppPathButton">
+    <property name="geometry">
+     <rect>
+      <x>490</x>
+      <y>150</y>
+      <width>131</width>
+      <height>25</height>
      </rect>
     </property>
     <property name="text">
-     <string>TicTacToe</string>
+     <string>Select QML App</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="runButton">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>240</y>
+      <width>89</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Run App</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="loadZipButton">
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>150</y>
+      <width>89</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Load ZIP</string>
     </property>
    </widget>
   </widget>
@@ -34,7 +82,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

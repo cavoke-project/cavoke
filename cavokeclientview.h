@@ -19,7 +19,9 @@ public:
     ~CavokeClientView();
 
 private slots:
-    void on_tictactoebutton_clicked();
+    void on_runButton_clicked();
+    void on_selectAppPathButton_clicked();
+    void on_loadZipButton_clicked();
 
 private:
     Ui::CavokeClientView *ui;

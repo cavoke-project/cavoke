@@ -7,14 +7,18 @@
  - [x] Двусторонний обмен данными QML <--> C++ (Саша)
  - [x] Отрезать логику крестиков-ноликов от QML и подключить к C++
  - [x] Загрузка данных для обмена в файл/из файла (альтернативно из TextEdit)
- - [ ] Подгурзка QML по переданному абсолютному пути (см. [QFileDialog](https://doc.qt.io/qt-5/qfiledialog.html) и [пример](https://github.com/waleko/PictureCrypt/blob/master/src/app/view/encryptdialog.cpp#L60))
- - [ ] Загрузка QML из Zip (?) файла в какой-то кеш ([QStandardPaths](https://doc.qt.io/qt-5/qstandardpaths.html#StandardLocation-enum))
+ - [x] Подгрузка QML по переданному абсолютному пути (см. [QFileDialog](https://doc.qt.io/qt-5/qfiledialog.html) и [пример](https://github.com/waleko/PictureCrypt/blob/master/src/app/view/encryptdialog.cpp#L60))
+ - [x] Загрузка QML из Zip (?) файла в какой-то кеш ([QStandardPaths](https://doc.qt.io/qt-5/qstandardpaths.html#StandardLocation-enum))
  - [ ] ... (см. статус документ)
 
 ## Как запустить
 1. Загрузить Qt: https://doc.qt.io/qt-6/get-and-install-qt.html. Он будет весить много (потенциально > 5гб).
-2. Открыть проект и запустить
-3. Открыть панель с выводом приложения. Убедиться, что соединение между C++ и QML работает.
+2. Установить KArchive:
+   1. Склонировать extra-cmake-modules: https://github.com/KDE/extra-cmake-modules, собрать cmake-ом
+   2. Склонировать KArchive (важно: версии не меньше, чем extra-cmake-modules): https://invent.kde.org/frameworks/karchive, собрать cmake-ом
+3. Открыть проект и запустить
+4. Выбрать путь к основному qml файлу приложения либо выбрать .zip архив, в корне которого будет лежать app.qml файл с приложением
+5. Открыть панель с выводом приложения. Убедиться, что соединение между C++ и QML работает.
 ![demonstration screenshot](https://user-images.githubusercontent.com/24986722/152444859-047f9972-9603-4114-8706-79bcc5af0bfb.png)
 
 ### Комментарии
