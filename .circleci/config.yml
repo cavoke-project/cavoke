@@ -19,10 +19,10 @@ jobs:
     docker:
       - image: kdeorg/ci-suse-qt62
     steps:
+      - checkout
       - run:
           name: Install KArchive
-          command: zypper -n install karchive-devel
-      - checkout
+          command: ./cavoke/.circleci/suse-qt6-install-karchive.sh
       - run:
           name: Cmake
           command: cmake client
