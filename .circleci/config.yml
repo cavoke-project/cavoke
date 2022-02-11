@@ -22,7 +22,7 @@ jobs:
       - checkout
       - run:
           name: Install KArchive
-          command: $CIRCLE_WORKING_DIRECTORY/.circleci/suse-qt6-install-karchive.sh
+          command: .circleci/suse-qt6-install-karchive.sh
       - run:
           name: Cmake
           command: cmake client
