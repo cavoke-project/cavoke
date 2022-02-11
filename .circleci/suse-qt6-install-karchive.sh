@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-cd $HOME
+pushd $HOME
 # Install ECM
 zypper -n install extra-cmake-modules
 # Prepare KArchive
@@ -11,4 +11,4 @@ cd build
 cmake .. -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=/usr/local -DQT_MAJOR_VERSION=6
 make
 make install
-cd $CIRCLE_WORKING_DIRECTORY
+popd
