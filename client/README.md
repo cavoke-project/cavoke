@@ -1,25 +1,41 @@
-# Cavoke Client (прототип)
-Максимально упрощенный клиент, запускающий QML приложения.
+# Cavoke Client
+Клиент cavoke, запускающий QML приложения.
 
 ## Функциональность
-Пока что сделано:
- - [x] Динамический запуск QML из C++ из ресурсов (Саша)
- - [x] Двусторонний обмен данными QML <--> C++ (Саша)
- - [x] Отрезать логику крестиков-ноликов от QML и подключить к C++
- - [x] Загрузка данных для обмена в файл/из файла (альтернативно из TextEdit)
- - [x] Подгрузка QML по переданному абсолютному пути (см. [QFileDialog](https://doc.qt.io/qt-5/qfiledialog.html) и [пример](https://github.com/waleko/PictureCrypt/blob/master/src/app/view/encryptdialog.cpp#L60))
- - [x] Загрузка QML из Zip (?) файла в какой-то кеш ([QStandardPaths](https://doc.qt.io/qt-5/qstandardpaths.html#StandardLocation-enum))
- - [ ] ... (см. статус документ)
+- К xx.xx.2022:
+   - [ ] (см. статус документ)
+- К 07.02.2022:
+   - [x] Динамический запуск QML из C++ из ресурсов (Саша)
+   - [x] Двусторонний обмен данными QML <--> C++ (Саша)
+   - [x] Отрезать логику крестиков-ноликов от QML и подключить к C++
+   - [x] Загрузка данных для обмена в файл/из файла (альтернативно из TextEdit)
+   - [x] Подгрузка QML по переданному абсолютному пути (см. [QFileDialog](https://doc.qt.io/qt-5/qfiledialog.html) и [пример](https://github.com/waleko/PictureCrypt/blob/master/src/app/view/encryptdialog.cpp#L60))
+   - [x] Загрузка QML из Zip файла в какой-то кеш ([QStandardPaths](https://doc.qt.io/qt-5/qstandardpaths.html#StandardLocation-enum))
 
 ## Как запустить
+### Установка
+Есть два варианта установки Qt и нужных библиотек: напрямую и через [KDE Craft](https://community.kde.org/Craft).
+Поддерживаются две major версии Qt: Qt6 и Qt5. Основной является Qt6.
+#### Установка напрямую
 1. Загрузить Qt: https://doc.qt.io/qt-6/get-and-install-qt.html. Он будет весить много (потенциально > 5гб).
-2. Установить KArchive:
+1. Установить KArchive:
    1. Склонировать extra-cmake-modules: https://github.com/KDE/extra-cmake-modules, собрать cmake-ом
-   2. Склонировать KArchive (важно: версии не меньше, чем extra-cmake-modules): https://invent.kde.org/frameworks/karchive, собрать cmake-ом
-3. Открыть проект и запустить
-4. Выбрать путь к основному qml файлу приложения либо выбрать .zip архив, в корне которого будет лежать app.qml файл с приложением
-5. Открыть панель с выводом приложения. Убедиться, что соединение между C++ и QML работает.
-![demonstration screenshot](https://user-images.githubusercontent.com/24986722/152444859-047f9972-9603-4114-8706-79bcc5af0bfb.png)
+   1. Склонировать KArchive (важно: версии не меньше, чем extra-cmake-modules): https://invent.kde.org/frameworks/karchive, собрать cmake-ом
+#### Установка через KDE Craft
+1. Установить KDE Craft (meta build system and package manager): https://community.kde.org/Craft#Setting_up_Craft. Этот вариант кажется удачнее, потому что это специальная утилита от KDE для установки их фреймворков (Саша).
+1. В интерфейсе KDE Craft установить библиотеки:
+   <!-- TODO: specify qt5 or qt6, as KArchive is only on Qt5 ><-->
+   ```bash
+   craft libs/qt6 karchive
+   ``` 
+   > **NOTE**: Для Qt5 можно загрузить только `craft karchive`
+1. Установить QT Creator / загрузить профиль с Qt в CLion.
+### Запуск проекта
+1. Открыть проект и запустить. Для использования Qt5 добавить cmake флаг `-DUSE_QT5`.
+1. Выбрать путь к основному qml файлу приложения либо выбрать .zip архив, в корне которого будет лежать app.qml файл с приложением
+![load zip demo](https://user-images.githubusercontent.com/24986722/153585100-28454edc-8b63-46e5-bda1-85337694a045.png)
+1. Открыть панель с выводом приложения. Убедиться, что соединение между C++ и QML работает.
+![playing tictactoe demo](https://user-images.githubusercontent.com/24986722/152444859-047f9972-9603-4114-8706-79bcc5af0bfb.png)
 
 ### Комментарии
 #### Про архитектуру клиента (04.02.2022 Саша)
@@ -38,5 +54,5 @@
 
 Почему нельзя было подключить QML напрямую к Model? Потому что сигнал нужно подключать напрямую, а значит если Model хочет отправить update одному QML, то пришлось бы триггерить все (и/или дополнительный код для пользователя). Поэтому сделал такой контроллирующий объект для каждого QML.
 
-##### Про утечеки памяти
+##### Про утечки памяти
 В коде создаётся много динамических объектов, и они не удалюятся. Такова жизнь. Вероятно, не первый приоритет.
