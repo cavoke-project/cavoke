@@ -1,3 +1,5 @@
+#include <QtDebug>
+
 #include <cache_manager.h>
 #include <kzip.h>
 
