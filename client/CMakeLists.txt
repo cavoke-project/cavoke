@@ -4,13 +4,12 @@ project(client)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-if (USE_QT5)
-    find_package(Qt5Widgets REQUIRED)
-    find_package(Qt5Quick REQUIRED)
-else(USE_QT5)
-    find_package(Qt6Widgets REQUIRED)
-    find_package(Qt6Quick REQUIRED)
-endif(USE_QT5)
+if (NOT QT_MAJOR_VERSION)
+    set(QT_MAJOR_VERSION 6)
+endif()
+
+find_package(Qt${QT_MAJOR_VERSION}Widgets REQUIRED)
+find_package(Qt${QT_MAJOR_VERSION}Quick REQUIRED)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
@@ -30,13 +29,6 @@ add_executable(client-prototype
         tictactoelogic.cpp
         cache_manager.cpp)
 
-if (USE_QT5)
-    target_link_libraries(client-prototype Qt5::Widgets)
-    target_link_libraries(client-prototype Qt5::Quick)
-else(USE_QT5)
-    target_link_libraries(client-prototype Qt6::Widgets)
-    target_link_libraries(client-prototype Qt6::Quick)
-endif(USE_QT5)
-
+target_link_libraries(client-prototype Qt${QT_MAJOR_VERSION}::Widgets)
+target_link_libraries(client-prototype Qt${QT_MAJOR_VERSION}::Quick)
 target_link_libraries(client-prototype KF5::Archive)
-
