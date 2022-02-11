@@ -1,0 +1,37 @@
+version: 2.1
+
+jobs:
+  suse-qt5-notests:
+    docker:
+      - image: kdeorg/ci-suse-qt515
+    steps:
+      - run:
+          name: Install KArchive
+          command: zypper -n install karchive-devel
+      - checkout
+      - run:
+          name: Cmake
+          command: cmake client -DUSE_QT5=ON
+      - run:
+          name: Make
+          command: make all
+  suse-qt6-notests:
+    docker:
+      - image: kdeorg/ci-suse-qt62
+    steps:
+      - checkout
+      - run:
+          name: Install KArchive
+          command: chmod +x .circleci/suse-qt6-install-karchive.sh && .circleci/suse-qt6-install-karchive.sh
+      - run:
+          name: Cmake
+          command: cmake client
+      - run:
+          name: Make
+          command: make all
+
+workflows:
+  client-workflow:
+    jobs:
+      - suse-qt5-notests
+      - suse-qt6-notests
