@@ -15,8 +15,23 @@ jobs:
       - run:
           name: Make
           command: make all
+  suse-qt6-notests:
+    docker:
+      - image: kdeorg/ci-suse-qt62
+    steps:
+      - run:
+          name: Install KArchive
+          command: zypper -n install karchive-devel
+      - checkout
+      - run:
+          name: Cmake
+          command: cmake client
+      - run:
+          name: Make
+          command: make all
 
 workflows:
   client-workflow:
     jobs:
       - suse-qt5-notests
+      - suse-qt6-notests
