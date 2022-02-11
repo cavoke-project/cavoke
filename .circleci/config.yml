@@ -14,7 +14,7 @@ jobs:
           command: cmake client -DUSE_QT5=ON
       - run:
           name: Make
-          command: make -C client all
+          command: make all
 
 workflows:
   client-workflow:
