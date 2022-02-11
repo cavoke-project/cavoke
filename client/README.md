@@ -31,8 +31,9 @@
 ### Запуск проекта
 1. Открыть проект и запустить
 1. Выбрать путь к основному qml файлу приложения либо выбрать .zip архив, в корне которого будет лежать app.qml файл с приложением
+![load zip demo](https://user-images.githubusercontent.com/24986722/153585100-28454edc-8b63-46e5-bda1-85337694a045.png)
 1. Открыть панель с выводом приложения. Убедиться, что соединение между C++ и QML работает.
-![demonstration screenshot](https://user-images.githubusercontent.com/24986722/152444859-047f9972-9603-4114-8706-79bcc5af0bfb.png)
+![playing tictactoe demo](https://user-images.githubusercontent.com/24986722/152444859-047f9972-9603-4114-8706-79bcc5af0bfb.png)
 
 ### Комментарии
 #### Про архитектуру клиента (04.02.2022 Саша)
