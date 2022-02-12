@@ -20,7 +20,7 @@ include_directories(${CMAKE_BINARY_DIR})
 # https://api.kde.org/frameworks-api/frameworks-apidocs/frameworks/karchive/html/index.html
 find_package(KF5Archive REQUIRED)
 
-add_executable(client-prototype
+add_executable(client
         main.cpp
         cavokeclientcontroller.cpp
         cavokeclientmodel.cpp
@@ -29,6 +29,6 @@ add_executable(client-prototype
         tictactoelogic.cpp
         cache_manager.cpp)
 
-target_link_libraries(client-prototype Qt${QT_MAJOR_VERSION}::Widgets)
-target_link_libraries(client-prototype Qt${QT_MAJOR_VERSION}::Quick)
-target_link_libraries(client-prototype KF5::Archive)
+target_link_libraries(client Qt${QT_MAJOR_VERSION}::Widgets)
+target_link_libraries(client Qt${QT_MAJOR_VERSION}::Quick)
+target_link_libraries(client KF5::Archive)
