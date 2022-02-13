@@ -2,11 +2,13 @@
 
 
 CavokeClientController::CavokeClientController(QObject *parent)
-        : QObject{parent}, model{parent}, view{} {
-    connect(&view, SIGNAL(startGame(QString)), &model, SLOT(loadQmlGame(QString)));
+        : QObject{parent}, model{parent}, clientView{}, startView{} {
+    connect(&clientView, SIGNAL(startGame(QString)), &model, SLOT(loadQmlGame(QString)));
     connect(&model, SIGNAL(startQmlApplication(CavokeQmlGameModel * )), this,
             SLOT(startQmlApplication(CavokeQmlGameModel * )));
-    view.show();
+    connect(&clientView, SIGNAL(shownStartView()), this, SLOT(showStartView()));
+    connect(&startView, SIGNAL(shownClientView()), this, SLOT(showCavokeView()));
+    startView.show();
 }
 
 void CavokeClientController::startQmlApplication(CavokeQmlGameModel *gameModel) {
@@ -27,10 +29,10 @@ void CavokeClientController::startQmlApplication(CavokeQmlGameModel *gameModel) 
     emit gameModel->receiveUpdate("c++ -> qml working!");
 }
 
-void CavokeClientController::closeCavokeView() {
-    view.close();
+void CavokeClientController::showCavokeView() {
+    clientView.show();
 }
 
-void CavokeClientController::showCavokeView() {
-    view.show();
+void CavokeClientController::showStartView() {
+    startView.show();
 }

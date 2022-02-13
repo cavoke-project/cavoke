@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QtQuick>
 
+#include <startview.h>
 #include "cavokeclientmodel.h"
 #include "cavokeclientview.h"
 
@@ -12,14 +13,17 @@ class CavokeClientController : public QObject
     Q_OBJECT
 public:
     explicit CavokeClientController(QObject *parent = nullptr);
+    
 public slots:
     void showCavokeView();
+    void showStartView();
 
 private slots:
     void startQmlApplication(CavokeQmlGameModel*);
 private:
     CavokeClientModel model;
-    CavokeClientView view;
+    CavokeClientView clientView;
+    StartView startView;
 };
 
 #endif // CAVOKECLIENTCONTROLLER_H

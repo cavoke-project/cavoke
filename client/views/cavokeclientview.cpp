@@ -35,3 +35,8 @@ void CavokeClientView::on_loadZipButton_clicked() {
         ui->appPathInput->setText(cache_manager::save_zip_to_cache(zipPath));
     }
 }
+
+void CavokeClientView::on_backButton_clicked() {
+    this->close();
+    emit shownStartView();
+}

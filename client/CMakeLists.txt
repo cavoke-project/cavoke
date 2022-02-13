@@ -26,10 +26,8 @@ find_package(KF5Archive REQUIRED)
 add_executable(client
         main.cpp
         controllers/cavokeclientcontroller.cpp
-        controllers/startcontroller.cpp
         models/cavokeclientmodel.cpp
         models/cavokeqmlgamemodel.cpp
-        models/startmodel.cpp
         views/cavokeclientview.cpp
         views/startview.cpp
         tictactoelogic.cpp

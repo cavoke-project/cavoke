@@ -14,7 +14,6 @@ class CavokeClientView : public QMainWindow
 signals:
     void startGame(const QString&);
     void shownStartView();
-    void closedCavokeView();
 
 public:
     explicit CavokeClientView(QWidget *parent = nullptr);

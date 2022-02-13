@@ -2,7 +2,6 @@
 #define CLIENT_STARTVIEW_H
 
 #include <QMainWindow>
-#include <cavokeclientcontroller.h>
 
 namespace Ui {
     class StartView;
@@ -17,8 +16,7 @@ public:
     ~StartView();
 
 signals:
-    void shownCavokeView();
-    void closedStartView();
+    void shownClientView();
     
 private slots:
     void on_cavokeTestScreenButton_clicked();

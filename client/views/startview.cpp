@@ -13,6 +13,6 @@ StartView::~StartView() {
 }
 
 void StartView::on_cavokeTestScreenButton_clicked() {
-    emit shownCavokeView();
-    emit closedStartView();
+    this->close();
+    emit shownClientView();
 }
