@@ -18,7 +18,8 @@ void StartView::on_joinGameButton_clicked() {
 }
 
 void StartView::on_createGameButton_clicked() {
-
+    this->close();
+    emit shownCreateGameView();
 }
 
 void StartView::on_cavokeTestWindowButton_clicked() {

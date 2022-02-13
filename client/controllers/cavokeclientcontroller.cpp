@@ -10,9 +10,11 @@ CavokeClientController::CavokeClientController(QObject *parent)
     
     connect(&testWindowView, SIGNAL(shownStartView()), this, SLOT(showStartView()));
     connect(&joinGameView, SIGNAL(shownStartView()), this, SLOT(showStartView()));
+    connect(&createGameView, SIGNAL(shownStartView()), this, SLOT(showStartView()));
     
     connect(&startView, SIGNAL(shownTestWindowView()), this, SLOT(showTestWindowView()));
     connect(&startView, SIGNAL(shownJoinGameView()), this, SLOT(showJoinGameView()));
+    connect(&startView, SIGNAL(shownCreateGameView()), this, SLOT(showCreateGameView()));
     
     connect(&startView, SIGNAL(clickedExitButton()), this, SLOT(exitApplication()), Qt::QueuedConnection);
     
@@ -29,6 +31,10 @@ void CavokeClientController::showStartView() {
 
 void CavokeClientController::showJoinGameView() {
     joinGameView.show();
+}
+
+void CavokeClientController::showCreateGameView() {
+    createGameView.show();
 }
 
 
@@ -54,5 +60,6 @@ void CavokeClientController::exitApplication() {
     // FIXME: not the best way, probably
     testWindowView.close();
     joinGameView.close();
+    createGameView.close();
     startView.close();
 }
