@@ -26,11 +26,15 @@ find_package(KF5Archive REQUIRED)
 add_executable(client
         main.cpp
         controllers/cavokeclientcontroller.cpp
+        controllers/startcontroller.cpp
         models/cavokeclientmodel.cpp
-        views/cavokeclientview.cpp
         models/cavokeqmlgamemodel.cpp
+        models/startmodel.cpp
+        views/cavokeclientview.cpp
+        views/startview.cpp
         tictactoelogic.cpp
-        cache_manager.cpp)
+        cache_manager.cpp
+        )
 
 target_link_libraries(client Qt${QT_MAJOR_VERSION}::Widgets)
 target_link_libraries(client Qt${QT_MAJOR_VERSION}::Quick)

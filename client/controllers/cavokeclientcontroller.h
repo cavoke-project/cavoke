@@ -12,6 +12,9 @@ class CavokeClientController : public QObject
     Q_OBJECT
 public:
     explicit CavokeClientController(QObject *parent = nullptr);
+public slots:
+    void showCavokeView();
+
 private slots:
     void startQmlApplication(CavokeQmlGameModel*);
 private:
