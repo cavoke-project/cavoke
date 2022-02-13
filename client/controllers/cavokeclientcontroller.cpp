@@ -7,9 +7,18 @@ CavokeClientController::CavokeClientController(QObject *parent)
     connect(&model, SIGNAL(startQmlApplication(CavokeQmlGameModel * )), this,
             SLOT(startQmlApplication(CavokeQmlGameModel * )));
     connect(&clientView, SIGNAL(shownStartView()), this, SLOT(showStartView()));
-    connect(&startView, SIGNAL(shownClientView()), this, SLOT(showCavokeView()));
+    connect(&startView, SIGNAL(shownClientView()), this, SLOT(showTestWindowView()));
     startView.show();
 }
+
+void CavokeClientController::showTestWindowView() {
+    clientView.show();
+}
+
+void CavokeClientController::showStartView() {
+    startView.show();
+}
+
 
 void CavokeClientController::startQmlApplication(CavokeQmlGameModel *gameModel) {
     auto *qmlView = new QQuickView();
@@ -17,7 +26,7 @@ void CavokeClientController::startQmlApplication(CavokeQmlGameModel *gameModel) 
     qmlView->setSource(gameModel->qmlPath);
     if (!qmlView->errors().empty()) {
         qDebug() << "An error(s) occurred while opening the QML app:" << '\n';
-        for (const auto& error: qmlView->errors()) {
+        for (const auto &error: qmlView->errors()) {
             qDebug() << error;
         }
         qmlView->destroy();
@@ -27,12 +36,4 @@ void CavokeClientController::startQmlApplication(CavokeQmlGameModel *gameModel) 
 
     // Test
     emit gameModel->receiveUpdate("c++ -> qml working!");
-}
-
-void CavokeClientController::showCavokeView() {
-    clientView.show();
-}
-
-void CavokeClientController::showStartView() {
-    startView.show();
 }

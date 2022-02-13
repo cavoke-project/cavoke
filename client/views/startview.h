@@ -7,20 +7,19 @@ namespace Ui {
     class StartView;
 }
 
-class StartView : public QMainWindow {
-Q_OBJECT
-
+class StartView : public QMainWindow 
+{
+    Q_OBJECT
 public:
     explicit StartView(QWidget *parent = nullptr);
 
     ~StartView();
 
 signals:
-    void shownClientView();
+    void shownTestWindowView();
     
 private slots:
-    void on_cavokeTestScreenButton_clicked();
-
+    void on_cavokeTestWindowButton_clicked();
 private:
     Ui::StartView *ui;
 };

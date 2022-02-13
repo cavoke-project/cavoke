@@ -4,29 +4,27 @@
 #include <QMainWindow>
 
 namespace Ui {
-class CavokeClientView;
+class TestWindowView;
 }
 
-class CavokeClientView : public QMainWindow
+class TestWindowView : public QMainWindow
 {
     Q_OBJECT
+public:
+    explicit TestWindowView(QWidget *parent = nullptr);
+    ~TestWindowView();
 
 signals:
     void startGame(const QString&);
     void shownStartView();
-
-public:
-    explicit CavokeClientView(QWidget *parent = nullptr);
-    ~CavokeClientView();
 
 private slots:
     void on_runButton_clicked();
     void on_selectAppPathButton_clicked();
     void on_loadZipButton_clicked();
     void on_backButton_clicked();
-
 private:
-    Ui::CavokeClientView *ui;
+    Ui::TestWindowView *ui;
 };
 
 #endif // CAVOKECLIENTVIEW_H

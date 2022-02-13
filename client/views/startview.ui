@@ -48,7 +48,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="cavokeTestScreenButton">
+         <widget class="QPushButton" name="cavokeTestWindowButton">
           <property name="text">
            <string>Cavoke test screen</string>
           </property>

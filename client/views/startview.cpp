@@ -12,7 +12,7 @@ StartView::~StartView() {
     delete ui;
 }
 
-void StartView::on_cavokeTestScreenButton_clicked() {
+void StartView::on_cavokeTestWindowButton_clicked() {
     this->close();
-    emit shownClientView();
+    emit shownTestWindowView();
 }

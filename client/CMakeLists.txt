@@ -28,7 +28,7 @@ add_executable(cavoke_client
         controllers/cavokeclientcontroller.cpp
         models/cavokeclientmodel.cpp
         models/cavokeqmlgamemodel.cpp
-        views/cavokeclientview.cpp
+        views/testwindowview.cpp
         views/startview.cpp
         tictactoelogic.cpp
         cache_manager.cpp
