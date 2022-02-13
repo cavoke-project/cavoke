@@ -2,7 +2,7 @@
 #define CAVOKE_GAMES_STORAGE_H
 
 #include <boost/filesystem/path.hpp>
-#include <nlohmann/json.hpp>
+#include <drogon/drogon.h>
 #include <string>
 namespace cavoke::server::model {
 
@@ -19,19 +19,11 @@ class Game {
     std::string description;
     int players_num;
 
-    nlohmann::json to_json() {
-      nlohmann::json result;
-      result["id"] = id;
-      result["display_name"] = display_name;
-      result["description"] = description;
-      result["players_num"] = players_num;
-
-      return result;
-    }
+    [[nodiscard]] Json::Value to_json() const;
   };
 
-  static nlohmann::json read_config_file(const boost::filesystem::path &path);
-  static bool is_valid_config_file(const boost::filesystem::path &path);
+  static bool read_config_file(const boost::filesystem::path &path,
+                               Json::Value &json_obj);
 
 public:
   explicit Game(boost::filesystem::path directory);
@@ -51,6 +43,8 @@ public:
   };
 
   explicit GamesStorage(GamesStorageConfig config);
+
+  void update();
 
   std::vector<Game> list_games();
 
