@@ -1,0 +1,78 @@
+openapi: 3.0.0
+info:
+    version: '0.0.1'
+    title: 'cavoke'
+servers:
+    - url: 'localhost:8080'
+paths:
+    /health:
+        get:
+            summary: 'Sample endpoint: Simple health check'
+            operationId: health
+            responses:
+                '200':
+                    description: 'OK'
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: OK
+                            
+    /games/list:
+        get:
+            summary: 'Sample endpoint: List available games to play'
+            operationId: listGames
+            tags:
+            - game
+            responses:
+                '200':
+                    description: 'Sample response: List of available games as metadata'
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/GameInfo"
+                default:
+                    description: Unexpected error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    GameInfo:
+      type: object
+      required:
+        - id
+        - display_name
+        - description
+        - players_num
+      properties:
+        id:
+          type: string
+        display_name:
+          type: string
+        description:
+          type: string
+        players_num:
+          type: integer
+          format: int32
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+# security:
+#  - BasicAuth: []

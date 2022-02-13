@@ -1,0 +1,145 @@
+{
+    "info": {
+        "_postman_id": "b2cb527e-2bd2-4c51-9f7a-34b74fd80070",
+        "name": "Cavoke REST API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Sample endpoint: Simple health check",
+            "id": "66beffff-e6d5-4449-975a-3ca1c4e8e124",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/health",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "health"
+                    ]
+                }
+            },
+            "response": [
+                {
+                    "id": "4cd9420c-1934-480b-9233-9e6924597f68",
+                    "name": "OK",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/health",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "health"
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "text",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "text/plain"
+                        }
+                    ],
+                    "cookie": [],
+                    "responseTime": null,
+                    "body": "OK"
+                }
+            ]
+        },
+        {
+            "name": "Sample endpoint: List available games to play",
+            "id": "3d88e715-7146-4fa5-a2fd-79fc844c1d58",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/games/list",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "games",
+                        "list"
+                    ]
+                }
+            },
+            "response": [
+                {
+                    "id": "e64aa347-abb5-4874-8897-42042527e113",
+                    "name": "Sample response: List of available games as metadata",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/games/list",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "games",
+                                "list"
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "cookie": [],
+                    "responseTime": null,
+                    "body": "[\n {\n  \"id\": \"nulla ut\",\n  \"display_name\": \"quis in dolor dolore laborum\",\n  \"description\": \"in Duis voluptate\",\n  \"players_num\": 869139\n },\n {\n  \"id\": \"laborum in\",\n  \"display_name\": \"ullamco occaecat ipsum fugiat\",\n  \"description\": \"dolor officia\",\n  \"players_num\": 90797895\n }\n]"
+                },
+                {
+                    "id": "63a17787-46ca-424e-b895-e2e1904ac4ba",
+                    "name": "Unexpected error",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/games/list",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "games",
+                                "list"
+                            ]
+                        }
+                    },
+                    "status": "Internal Server Error",
+                    "code": 500,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "cookie": [],
+                    "responseTime": null,
+                    "body": "{\n \"code\": -1103003,\n \"message\": \"in dolor\"\n}"
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "id": "f7afe901-2417-48e1-8d98-b7e71978434e",
+            "key": "baseUrl",
+            "value": "localhost:8080",
+            "type": "string"
+        }
+    ]
+}
