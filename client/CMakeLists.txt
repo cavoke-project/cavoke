@@ -30,6 +30,7 @@ add_executable(cavoke_client
         models/cavokeqmlgamemodel.cpp
         views/testwindowview.cpp
         views/startview.cpp
+        views/joingameview.cpp
         tictactoelogic.cpp
         cache_manager.cpp
         )

@@ -2,17 +2,19 @@
 
 
 CavokeClientController::CavokeClientController(QObject *parent)
-        : QObject{parent}, model{parent}, testWindowView{}, startView{} {
+        : QObject{parent}, model{parent}, testWindowView{}, startView{}, joinGameView{} {
     
     connect(&testWindowView, SIGNAL(startGame(QString)), &model, SLOT(loadQmlGame(QString)));
     connect(&model, SIGNAL(startQmlApplication(CavokeQmlGameModel * )), this,
             SLOT(startQmlApplication(CavokeQmlGameModel * )));
     
     connect(&testWindowView, SIGNAL(shownStartView()), this, SLOT(showStartView()));
+    connect(&joinGameView, SIGNAL(shownStartView()), this, SLOT(showStartView()));
     
     connect(&startView, SIGNAL(shownTestWindowView()), this, SLOT(showTestWindowView()));
-    connect(&startView, SIGNAL(clickedExitButton()), this, SLOT(exitApplication()), Qt::QueuedConnection);
+    connect(&startView, SIGNAL(shownJoinGameView()), this, SLOT(showJoinGameView()));
     
+    connect(&startView, SIGNAL(clickedExitButton()), this, SLOT(exitApplication()), Qt::QueuedConnection);
     
     startView.show();
 }
@@ -23,6 +25,10 @@ void CavokeClientController::showTestWindowView() {
 
 void CavokeClientController::showStartView() {
     startView.show();
+}
+
+void CavokeClientController::showJoinGameView() {
+    joinGameView.show();
 }
 
 
@@ -47,5 +53,6 @@ void CavokeClientController::startQmlApplication(CavokeQmlGameModel *gameModel) 
 void CavokeClientController::exitApplication() {
     // FIXME: not the best way, probably
     testWindowView.close();
+    joinGameView.close();
     startView.close();
 }

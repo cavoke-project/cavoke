@@ -13,7 +13,8 @@ StartView::~StartView() {
 }
 
 void StartView::on_joinGameButton_clicked() {
-
+    this->close();
+    emit shownJoinGameView();
 }
 
 void StartView::on_createGameButton_clicked() {

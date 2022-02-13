@@ -17,6 +17,7 @@ public:
 
 signals:
     void shownTestWindowView();
+    void shownJoinGameView();
     void clickedExitButton();
     
 private slots:
