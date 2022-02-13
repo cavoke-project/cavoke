@@ -1,13 +1,13 @@
 openapi: 3.0.0
 info:
-    version: '0.0.1'
+    version: '0.0.2'
     title: 'cavoke'
 servers:
     - url: 'localhost:8080'
 paths:
     /health:
         get:
-            summary: 'Sample endpoint: Simple health check'
+            summary: 'Simple health check'
             operationId: health
             responses:
                 '200':
@@ -20,13 +20,13 @@ paths:
                             
     /games/list:
         get:
-            summary: 'Sample endpoint: List available games to play'
+            summary: 'List available games to play'
             operationId: listGames
             tags:
             - game
             responses:
                 '200':
-                    description: 'Sample response: List of available games as metadata'
+                    description: 'List of available games as metadata'
                     content:
                         application/json:
                             schema:
@@ -39,9 +39,69 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Error'
+    /games/{game_id}/get_config:
+        get:
+            summary: 'Get GameInfo of specific game'
+            operationId: configGame
+            tags:
+                - game
+            parameters:
+              - in: path
+                name: game_id
+                schema:
+                    $ref: '#/components/schemas/GameId'
+                required: true
+                description: 'String id of the game to get'
+            responses:
+                '200':
+                    description: 'Config of an existing game'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/GameInfo"
+                '404':
+                    description: 'No such game'
+                default:
+                    description: Unexpected error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /games/{game_id}/get_client:
+        get:
+            summary: 'Download QML client zip of a game'
+            operationId: downloadClient
+            tags:
+                - game
+            parameters:
+              - in: path
+                name: game_id
+                schema:
+                    $ref: '#/components/schemas/GameId'
+                required: true
+                description: 'String id of the game to get'
+                example: 'tictactoe'
+            responses:
+                '200':
+                    description: 'Client zip file of an existing game'
+                    content:
+                        application/octet-stream:
+                            schema:
+                                type: string
+                                format: binary
+                '404':
+                    description: 'No such game'
+                default:
+                    description: Unexpected error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
 
 components:
   schemas:
+    GameId:
+      type: string
     GameInfo:
       type: object
       required:
@@ -51,7 +111,7 @@ components:
         - players_num
       properties:
         id:
-          type: string
+          $ref: '#/components/schemas/GameId'
         display_name:
           type: string
         description:
