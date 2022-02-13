@@ -2,7 +2,7 @@
 
 
 CavokeClientController::CavokeClientController(QObject *parent)
-        : QObject{parent}, model{parent}, testWindowView{}, startView{}, joinGameView{} {
+        : QObject{parent}, model{parent}, testWindowView{}, startView{}, joinGameView{}, settingsView{} {
     
     connect(&testWindowView, SIGNAL(startGame(QString)), &model, SLOT(loadQmlGame(QString)));
     connect(&model, SIGNAL(startQmlApplication(CavokeQmlGameModel * )), this,
@@ -11,10 +11,12 @@ CavokeClientController::CavokeClientController(QObject *parent)
     connect(&testWindowView, SIGNAL(shownStartView()), this, SLOT(showStartView()));
     connect(&joinGameView, SIGNAL(shownStartView()), this, SLOT(showStartView()));
     connect(&createGameView, SIGNAL(shownStartView()), this, SLOT(showStartView()));
+    connect(&settingsView, SIGNAL(shownStartView()), this, SLOT(showStartView()));
     
     connect(&startView, SIGNAL(shownTestWindowView()), this, SLOT(showTestWindowView()));
     connect(&startView, SIGNAL(shownJoinGameView()), this, SLOT(showJoinGameView()));
     connect(&startView, SIGNAL(shownCreateGameView()), this, SLOT(showCreateGameView()));
+    connect(&startView, SIGNAL(shownSettingsView()), this, SLOT(showSettingsView()));
     
     connect(&startView, SIGNAL(clickedExitButton()), this, SLOT(exitApplication()), Qt::QueuedConnection);
     
@@ -35,6 +37,10 @@ void CavokeClientController::showJoinGameView() {
 
 void CavokeClientController::showCreateGameView() {
     createGameView.show();
+}
+
+void CavokeClientController::showSettingsView() {
+    settingsView.show();
 }
 
 

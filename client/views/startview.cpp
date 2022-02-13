@@ -28,7 +28,8 @@ void StartView::on_cavokeTestWindowButton_clicked() {
 }
 
 void StartView::on_settingsButton_clicked() {
-
+    this->close();
+    emit shownSettingsView();
 }
 
 void StartView::on_exitButton_clicked() {

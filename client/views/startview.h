@@ -19,6 +19,7 @@ signals:
     void shownTestWindowView();
     void shownJoinGameView();
     void shownCreateGameView();
+    void shownSettingsView();
     void clickedExitButton();
     
 private slots:

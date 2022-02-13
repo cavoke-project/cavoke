@@ -9,6 +9,7 @@
 #include "testwindowview.h"
 #include "joingameview.h"
 #include "creategameview.h"
+#include "settingsview.h"
 
 class CavokeClientController : public QObject
 {
@@ -21,6 +22,7 @@ public slots:
     void showStartView();
     void showJoinGameView();
     void showCreateGameView();
+    void showSettingsView();
 
 private slots:
     void startQmlApplication(CavokeQmlGameModel*);
@@ -31,6 +33,7 @@ private:
     StartView startView;
     JoinGameView joinGameView;
     CreateGameView createGameView;
+    SettingsView settingsView;
 };
 
 #endif // CAVOKECLIENTCONTROLLER_H
