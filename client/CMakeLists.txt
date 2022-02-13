@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(client)
+project(cavoke_client)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -23,7 +23,7 @@ include_directories(${CMAKE_BINARY_DIR}
 # https://api.kde.org/frameworks-api/frameworks-apidocs/frameworks/karchive/html/index.html
 find_package(KF5Archive REQUIRED)
 
-add_executable(client
+add_executable(cavoke_client
         main.cpp
         controllers/cavokeclientcontroller.cpp
         models/cavokeclientmodel.cpp
@@ -34,6 +34,6 @@ add_executable(client
         cache_manager.cpp
         )
 
-target_link_libraries(client Qt${QT_MAJOR_VERSION}::Widgets)
-target_link_libraries(client Qt${QT_MAJOR_VERSION}::Quick)
-target_link_libraries(client KF5::Archive)
+target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Widgets)
+target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Quick)
+target_link_libraries(cavoke_client KF5::Archive)
