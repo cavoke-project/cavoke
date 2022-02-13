@@ -53,8 +53,11 @@ void GamesStorage::update() {
   }
 }
 
-// NOLINT(cert-err58-cpp)
-// NOLINT(cert-err58-cpp)
-// NOLINT(cert-err58-cpp)
+std::optional<Game> GamesStorage::get_game_by_id(const std::string& game_id) {
+  if (m_games.count(game_id) > 0) {
+    return m_games[game_id];
+  }
+  return {};
+}
 
 } // namespace cavoke::server::model

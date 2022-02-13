@@ -20,6 +20,8 @@ public:
 
   std::vector<Game> list_games();
 
+  std::optional<Game> get_game_by_id(const std::string& game_id);
+
 private:
   GamesStorageConfig m_config;
   std::map<std::string, Game> m_games;

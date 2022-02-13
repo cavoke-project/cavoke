@@ -27,6 +27,7 @@ class Game {
 
 public:
   explicit Game(boost::filesystem::path directory);
+  Game() = default;
 
   boost::filesystem::path client_file;
   GameConfig config;
