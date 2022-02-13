@@ -17,9 +17,14 @@ public:
 
 signals:
     void shownTestWindowView();
+    void clickedExitButton();
     
 private slots:
+    void on_joinGameButton_clicked();
+    void on_createGameButton_clicked();
     void on_cavokeTestWindowButton_clicked();
+    void on_settingsButton_clicked();
+    void on_exitButton_clicked();
 private:
     Ui::StartView *ui;
 };

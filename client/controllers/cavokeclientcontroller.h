@@ -20,9 +20,10 @@ public slots:
 
 private slots:
     void startQmlApplication(CavokeQmlGameModel*);
+    void exitApplication();
 private:
     CavokeClientModel model;
-    TestWindowView clientView;
+    TestWindowView testWindowView;
     StartView startView;
 };
 

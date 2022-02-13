@@ -12,7 +12,24 @@ StartView::~StartView() {
     delete ui;
 }
 
+void StartView::on_joinGameButton_clicked() {
+
+}
+
+void StartView::on_createGameButton_clicked() {
+
+}
+
 void StartView::on_cavokeTestWindowButton_clicked() {
     this->close();
     emit shownTestWindowView();
 }
+
+void StartView::on_settingsButton_clicked() {
+
+}
+
+void StartView::on_exitButton_clicked() {
+    emit clickedExitButton();
+}
+
