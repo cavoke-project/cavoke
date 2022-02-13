@@ -10,8 +10,16 @@ namespace cavoke::server::model {
 GamesStorage::GamesStorage(GamesStorage::GamesStorageConfig config_)
     : m_config(std::move(config_)) {
 
-  if (!boost::filesystem::exists(m_config.games_directory) ||
-      !boost::filesystem::is_directory(m_config.games_directory)) {
+  if (!boost::filesystem::exists(m_config.games_directory)) {
+    bool success =
+        boost::filesystem::create_directories(m_config.games_directory);
+    if (!success) {
+      throw std::invalid_argument("Cannot create games directory " +
+                                  m_config.games_directory.string() + "\n");
+    }
+  }
+
+  if (!boost::filesystem::is_directory(m_config.games_directory)) {
     throw std::invalid_argument("Invalid games directory " +
                                 m_config.games_directory.string() + "\n");
   }
@@ -30,6 +38,7 @@ std::vector<Game> GamesStorage::list_games() {
 }
 
 void GamesStorage::update() {
+  m_games.clear();
   for (auto &entry : boost::make_iterator_range(
            boost::filesystem::directory_iterator(m_config.games_directory),
            {})) {
@@ -44,51 +53,8 @@ void GamesStorage::update() {
   }
 }
 
-const std::string Game::CONFIG_FILE = "config.json"; // NOLINT(cert-err58-cpp)
-const std::string Game::CLIENT_FILE = "client.zip";  // NOLINT(cert-err58-cpp)
-const std::string Game::LOGIC_FILE = "logic";        // NOLINT(cert-err58-cpp)
-
-Game::Game(boost::filesystem::path directory_)
-    : directory(std::move(directory_)), logic_file(directory / LOGIC_FILE),
-      client_file(directory / CLIENT_FILE) {
-  Json::Value json_config;
-  read_config_file(directory / CONFIG_FILE, json_config);
-  config.id = json_config["config"].asString();
-  config.display_name = json_config["display_name"].asString();
-  config.description = json_config["description"].asString();
-  config.players_num = json_config["players_num"].asInt();
-}
-
-bool Game::is_game_directory(const boost::filesystem::path &directory) {
-  Json::Value tmp;
-  return boost::filesystem::exists(directory) &&
-         boost::filesystem::is_directory(directory) &&
-         boost::filesystem::exists(directory / CLIENT_FILE) &&
-         boost::filesystem::is_regular_file(directory / CLIENT_FILE) &&
-         boost::filesystem::exists(directory / CONFIG_FILE) &&
-         boost::filesystem::is_regular_file(directory / CONFIG_FILE) &&
-         boost::filesystem::exists(directory / LOGIC_FILE) &&
-         boost::filesystem::is_regular_file(directory / LOGIC_FILE) &&
-         read_config_file(directory / CONFIG_FILE, tmp);
-}
-
-bool Game::read_config_file(const boost::filesystem::path &path,
-                            Json::Value &json_obj) {
-  std::ifstream file(path);
-  Json::Reader reader;
-  bool success = reader.parse(file, json_obj, false);
-  file.close();
-  return success;
-}
-
-Json::Value Game::GameConfig::to_json() const {
-  Json::Value result;
-  result["id"] = id;
-  result["display_name"] = display_name;
-  result["description"] = description;
-  result["players_num"] = players_num;
-
-  return result;
-}
+// NOLINT(cert-err58-cpp)
+// NOLINT(cert-err58-cpp)
+// NOLINT(cert-err58-cpp)
 
 } // namespace cavoke::server::model

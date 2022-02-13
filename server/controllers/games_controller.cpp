@@ -1,4 +1,5 @@
 #include "games_controller.h"
+#include "../model/game.h"
 
 #include <utility>
 
@@ -10,7 +11,7 @@ void cavoke::server::controllers::GamesController::games_list(
     const drogon::HttpRequestPtr &req,
     std::function<void(const drogon::HttpResponsePtr &)> &&callback) {
   std::vector<model::Game> games = m_games_storage->list_games();
-  Json::Value result;
+  Json::Value result(Json::arrayValue);
   for (const auto &game : games) {
     result.append(game.config.to_json());
   }
