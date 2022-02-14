@@ -3,13 +3,14 @@
 #include <boost/filesystem/path.hpp>
 #include <drogon/drogon.h>
 #include <string>
+#include "GamesStorageConfig.h"
 
 namespace cavoke::server::model {
 
 class Game {
-  static const std::string CONFIG_FILE;
-  static const std::string CLIENT_FILE;
-  static const std::string LOGIC_FILE;
+  const std::string CONFIG_FILE;
+  const std::string CLIENT_FILE;
+  const std::string LOGIC_FILE;
 
   boost::filesystem::path directory;
 
@@ -26,14 +27,16 @@ class Game {
                                Json::Value &json_obj);
 
 public:
-  explicit Game(boost::filesystem::path directory);
-  Game() = default;
+  explicit Game(boost::filesystem::path directory,
+                const GamesStorageConfig &game_storage_config);
+  Game() = default;  // TODO: rethink json
 
   boost::filesystem::path client_file;
   GameConfig config;
   boost::filesystem::path logic_file;
 
-  static bool is_game_directory(const boost::filesystem::path &path);
+  static bool is_game_directory(const boost::filesystem::path &path,
+                         const GamesStorageConfig &games_storage_config);
 };
 
 } // namespace cavoke::server::model

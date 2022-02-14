@@ -7,8 +7,8 @@
 
 namespace cavoke::server::model {
 
-GamesStorage::GamesStorage(GamesStorage::GamesStorageConfig config_)
-    : m_config(std::move(config_)) {
+GamesStorage::GamesStorage(GamesStorageConfig config)
+    : m_config(std::move(config)) {
 
   if (!boost::filesystem::exists(m_config.games_directory)) {
     bool success =
@@ -42,12 +42,12 @@ void GamesStorage::update() {
   for (auto &entry : boost::make_iterator_range(
            boost::filesystem::directory_iterator(m_config.games_directory),
            {})) {
-    if (!Game::is_game_directory(entry)) {
+    if (!Game::is_game_directory(entry, m_config)) {
       // TODO: logging
       std::cerr << entry << " entity from games directory is not a valid game"
                 << std::endl;
     } else {
-      Game game(entry);
+      Game game(entry, m_config);
       m_games.emplace(game.config.id, game);
     }
   }

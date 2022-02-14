@@ -2,6 +2,7 @@
 #define CAVOKE_GAMES_STORAGE_H
 
 #include "game.h"
+#include "GamesStorageConfig.h"
 #include <boost/filesystem/path.hpp>
 #include <drogon/drogon.h>
 #include <string>
@@ -10,10 +11,6 @@ namespace cavoke::server::model {
 class GamesStorage {
   // TODO: thread-safety
 public:
-  struct GamesStorageConfig {
-    boost::filesystem::path games_directory;
-  };
-
   explicit GamesStorage(GamesStorageConfig config);
 
   void update();
