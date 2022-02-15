@@ -3,7 +3,7 @@ void cavoke::server::controllers::HealthController::health(
     const drogon::HttpRequestPtr &req,
     std::function<void(const drogon::HttpResponsePtr &)> &&callback) {
   auto resp = drogon::HttpResponse::newHttpResponse();
-  resp->setContentTypeString("text/plain");
+  resp->setContentTypeCode(drogon::CT_TEXT_PLAIN);
   resp->setBody("OK");
   callback(resp);
 }

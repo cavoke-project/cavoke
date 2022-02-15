@@ -29,7 +29,7 @@ GamesStorageConfig::load(const std::string &config_file) {
   assert(reader.parse(file, obj, false));
   file.close();
 
-  GamesStorageConfig res{obj["games_directory"].as<std::string>(), obj["logic_name"].as<std::string>(), obj["zip_name"].as<std::string>(), obj["config_name"].as<std::string>()};
+  GamesStorageConfig res{obj["games_directory"].asString(), obj["logic_name"].asString(), obj["zip_name"].asString(), obj["config_name"].asString()};
   return res;
 }
 
