@@ -39,10 +39,10 @@ jobs:
       - checkout
       - run:
           name: Cmake
-          run: cmake . -DBUILD_CLIENT=OFF
+          command: cmake . -DBUILD_CLIENT=OFF
       - run:
           name: Make
-          run: make cavoke_server
+          command: make cavoke_server
 
 workflows:
   client-workflow:
