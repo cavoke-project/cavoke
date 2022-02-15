@@ -8,9 +8,9 @@
 
 namespace cavoke::server::model {
 
-Game::Game(boost::filesystem::path directory,
+Game::Game(const boost::filesystem::path &directory,
            const GamesStorageConfig &game_storage_config)
-    : directory(std::move(directory)), logic_file(directory / LOGIC_FILE),
+    : directory(directory), logic_file(directory / LOGIC_FILE),
       client_file(directory / CLIENT_FILE),
       CLIENT_FILE(game_storage_config.zip_name),
       LOGIC_FILE(game_storage_config.logic_name),
@@ -27,7 +27,7 @@ bool Game::is_game_directory(const boost::filesystem::path &path,
                              const GamesStorageConfig &games_storage_config) {
   Json::Value tmp;
   // TODO: rewrite
-  const auto& CLIENT_FILE = games_storage_config.zip_name,
+  const auto &CLIENT_FILE = games_storage_config.zip_name,
              CONFIG_FILE = games_storage_config.json_name,
              LOGIC_FILE = games_storage_config.logic_name;
   // TODO: extract function exists & directory + exists & regular file

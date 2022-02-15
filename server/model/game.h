@@ -27,7 +27,7 @@ class Game {
                                Json::Value &json_obj);
 
 public:
-  explicit Game(boost::filesystem::path directory,
+  explicit Game(const boost::filesystem::path& directory,
                 const GamesStorageConfig &game_storage_config);
   Game() = default;  // TODO: rethink json
 
