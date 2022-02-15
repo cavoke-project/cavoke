@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  suse-qt5-notests:
+  client-suse-qt5-notests:
     docker:
       - image: kdeorg/ci-suse-qt515
     steps:
@@ -11,11 +11,11 @@ jobs:
       - checkout
       - run:
           name: Cmake
-          command: cmake client -DQT_MAJOR_VERSION=5
+          command: cmake . -DBUILD_SERVER=OFF -DQT_MAJOR_VERSION=5
       - run:
           name: Make
-          command: make all
-  suse-qt6-notests:
+          command: make cavoke_client
+  client-suse-qt6-notests:
     docker:
       - image: kdeorg/ci-suse-qt62
     steps:
@@ -25,13 +25,28 @@ jobs:
           command: chmod +x .circleci/suse-qt6-install-karchive.sh && .circleci/suse-qt6-install-karchive.sh
       - run:
           name: Cmake
-          command: cmake client -DQT_MAJOR_VERSION=6  # QT_MAJOR_VERSION=6 by default, so not necessary
+          command: cmake . -DBUILD_SERVER=OFF -DQT_MAJOR_VERSION=6  # QT_MAJOR_VERSION=6 by default, so not necessary
       - run:
           name: Make
-          command: make all
+          command: make cavoke_client
+  server-docker-notests:
+    docker:
+      - image: drogonframework/drogon
+    steps:
+      - run:
+          name: Install Boost
+          command: apt update -y && apt install libboost-all-dev -y
+      - checkout
+      - run:
+          name: Cmake
+          run: cmake . -DBUILD_CLIENT=OFF
+      - run:
+          name: Make
+          run: make cavoke_server
 
 workflows:
   client-workflow:
     jobs:
-      - suse-qt5-notests
-      - suse-qt6-notests
+      - client-suse-qt5-notests
+      - client-suse-qt6-notests
+      - server-docker-notests
