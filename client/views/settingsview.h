@@ -4,12 +4,11 @@
 #include <QMainWindow>
 
 namespace Ui {
-    class SettingsView;
+class SettingsView;
 }
 
-class SettingsView : public QMainWindow
-{
-Q_OBJECT
+class SettingsView : public QMainWindow {
+    Q_OBJECT
 public:
     explicit SettingsView(QWidget *parent = nullptr);
     ~SettingsView();
@@ -19,8 +18,9 @@ signals:
 
 private slots:
     void on_backButton_clicked();
+
 private:
     Ui::SettingsView *ui;
 };
 
-#endif //CAVOKE_CLIENT_SETTINGSVIEW_H
+#endif  // CAVOKE_CLIENT_SETTINGSVIEW_H

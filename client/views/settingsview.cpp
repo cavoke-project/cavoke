@@ -1,9 +1,8 @@
 #include "settingsview.h"
 #include "ui_settingsview.h"
 
-SettingsView::SettingsView(QWidget *parent) :
-        QMainWindow(parent),
-        ui(new Ui::SettingsView) {
+SettingsView::SettingsView(QWidget *parent)
+    : QMainWindow(parent), ui(new Ui::SettingsView) {
     ui->setupUi(this);
 }
 

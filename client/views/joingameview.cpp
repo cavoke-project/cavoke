@@ -1,9 +1,8 @@
 #include "joingameview.h"
 #include "ui_joingameview.h"
 
-JoinGameView::JoinGameView(QWidget *parent) :
-        QMainWindow(parent),
-        ui(new Ui::JoinGameView) {
+JoinGameView::JoinGameView(QWidget *parent)
+    : QMainWindow(parent), ui(new Ui::JoinGameView) {
     ui->setupUi(this);
 }
 

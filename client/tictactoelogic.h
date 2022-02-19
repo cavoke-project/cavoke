@@ -26,7 +26,7 @@ public:
     void randomAI();
 
     QString get_board_as_string();
-    
+
     QString processAction(const QString &jsonMove);
 
     bool running = false;

@@ -1,11 +1,10 @@
-#include <QFileDialog>
 #include "testwindowview.h"
-#include "ui_testwindowview.h"
+#include <QFileDialog>
 #include "cache_manager.h"
+#include "ui_testwindowview.h"
 
-TestWindowView::TestWindowView(QWidget *parent) :
-        QMainWindow(parent),
-        ui(new Ui::TestWindowView) {
+TestWindowView::TestWindowView(QWidget *parent)
+    : QMainWindow(parent), ui(new Ui::TestWindowView) {
     ui->setupUi(this);
 }
 
@@ -21,15 +20,16 @@ void TestWindowView::on_runButton_clicked() {
 }
 
 void TestWindowView::on_selectAppPathButton_clicked() {
-    QString appPath = QFileDialog::getOpenFileName(this, tr("Open App"), QDir::currentPath(),
-                                                   tr("QML App (*.qml)"));
+    QString appPath = QFileDialog::getOpenFileName(
+        this, tr("Open App"), QDir::currentPath(), tr("QML App (*.qml)"));
     if (!appPath.isNull()) {
         ui->appPathInput->setText(appPath);
     }
 }
 
 void TestWindowView::on_loadZipButton_clicked() {
-    QString zipPath = QFileDialog::getOpenFileName(this, tr("Select Archive"), QDir::currentPath(),
+    QString zipPath = QFileDialog::getOpenFileName(this, tr("Select Archive"),
+                                                   QDir::currentPath(),
                                                    tr("ZIP Archive (*.zip)"));
     if (!zipPath.isNull()) {
         ui->appPathInput->setText(cache_manager::save_zip_to_cache(zipPath));

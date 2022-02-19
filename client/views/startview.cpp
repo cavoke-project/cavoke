@@ -1,10 +1,9 @@
 #include "startview.h"
-#include "ui_startview.h"
 #include "cavokeclientcontroller.h"
+#include "ui_startview.h"
 
-StartView::StartView(QWidget *parent) :
-        QMainWindow(parent),
-        ui(new Ui::StartView) {
+StartView::StartView(QWidget *parent)
+    : QMainWindow(parent), ui(new Ui::StartView) {
     ui->setupUi(this);
 }
 
@@ -35,4 +34,3 @@ void StartView::on_settingsButton_clicked() {
 void StartView::on_exitButton_clicked() {
     emit clickedExitButton();
 }
-
