@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QtQuick>
 
+#include "network_manager.h"
 #include "cavokeclientmodel.h"
 #include "startview.h"
 #include "testwindowview.h"
@@ -28,6 +29,7 @@ private slots:
     void startQmlApplication(CavokeQmlGameModel*);
     void exitApplication();
 private:
+    NetworkManager networkManager;
     CavokeClientModel model;
     TestWindowView testWindowView;
     StartView startView;

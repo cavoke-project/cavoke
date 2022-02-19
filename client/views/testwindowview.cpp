@@ -40,3 +40,6 @@ void TestWindowView::on_backButton_clicked() {
     this->close();
     emit shownStartView();
 }
+void TestWindowView::on_testHealthConnectionButton_clicked() {
+    emit testHealthConnectionButton();
+}
