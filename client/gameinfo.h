@@ -6,7 +6,10 @@
 struct GameInfo {
 public:
     GameInfo();
-    GameInfo(QString _id, QString _display_name, QString _description, int _players_num);
+    GameInfo(QString _id,
+             QString _display_name,
+             QString _description,
+             int _players_num);
 
     void read(const QJsonObject &json);
     void write(QJsonObject &json) const;

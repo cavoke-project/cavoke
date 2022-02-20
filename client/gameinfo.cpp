@@ -16,7 +16,7 @@ void GameInfo::read(const QJsonObject &json) {
 
     if (json.contains("display_name") && json["display_name"].isString())
         display_name = json["display_name"].toString();
-    
+
     if (json.contains("description") && json["description"].isString())
         description = json["description"].toString();
 
