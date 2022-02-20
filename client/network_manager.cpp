@@ -26,4 +26,5 @@ void NetworkManager::gotGamesList(QNetworkReply *reply) {
     reply->close();
     reply->deleteLater();
     qDebug() << answer;
+    emit finalizedGamesList(answer);
 }

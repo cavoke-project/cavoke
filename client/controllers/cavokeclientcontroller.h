@@ -24,6 +24,9 @@ public slots:
     void showJoinGameView();
     void showCreateGameView();
     void showSettingsView();
+    
+signals:
+    void loadGamesList();
 
 private slots:
     void startQmlApplication(CavokeQmlGameModel*);

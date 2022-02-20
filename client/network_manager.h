@@ -12,6 +12,9 @@ public slots:
     void doTestHealthCheck();
     void getGamesList();
     
+signals:
+    void finalizedGamesList(QString list);    
+    
 private slots:
     void doneTestHealthCheck(QNetworkReply *reply);  
     void gotGamesList(QNetworkReply *reply);

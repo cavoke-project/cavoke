@@ -4,7 +4,7 @@
 CavokeClientController::CavokeClientController(QObject *parent)
         : QObject{parent}, model{parent}, networkManager{parent}, testWindowView{}, startView{}, joinGameView{}, settingsView{} {
     
-    networkManager.getGamesList();
+    connect(this, SIGNAL(loadGamesList()), &networkManager, SLOT(getGamesList()));
     
     connect(&testWindowView, SIGNAL(startGame(QString)), &model, SLOT(loadQmlGame(QString)));
     connect(&model, SIGNAL(startQmlApplication(CavokeQmlGameModel * )), this,
@@ -24,7 +24,11 @@ CavokeClientController::CavokeClientController(QObject *parent)
     
     connect(&testWindowView, SIGNAL(testHealthConnectionButton()), &networkManager, SLOT(doTestHealthCheck()));
     
+    connect(&networkManager, SIGNAL(finalizedGamesList(QString)), &model, SLOT(updateGamesList(QString)));
+    
     startView.show();
+
+    emit loadGamesList();
 }
 
 void CavokeClientController::showTestWindowView() {
