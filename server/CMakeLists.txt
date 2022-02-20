@@ -12,17 +12,20 @@ link_directories(${Boost_LIBRARY_DIRS})
 # https://github.com/nlohmann/json/releases/tag/v3.9.0 for convenience macros
 find_package(nlohmann_json 3.9.0 REQUIRED)
 
+include_directories(.)
+
 add_executable(cavoke_server
+        main.cpp
         model/games_storage.cpp
         model/game.cpp
         controllers/games_controller.cpp
-        main.cpp
         controllers/health_controller.cpp
-        controllers/health_controller.h
-        model/GamesStorageConfig.cpp
-        model/GamesStorageConfig.h
-        utils.h
-        model/game_state_storage.cpp model/participation_storage.cpp model/game_logic_manager.cpp model/mock_tictactoe/tictactoe.cpp controllers/state_controller.cpp
+        model/games_storage_config.cpp
+        model/game_state_storage.cpp
+        model/participation_storage.cpp
+        model/game_logic_manager.cpp
+        model/mock_tictactoe/tictactoe.cpp
+        controllers/state_controller.cpp
         )
 target_link_libraries(cavoke_server Drogon::Drogon)
 target_link_libraries(cavoke_server ${Boost_LIBRARIES} ${CMAKE_DL_LIBS})

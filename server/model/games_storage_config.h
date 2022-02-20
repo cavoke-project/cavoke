@@ -1,9 +1,9 @@
-#ifndef CAVOKE_GAMESSTORAGECONFIG_H
-#define CAVOKE_GAMESSTORAGECONFIG_H
+#ifndef CAVOKE_GAMES_STORAGE_CONFIG_H
+#define CAVOKE_GAMES_STORAGE_CONFIG_H
 
 #include <boost/filesystem/path.hpp>
 #include <nlohmann/json.hpp>
-#include "../utils.h"  // TODO: avoid relative paths
+#include "utils.h"
 namespace cavoke::server::model {
 using json = nlohmann::json;
 
@@ -21,4 +21,4 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GamesStorageConfig,
                                    zip_name,
                                    config_name)
 }  // namespace cavoke::server::model
-#endif  // CAVOKE_GAMESSTORAGECONFIG_H
+#endif  // CAVOKE_GAMES_STORAGE_CONFIG_H

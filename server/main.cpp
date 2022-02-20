@@ -46,7 +46,7 @@ namespace po = boost::program_options;
 
 int main(int argc, char *argv[]) {
     po::options_description desc("Allowed options");
-    desc.add_options()("help,h,?", "Print help")(
+    desc.add_options()("help,h", "Print help")(
         "config-file,c", po::value<std::string>(),
         "File with game storage configuration")(
         "host,ip,a", po::value<std::string>()->default_value("0.0.0.0"),

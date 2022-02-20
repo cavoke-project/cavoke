@@ -1,4 +1,4 @@
-#include "GamesStorageConfig.h"
+#include "games_storage_config.h"
 #include <boost/filesystem.hpp>
 #include <iostream>
 

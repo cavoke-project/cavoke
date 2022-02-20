@@ -4,7 +4,7 @@
 #include <boost/filesystem/path.hpp>
 #include <nlohmann/json.hpp>
 #include <string>
-#include "GamesStorageConfig.h"
+#include "games_storage_config.h"
 
 namespace cavoke::server::model {
 
