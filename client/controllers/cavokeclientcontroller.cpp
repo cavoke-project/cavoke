@@ -4,6 +4,8 @@
 CavokeClientController::CavokeClientController(QObject *parent)
         : QObject{parent}, model{parent}, networkManager{parent}, testWindowView{}, startView{}, joinGameView{}, settingsView{} {
     
+    networkManager.getGamesList();
+    
     connect(&testWindowView, SIGNAL(startGame(QString)), &model, SLOT(loadQmlGame(QString)));
     connect(&model, SIGNAL(startQmlApplication(CavokeQmlGameModel * )), this,
             SLOT(startQmlApplication(CavokeQmlGameModel * )));

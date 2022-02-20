@@ -10,9 +10,11 @@ public:
     
 public slots:
     void doTestHealthCheck();
-    void doneTestHealthCheck(QNetworkReply *reply);
-//private slots:
+    void getGamesList();
     
+private slots:
+    void doneTestHealthCheck(QNetworkReply *reply);  
+    void gotGamesList(QNetworkReply *reply);
 
 private:
     QNetworkAccessManager manager;
