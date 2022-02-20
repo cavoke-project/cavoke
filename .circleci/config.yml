@@ -31,14 +31,8 @@ jobs:
           command: make cavoke_client
   server-docker-healthcheck:
     docker:
-      - image: drogonframework/drogon
+      - image: ghcr.io/cavoke-project/cavoke_ci:drogon # TODO: use circleci orbs
     steps:
-      - run:
-          name: Install Boost
-          command: apt update -y && apt install libboost-all-dev -y
-      - run:
-          name: Install nlohmann/json
-          command: apt update -y && apt install python3-pip -y && pip3 install cget && cget install nlohmann/json
       - checkout
       - run:
           name: Cmake
