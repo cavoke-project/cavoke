@@ -27,5 +27,6 @@ void CavokeClientModel::updateGamesList(const QJsonArray &newGamesList) {
     }
     emit gamesListUpdated(gamesList);
 }
-
-
+void CavokeClientModel::receivedGameIndexChange(int newIndex) {
+    emit updateSelectedGame(gamesList[newIndex]);
+}

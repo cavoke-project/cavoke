@@ -17,7 +17,8 @@ void NetworkManager::doneTestHealthCheck(QNetworkReply *reply) {
 }
 void NetworkManager::getGamesList() {
     auto reply = manager.get(QNetworkRequest(
-        QUrl("https://private-e45526-cavoke.apiary-mock.com/games/list")));
+        QUrl("https://764bbfca-c45a-46fc-9c79-11d9094b9ba8.mock.pstmn.io/games/list")));
+//        QUrl("https://private-e45526-cavoke.apiary-mock.com/games/list")));
     connect(reply, &QNetworkReply::finished, this,
             [reply, this]() { gotGamesList(reply); });
 }

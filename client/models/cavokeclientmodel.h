@@ -13,9 +13,11 @@ public:
 public slots:
     void loadQmlGame(const QString &gameName);
     void updateGamesList(const QJsonArray &newGamesList);
+    void receivedGameIndexChange(int newIndex);
 signals:
     void startQmlApplication(CavokeQmlGameModel *);
     void gamesListUpdated(const std::vector<GameInfo> &newGamesList);
+    void updateSelectedGame(const GameInfo &gameInfo);
 
 private:
     std::vector<GameInfo> gamesList;
