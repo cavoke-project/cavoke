@@ -6,6 +6,8 @@
 
 namespace cavoke::server::controllers {
 
+using json = nlohmann::json;
+
 class GamesController : public drogon::HttpController<GamesController, false> {
     std::shared_ptr<model::GamesStorage> m_games_storage;
 

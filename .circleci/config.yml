@@ -34,8 +34,8 @@ jobs:
       - image: drogonframework/drogon
     steps:
       - run:
-          name: Install Boost
-          command: apt update -y && apt install libboost-all-dev -y
+          name: Install Boost & nlohmann-json
+          command: apt update -y && apt install libboost-all-dev nlohmann-json-dev -y
       - checkout
       - run:
           name: Cmake

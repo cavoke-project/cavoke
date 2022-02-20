@@ -1,10 +1,6 @@
 #include "game.h"
 #include <boost/filesystem.hpp>
-#include <boost/range/iterator_range.hpp>
-#include <iostream>
 #include <string>
-#include <utility>
-#include "games_storage.h"
 
 namespace cavoke::server::model {
 
@@ -15,53 +11,37 @@ Game::Game(const boost::filesystem::path &directory,
       client_file(directory / CLIENT_FILE),
       CLIENT_FILE(game_storage_config.zip_name),
       LOGIC_FILE(game_storage_config.logic_name),
-      CONFIG_FILE(game_storage_config.json_name) {
-    Json::Value json_config;
-    read_config_file(directory / CONFIG_FILE, json_config);
-    config.id = json_config["id"].asString();
-    config.display_name = json_config["display_name"].asString();
-    config.description = json_config["description"].asString();
-    config.players_num = json_config["players_num"].asInt();
+      CONFIG_FILE(game_storage_config.config_name) {
+    json j = json::parse(std::ifstream(directory / CONFIG_FILE));
+    config = j.get<GameConfig>();
+}
+
+/// Checks whether given path is a directory
+bool check_is_directory(const boost::filesystem::path &path) {
+    return exists(path) && is_directory(path);
+}
+/// Checks whether given path exists and is a regular file
+bool check_is_regular_file(const boost::filesystem::path &path) {
+    return exists(path) && is_regular_file(path);
+}
+/// Checks whether given file is a valid `GameConfig`
+bool check_valid_game_config(const boost::filesystem::path &path) {
+    try {  // slow?
+        json j = json::parse(std::ifstream(path));
+        auto conf = j.get<GameConfig>();
+        conf.validate();
+        return true;
+    } catch (...) {
+        return false;
+    }
 }
 
 bool Game::is_game_directory(const boost::filesystem::path &path,
                              const GamesStorageConfig &games_storage_config) {
-    Json::Value tmp;
-    // TODO: rewrite
-    const auto &CLIENT_FILE = games_storage_config.zip_name,
-               CONFIG_FILE = games_storage_config.json_name,
-               LOGIC_FILE = games_storage_config.logic_name;
-    // TODO: extract function exists & directory + exists & regular file
-    return boost::filesystem::exists(path) &&
-           boost::filesystem::is_directory(path) &&
-           boost::filesystem::exists(path / CLIENT_FILE) &&
-           boost::filesystem::is_regular_file(path / CLIENT_FILE) &&
-           boost::filesystem::exists(path / CONFIG_FILE) &&
-           boost::filesystem::is_regular_file(path / CONFIG_FILE) &&
-           boost::filesystem::exists(path / LOGIC_FILE) &&
-           boost::filesystem::is_regular_file(path / LOGIC_FILE) &&
-           read_config_file(path / CONFIG_FILE, tmp);
-}
-
-bool Game::read_config_file(const boost::filesystem::path &path,
-                            Json::Value &json_obj) {
-    std::ifstream file(path);
-    Json::Reader reader;  // deprecated
-    bool success = reader.parse(file, json_obj, false);
-    file.close();
-    return success;
-}
-
-Json::Value Game::GameConfig::to_json() const {
-    // TODO: please let's use
-    // https://github.com/nlohmann/json#arbitrary-types-conversions
-    Json::Value result;
-    result["id"] = id;
-    result["display_name"] = display_name;
-    result["description"] = description;
-    result["players_num"] = players_num;
-
-    return result;
+    return check_is_directory(path) &&
+           check_is_regular_file(path / games_storage_config.zip_name) &&
+           check_is_regular_file(path / games_storage_config.logic_name) &&
+           check_valid_game_config(path / games_storage_config.config_name);
 }
 
 }  // namespace cavoke::server::model

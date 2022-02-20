@@ -2,10 +2,29 @@
 #define CAVOKE_SERVER_GAME_H
 #include <drogon/drogon.h>
 #include <boost/filesystem/path.hpp>
+#include <nlohmann/json.hpp>
 #include <string>
 #include "GamesStorageConfig.h"
 
 namespace cavoke::server::model {
+
+struct GameConfig {
+    std::string id;
+    std::string display_name;
+    std::string description;
+    int players_num;
+
+    /// Validates config. Throws an exception if invalid
+    void validate() const {
+        // TODO: just a sample, `assert` removed in Release
+        assert(players_num >= 1);
+    }
+};
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameConfig,
+                                   id,
+                                   display_name,
+                                   description,
+                                   players_num)
 
 class Game {
     const std::string CONFIG_FILE;
@@ -14,22 +33,10 @@ class Game {
 
     boost::filesystem::path directory;
 
-    struct GameConfig {
-        std::string id;
-        std::string display_name;
-        std::string description;
-        int players_num;
-
-        [[nodiscard]] Json::Value to_json() const;
-    };
-
-    static bool read_config_file(const boost::filesystem::path &path,
-                                 Json::Value &json_obj);
-
 public:
     explicit Game(const boost::filesystem::path &directory,
                   const GamesStorageConfig &game_storage_config);
-    Game() = default;  // TODO: rethink json
+    Game() = default;
 
     boost::filesystem::path client_file;
     GameConfig config;
