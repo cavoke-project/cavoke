@@ -3,7 +3,7 @@ project(cavoke_server)
 
 set(CMAKE_CXX_STANDARD 17)
 
-find_package(Drogon REQUIRED)
+find_package(Drogon 1.7.3 REQUIRED)
 
 find_package(Boost 1.71 REQUIRED filesystem program_options)
 include_directories(${Boost_INCLUDE_DIRS})
