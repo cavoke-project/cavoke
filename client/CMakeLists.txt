@@ -24,6 +24,8 @@ include_directories(${CMAKE_BINARY_DIR}
 # https://api.kde.org/frameworks-api/frameworks-apidocs/frameworks/karchive/html/index.html
 find_package(KF5Archive REQUIRED)
 
+add_compile_definitions(MOCK)
+
 add_executable(cavoke_client
         main.cpp
         controllers/cavokeclientcontroller.cpp
@@ -36,7 +38,9 @@ add_executable(cavoke_client
         views/settingsview.cpp
         tictactoelogic.cpp
         cache_manager.cpp
-        network_manager.cpp network_manager.h gameinfo.cpp gameinfo.h)
+        network_manager.cpp
+        gameinfo.cpp
+        )
 
 target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Widgets)
 target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Quick)

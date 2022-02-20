@@ -29,7 +29,6 @@ void CreateGameView::gotGamesListUpdate(
 void CreateGameView::gotNewSelectedGame(const GameInfo &gameInfo) {
     ui->gameNameLabel->setText(gameInfo.display_name);
     ui->gameDescriptionTextBrowser->setText(gameInfo.description);
-    ui->playersAmountLabel->setText(
-        QString::fromStdString(std::to_string(gameInfo.players_num)));
+    ui->playersAmountLabel->setText(QString::number(gameInfo.players_num));
     ui->createGameButton->setEnabled(true);
 }
