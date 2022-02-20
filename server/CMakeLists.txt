@@ -21,7 +21,9 @@ add_executable(cavoke_server
         controllers/health_controller.h
         model/GamesStorageConfig.cpp
         model/GamesStorageConfig.h
-        utils.h)
+        utils.h
+        model/game_state_storage.cpp model/participation_storage.cpp model/game_logic_manager.cpp model/mock_tictactoe/tictactoe.cpp controllers/state_controller.cpp
+        )
 target_link_libraries(cavoke_server Drogon::Drogon)
 target_link_libraries(cavoke_server ${Boost_LIBRARIES} ${CMAKE_DL_LIBS})
 target_link_libraries(cavoke_server nlohmann_json::nlohmann_json)

@@ -13,19 +13,27 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-include_directories(${CMAKE_BINARY_DIR})
+include_directories(${CMAKE_BINARY_DIR}
+        controllers
+        models
+        views)
 
 # https://api.kde.org/frameworks-api/frameworks-apidocs/frameworks/karchive/html/index.html
 find_package(KF5Archive REQUIRED)
 
 add_executable(cavoke_client
         main.cpp
-        cavokeclientcontroller.cpp
-        cavokeclientmodel.cpp
-        cavokeclientview.cpp
-        cavokeqmlgamemodel.cpp
+        controllers/cavokeclientcontroller.cpp
+        models/cavokeclientmodel.cpp
+        models/cavokeqmlgamemodel.cpp
+        views/testwindowview.cpp
+        views/startview.cpp
+        views/joingameview.cpp
+        views/creategameview.cpp
+        views/settingsview.cpp
         tictactoelogic.cpp
-        cache_manager.cpp)
+        cache_manager.cpp
+        )
 
 target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Widgets)
 target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Quick)
