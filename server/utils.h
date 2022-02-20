@@ -10,7 +10,7 @@ namespace nlohmann {
 template <>
 struct adl_serializer<boost::filesystem::path> {
     static void to_json(json &j, const boost::filesystem::path &value) {
-        j = json{value.string()};
+        j = value.string();
     }
 
     static void from_json(const json &j, boost::filesystem::path &value) {
