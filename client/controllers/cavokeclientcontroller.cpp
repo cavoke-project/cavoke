@@ -24,7 +24,7 @@ CavokeClientController::CavokeClientController(QObject *parent)
     
     connect(&testWindowView, SIGNAL(testHealthConnectionButton()), &networkManager, SLOT(doTestHealthCheck()));
     
-    connect(&networkManager, SIGNAL(finalizedGamesList(QString)), &model, SLOT(updateGamesList(QString)));
+    connect(&networkManager, SIGNAL(finalizedGamesList(QJsonArray)), &model, SLOT(updateGamesList(QJsonArray)));
     
     startView.show();
 

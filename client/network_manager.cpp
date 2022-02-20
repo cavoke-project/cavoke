@@ -1,4 +1,5 @@
 #include "network_manager.h"
+#include <QtCore/QJsonDocument>
 NetworkManager::NetworkManager(QObject *parent) : manager(parent) {
 }
 void NetworkManager::doTestHealthCheck() {
@@ -22,9 +23,10 @@ void NetworkManager::getGamesList() {
 }
 
 void NetworkManager::gotGamesList(QNetworkReply *reply) {
-    QString answer = reply->readAll();
+    QByteArray answer = reply->readAll();
     reply->close();
     reply->deleteLater();
     qDebug() << answer;
-    emit finalizedGamesList(answer);
+    QJsonDocument response_wrapper = QJsonDocument::fromJson(answer);
+    emit finalizedGamesList(response_wrapper.array());  // What is it?
 }

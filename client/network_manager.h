@@ -3,6 +3,7 @@
 
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
+#include <QtCore/QJsonArray>
 struct NetworkManager : public QObject {
     Q_OBJECT
 public:
@@ -13,7 +14,7 @@ public slots:
     void getGamesList();
     
 signals:
-    void finalizedGamesList(QString list);    
+    void finalizedGamesList(QJsonArray list);    
     
 private slots:
     void doneTestHealthCheck(QNetworkReply *reply);  

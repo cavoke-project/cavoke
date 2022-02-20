@@ -14,10 +14,18 @@ void CavokeClientModel::loadQmlGame(const QString &appPath) {
 
     emit startQmlApplication(gameModel);
 }
-void CavokeClientModel::updateGamesList(const QString &newGamesList) {
-    tempGamesList = newGamesList;
-    qDebug() << "In Model: " << tempGamesList;
-    emit gamesListUpdated(tempGamesList);
+void CavokeClientModel::updateGamesList(const QJsonArray &newGamesList) {
+    std::vector<GameInfo> got_from;
+    for (auto obj : newGamesList) {
+        got_from.emplace_back(GameInfo());
+        got_from.back().read(obj.toObject());
+    }
+    gamesList = got_from;
+    
+    if (!gamesList.empty()) {
+        qDebug() << "First In Model: " << gamesList[0].id;
+    }
+    emit gamesListUpdated(gamesList);
 }
 
 
