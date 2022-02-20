@@ -32,6 +32,9 @@ jobs:
   server-docker-healthcheck:
     docker:
       - image: ghcr.io/cavoke-project/cavoke_ci:drogon # TODO: use circleci orbs
+        auth:
+          username: $GHCR_USERNAME
+          password: $GHCR_PASSWORD
     steps:
       - checkout
       - run:
