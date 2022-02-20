@@ -35,7 +35,7 @@ jobs:
     steps:
       - run:
           name: Install Boost & nlohmann-json
-          command: apt update -y && apt install libboost-all-dev nlohmann-json-dev -y
+          command: apt update -y && apt install libboost-all-dev nlohmann-json3-dev -y
       - checkout
       - run:
           name: Cmake
