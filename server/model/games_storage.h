@@ -5,6 +5,7 @@
 #include <boost/filesystem/path.hpp>
 #include <drogon/drogon.h>
 #include <string>
+
 namespace cavoke::server::model {
 
 class GamesStorage {
@@ -20,7 +21,7 @@ public:
 
   std::vector<Game> list_games();
 
-  std::optional<Game> get_game_by_id(const std::string& game_id);
+  std::optional<Game> get_game_by_id(const std::string &game_id);
 
 private:
   GamesStorageConfig m_config;
