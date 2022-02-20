@@ -9,4 +9,4 @@ std::string apply(const std::string &request);
 
 }
 
-#endif // CAVOKE_TICTACTOE_H
+#endif  // CAVOKE_TICTACTOE_H

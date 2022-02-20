@@ -3,7 +3,7 @@
 
 #include <boost/filesystem/path.hpp>
 #include <nlohmann/json.hpp>
-#include "../utils.h" // TODO: avoid relative paths
+#include "../utils.h"  // TODO: avoid relative paths
 namespace cavoke::server::model {
 using json = nlohmann::json;
 
