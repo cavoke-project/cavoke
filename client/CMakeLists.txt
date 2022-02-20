@@ -10,6 +10,7 @@ endif ()
 
 find_package(Qt${QT_MAJOR_VERSION}Widgets REQUIRED)
 find_package(Qt${QT_MAJOR_VERSION}Quick REQUIRED)
+find_package(Qt${QT_MAJOR_VERSION}Network REQUIRED)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
@@ -23,6 +24,8 @@ include_directories(${CMAKE_BINARY_DIR}
 # https://api.kde.org/frameworks-api/frameworks-apidocs/frameworks/karchive/html/index.html
 find_package(KF5Archive REQUIRED)
 
+add_compile_definitions(MOCK)
+
 add_executable(cavoke_client
         main.cpp
         controllers/cavokeclientcontroller.cpp
@@ -35,8 +38,11 @@ add_executable(cavoke_client
         views/settingsview.cpp
         tictactoelogic.cpp
         cache_manager.cpp
+        network_manager.cpp
+        gameinfo.cpp
         )
 
 target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Widgets)
 target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Quick)
+target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Network)
 target_link_libraries(cavoke_client KF5::Archive)
