@@ -13,13 +13,13 @@ GameLogicManager::send_update(const std::string &game_id,
                               const GameLogicManager::GameUpdate &update) {
   // TODO: invoke actual logic
   GameStateStorage::GameState result = GameStateStorage::parse_state(
-      tictactoe::apply(update.to_json().asString()));
+      tictactoe::apply(update.to_json().toStyledString()));
   return result;
 }
 
 Json::Value GameLogicManager::GameUpdate::to_json() const {
   Json::Value result;
-  result["id"] = player_id;
+  result["player_id"] = player_id;
   result["update"] = update;
   result["global_state"] = global_state;
 

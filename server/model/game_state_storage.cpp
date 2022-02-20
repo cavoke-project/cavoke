@@ -36,4 +36,17 @@ GameStateStorage::parse_state(const std::string &s) {
   return state;
 }
 
+std::optional<std::string>
+GameStateStorage::get_player_state(const std::string &session_id,
+                                   int player_id) {
+  auto state = get_state(session_id);
+  if (!state.has_value()) {
+    return {};
+  }
+  if (player_id >= state->players_state.size()) {
+    return {};
+  }
+  return state->players_state[player_id];
+}
+
 } // namespace cavoke::server::model

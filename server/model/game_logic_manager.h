@@ -19,12 +19,11 @@ public:
     std::string update;
     std::string global_state;
 
-
     [[nodiscard]] Json::Value to_json() const;
   };
 
-  GameStateStorage::GameState send_update(const std::string& game_id,
-                                          const GameUpdate& update);
+  GameStateStorage::GameState send_update(const std::string &game_id,
+                                          const GameUpdate &update);
 };
 
 } // namespace cavoke::server::model

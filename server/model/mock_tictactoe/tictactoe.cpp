@@ -3,6 +3,7 @@
 #include <json/reader.h>
 #include <random>
 #include <sstream>
+#include <iostream>
 
 namespace tictactoe {
 
@@ -63,6 +64,8 @@ void randomAI(std::string &board) {
 }
 
 std::string apply(const std::string &request) {
+  // TODO: logging
+  std::cout << "RECEIVED MOVE " << request << std::endl;
   Json::Reader reader;
   Json::Value json_request;
   reader.parse(request, json_request, false);
@@ -85,15 +88,19 @@ std::string apply(const std::string &request) {
     if (action != 'D') {
       int pos;
       to_split >> pos;
-      makeMove(pos, 'X', board);
-      if (winner(board)) {
-        message = "X wins";
-        restartGame(board);
+      if (!(pos >= 0 && pos < 9 && canPlayAtPos(pos, board))) {
+        message= "Invalid action";
       } else {
-        randomAI(board);
+        makeMove(pos, 'X', board);
         if (winner(board)) {
-          message = "O wins";
+          message = "X wins";
           restartGame(board);
+        } else {
+          randomAI(board);
+          if (winner(board)) {
+            message = "O wins";
+            restartGame(board);
+          }
         }
       }
     }
@@ -107,7 +114,7 @@ std::string apply(const std::string &request) {
   json_result["players_state"].append(board);
   json_result["winners"] = Json::arrayValue;
 
-  return json_result.asString();
+  return json_result.toStyledString();
 }
 
 } // namespace tictactoe
