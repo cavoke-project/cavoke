@@ -117,7 +117,7 @@ void CavokeClientController::startTicTacToe() {
     currentQmlTimer->callOnTimeout([this]() {
         networkManager.getUpdate(currentQmlGameModel->session_id.toString(), currentQmlGameModel->user_id.toString());
     });
-//    currentQmlTimer->start();
+    currentQmlTimer->start();
 }
 
 void CavokeClientController::stopTicTacToe() {

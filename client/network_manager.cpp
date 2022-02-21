@@ -58,9 +58,10 @@ void NetworkManager::gotPostResponse(QNetworkReply *reply) {
 
 void NetworkManager::getUpdate(const QString &sessionId,
                                const QString &user_id) {
-    QUrl route = HOST.resolved(PLAY);
-    route = route.resolved(QUrl(sessionId));
-    route = route.resolved(GET_UPDATE); // ???
+//    QUrl route = HOST.resolved(PLAY);
+//    route = route.resolved(QUrl(sessionId));
+//    route = route.resolved(GET_UPDATE); // ???
+    QUrl route = HOST.resolved(PLAY.toString() + "/" + sessionId + GET_UPDATE.toString());
     route.setQuery(QUrlQuery({QPair<QString, QString>("user_id", user_id)}));
     qDebug() << route.toString();
     auto request = QNetworkRequest(route);

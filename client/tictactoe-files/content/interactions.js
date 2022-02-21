@@ -1,10 +1,5 @@
 function processResponse(response) {
-    var parts = response.split("\n"); // Result, Board
-    updateBoard(parts[1]);
-    if (parts[0].endsWith("wins")) {
-        gameFinished(parts[0]);
-    }
-    
+    updateBoard(response);
 }
 
 function updateBoard(boardString) {
