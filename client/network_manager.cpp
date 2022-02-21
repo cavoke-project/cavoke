@@ -27,3 +27,52 @@ void NetworkManager::gotGamesList(QNetworkReply *reply) {
     QJsonDocument response_wrapper = QJsonDocument::fromJson(answer);
     emit finalizedGamesList(response_wrapper.array());  // What is it?
 }
+
+void NetworkManager::sendMove(const QString &jsonMove,
+                              const QString &sessionId,
+                              const QString &user_id) {
+//    QUrl route = HOST.resolved(PLAY);
+//    qDebug() << route.toString();
+//    route = route.resolved(QUrl(sessionId));
+//    qDebug() << route.toString();
+//    route = route.resolved(SEND_MOVE);
+//    qDebug() << route.toString();
+    QUrl route = HOST.resolved(PLAY.toString() + "/" + sessionId + SEND_MOVE.toString());
+    route.setQuery(QUrlQuery({QPair<QString, QString>(
+        "user_id", user_id)}));  // FIXME: I hope there exists a better way
+    qDebug() << route.toString();
+    auto request = QNetworkRequest(route);
+    request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader,
+                      "text/plain");
+    auto reply = manager.post(request, jsonMove.toUtf8());
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotPostResponse(reply); });
+}
+
+void NetworkManager::gotPostResponse(QNetworkReply *reply) {
+    QByteArray answer = reply->readAll();
+    reply->close();
+    reply->deleteLater();
+    qDebug() << answer;
+}
+
+void NetworkManager::getUpdate(const QString &sessionId,
+                               const QString &user_id) {
+    QUrl route = HOST.resolved(PLAY);
+    route = route.resolved(QUrl(sessionId));
+    route = route.resolved(GET_UPDATE); // ???
+    route.setQuery(QUrlQuery({QPair<QString, QString>("user_id", user_id)}));
+    qDebug() << route.toString();
+    auto request = QNetworkRequest(route);
+    auto reply = manager.get(request);
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotUpdate(reply); });
+}
+
+void NetworkManager::gotUpdate(QNetworkReply *reply) {
+    QString answer = reply->readAll();
+    reply->close();
+    reply->deleteLater();
+    qDebug() << answer;
+    emit gotGameUpdate(answer);
+}

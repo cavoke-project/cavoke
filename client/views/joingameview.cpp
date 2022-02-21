@@ -14,3 +14,8 @@ void JoinGameView::on_backButton_clicked() {
     this->close();
     emit shownStartView();
 }
+
+void JoinGameView::on_joinTicTacToeButton_clicked() {
+    this->close();
+    emit joinedTicTacToe();
+}

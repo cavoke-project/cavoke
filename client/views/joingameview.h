@@ -15,9 +15,11 @@ public:
 
 signals:
     void shownStartView();
+    void joinedTicTacToe();
 
 private slots:
     void on_backButton_clicked();
+    void on_joinTicTacToeButton_clicked();
 
 private:
     Ui::JoinGameView *ui;

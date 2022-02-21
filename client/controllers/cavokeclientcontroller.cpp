@@ -10,7 +10,7 @@ CavokeClientController::CavokeClientController(QObject *parent)
       settingsView{} {
     connect(this, SIGNAL(loadGamesList()), &networkManager,
             SLOT(getGamesList()));
-    
+
     connect(&testWindowView, SIGNAL(startGame(QString)), &model,
             SLOT(loadQmlGame(QString)));
     connect(&model, SIGNAL(startQmlApplication(CavokeQmlGameModel *)), this,
@@ -48,6 +48,9 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(receivedGameIndexChange(int)));
     connect(&model, SIGNAL(updateSelectedGame(GameInfo)), &createGameView,
             SLOT(gotNewSelectedGame(GameInfo)));
+
+    connect(&joinGameView, SIGNAL(joinedTicTacToe()), this,
+            SLOT(startTicTacToe()));
 
     startView.show();
 
@@ -99,4 +102,25 @@ void CavokeClientController::exitApplication() {
     joinGameView.close();
     createGameView.close();
     startView.close();
+}
+void CavokeClientController::startTicTacToe() {
+    showStartView();
+    currentQmlGameModel = new CavokeQmlGameModel(QUrl(
+        "/home/mark/CLionProjects/cavoke/client/tictactoe-files/tic-tac-toe.qml"));
+    startQmlApplication(currentQmlGameModel);
+    connect(currentQmlGameModel,
+            SIGNAL(sendMoveToNetwork(QString, QString, QString)),
+            &networkManager, SLOT(sendMove(QString, QString, QString)));
+    connect(&networkManager, SIGNAL(gotGameUpdate(QString)), currentQmlGameModel, SLOT(getUpdateFromNetwork(QString)));
+    currentQmlTimer = new QTimer(this);
+    currentQmlTimer->setInterval(500);
+    currentQmlTimer->callOnTimeout([this]() {
+        networkManager.getUpdate(currentQmlGameModel->session_id.toString(), currentQmlGameModel->user_id.toString());
+    });
+//    currentQmlTimer->start();
+}
+
+void CavokeClientController::stopTicTacToe() {
+    currentQmlGameModel->deleteLater();
+    currentQmlTimer->deleteLater();
 }

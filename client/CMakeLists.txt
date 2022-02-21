@@ -22,7 +22,7 @@ include_directories(${CMAKE_BINARY_DIR}
 # https://api.kde.org/frameworks-api/frameworks-apidocs/frameworks/karchive/html/index.html
 find_package(KF5Archive REQUIRED)
 
-add_compile_definitions(MOCK)
+#add_compile_definitions(MOCK)
 
 add_executable(cavoke_client
         main.cpp

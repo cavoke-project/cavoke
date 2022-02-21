@@ -5,6 +5,7 @@
 #include <QtCore/QJsonDocument>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
+#include <QUrlQuery>
 struct NetworkManager : public QObject {
     Q_OBJECT
 public:
@@ -13,13 +14,22 @@ public:
 public slots:
     void doTestHealthCheck();
     void getGamesList();
-
+    void sendMove(const QString &sessionId,
+                  const QString &jsonMove,
+                  const QString &user_id);
+    void getUpdate(const QString &sessionId,
+                    const QString &user_id);
+    
 signals:
     void finalizedGamesList(QJsonArray list);
+    void gotGameUpdate(const QString &jsonField);
+    
 
 private slots:
     void doneTestHealthCheck(QNetworkReply *reply);
     void gotGamesList(QNetworkReply *reply);
+    void gotPostResponse(QNetworkReply *reply);
+    void gotUpdate(QNetworkReply *reply);
 
 private:
     QNetworkAccessManager manager;
@@ -32,6 +42,9 @@ private:
     };
     const static inline QUrl HEALTH{"/health"};  // FIXME: move to routes module
     const static inline QUrl GAMES_LIST{"/games/list"};
+    const static inline QUrl PLAY{"/play"};
+    const static inline QUrl SEND_MOVE{"/send_move"};
+    const static inline QUrl GET_UPDATE{"/get_update"};
 };
 
 #endif  // CAVOKE_CLIENT_NETWORK_MANAGER_H

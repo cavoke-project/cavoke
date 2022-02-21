@@ -31,6 +31,8 @@ signals:
 private slots:
     void startQmlApplication(CavokeQmlGameModel*);
     void exitApplication();
+    void startTicTacToe();
+    void stopTicTacToe();
 private:
     NetworkManager networkManager;
     CavokeClientModel model;
@@ -39,6 +41,8 @@ private:
     JoinGameView joinGameView;
     CreateGameView createGameView;
     SettingsView settingsView;
+    CavokeQmlGameModel *currentQmlGameModel;
+    QTimer *currentQmlTimer;
 };
 
 #endif // CAVOKECLIENTCONTROLLER_H
