@@ -8,28 +8,28 @@
 
 namespace cavoke::server::model {
 
-class GameStateStorage { // TODO: thread safety
+class GameStateStorage {  // TODO: thread safety
 public:
-  struct GameState {
-    bool is_terminal;
-    std::string global_state;
-    std::vector<std::string> players_state;
-    std::vector<int> winners;
-  };
+    struct GameState {
+        bool is_terminal;
+        std::string global_state;
+        std::vector<std::string> players_state;
+        std::vector<int> winners;
+    };
 
-  static GameState parse_state(const std::string &s);
+    static GameState parse_state(const std::string &s);
 
-  void save_state(const std::string &session_id, GameState new_state);
+    void save_state(const std::string &session_id, GameState new_state);
 
-  std::optional<GameState> get_state(const std::string &session_id);
+    std::optional<GameState> get_state(const std::string &session_id);
 
-  std::optional<std::string> get_player_state(const std::string &session_id,
-                                              int player_id);
+    std::optional<std::string> get_player_state(const std::string &session_id,
+                                                int player_id);
 
 private:
-  std::map<std::string, GameState> m_states;
+    std::map<std::string, GameState> m_states;
 };
 
-} // namespace cavoke::server::model
+}  // namespace cavoke::server::model
 
-#endif // CAVOKE_SERVER_GAME_STATE_STORAGE_H
+#endif  // CAVOKE_SERVER_GAME_STATE_STORAGE_H

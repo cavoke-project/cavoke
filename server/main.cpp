@@ -1,42 +1,79 @@
+#include <drogon/HttpAppFramework.h>
+#include <boost/program_options.hpp>
 #include "controllers/games_controller.h"
 #include "controllers/state_controller.h"
 #include "model/game_logic_manager.h"
 #include "model/games_storage.h"
 #include "model/participation_storage.h"
-#include <drogon/HttpAppFramework.h>
 
 namespace cavoke::server {
-void run() {
-  // TODO: logging
+void run(const std::string &host,
+         uint16_t port,
+         const std::string &config_file) {
+    // TODO: logging
 
-  // init models
-  std::cout << "Initialize models..." << std::endl;
-  auto games_storage = std::make_shared<model::GamesStorage>(
-      model::GamesStorage::GamesStorageConfig{"../../local_server/games"});
-  auto game_logic_manager =
-      std::make_shared<model::GameLogicManager>(games_storage);
-  auto game_state_storage = std::make_shared<model::GameStateStorage>();
-  auto participation_storage = std::make_shared<model::ParticipationStorage>();
+    // init models
+    std::cout << "Initialize models..." << std::endl;
+    auto games_storage = std::make_shared<model::GamesStorage>(
+        model::GamesStorageConfig::load(config_file));
+    auto game_logic_manager =
+        std::make_shared<model::GameLogicManager>(games_storage);
+    auto game_state_storage = std::make_shared<model::GameStateStorage>();
+    auto participation_storage =
+        std::make_shared<model::ParticipationStorage>();
 
-  // init controllers
-  std::cout << "Initialize controllers..." << std::endl;
-  auto games_controller =
-      std::make_shared<controllers::GamesController>(games_storage);
-  auto state_controller = std::make_shared<controllers::StateController>(
-      games_storage, game_logic_manager, game_state_storage,
-      participation_storage);
+    // init controllers
+    std::cout << "Initialize controllers..." << std::endl;
+    auto games_controller =
+        std::make_shared<controllers::GamesController>(games_storage);
+    auto state_controller = std::make_shared<controllers::StateController>(
+        games_storage, game_logic_manager, game_state_storage,
+        participation_storage);
 
-  // register controllers
-  drogon::app().registerController(games_controller);
-  drogon::app().registerController(state_controller);
+    auto &app = drogon::app();
 
-  // RUN!
-  std::cout << "Run server on 127.0.0.1:8080" << std::endl;
-  drogon::app().addListener("127.0.0.1", 8080).run();
+    // register controllers
+    app.registerController(games_controller);
+    app.registerController(state_controller);
+
+    // start server
+    std::cout << "Listening at " << host << ":" << port << std::endl;
+    app.addListener(host, port).run();
 }
-} // namespace cavoke::server
+}  // namespace cavoke::server
 
-int main() {
-  cavoke::server::run();
-  return 0;
+namespace po = boost::program_options;
+
+int main(int argc, char *argv[]) {
+    po::options_description desc("Allowed options");
+    desc.add_options()("help,h", "Print help")(
+        "config-file,c", po::value<std::string>(),
+        "File with game storage configuration")(
+        "host,ip,a", po::value<std::string>()->default_value("0.0.0.0"),
+        "Host on which server is located")(
+        "port,p", po::value<uint16_t>()->default_value(8080),
+        "TCP/IP port number for connection");
+
+    po::variables_map vm;
+    po::store(po::parse_command_line(argc, argv, desc), vm);
+    po::notify(vm);
+
+    if (vm.count("help")) {
+        std::cout << desc << "\n";
+        return 0;
+    }
+
+    std::string config_file;
+    if (vm.count("config-file")) {
+        config_file = vm["config-file"].as<std::string>();
+    } else {
+        //    config_file = std::getenv("CAVOKE_SERVER_CONFIG"); // TODO: think
+        //    and discuss
+    }
+
+    std::string host = vm.at("host").as<std::string>();
+    uint16_t port = vm.at("port").as<uint16_t>();
+
+    cavoke::server::run(host, port, config_file);
+    return 0;
 }

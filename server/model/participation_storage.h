@@ -6,16 +6,15 @@
 namespace cavoke::server::model {
 
 class ParticipationStorage {
-  // TODO: thread-safety
+    // TODO: thread-safety
 
 public:
-  ParticipationStorage();
+    ParticipationStorage();
 
-  std::optional<int> get_participant_id(const std::string& session_id,
-                                        const std::string& user_id);
-
+    std::optional<int> get_participant_id(const std::string &session_id,
+                                          const std::string &user_id);
 };
 
-} // namespace cavoke::server::model
+}  // namespace cavoke::server::model
 
-#endif // CAVOKE_SERVER_PARTICIPATION_STORAGE_H
+#endif  // CAVOKE_SERVER_PARTICIPATION_STORAGE_H
