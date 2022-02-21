@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(cavoke_client)
 
-option(QT_MAJOR_VERSION "Qt Major Version (e.g. Qt5/Qt6)" 6)
+set(QT_MAJOR_VERSION 6 CACHE STRING "Qt Major Version (e.g. Qt5/Qt6)")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
