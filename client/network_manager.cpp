@@ -34,15 +34,11 @@ void NetworkManager::gotGamesList(QNetworkReply *reply) {
 }
 
 void NetworkManager::sendMove(const QString &jsonMove) {
-//    QUrl route = HOST.resolved(PLAY);
-//    qDebug() << route.toString();
-//    route = route.resolved(QUrl(sessionId));
-//    qDebug() << route.toString();
-//    route = route.resolved(SEND_MOVE);
-//    qDebug() << route.toString();
-    QUrl route = HOST.resolved(PLAY.toString() + "/" + sessionId.toString() + SEND_MOVE.toString());
-    route.setQuery(QUrlQuery({QPair<QString, QString>(
-        "user_id", userId.toString())}));  // FIXME: I hope there exists a better way
+    QUrl route = HOST
+        .resolved(PLAY)
+        .resolved(sessionId.toString(QUuid::WithoutBraces) + "/")
+        .resolved(SEND_MOVE);
+    route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
     qDebug() << route.toString();
     auto request = QNetworkRequest(route);
     request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader,
@@ -60,11 +56,11 @@ void NetworkManager::gotPostResponse(QNetworkReply *reply) {
 }
 
 void NetworkManager::getUpdate() {
-//    QUrl route = HOST.resolved(PLAY);
-//    route = route.resolved(QUrl(sessionId));
-//    route = route.resolved(GET_UPDATE); // ???
-    QUrl route = HOST.resolved(PLAY.toString() + "/" + sessionId.toString() + GET_UPDATE.toString());
-    route.setQuery(QUrlQuery({QPair<QString, QString>("user_id", userId.toString())}));
+    QUrl route = HOST
+        .resolved(PLAY)
+        .resolved(sessionId.toString(QUuid::WithoutBraces) + "/")
+        .resolved(GET_UPDATE);
+    route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
     qDebug() << route.toString();
     auto request = QNetworkRequest(route);
     auto reply = manager.get(request);

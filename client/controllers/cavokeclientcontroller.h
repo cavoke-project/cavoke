@@ -31,8 +31,8 @@ signals:
 private slots:
     void startQmlApplication(CavokeQmlGameModel*);
     void exitApplication();
-    void startTicTacToe();
-    void stopTicTacToe();
+    void startQmlByPath(const QString &path);
+    void stopQml();
 private:
     NetworkManager networkManager;
     CavokeClientModel model;

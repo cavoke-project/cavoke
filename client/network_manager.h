@@ -43,11 +43,11 @@ private:
         "http://127.0.0.1:8080/"
 #endif
     };
-    const static inline QUrl HEALTH{"/health"};  // FIXME: move to routes module
-    const static inline QUrl GAMES_LIST{"/games/list"};
-    const static inline QUrl PLAY{"/play"};
-    const static inline QUrl SEND_MOVE{"/send_move"};
-    const static inline QUrl GET_UPDATE{"/get_update"};
+    const static inline QUrl HEALTH{"health"};  // FIXME: move to routes module
+    const static inline QUrl GAMES_LIST{"games/list"};
+    const static inline QUrl PLAY{"play/"};
+    const static inline QUrl SEND_MOVE{"send_move"};
+    const static inline QUrl GET_UPDATE{"get_update"};
 };
 
 #endif  // CAVOKE_CLIENT_NETWORK_MANAGER_H

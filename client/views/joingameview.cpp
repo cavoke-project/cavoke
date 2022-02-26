@@ -1,4 +1,5 @@
 #include "joingameview.h"
+#include <QFileDialog>
 #include "ui_joingameview.h"
 
 JoinGameView::JoinGameView(QWidget *parent)
@@ -16,6 +17,17 @@ void JoinGameView::on_backButton_clicked() {
 }
 
 void JoinGameView::on_joinTicTacToeButton_clicked() {
-    this->close();
-    emit joinedTicTacToe();
+    QString curAppPath = ui->appPathInput->text();
+    if (!curAppPath.isEmpty()) {
+        emit joinedTicTacToe(curAppPath);
+        this->close();
+    }
+}
+
+void JoinGameView::on_selectAppPathButton_clicked() {
+    QString appPath = QFileDialog::getOpenFileName(
+        this, tr("Open App"), QDir::currentPath(), tr("QML App (*.qml)"));
+    if (!appPath.isNull()) {
+        ui->appPathInput->setText(appPath);
+    }
 }
