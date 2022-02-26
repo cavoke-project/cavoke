@@ -8,6 +8,7 @@ GameLogicManager::GameLogicManager(std::shared_ptr<GamesStorage> games_storage)
     : m_games_storage(std::move(games_storage)) {
 }
 
+// TODO: rename to send_move
 GameStateStorage::GameState GameLogicManager::send_update(
     const std::string &game_id,
     const GameLogicManager::GameUpdate &update) {

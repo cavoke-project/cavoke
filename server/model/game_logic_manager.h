@@ -13,7 +13,7 @@ class GameLogicManager {
 
 public:
     explicit GameLogicManager(std::shared_ptr<GamesStorage> games_storage);
-
+    // TODO: rename to GameMove
     struct GameUpdate {
         int player_id;
         std::string update;
