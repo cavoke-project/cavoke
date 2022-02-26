@@ -35,6 +35,13 @@ void cavoke::server::controllers::StateController::send_move(
             m_game_logic_manager->send_move("tictactoe", {-1, "", ""});
     }
 
+    if (current_state->is_terminal) {
+        auto resp = drogon::HttpResponse::newHttpResponse();
+        resp->setStatusCode(drogon::HttpStatusCode::k403Forbidden);
+        callback(resp);
+        return;
+    }
+
     current_state = m_game_logic_manager->send_move(
         "tictactoe", {participant_id.value(), std::string(req->getBody()),
                       current_state->global_state});
@@ -85,6 +92,7 @@ void cavoke::server::controllers::StateController::get_update(
     resp->setBody(state.value());
     callback(resp);
 }
+
 cavoke::server::controllers::StateController::StateController(
     std::shared_ptr<model::GamesStorage> mGamesStorage,
     std::shared_ptr<model::GameLogicManager> mGameLogicManager,

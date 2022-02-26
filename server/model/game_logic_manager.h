@@ -11,6 +11,8 @@ namespace cavoke::server::model {
 class GameLogicManager {
     std::shared_ptr<GamesStorage> m_games_storage;
 
+    std::string invoke_logic(const Game &game, const std::string &input);
+
 public:
     explicit GameLogicManager(std::shared_ptr<GamesStorage> games_storage);
 

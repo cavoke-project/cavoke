@@ -24,7 +24,6 @@ add_executable(cavoke_server
         model/game_state_storage.cpp
         model/participation_storage.cpp
         model/game_logic_manager.cpp
-        model/mock_tictactoe/tictactoe.cpp
         controllers/state_controller.cpp
         )
 target_link_libraries(cavoke_server Drogon::Drogon)

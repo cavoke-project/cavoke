@@ -32,6 +32,8 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameMove, player_id, move, global_state)
 GameState init_state();
 GameState apply_move(GameMove &new_move);
 
+// TODO: logging
+
 }  // namespace cavoke
 
 using json = nlohmann::json;
@@ -42,6 +44,7 @@ int main() {
     while (std::cin.get(c)) {
         input.push_back(c);
     }
+    std::cerr << "RECEIVED MOVE: '" << input << "'" << std::endl;
     json input_json = json::parse(input);
     cavoke::GameMove move = input_json.get<cavoke::GameMove>();
 
@@ -54,6 +57,7 @@ int main() {
 
     json result_json = new_state;
 
+    std::cerr << "SEND RESULT: '" << result_json << "'" << std::endl;
     std::cout << result_json;
 }
 
