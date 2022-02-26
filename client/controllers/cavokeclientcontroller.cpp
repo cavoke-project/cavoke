@@ -56,6 +56,9 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(receivedGameIndexChange(int)));
     connect(&model, SIGNAL(updateSelectedGame(GameInfo)), &createGameView,
             SLOT(gotNewSelectedGame(GameInfo)));
+    
+    connect(&gamesListView, SIGNAL(currentIndexChanged(int)), &model, SLOT(receivedGameIndexChangeInList(int)));
+    connect(&model, SIGNAL(updateSelectedGameInList(GameInfo)), &gamesListView, SLOT(gotNewSelectedGame(GameInfo)));
 
     connect(&joinGameView, SIGNAL(joinedTicTacToe(QString)), this,
             SLOT(startQmlByPath(QString)));

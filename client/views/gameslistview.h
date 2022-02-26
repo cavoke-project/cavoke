@@ -16,12 +16,15 @@ public:
     
 public slots:
     void gotGamesListUpdate(const std::vector<GameInfo> &newGamesList);
+    void gotNewSelectedGame(const GameInfo &gameInfo);
     
 signals:
     void shownStartView();
+    void currentIndexChanged(int index);
 
 private slots:
     void on_backButton_clicked();
+    void repeaterCurrentIndexChanged(int index);
 
 private:
     Ui::GamesListView *ui;
