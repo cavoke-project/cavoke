@@ -26,6 +26,19 @@ void cavoke::server::controllers::StateController::send_move(
         return;
     }
 
+    std::string body(req->getBody());
+    Json::Reader reader;
+    Json::Value json_body;
+    bool valid_json = reader.parse(body, json_body);
+    if (!valid_json || !json_body.isMember("move")) {
+        auto resp = drogon::HttpResponse::newHttpResponse();
+        resp->setStatusCode(drogon::HttpStatusCode::k400BadRequest);
+        callback(resp);
+        return;
+    }
+
+    std::string move = json_body["move"].asString();
+
     std::optional<model::GameStateStorage::GameState> current_state =
         m_game_state_storage->get_state(session_id);
 
@@ -43,8 +56,8 @@ void cavoke::server::controllers::StateController::send_move(
     }
 
     current_state = m_game_logic_manager->send_move(
-        "tictactoe", {participant_id.value(), std::string(req->getBody()),
-                      current_state->global_state});
+        "tictactoe",
+        {participant_id.value(), move, current_state->global_state});
 
     m_game_state_storage->save_state(session_id, current_state.value());
 
@@ -87,9 +100,12 @@ void cavoke::server::controllers::StateController::get_update(
         return;
     }
 
-    auto resp = drogon::HttpResponse::newHttpResponse();
+    Json::Value resp_json;
+    resp_json["state"] = state.value();
+    resp_json["is_terminal"] =
+        m_game_state_storage->get_state(session_id)->is_terminal;
+    auto resp = drogon::HttpResponse::newHttpJsonResponse(resp_json);
     resp->setStatusCode(drogon::HttpStatusCode::k200OK);
-    resp->setBody(state.value());
     callback(resp);
 }
 
