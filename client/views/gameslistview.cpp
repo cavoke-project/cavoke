@@ -15,3 +15,10 @@ void GamesListView::on_backButton_clicked() {
     this->close();
     emit shownStartView();
 }
+
+void GamesListView::gotGamesListUpdate(
+    const std::vector<GameInfo> &newGamesList) {
+    for (const auto &gameInfo : newGamesList) {
+        ui->gamesListWidget->addItem(gameInfo.display_name);
+    }
+}
