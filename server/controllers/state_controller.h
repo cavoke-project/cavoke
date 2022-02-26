@@ -4,7 +4,7 @@
 #include <drogon/HttpController.h>
 #include "../model/game_logic_manager.h"
 #include "../model/games_storage.h"
-#include "../model/participation_storage.h"
+#include "model/sessions/sessions_storage.h"
 
 namespace cavoke::server::controllers {
 
@@ -12,14 +12,14 @@ class StateController : public drogon::HttpController<StateController, false> {
     std::shared_ptr<model::GamesStorage> m_games_storage;
     std::shared_ptr<model::GameLogicManager> m_game_logic_manager;
     std::shared_ptr<model::GameStateStorage> m_game_state_storage;
-    std::shared_ptr<model::ParticipationStorage> m_participation_storage;
+    std::shared_ptr<model::SessionsStorage> m_participation_storage;
 
 public:
     StateController(
         std::shared_ptr<model::GamesStorage> mGamesStorage,
         std::shared_ptr<model::GameLogicManager> mGameLogicManager,
         std::shared_ptr<model::GameStateStorage> mGameStateStorage,
-        std::shared_ptr<model::ParticipationStorage> mParticipationStorage);
+        std::shared_ptr<model::SessionsStorage> mParticipationStorage);
 
 public:
     METHOD_LIST_BEGIN

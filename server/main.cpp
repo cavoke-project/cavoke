@@ -1,10 +1,11 @@
 #include <drogon/HttpAppFramework.h>
 #include <boost/program_options.hpp>
 #include "controllers/games_controller.h"
+#include "controllers/sessions_controller.h"
 #include "controllers/state_controller.h"
 #include "model/game_logic_manager.h"
 #include "model/games_storage.h"
-#include "model/participation_storage.h"
+#include "model/sessions/sessions_storage.h"
 
 namespace cavoke::server {
 void run(const std::string &host,
@@ -19,8 +20,9 @@ void run(const std::string &host,
     auto game_logic_manager =
         std::make_shared<model::GameLogicManager>(games_storage);
     auto game_state_storage = std::make_shared<model::GameStateStorage>();
-    auto participation_storage =
-        std::make_shared<model::ParticipationStorage>();
+    auto participation_storage = std::make_shared<model::SessionsStorage>();
+    auto authentication_manager =
+        std::make_shared<model::AuthenticationManager>();
 
     // init controllers
     std::cout << "Initialize controllers..." << std::endl;
@@ -29,12 +31,17 @@ void run(const std::string &host,
     auto state_controller = std::make_shared<controllers::StateController>(
         games_storage, game_logic_manager, game_state_storage,
         participation_storage);
+    auto sessions_controller =
+        std::make_shared<controllers::SessionsController>(
+            games_storage, game_logic_manager, game_state_storage,
+            participation_storage, authentication_manager);
 
     auto &app = drogon::app();
 
     // register controllers
     app.registerController(games_controller);
     app.registerController(state_controller);
+    app.registerController(sessions_controller);
 
     // start server
     std::cout << "Listening at " << host << ":" << port << std::endl;

@@ -22,10 +22,14 @@ add_executable(cavoke_server
         controllers/health_controller.cpp
         model/games_storage_config.cpp
         model/game_state_storage.cpp
-        model/participation_storage.cpp
+        model/sessions/sessions_storage.cpp
         model/game_logic_manager.cpp
         model/mock_tictactoe/tictactoe.cpp
         controllers/state_controller.cpp
+        controllers/sessions_controller.cpp
+        model/auth/authentication_manager.cpp
+        model/sessions/game_session.cpp
+        cavoke_base_exception.cpp
         )
 target_link_libraries(cavoke_server Drogon::Drogon)
 target_link_libraries(cavoke_server ${Boost_LIBRARIES} ${CMAKE_DL_LIBS})

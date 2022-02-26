@@ -35,6 +35,17 @@ inline drogon::HttpResponsePtr newNlohmannJsonResponse(
     res->setBody(obj.dump());
     return res;
 }
+
+/// Creates blank http response with given status code
+inline drogon::HttpResponsePtr newStatusCodeResponse(
+    const drogon::HttpStatusCode &status_code) {
+    auto res = drogon::HttpResponse::newHttpResponse();
+    res->setStatusCode(status_code);
+    return res;
+}
+
+#define CALLBACK_STATUS_CODE(code) \
+    callback(newStatusCodeResponse(::drogon::code))
 }  // namespace cavoke::server::controllers
 
 #endif  // CAVOKE_UTILS_H
