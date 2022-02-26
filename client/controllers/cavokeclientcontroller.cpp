@@ -10,7 +10,7 @@ CavokeClientController::CavokeClientController(QObject *parent)
       settingsView{} {
     connect(this, SIGNAL(loadGamesList()), &networkManager,
             SLOT(getGamesList()));
-    
+
     connect(&testWindowView, SIGNAL(startGame(QString)), &model,
             SLOT(loadQmlGame(QString)));
     connect(&model, SIGNAL(startQmlApplication(CavokeQmlGameModel *)), this,
@@ -49,6 +49,9 @@ CavokeClientController::CavokeClientController(QObject *parent)
     connect(&model, SIGNAL(updateSelectedGame(GameInfo)), &createGameView,
             SLOT(gotNewSelectedGame(GameInfo)));
 
+    connect(&joinGameView, SIGNAL(joinedTicTacToe(QString)), this,
+            SLOT(startQmlByPath(QString)));
+
     startView.show();
 
     emit loadGamesList();
@@ -77,6 +80,10 @@ void CavokeClientController::showSettingsView() {
 void CavokeClientController::startQmlApplication(
     CavokeQmlGameModel *gameModel) {
     auto *qmlView = new QQuickView();
+
+    connect(qmlView, SIGNAL(closing(QQuickCloseEvent *)), gameModel,
+            SLOT(getClosingFromQml(QQuickCloseEvent *)));
+
     qmlView->rootContext()->setContextProperty("cavoke", gameModel);
     qmlView->setSource(gameModel->qmlPath);
     if (!qmlView->errors().empty()) {
@@ -94,9 +101,25 @@ void CavokeClientController::startQmlApplication(
 }
 
 void CavokeClientController::exitApplication() {
-    // FIXME: not the best way, probably
     testWindowView.close();
     joinGameView.close();
     createGameView.close();
     startView.close();
+}
+void CavokeClientController::startQmlByPath(const QString &path) {
+    currentQmlGameModel = new CavokeQmlGameModel(QUrl::fromUserInput(path));
+    startQmlApplication(currentQmlGameModel);
+    connect(currentQmlGameModel, SIGNAL(sendMoveToNetwork(QString)),
+            &networkManager, SLOT(sendMove(QString)));
+    connect(&networkManager, SIGNAL(gotGameUpdate(QString)),
+            currentQmlGameModel, SLOT(getUpdateFromNetwork(QString)));
+    connect(currentQmlGameModel, SIGNAL(closingQml()), this, SLOT(stopQml()));
+    joinGameView.close();
+    networkManager.startPolling();
+}
+
+void CavokeClientController::stopQml() {
+    startView.show();
+    currentQmlGameModel->deleteLater();
+    networkManager.stopPolling();
 }

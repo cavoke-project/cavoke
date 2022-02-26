@@ -15,9 +15,12 @@ public:
 
 signals:
     void shownStartView();
+    void joinedTicTacToe(const QString &path);
 
 private slots:
     void on_backButton_clicked();
+    void on_joinTicTacToeButton_clicked();
+    void on_selectAppPathButton_clicked();
 
 private:
     Ui::JoinGameView *ui;
