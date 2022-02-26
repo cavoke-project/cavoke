@@ -34,6 +34,8 @@ private slots:
 private:
     QNetworkAccessManager manager;
     QTimer *pollingTimer = nullptr;
+    QUuid sessionId;
+    QUuid userId;
     const static inline QUrl HOST{
 #ifdef MOCK
         "https://764bbfca-c45a-46fc-9c79-11d9094b9ba8.mock.pstmn.io/"
@@ -46,8 +48,6 @@ private:
     const static inline QUrl PLAY{"/play"};
     const static inline QUrl SEND_MOVE{"/send_move"};
     const static inline QUrl GET_UPDATE{"/get_update"};
-    QUuid sessionId;
-    QUuid userId;
 };
 
 #endif  // CAVOKE_CLIENT_NETWORK_MANAGER_H

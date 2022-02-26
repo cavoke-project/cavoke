@@ -1,5 +1,10 @@
 #include "network_manager.h"
 NetworkManager::NetworkManager(QObject *parent) : manager(parent) {
+    pollingTimer = new QTimer(this);
+    pollingTimer->setInterval(500);
+    pollingTimer->callOnTimeout([this]() {
+      getUpdate();
+    });
 }
 void NetworkManager::doTestHealthCheck() {
     auto reply = manager.get(QNetworkRequest(HOST.resolved(HEALTH)));
@@ -81,11 +86,6 @@ void NetworkManager::gotUpdate(QNetworkReply *reply) {
 void NetworkManager::startPolling() {
     sessionId = QUuid::createUuid();
     userId = QUuid::createUuid();
-    pollingTimer = new QTimer(this);
-    pollingTimer->setInterval(500);
-    pollingTimer->callOnTimeout([this]() {
-      getUpdate();
-    });
     pollingTimer->start();
 }
 

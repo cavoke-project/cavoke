@@ -106,7 +106,7 @@ void CavokeClientController::exitApplication() {
 }
 void CavokeClientController::startTicTacToe() {
     currentQmlGameModel =
-        new CavokeQmlGameModel(QUrl("/home/mark/CLionProjects/cavoke/client/"
+        new CavokeQmlGameModel(QUrl("../../client/"
                                     "tictactoe-files/tic-tac-toe.qml"));
     startQmlApplication(currentQmlGameModel);
     connect(currentQmlGameModel, SIGNAL(sendMoveToNetwork(QString)),
@@ -122,5 +122,4 @@ void CavokeClientController::stopTicTacToe() {
     startView.show();
     currentQmlGameModel->deleteLater();
     networkManager.stopPolling();
-    //    currentQmlTimer->deleteLater();
 }
