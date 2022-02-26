@@ -16,9 +16,9 @@ struct game_session_error : cavoke_base_exception {
     explicit game_session_error(std::string message);
 };
 
-struct game_session {
-    explicit game_session(GameConfig game_config);
-    game_session() =
+struct GameSession {
+    explicit GameSession(GameConfig game_config);
+    GameSession() =
         default;  // FIXME: required by map in `sessions_storage.cpp`
 
     void add_user(std::string user_id);
@@ -45,7 +45,7 @@ private:
     static std::string generate_invite_code();
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(game_session::game_session_info,
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSession::game_session_info,
                                    session_id,
                                    game_id,
                                    invite_code);

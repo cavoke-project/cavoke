@@ -3,7 +3,7 @@ cavoke::server::model::game_session_error::game_session_error(
     std::string message)
     : cavoke_base_exception(std::move(message), "cavoke/sessions") {
 }
-cavoke::server::model::game_session::game_session(
+cavoke::server::model::GameSession::GameSession(
     cavoke::server::model::GameConfig game_config)
     : id(drogon::utils::getUuid()),
       m_game_config(std::move(game_config)),
@@ -14,7 +14,7 @@ cavoke::server::model::game_session::game_session(
  * Throws an exception if user already in this session or too many players in a
  * session
  */
-void cavoke::server::model::game_session::add_user(std::string user_id) {
+void cavoke::server::model::GameSession::add_user(std::string user_id) {
     // TODO: thread-safety
     if (m_userid_to_playerid.count(user_id) != 0) {
         throw game_session_error("player already in session");
@@ -31,7 +31,7 @@ void cavoke::server::model::game_session::add_user(std::string user_id) {
  * Gets player id for user.
  * Throws an exception if user not in this session
  */
-int cavoke::server::model::game_session::get_player_id(
+int cavoke::server::model::GameSession::get_player_id(
     const std::string &user_id) const {
     auto it = m_userid_to_playerid.find(user_id);
     if (it == m_userid_to_playerid.end()) {
@@ -40,17 +40,17 @@ int cavoke::server::model::game_session::get_player_id(
     return it->second;
 }
 /// Validates the invite code for this session
-bool cavoke::server::model::game_session::verify_invite_code(
+bool cavoke::server::model::GameSession::verify_invite_code(
     const std::string &invite_code) const {
     return invite_code == m_invite_code;
 }
 /// Generates an info object (representation for client)
-cavoke::server::model::game_session::game_session_info
-cavoke::server::model::game_session::get_session_info() const {
+cavoke::server::model::GameSession::game_session_info
+cavoke::server::model::GameSession::get_session_info() const {
     return {id, m_game_config.id, m_invite_code};
 }
 /// Generates an invite code for session
-std::string cavoke::server::model::game_session::generate_invite_code() {
+std::string cavoke::server::model::GameSession::generate_invite_code() {
     // prepare template
     std::string res = "......";
     // random digits

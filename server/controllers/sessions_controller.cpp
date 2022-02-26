@@ -25,7 +25,7 @@ void cavoke::server::controllers::SessionsController::create(
     }
 
     // create session and acquire session info
-    model::game_session::game_session_info session_info;
+    model::GameSession::game_session_info session_info;
     // TODO: do we want `try-catch` or `optional`?
     try {
         session_info =
@@ -61,7 +61,7 @@ void cavoke::server::controllers::SessionsController::join(
     }
 
     // join session and acquire session info
-    model::game_session::game_session_info session_info;
+    model::GameSession::game_session_info session_info;
     // TODO: do we want `try-catch` or `optional`?
     try {
         session_info = m_participation_storage->join_session(

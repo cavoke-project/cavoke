@@ -11,20 +11,20 @@ class SessionsStorage {
     // TODO: thread-safety
 
 public:
-    game_session::game_session_info create_session(
+    GameSession::game_session_info create_session(
         const GameConfig &game_config);
 
-    game_session::game_session_info join_session(const std::string &invite_code,
+    GameSession::game_session_info join_session(const std::string &invite_code,
                                                  const std::string &user_id);
 
-    game_session::game_session_info get_session_info(
+    GameSession::game_session_info get_session_info(
         const std::string &session_id);
 
     int get_player_id(const std::string &session_id,
                       const std::string &user_id);
 
 private:
-    std::map<std::string, game_session> m_sessions{};
+    std::map<std::string, GameSession> m_sessions{};
     std::map<std::string, std::string> m_invite_codes_to_session_ids{};
 };
 
