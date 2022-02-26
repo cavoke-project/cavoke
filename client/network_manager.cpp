@@ -2,9 +2,7 @@
 NetworkManager::NetworkManager(QObject *parent) : manager(parent) {
     pollingTimer = new QTimer(this);
     pollingTimer->setInterval(500);
-    pollingTimer->callOnTimeout([this]() {
-      getUpdate();
-    });
+    pollingTimer->callOnTimeout([this]() { getUpdate(); });
 }
 void NetworkManager::doTestHealthCheck() {
     auto reply = manager.get(QNetworkRequest(HOST.resolved(HEALTH)));
@@ -34,10 +32,9 @@ void NetworkManager::gotGamesList(QNetworkReply *reply) {
 }
 
 void NetworkManager::sendMove(const QString &jsonMove) {
-    QUrl route = HOST
-        .resolved(PLAY)
-        .resolved(sessionId.toString(QUuid::WithoutBraces) + "/")
-        .resolved(SEND_MOVE);
+    QUrl route = HOST.resolved(PLAY)
+                     .resolved(sessionId.toString(QUuid::WithoutBraces) + "/")
+                     .resolved(SEND_MOVE);
     route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
     qDebug() << route.toString();
     auto request = QNetworkRequest(route);
@@ -56,10 +53,9 @@ void NetworkManager::gotPostResponse(QNetworkReply *reply) {
 }
 
 void NetworkManager::getUpdate() {
-    QUrl route = HOST
-        .resolved(PLAY)
-        .resolved(sessionId.toString(QUuid::WithoutBraces) + "/")
-        .resolved(GET_UPDATE);
+    QUrl route = HOST.resolved(PLAY)
+                     .resolved(sessionId.toString(QUuid::WithoutBraces) + "/")
+                     .resolved(GET_UPDATE);
     route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
     qDebug() << route.toString();
     auto request = QNetworkRequest(route);

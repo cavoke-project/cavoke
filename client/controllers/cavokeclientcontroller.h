@@ -3,36 +3,35 @@
 
 #include <QObject>
 #include <QtQuick>
-
-#include "network_manager.h"
 #include "cavokeclientmodel.h"
+#include "creategameview.h"
+#include "joingameview.h"
+#include "network_manager.h"
+#include "settingsview.h"
 #include "startview.h"
 #include "testwindowview.h"
-#include "joingameview.h"
-#include "creategameview.h"
-#include "settingsview.h"
 
-class CavokeClientController : public QObject
-{
+class CavokeClientController : public QObject {
     Q_OBJECT
 public:
     explicit CavokeClientController(QObject *parent = nullptr);
-    
+
 public slots:
     void showTestWindowView();
     void showStartView();
     void showJoinGameView();
     void showCreateGameView();
     void showSettingsView();
-    
+
 signals:
     void loadGamesList();
 
 private slots:
-    void startQmlApplication(CavokeQmlGameModel*);
+    void startQmlApplication(CavokeQmlGameModel *);
     void exitApplication();
     void startQmlByPath(const QString &path);
     void stopQml();
+
 private:
     NetworkManager networkManager;
     CavokeClientModel model;
@@ -44,4 +43,4 @@ private:
     CavokeQmlGameModel *currentQmlGameModel = nullptr;
 };
 
-#endif // CAVOKECLIENTCONTROLLER_H
+#endif  // CAVOKECLIENTCONTROLLER_H

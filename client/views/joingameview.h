@@ -15,7 +15,7 @@ public:
 
 signals:
     void shownStartView();
-    void joinedTicTacToe(const QString& path);
+    void joinedTicTacToe(const QString &path);
 
 private slots:
     void on_backButton_clicked();

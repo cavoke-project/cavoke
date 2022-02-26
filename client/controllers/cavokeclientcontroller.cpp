@@ -80,10 +80,10 @@ void CavokeClientController::showSettingsView() {
 void CavokeClientController::startQmlApplication(
     CavokeQmlGameModel *gameModel) {
     auto *qmlView = new QQuickView();
-    
+
     connect(qmlView, SIGNAL(closing(QQuickCloseEvent *)), gameModel,
             SLOT(getClosingFromQml(QQuickCloseEvent *)));
-    
+
     qmlView->rootContext()->setContextProperty("cavoke", gameModel);
     qmlView->setSource(gameModel->qmlPath);
     if (!qmlView->errors().empty()) {
@@ -106,9 +106,8 @@ void CavokeClientController::exitApplication() {
     createGameView.close();
     startView.close();
 }
-void CavokeClientController::startQmlByPath(const QString& path) {
-    currentQmlGameModel =
-        new CavokeQmlGameModel(QUrl(path));
+void CavokeClientController::startQmlByPath(const QString &path) {
+    currentQmlGameModel = new CavokeQmlGameModel(QUrl::fromUserInput(path));
     startQmlApplication(currentQmlGameModel);
     connect(currentQmlGameModel, SIGNAL(sendMoveToNetwork(QString)),
             &networkManager, SLOT(sendMove(QString)));

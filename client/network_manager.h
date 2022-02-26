@@ -19,11 +19,10 @@ public slots:
     void getUpdate();
     void startPolling();
     void stopPolling();
-    
+
 signals:
     void finalizedGamesList(QJsonArray list);
     void gotGameUpdate(const QString &jsonField);
-    
 
 private slots:
     void doneTestHealthCheck(QNetworkReply *reply);

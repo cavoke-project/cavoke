@@ -1,6 +1,5 @@
-#include <QDebug>
-
 #include "cavokeqmlgamemodel.h"
+#include <QDebug>
 
 CavokeQmlGameModel::CavokeQmlGameModel(QUrl qmlPath, QObject *parent)
     : QObject{parent}, qmlPath{qmlPath} {  // TODO: std::move
