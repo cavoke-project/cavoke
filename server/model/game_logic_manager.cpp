@@ -20,7 +20,7 @@ GameStateStorage::GameState GameLogicManager::send_move(
 Json::Value GameLogicManager::GameMove::to_json() const {
     Json::Value result;
     result["player_id"] = player_id;
-    result["update"] = update;
+    result["update"] = move;
     result["global_state"] = global_state;
 
     return result;

@@ -16,7 +16,7 @@ public:
 
     struct GameMove {
         int player_id;
-        std::string update;
+        std::string move;
         std::string global_state;
 
         [[nodiscard]] Json::Value to_json() const;
