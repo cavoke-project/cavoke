@@ -13,8 +13,8 @@ class GameLogicManager {
 
 public:
     explicit GameLogicManager(std::shared_ptr<GamesStorage> games_storage);
-    // TODO: rename to GameMove
-    struct GameUpdate {
+
+    struct GameMove {
         int player_id;
         std::string update;
         std::string global_state;
@@ -22,8 +22,8 @@ public:
         [[nodiscard]] Json::Value to_json() const;
     };
 
-    GameStateStorage::GameState send_update(const std::string &game_id,
-                                            const GameUpdate &update);
+    GameStateStorage::GameState send_move(const std::string &game_id,
+                                          const GameMove &move);
 };
 
 }  // namespace cavoke::server::model

@@ -8,17 +8,16 @@ GameLogicManager::GameLogicManager(std::shared_ptr<GamesStorage> games_storage)
     : m_games_storage(std::move(games_storage)) {
 }
 
-// TODO: rename to send_move
-GameStateStorage::GameState GameLogicManager::send_update(
+GameStateStorage::GameState GameLogicManager::send_move(
     const std::string &game_id,
-    const GameLogicManager::GameUpdate &update) {
+    const GameLogicManager::GameMove &move) {
     // TODO: invoke actual logic
     GameStateStorage::GameState result = GameStateStorage::parse_state(
-        tictactoe::apply(update.to_json().toStyledString()));
+        tictactoe::apply(move.to_json().toStyledString()));
     return result;
 }
 
-Json::Value GameLogicManager::GameUpdate::to_json() const {
+Json::Value GameLogicManager::GameMove::to_json() const {
     Json::Value result;
     result["player_id"] = player_id;
     result["update"] = update;

@@ -32,10 +32,10 @@ void cavoke::server::controllers::StateController::send_move(
     if (!current_state.has_value()) {
         // new session
         current_state =
-            m_game_logic_manager->send_update("tictactoe", {-1, "", ""});
+            m_game_logic_manager->send_move("tictactoe", {-1, "", ""});
     }
 
-    current_state = m_game_logic_manager->send_update(
+    current_state = m_game_logic_manager->send_move(
         "tictactoe", {participant_id.value(), std::string(req->getBody()),
                       current_state->global_state});
 
