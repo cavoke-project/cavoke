@@ -29,7 +29,7 @@
          <x>230</x>
          <y>160</y>
          <width>321</width>
-         <height>156</height>
+         <height>194</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -44,6 +44,13 @@
          <widget class="QPushButton" name="createGameButton">
           <property name="text">
            <string>Create game</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="gamesListButton">
+          <property name="text">
+           <string>List all available games</string>
           </property>
          </widget>
         </item>

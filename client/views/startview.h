@@ -19,11 +19,13 @@ signals:
     void shownJoinGameView();
     void shownCreateGameView();
     void shownSettingsView();
+    void shownGamesListView();
     void clickedExitButton();
 
 private slots:
     void on_joinGameButton_clicked();
     void on_createGameButton_clicked();
+    void on_gamesListButton_clicked();
     void on_cavokeTestWindowButton_clicked();
     void on_settingsButton_clicked();
     void on_exitButton_clicked();

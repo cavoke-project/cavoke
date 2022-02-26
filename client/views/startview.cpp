@@ -21,6 +21,11 @@ void StartView::on_createGameButton_clicked() {
     emit shownCreateGameView();
 }
 
+void StartView::on_gamesListButton_clicked() {
+    this->close();
+    emit shownGamesListView();
+}
+
 void StartView::on_cavokeTestWindowButton_clicked() {
     this->close();
     emit shownTestWindowView();

@@ -34,6 +34,7 @@ add_executable(cavoke_client
         views/joingameview.cpp
         views/creategameview.cpp
         views/settingsview.cpp
+        views/gameslistview.cpp
         tictactoelogic.cpp
         cache_manager.cpp
         network_manager.cpp
