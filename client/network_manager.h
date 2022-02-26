@@ -1,11 +1,12 @@
 #ifndef CAVOKE_CLIENT_NETWORK_MANAGER_H
 #define CAVOKE_CLIENT_NETWORK_MANAGER_H
 
+#include <QUrlQuery>
 #include <QtCore/QJsonArray>
 #include <QtCore/QJsonDocument>
+#include <QtCore/QTimer>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
-#include <QUrlQuery>
 struct NetworkManager : public QObject {
     Q_OBJECT
 public:
@@ -14,11 +15,10 @@ public:
 public slots:
     void doTestHealthCheck();
     void getGamesList();
-    void sendMove(const QString &sessionId,
-                  const QString &jsonMove,
-                  const QString &user_id);
-    void getUpdate(const QString &sessionId,
-                    const QString &user_id);
+    void sendMove(const QString &jsonMove);
+    void getUpdate();
+    void startPolling();
+    void stopPolling();
     
 signals:
     void finalizedGamesList(QJsonArray list);
@@ -33,6 +33,7 @@ private slots:
 
 private:
     QNetworkAccessManager manager;
+    QTimer *pollingTimer = nullptr;
     const static inline QUrl HOST{
 #ifdef MOCK
         "https://764bbfca-c45a-46fc-9c79-11d9094b9ba8.mock.pstmn.io/"
@@ -45,6 +46,8 @@ private:
     const static inline QUrl PLAY{"/play"};
     const static inline QUrl SEND_MOVE{"/send_move"};
     const static inline QUrl GET_UPDATE{"/get_update"};
+    QUuid sessionId;
+    QUuid userId;
 };
 
 #endif  // CAVOKE_CLIENT_NETWORK_MANAGER_H

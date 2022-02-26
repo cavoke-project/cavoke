@@ -5,17 +5,20 @@
 CavokeQmlGameModel::CavokeQmlGameModel(QUrl qmlPath, QObject *parent)
     : QObject{parent}, qmlPath{qmlPath} {  // TODO: std::move
     logic.restartGame();
-    session_id = QUuid::createUuid();
-    user_id = QUuid::createUuid();
 }
 
 void CavokeQmlGameModel::getMoveFromQml(const QString &jsonMove) {
     qDebug() << "CQGM: Received move! " << jsonMove;
     // Maybe we should draw move on board even without network result?
-    emit sendMoveToNetwork(jsonMove, session_id.toString(), user_id.toString());
+    emit sendMoveToNetwork(jsonMove);
 }
 
 void CavokeQmlGameModel::getUpdateFromNetwork(const QString &jsonUpdate) {
     qDebug() << "CQGM: Received update! " << jsonUpdate;
     emit receiveUpdate(jsonUpdate);
+}
+
+void CavokeQmlGameModel::getClosingFromQml(QQuickCloseEvent *close) {
+    qDebug() << "CQGM: Closing!! ";
+    emit closingQml();
 }

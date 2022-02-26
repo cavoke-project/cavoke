@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QUrl>
 #include <QtCore/QUuid>
+#include <QtQuick/QtQuick>
 #include "tictactoelogic.h"
 
 class CavokeQmlGameModel : public QObject {
@@ -17,17 +18,15 @@ public:
 public slots:
     void getMoveFromQml(const QString &jsonMove);
     void getUpdateFromNetwork(const QString &jsonUpdate);
+    void getClosingFromQml(QQuickCloseEvent *close);
 
 signals:
     void receiveUpdate(QString jsonUpdate);
-    void sendMoveToNetwork(const QString &jsonMove, const QString &session_id, const QString &user_id);
+    void sendMoveToNetwork(const QString &jsonMove);
+    void closingQml();
 
 public:
     QUrl qmlPath;
-    
-public:
-    QUuid session_id;   // FIXME: Temporary here
-    QUuid user_id;
 };
 
 #endif  // CAVOKEQMLGAMEMODEL_H

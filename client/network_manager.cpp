@@ -28,18 +28,16 @@ void NetworkManager::gotGamesList(QNetworkReply *reply) {
     emit finalizedGamesList(response_wrapper.array());  // What is it?
 }
 
-void NetworkManager::sendMove(const QString &jsonMove,
-                              const QString &sessionId,
-                              const QString &user_id) {
+void NetworkManager::sendMove(const QString &jsonMove) {
 //    QUrl route = HOST.resolved(PLAY);
 //    qDebug() << route.toString();
 //    route = route.resolved(QUrl(sessionId));
 //    qDebug() << route.toString();
 //    route = route.resolved(SEND_MOVE);
 //    qDebug() << route.toString();
-    QUrl route = HOST.resolved(PLAY.toString() + "/" + sessionId + SEND_MOVE.toString());
+    QUrl route = HOST.resolved(PLAY.toString() + "/" + sessionId.toString() + SEND_MOVE.toString());
     route.setQuery(QUrlQuery({QPair<QString, QString>(
-        "user_id", user_id)}));  // FIXME: I hope there exists a better way
+        "user_id", userId.toString())}));  // FIXME: I hope there exists a better way
     qDebug() << route.toString();
     auto request = QNetworkRequest(route);
     request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader,
@@ -56,13 +54,12 @@ void NetworkManager::gotPostResponse(QNetworkReply *reply) {
     qDebug() << answer;
 }
 
-void NetworkManager::getUpdate(const QString &sessionId,
-                               const QString &user_id) {
+void NetworkManager::getUpdate() {
 //    QUrl route = HOST.resolved(PLAY);
 //    route = route.resolved(QUrl(sessionId));
 //    route = route.resolved(GET_UPDATE); // ???
-    QUrl route = HOST.resolved(PLAY.toString() + "/" + sessionId + GET_UPDATE.toString());
-    route.setQuery(QUrlQuery({QPair<QString, QString>("user_id", user_id)}));
+    QUrl route = HOST.resolved(PLAY.toString() + "/" + sessionId.toString() + GET_UPDATE.toString());
+    route.setQuery(QUrlQuery({QPair<QString, QString>("user_id", userId.toString())}));
     qDebug() << route.toString();
     auto request = QNetworkRequest(route);
     auto reply = manager.get(request);
@@ -71,9 +68,27 @@ void NetworkManager::getUpdate(const QString &sessionId,
 }
 
 void NetworkManager::gotUpdate(QNetworkReply *reply) {
+    if (reply->error()) {
+        qDebug() << reply->errorString();
+        return;
+    }
     QString answer = reply->readAll();
     reply->close();
     reply->deleteLater();
     qDebug() << answer;
     emit gotGameUpdate(answer);
+}
+void NetworkManager::startPolling() {
+    sessionId = QUuid::createUuid();
+    userId = QUuid::createUuid();
+    pollingTimer = new QTimer(this);
+    pollingTimer->setInterval(500);
+    pollingTimer->callOnTimeout([this]() {
+      getUpdate();
+    });
+    pollingTimer->start();
+}
+
+void NetworkManager::stopPolling() {
+    pollingTimer->stop();
 }

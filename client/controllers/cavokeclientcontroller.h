@@ -41,8 +41,7 @@ private:
     JoinGameView joinGameView;
     CreateGameView createGameView;
     SettingsView settingsView;
-    CavokeQmlGameModel *currentQmlGameModel;
-    QTimer *currentQmlTimer;
+    CavokeQmlGameModel *currentQmlGameModel = nullptr;
 };
 
 #endif // CAVOKECLIENTCONTROLLER_H

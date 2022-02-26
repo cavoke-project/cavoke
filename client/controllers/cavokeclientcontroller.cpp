@@ -80,6 +80,9 @@ void CavokeClientController::showSettingsView() {
 void CavokeClientController::startQmlApplication(
     CavokeQmlGameModel *gameModel) {
     auto *qmlView = new QQuickView();
+    connect(qmlView, SIGNAL(closing(QQuickCloseEvent *)), gameModel,
+            SLOT(getClosingFromQml(QQuickCloseEvent *)));
+    qmlView->show();
     qmlView->rootContext()->setContextProperty("cavoke", gameModel);
     qmlView->setSource(gameModel->qmlPath);
     if (!qmlView->errors().empty()) {
@@ -90,37 +93,34 @@ void CavokeClientController::startQmlApplication(
         qmlView->destroy();
         return;
     }
-    qmlView->show();
 
     // Test
     emit gameModel->receiveUpdate("c++ -> qml working!");
 }
 
 void CavokeClientController::exitApplication() {
-    // FIXME: not the best way, probably
     testWindowView.close();
     joinGameView.close();
     createGameView.close();
     startView.close();
 }
 void CavokeClientController::startTicTacToe() {
-    showStartView();
-    currentQmlGameModel = new CavokeQmlGameModel(QUrl(
-        "/home/mark/CLionProjects/cavoke/client/tictactoe-files/tic-tac-toe.qml"));
+    currentQmlGameModel =
+        new CavokeQmlGameModel(QUrl("/home/mark/CLionProjects/cavoke/client/"
+                                    "tictactoe-files/tic-tac-toe.qml"));
     startQmlApplication(currentQmlGameModel);
-    connect(currentQmlGameModel,
-            SIGNAL(sendMoveToNetwork(QString, QString, QString)),
-            &networkManager, SLOT(sendMove(QString, QString, QString)));
-    connect(&networkManager, SIGNAL(gotGameUpdate(QString)), currentQmlGameModel, SLOT(getUpdateFromNetwork(QString)));
-    currentQmlTimer = new QTimer(this);
-    currentQmlTimer->setInterval(500);
-    currentQmlTimer->callOnTimeout([this]() {
-        networkManager.getUpdate(currentQmlGameModel->session_id.toString(), currentQmlGameModel->user_id.toString());
-    });
-    currentQmlTimer->start();
+    connect(currentQmlGameModel, SIGNAL(sendMoveToNetwork(QString)),
+            &networkManager, SLOT(sendMove(QString)));
+    connect(&networkManager, SIGNAL(gotGameUpdate(QString)),
+            currentQmlGameModel, SLOT(getUpdateFromNetwork(QString)));
+    connect(currentQmlGameModel, SIGNAL(closingQml()), this, SLOT(stopTicTacToe()));
+    joinGameView.close();
+    networkManager.startPolling();
 }
 
 void CavokeClientController::stopTicTacToe() {
+    startView.show();
     currentQmlGameModel->deleteLater();
-    currentQmlTimer->deleteLater();
+    networkManager.stopPolling();
+    //    currentQmlTimer->deleteLater();
 }
