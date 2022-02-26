@@ -16,7 +16,7 @@ void cavoke::server::controllers::StateController::send_move(
     }
 
     // TODO: do we want `try-catch` or `optional`?
-    model::GameSession::game_session_info session_info;
+    model::GameSession::GameSessionInfo session_info;
     int player_id;
     try {
         // FIXME: two requests... maybe do it cleaner?

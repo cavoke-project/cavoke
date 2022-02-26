@@ -45,7 +45,7 @@ bool cavoke::server::model::GameSession::verify_invite_code(
     return invite_code == m_invite_code;
 }
 /// Generates an info object (representation for client)
-cavoke::server::model::GameSession::game_session_info
+cavoke::server::model::GameSession::GameSessionInfo
 cavoke::server::model::GameSession::get_session_info() const {
     return {id, m_game_config.id, m_invite_code};
 }

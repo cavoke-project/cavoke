@@ -7,7 +7,7 @@
  *
  * @return session info
  */
-cavoke::server::model::GameSession::game_session_info
+cavoke::server::model::GameSession::GameSessionInfo
 cavoke::server::model::SessionsStorage::create_session(
     const cavoke::server::model::GameConfig &game_config) {
     // create session
@@ -31,7 +31,7 @@ cavoke::server::model::SessionsStorage::create_session(
  *
  * @return session info
  */
-cavoke::server::model::GameSession::game_session_info
+cavoke::server::model::GameSession::GameSessionInfo
 cavoke::server::model::SessionsStorage::join_session(
     const std::string &invite_code,
     const std::string &user_id) {
@@ -56,7 +56,7 @@ cavoke::server::model::SessionsStorage::join_session(
  *
  * Throws `game_session_error` if no such session
  */
-cavoke::server::model::GameSession::game_session_info
+cavoke::server::model::GameSession::GameSessionInfo
 cavoke::server::model::SessionsStorage::get_session_info(
     const std::string &session_id) {
     auto session_it = m_sessions.find(session_id);

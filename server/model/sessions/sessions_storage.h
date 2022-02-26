@@ -11,13 +11,12 @@ class SessionsStorage {
     // TODO: thread-safety
 
 public:
-    GameSession::game_session_info create_session(
-        const GameConfig &game_config);
+    GameSession::GameSessionInfo create_session(const GameConfig &game_config);
 
-    GameSession::game_session_info join_session(const std::string &invite_code,
-                                                 const std::string &user_id);
+    GameSession::GameSessionInfo join_session(const std::string &invite_code,
+                                              const std::string &user_id);
 
-    GameSession::game_session_info get_session_info(
+    GameSession::GameSessionInfo get_session_info(
         const std::string &session_id);
 
     int get_player_id(const std::string &session_id,

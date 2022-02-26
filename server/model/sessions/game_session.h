@@ -28,13 +28,13 @@ struct GameSession {
     [[nodiscard]] bool verify_invite_code(const std::string &invite_code) const;
 
     /// Serializable representation of session for client
-    struct game_session_info {
+    struct GameSessionInfo {
         std::string session_id;
         std::string game_id;
         std::string invite_code;
     };
 
-    [[nodiscard]] game_session_info get_session_info() const;
+    [[nodiscard]] GameSessionInfo get_session_info() const;
 
 private:
     std::string id;
@@ -45,7 +45,7 @@ private:
     static std::string generate_invite_code();
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSession::game_session_info,
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSession::GameSessionInfo,
                                    session_id,
                                    game_id,
                                    invite_code);
