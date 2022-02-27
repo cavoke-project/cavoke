@@ -52,7 +52,7 @@ void cavoke::server::controllers::StateController::send_move(
 
     current_state = m_game_logic_manager->send_move(
         session_info.game_id,
-        {player_id, std::string(req->getBody()), current_state->global_state});
+        {player_id, move, current_state->global_state});
 
     m_game_state_storage->save_state(session_id, current_state.value());
 
