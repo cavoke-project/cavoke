@@ -1,7 +1,9 @@
 #include "game_session.h"
 cavoke::server::model::game_session_error::game_session_error(
     std::string message)
-    : cavoke_base_exception(std::move(message), "cavoke/sessions") {
+    : cavoke_base_exception(std::move(message),
+                            InvalidClientInput,
+                            "cavoke/sessions") {
 }
 cavoke::server::model::GameSession::GameSession(
     cavoke::server::model::GameConfig game_config)
@@ -14,18 +16,19 @@ cavoke::server::model::GameSession::GameSession(
  * Throws an exception if user already in this session or too many players in a
  * session
  */
-void cavoke::server::model::GameSession::add_user(std::string user_id) {
+void cavoke::server::model::GameSession::add_user(const std::string &user_id) {
     // TODO: thread-safety
-    if (m_userid_to_playerid.count(user_id) != 0) {
-        throw game_session_error("player already in session");
+    if (m_userid_to_playerid.left.count(user_id) != 0) {
+        return;
     }
     // get player id for user
-    unsigned int pos = m_userid_to_playerid.size();
+    int pos = static_cast<int>(m_userid_to_playerid.size());
     if (pos >= m_game_config.players_num) {
         throw game_session_error("maximum number of players reached");
     }
     // add user to session
-    m_userid_to_playerid.emplace(std::move(user_id), pos);
+    auto [_, suc] = m_userid_to_playerid.insert({user_id, pos});
+    std::cout << suc << std::endl;
 }
 /**
  * Gets player id for user.
@@ -33,11 +36,23 @@ void cavoke::server::model::GameSession::add_user(std::string user_id) {
  */
 int cavoke::server::model::GameSession::get_player_id(
     const std::string &user_id) const {
-    auto it = m_userid_to_playerid.find(user_id);
-    if (it == m_userid_to_playerid.end()) {
+    try {
+        return m_userid_to_playerid.left.at(user_id);
+    } catch (const std::out_of_range &) {  // slow?
+        throw game_session_error("user not in session");
+    }
+}
+/**
+ * Gets user id for player.
+ * Throws an exception if player not in this session
+ */
+std::string cavoke::server::model::GameSession::get_user_id(
+    int player_id) const {
+    try {
+        return m_userid_to_playerid.right.at(player_id);
+    } catch (const std::out_of_range &) {  // slow?
         throw game_session_error("player not in session");
     }
-    return it->second;
 }
 /// Validates the invite code for this session
 bool cavoke::server::model::GameSession::verify_invite_code(

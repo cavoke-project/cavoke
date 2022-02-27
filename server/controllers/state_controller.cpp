@@ -19,10 +19,9 @@ void cavoke::server::controllers::StateController::send_move(
     model::GameSession::GameSessionInfo session_info;
     int player_id;
     try {
-        // FIXME: two requests... maybe do it cleaner?
-        session_info = m_participation_storage->get_session_info(session_id);
-        player_id =
-            m_participation_storage->get_player_id(session_id, user_id.value());
+        auto &session = m_participation_storage->get_session(session_id);
+        session_info = session.get_session_info();
+        player_id = session.get_player_id(user_id.value());
     } catch (const model::game_session_error &) {
         return CALLBACK_STATUS_CODE(k400BadRequest);
     }
@@ -58,8 +57,8 @@ void cavoke::server::controllers::StateController::get_update(
     // TODO: do we want `try-catch` or `optional`?
     int player_id;
     try {
-        player_id =
-            m_participation_storage->get_player_id(session_id, user_id.value());
+        player_id = m_participation_storage->get_session(session_id)
+                        .get_player_id(user_id.value());
     } catch (const model::game_session_error &) {
         return CALLBACK_STATUS_CODE(k403Forbidden);
     }

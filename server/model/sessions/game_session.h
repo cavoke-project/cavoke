@@ -2,6 +2,7 @@
 #define CAVOKE_GAME_SESSION_H
 
 #include <drogon/utils/Utilities.h>
+#include <boost/bimap.hpp>
 #include <map>
 #include <random>
 #include <string>
@@ -21,9 +22,11 @@ struct GameSession {
     GameSession() =
         default;  // FIXME: required by map in `sessions_storage.cpp`
 
-    void add_user(std::string user_id);
+    void add_user(const std::string &user_id);
 
     [[nodiscard]] int get_player_id(const std::string &user_id) const;
+
+    [[nodiscard]] std::string get_user_id(int player_id) const;
 
     [[nodiscard]] bool verify_invite_code(const std::string &invite_code) const;
 
@@ -40,7 +43,7 @@ private:
     std::string id;
     GameConfig m_game_config;
     std::string m_invite_code;
-    std::map<std::string, int> m_userid_to_playerid{};
+    boost::bimap<std::string, int> m_userid_to_playerid{};
 
     static std::string generate_invite_code();
 };

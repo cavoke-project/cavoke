@@ -1,4 +1,5 @@
 #include "sessions_storage.h"
+#include <utility>
 
 /**
  * Creates a session with given game config.
@@ -9,9 +10,12 @@
  */
 cavoke::server::model::GameSession::GameSessionInfo
 cavoke::server::model::SessionsStorage::create_session(
-    const cavoke::server::model::GameConfig &game_config) {
+    const GameConfig &game_config,
+    const std::string &host_user_id) {
     // create session
     auto session = GameSession(game_config);
+    // add host
+    session.add_user(host_user_id);
     // generate representation for user
     auto session_info = session.get_session_info();
     // save session
@@ -36,49 +40,34 @@ cavoke::server::model::SessionsStorage::join_session(
     const std::string &invite_code,
     const std::string &user_id) {
     // find session by invite
-    auto invite_it = m_invite_codes_to_session_ids.find(invite_code);
-    if (invite_it == m_invite_codes_to_session_ids.end()) {
+    try {
+        auto &session =
+            m_sessions[m_invite_codes_to_session_ids.at(invite_code)];
+        // validate invite code
+        if (!session.verify_invite_code(invite_code)) {
+            throw game_session_error("invalid invite code");
+        }
+        // add the user
+        session.add_user(user_id);
+        // generate representation for client
+        return session.get_session_info();
+    } catch (const std::out_of_range &) {
         throw game_session_error("invite code does not exist: '" + invite_code +
                                  "'");
     }
-    auto &session = m_sessions[invite_it->second];
-    // validate invite code
-    if (!session.verify_invite_code(invite_code)) {
-        throw game_session_error("invalid invite code");
-    }
-    // add the user
-    session.add_user(user_id);
-    // generate representation for client
-    return session.get_session_info();
 }
 /**
- * Gets a session info for given session id
+ * Gets a session for given session id
  *
  * Throws `game_session_error` if no such session
  */
-cavoke::server::model::GameSession::GameSessionInfo
-cavoke::server::model::SessionsStorage::get_session_info(
+cavoke::server::model::GameSession &
+cavoke::server::model::SessionsStorage::get_session(
     const std::string &session_id) {
-    auto session_it = m_sessions.find(session_id);
-    if (session_it == m_sessions.end()) {
+    try {  // slow?
+        return m_sessions.at(session_id);
+    } catch (const std::out_of_range &) {
         throw game_session_error("session does not exist: '" + session_id +
                                  "'");
     }
-    return session_it->second.get_session_info();
-}
-
-/**
- * Gets player id for given session and user
- *
- * Throws `game_session_error` if errors arise
- */
-int cavoke::server::model::SessionsStorage::get_player_id(
-    const std::string &session_id,
-    const std::string &user_id) {
-    auto session_it = m_sessions.find(session_id);
-    if (session_it == m_sessions.end()) {
-        throw game_session_error("session does not exist: '" + session_id +
-                                 "'");
-    }
-    return session_it->second.get_player_id(user_id);
 }

@@ -21,17 +21,20 @@ void cavoke::server::controllers::SessionsController::create(
     // verify game id and acquire game config
     auto game = m_games_storage->get_game_by_id(game_id.value());
     if (!game.has_value()) {
-        return CALLBACK_STATUS_CODE(k400BadRequest);
+        return callback(newCavokeErrorResponse(
+            {"game '" + game_id.value() + "' not found",
+             cavoke_base_exception::error_code::NotFound},
+            drogon::k404NotFound));
     }
 
     // create session and acquire session info
     model::GameSession::GameSessionInfo session_info;
     // TODO: do we want `try-catch` or `optional`?
     try {
-        session_info =
-            m_participation_storage->create_session(game.value().config);
-    } catch (const model::game_session_error &) {
-        return CALLBACK_STATUS_CODE(k400BadRequest);
+        session_info = m_participation_storage->create_session(
+            game.value().config, user_id.value());
+    } catch (const model::game_session_error &err) {
+        return callback(newCavokeErrorResponse(err, drogon::k400BadRequest));
     }
 
     // configurate initial state for session
@@ -66,8 +69,8 @@ void cavoke::server::controllers::SessionsController::join(
     try {
         session_info = m_participation_storage->join_session(
             invite_code.value(), user_id.value());
-    } catch (const model::game_session_error &) {
-        return CALLBACK_STATUS_CODE(k400BadRequest);
+    } catch (const model::game_session_error &err) {
+        return callback(newCavokeErrorResponse(err, drogon::k400BadRequest));
     }
 
     return callback(newNlohmannJsonResponse(session_info));
