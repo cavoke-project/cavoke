@@ -13,9 +13,9 @@ namespace cache_manager {
 
     QString get_cached_app_path(QString app_name);
 
-    QString save_zip_to_cache(QFile archive);
+    QString save_zip_to_cache(const QFile *archive);
 
-    void unzip_to_folder(QFile &archive, const QDir &dest);
+    void unzip_to_folder(const QFile &archive, const QDir &dest);
 
 
 }

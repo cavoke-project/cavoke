@@ -34,7 +34,7 @@ private slots:
     void exitApplication();
     void startQmlByPath(const QString &path);
     void stopQml();
-    void unpackDownloadedQml(const QFile *file);
+    void unpackDownloadedQml(QFile *file);
 
 private:
     NetworkManager networkManager;

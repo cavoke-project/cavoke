@@ -26,7 +26,7 @@ public slots:
 signals:
     void finalizedGamesList(QJsonArray list);
     void gotGameUpdate(const QString &jsonField);
-    void downloadedGameFile(const QFile *file);
+    void downloadedGameFile(QFile *file);
 
 private slots:
     void doneTestHealthCheck(QNetworkReply *reply);
