@@ -32,6 +32,10 @@ void CavokeClientModel::receivedGameIndexChange(int newIndex) {
 }
 
 void CavokeClientModel::receivedGameIndexChangeInList(int newIndex) {
-    qDebug() << "HERE!!";
     emit updateSelectedGameInList(gamesList[newIndex]);
+}
+
+void CavokeClientModel::gotIndexToDownload(int index) {
+    qDebug() << gamesList[index].id;
+    emit downloadGame(gamesList[index].id);
 }

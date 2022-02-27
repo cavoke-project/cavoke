@@ -84,3 +84,25 @@ void NetworkManager::startPolling() {
 void NetworkManager::stopPolling() {
     pollingTimer->stop();
 }
+
+void NetworkManager::downloadGame(const QString &gameId) {
+    QUrl route = HOST.resolved(GAMES)
+        .resolved(gameId + "/")
+        .resolved(GET_CLIENT);
+    qDebug() << route.toString();
+    auto request = QNetworkRequest(route);
+    auto reply = manager.get(request);
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotGameDownloaded(reply); });
+}
+
+void NetworkManager::gotGameDownloaded(QNetworkReply *reply) {
+    if (reply->error()) {
+        qDebug() << reply->errorString();
+        return;
+    }
+    QString answer = reply->readAll();
+    reply->close();
+    reply->deleteLater();
+    qDebug() << answer;
+}

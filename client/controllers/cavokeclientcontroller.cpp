@@ -62,6 +62,9 @@ CavokeClientController::CavokeClientController(QObject *parent)
 
     connect(&joinGameView, SIGNAL(joinedTicTacToe(QString)), this,
             SLOT(startQmlByPath(QString)));
+    
+    connect(&gamesListView, SIGNAL(requestedDownloadGame(int)), &model, SLOT(gotIndexToDownload(int)));
+    connect(&model, SIGNAL(downloadGame(QString)), &networkManager, SLOT(downloadGame(QString)));
 
     startView.show();
 

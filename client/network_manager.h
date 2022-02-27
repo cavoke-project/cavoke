@@ -19,6 +19,7 @@ public slots:
     void getUpdate();
     void startPolling();
     void stopPolling();
+    void downloadGame(const QString &gameId);
 
 signals:
     void finalizedGamesList(QJsonArray list);
@@ -29,6 +30,7 @@ private slots:
     void gotGamesList(QNetworkReply *reply);
     void gotPostResponse(QNetworkReply *reply);
     void gotUpdate(QNetworkReply *reply);
+    void gotGameDownloaded(QNetworkReply *reply);
 
 private:
     QNetworkAccessManager manager;
@@ -47,6 +49,8 @@ private:
     const static inline QUrl PLAY{"play/"};
     const static inline QUrl SEND_MOVE{"send_move"};
     const static inline QUrl GET_UPDATE{"get_update"};
+    const static inline QUrl GAMES{"games/"};
+    const static inline QUrl GET_CLIENT{"get_client"};
 };
 
 #endif  // CAVOKE_CLIENT_NETWORK_MANAGER_H

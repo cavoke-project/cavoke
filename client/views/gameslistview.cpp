@@ -22,6 +22,10 @@ void GamesListView::on_backButton_clicked() {
     emit shownStartView();
 }
 
+void GamesListView::on_downloadQmlButton_clicked() {
+    emit requestedDownloadGame(ui->gamesListWidget->currentRow());
+}
+
 void GamesListView::gotGamesListUpdate(
     const std::vector<GameInfo> &newGamesList) {
     for (const auto &gameInfo : newGamesList) {

@@ -21,9 +21,11 @@ public slots:
 signals:
     void shownStartView();
     void currentIndexChanged(int index);
+    void requestedDownloadGame(int index);
 
 private slots:
     void on_backButton_clicked();
+    void on_downloadQmlButton_clicked();
     void repeaterCurrentIndexChanged(int index);
 
 private:
