@@ -4,8 +4,8 @@
 #include <drogon/drogon.h>
 #include <boost/filesystem/path.hpp>
 #include <string>
-#include "games_storage_config.h"
 #include "game.h"
+#include "games_storage_config.h"
 namespace cavoke::server::model {
 
 class GamesStorage {
