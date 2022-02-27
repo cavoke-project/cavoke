@@ -11,6 +11,7 @@
 #include "settingsview.h"
 #include "startview.h"
 #include "testwindowview.h"
+#include <cache_manager.h>
 
 class CavokeClientController : public QObject {
     Q_OBJECT
@@ -33,6 +34,7 @@ private slots:
     void exitApplication();
     void startQmlByPath(const QString &path);
     void stopQml();
+    void unpackDownloadedQml(const QFile *file);
 
 private:
     NetworkManager networkManager;

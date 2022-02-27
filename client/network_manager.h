@@ -7,6 +7,8 @@
 #include <QtCore/QTimer>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
+#include <QtCore/QFile>
+#include <QtCore/QTemporaryFile>
 struct NetworkManager : public QObject {
     Q_OBJECT
 public:
@@ -24,6 +26,7 @@ public slots:
 signals:
     void finalizedGamesList(QJsonArray list);
     void gotGameUpdate(const QString &jsonField);
+    void downloadedGameFile(const QFile *file);
 
 private slots:
     void doneTestHealthCheck(QNetworkReply *reply);

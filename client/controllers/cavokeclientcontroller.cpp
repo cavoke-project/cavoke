@@ -48,23 +48,30 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(updateGamesList(QJsonArray)));
     connect(&model, SIGNAL(gamesListUpdated(std::vector<GameInfo>)),
             &createGameView, SLOT(gotGamesListUpdate(std::vector<GameInfo>)));
-    
+
     connect(&model, SIGNAL(gamesListUpdated(std::vector<GameInfo>)),
             &gamesListView, SLOT(gotGamesListUpdate(std::vector<GameInfo>)));
-    
+
     connect(&createGameView, SIGNAL(currentIndexChanged(int)), &model,
             SLOT(receivedGameIndexChange(int)));
     connect(&model, SIGNAL(updateSelectedGame(GameInfo)), &createGameView,
             SLOT(gotNewSelectedGame(GameInfo)));
-    
-    connect(&gamesListView, SIGNAL(currentIndexChanged(int)), &model, SLOT(receivedGameIndexChangeInList(int)));
-    connect(&model, SIGNAL(updateSelectedGameInList(GameInfo)), &gamesListView, SLOT(gotNewSelectedGame(GameInfo)));
+
+    connect(&gamesListView, SIGNAL(currentIndexChanged(int)), &model,
+            SLOT(receivedGameIndexChangeInList(int)));
+    connect(&model, SIGNAL(updateSelectedGameInList(GameInfo)), &gamesListView,
+            SLOT(gotNewSelectedGame(GameInfo)));
 
     connect(&joinGameView, SIGNAL(joinedTicTacToe(QString)), this,
             SLOT(startQmlByPath(QString)));
-    
-    connect(&gamesListView, SIGNAL(requestedDownloadGame(int)), &model, SLOT(gotIndexToDownload(int)));
-    connect(&model, SIGNAL(downloadGame(QString)), &networkManager, SLOT(downloadGame(QString)));
+
+    connect(&gamesListView, SIGNAL(requestedDownloadGame(int)), &model,
+            SLOT(gotIndexToDownload(int)));
+    connect(&model, SIGNAL(downloadGame(QString)), &networkManager,
+            SLOT(downloadGame(QString)));
+
+    connect(&networkManager, SIGNAL(downloadedGameFile(QFile *)), this,
+            SLOT(updackDownloadedQml(QFile *)));
 
     startView.show();
 
@@ -141,4 +148,9 @@ void CavokeClientController::stopQml() {
     startView.show();
     currentQmlGameModel->deleteLater();
     networkManager.stopPolling();
+}
+
+void CavokeClientController::unpackDownloadedQml(const QFile *file) {
+    cache_manager::save_zip_to_cache(file);
+    
 }
