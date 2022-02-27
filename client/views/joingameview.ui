@@ -40,6 +40,54 @@
      <string>Join game view. Empty.</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="joinTicTacToeButton">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>230</y>
+      <width>171</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>JoinTicTacToe</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="appPathInput">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>170</y>
+      <width>331</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="statusTip">
+     <string/>
+    </property>
+    <property name="whatsThis">
+     <string/>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="placeholderText">
+     <string>Your app folder</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="selectAppPathButton">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>170</y>
+      <width>131</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Select QML App</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

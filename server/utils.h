@@ -4,6 +4,7 @@
 #include <drogon/HttpResponse.h>
 #include <boost/filesystem/path.hpp>
 #include <nlohmann/json.hpp>
+#include "cavoke_base_exception.h"
 
 namespace nlohmann {
 /// nlohmann::json serializer for `boost::filesystem::path`
@@ -35,6 +36,25 @@ inline drogon::HttpResponsePtr newNlohmannJsonResponse(
     res->setBody(obj.dump());
     return res;
 }
+
+/// Creates blank http response with given status code
+inline drogon::HttpResponsePtr newStatusCodeResponse(
+    const drogon::HttpStatusCode &status_code) {
+    auto res = drogon::HttpResponse::newHttpResponse();
+    res->setStatusCode(status_code);
+    return res;
+}
+
+inline drogon::HttpResponsePtr newCavokeErrorResponse(
+    const cavoke_base_exception &err,
+    const drogon::HttpStatusCode &status_code = drogon::k200OK) {
+    auto resp = newNlohmannJsonResponse(err);
+    resp->setStatusCode(status_code);
+    return resp;
+}
+
+#define CALLBACK_STATUS_CODE(code) \
+    callback(newStatusCodeResponse(::drogon::code))
 }  // namespace cavoke::server::controllers
 
 #endif  // CAVOKE_UTILS_H

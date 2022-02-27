@@ -1,5 +1,8 @@
 #include "network_manager.h"
 NetworkManager::NetworkManager(QObject *parent) : manager(parent) {
+    pollingTimer = new QTimer(this);
+    pollingTimer->setInterval(500);
+    pollingTimer->callOnTimeout([this]() { getUpdate(); });
 }
 void NetworkManager::doTestHealthCheck() {
     auto reply = manager.get(QNetworkRequest(HOST.resolved(HEALTH)));
@@ -26,4 +29,58 @@ void NetworkManager::gotGamesList(QNetworkReply *reply) {
     qDebug() << answer;
     QJsonDocument response_wrapper = QJsonDocument::fromJson(answer);
     emit finalizedGamesList(response_wrapper.array());  // What is it?
+}
+
+void NetworkManager::sendMove(const QString &jsonMove) {
+    QUrl route = HOST.resolved(PLAY)
+                     .resolved(sessionId.toString(QUuid::WithoutBraces) + "/")
+                     .resolved(SEND_MOVE);
+    route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
+    qDebug() << route.toString();
+    auto request = QNetworkRequest(route);
+    request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader,
+                      "text/plain");
+    auto reply = manager.post(request, jsonMove.toUtf8());
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotPostResponse(reply); });
+}
+
+void NetworkManager::gotPostResponse(QNetworkReply *reply) {
+    QByteArray answer = reply->readAll();
+    reply->close();
+    reply->deleteLater();
+    qDebug() << answer;
+}
+
+void NetworkManager::getUpdate() {
+    QUrl route = HOST.resolved(PLAY)
+                     .resolved(sessionId.toString(QUuid::WithoutBraces) + "/")
+                     .resolved(GET_UPDATE);
+    route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
+    qDebug() << route.toString();
+    auto request = QNetworkRequest(route);
+    auto reply = manager.get(request);
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotUpdate(reply); });
+}
+
+void NetworkManager::gotUpdate(QNetworkReply *reply) {
+    if (reply->error()) {
+        qDebug() << reply->errorString();
+        return;
+    }
+    QString answer = reply->readAll();
+    reply->close();
+    reply->deleteLater();
+    qDebug() << answer;
+    emit gotGameUpdate(answer);
+}
+void NetworkManager::startPolling() {
+    sessionId = QUuid::createUuid();
+    userId = QUuid::createUuid();
+    pollingTimer->start();
+}
+
+void NetworkManager::stopPolling() {
+    pollingTimer->stop();
 }

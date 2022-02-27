@@ -15,26 +15,24 @@ void cavoke::server::controllers::StateController::send_move(
         return;
     }
 
-    std::optional<int> participant_id =
-        m_participation_storage->get_participant_id(session_id,
-                                                    user_id.value());
-
-    if (!participant_id.has_value()) {
-        auto resp = drogon::HttpResponse::newHttpResponse();
-        resp->setStatusCode(drogon::HttpStatusCode::k403Forbidden);
-        callback(resp);
-        return;
+    // TODO: do we want `try-catch` or `optional`?
+    model::GameSession::GameSessionInfo session_info;
+    int player_id;
+    try {
+        auto &session = m_participation_storage->get_session(session_id);
+        session_info = session.get_session_info();
+        player_id = session.get_player_id(user_id.value());
+    } catch (const model::game_session_error &) {
+        return CALLBACK_STATUS_CODE(k400BadRequest);
     }
 
+    // TODO: nlohman/json
     std::string body(req->getBody());
     Json::Reader reader;
     Json::Value json_body;
     bool valid_json = reader.parse(body, json_body);
     if (!valid_json || !json_body.isMember("move")) {
-        auto resp = drogon::HttpResponse::newHttpResponse();
-        resp->setStatusCode(drogon::HttpStatusCode::k400BadRequest);
-        callback(resp);
-        return;
+        return CALLBACK_STATUS_CODE(k400BadRequest);
     }
 
     std::string move = json_body["move"].asString();
@@ -49,15 +47,12 @@ void cavoke::server::controllers::StateController::send_move(
     }
 
     if (current_state->is_terminal) {
-        auto resp = drogon::HttpResponse::newHttpResponse();
-        resp->setStatusCode(drogon::HttpStatusCode::k403Forbidden);
-        callback(resp);
-        return;
+        return CALLBACK_STATUS_CODE(k403Forbidden);
     }
 
     current_state = m_game_logic_manager->send_move(
-        "tictactoe",
-        {participant_id.value(), move, current_state->global_state});
+        session_info.game_id,
+        {player_id, std::string(req->getBody()), current_state->global_state});
 
     m_game_state_storage->save_state(session_id, current_state.value());
 
@@ -80,19 +75,16 @@ void cavoke::server::controllers::StateController::get_state(
         return;
     }
 
-    std::optional<int> participant_id =
-        m_participation_storage->get_participant_id(session_id,
-                                                    user_id.value());
-
-    if (!participant_id.has_value()) {
-        auto resp = drogon::HttpResponse::newHttpResponse();
-        resp->setStatusCode(drogon::HttpStatusCode::k403Forbidden);
-        callback(resp);
-        return;
+    // TODO: do we want `try-catch` or `optional`?
+    int player_id;
+    try {
+        player_id = m_participation_storage->get_session(session_id)
+                        .get_player_id(user_id.value());
+    } catch (const model::game_session_error &) {
+        return CALLBACK_STATUS_CODE(k403Forbidden);
     }
 
-    auto state = m_game_state_storage->get_player_state(session_id,
-                                                        participant_id.value());
+    auto state = m_game_state_storage->get_player_state(session_id, player_id);
 
     if (!state.has_value()) {
         auto resp = drogon::HttpResponse::newNotFoundResponse();
@@ -113,7 +105,7 @@ cavoke::server::controllers::StateController::StateController(
     std::shared_ptr<model::GamesStorage> mGamesStorage,
     std::shared_ptr<model::GameLogicManager> mGameLogicManager,
     std::shared_ptr<model::GameStateStorage> mGameStateStorage,
-    std::shared_ptr<model::ParticipationStorage> mParticipationStorage)
+    std::shared_ptr<model::SessionsStorage> mParticipationStorage)
     : m_games_storage(std::move(mGamesStorage)),
       m_game_logic_manager(std::move(mGameLogicManager)),
       m_game_state_storage(std::move(mGameStateStorage)),
