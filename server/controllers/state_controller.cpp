@@ -66,7 +66,7 @@ void cavoke::server::controllers::StateController::send_move(
     callback(resp);
 }
 
-void cavoke::server::controllers::StateController::get_update(
+void cavoke::server::controllers::StateController::get_state(
     const drogon::HttpRequestPtr &req,
     std::function<void(const drogon::HttpResponsePtr &)> &&callback,
     const std::string &session_id) {
