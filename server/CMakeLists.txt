@@ -24,7 +24,6 @@ add_executable(cavoke_server
         model/game_state_storage.cpp
         model/sessions/sessions_storage.cpp
         model/game_logic_manager.cpp
-        model/mock_tictactoe/tictactoe.cpp
         controllers/state_controller.cpp
         controllers/sessions_controller.cpp
         model/auth/authentication_manager.cpp

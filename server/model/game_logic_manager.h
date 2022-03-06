@@ -11,12 +11,14 @@ namespace cavoke::server::model {
 class GameLogicManager {
     std::shared_ptr<GamesStorage> m_games_storage;
 
+    std::string invoke_logic(const Game &game, const std::string &input);
+
 public:
     explicit GameLogicManager(std::shared_ptr<GamesStorage> games_storage);
 
     struct GameMove {
         int player_id;
-        std::string update;
+        std::string move;
         std::string global_state;
 
         [[nodiscard]] Json::Value to_json() const;

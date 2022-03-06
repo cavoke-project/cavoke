@@ -26,8 +26,8 @@ public:
     ADD_METHOD_TO(StateController::send_move,
                   "/play/{session_id}/send_move",
                   drogon::Post);
-    ADD_METHOD_TO(StateController::get_update,
-                  "/play/{session_id}/get_update",
+    ADD_METHOD_TO(StateController::get_state,
+                  "/play/{session_id}/get_state",
                   drogon::Get);
     METHOD_LIST_END
 
@@ -37,7 +37,7 @@ protected:
         std::function<void(const drogon::HttpResponsePtr &)> &&callback,
         const std::string &session_id);
 
-    void get_update(
+    void get_state(
         const drogon::HttpRequestPtr &req,
         std::function<void(const drogon::HttpResponsePtr &)> &&callback,
         const std::string &session_id);
