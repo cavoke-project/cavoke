@@ -1,4 +1,5 @@
 #include "network_manager.h"
+
 NetworkManager::NetworkManager(QObject *parent) : manager(parent) {
     pollingTimer = new QTimer(this);
     pollingTimer->setInterval(500);
@@ -83,4 +84,34 @@ void NetworkManager::startPolling() {
 
 void NetworkManager::stopPolling() {
     pollingTimer->stop();
+}
+
+void NetworkManager::downloadGame(const QString &gameId) {
+    QUrl route = HOST.resolved(GAMES)
+        .resolved(gameId + "/")
+        .resolved(GET_CLIENT);
+    qDebug() << route.toString();
+    auto request = QNetworkRequest(route);
+    auto reply = manager.get(request);
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotGameDownloaded(reply); });
+}
+
+void NetworkManager::gotGameDownloaded(QNetworkReply *reply) {
+    if (reply->error()) {
+        qDebug() << reply->errorString();
+        return;
+    }
+    // Probably next part should be in some other place
+    QFile *file = new QTemporaryFile();
+    if (file->open(QFile::WriteOnly)) {
+        file->write(reply->readAll());
+        file->flush();
+        file->close();
+    }
+    emit downloadedGameFile(file);
+    // End of the part
+    reply->close();
+    reply->deleteLater();
+    
 }

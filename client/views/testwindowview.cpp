@@ -32,7 +32,8 @@ void TestWindowView::on_loadZipButton_clicked() {
                                                    QDir::currentPath(),
                                                    tr("ZIP Archive (*.zip)"));
     if (!zipPath.isNull()) {
-        ui->appPathInput->setText(cache_manager::save_zip_to_cache(zipPath));
+        QFile archiveFile(zipPath);
+        ui->appPathInput->setText(cache_manager::save_zip_to_cache(&archiveFile));
     }
 }
 

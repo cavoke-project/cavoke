@@ -30,3 +30,12 @@ void CavokeClientModel::updateGamesList(const QJsonArray &newGamesList) {
 void CavokeClientModel::receivedGameIndexChange(int newIndex) {
     emit updateSelectedGame(gamesList[newIndex]);
 }
+
+void CavokeClientModel::receivedGameIndexChangeInList(int newIndex) {
+    emit updateSelectedGameInList(gamesList[newIndex]);
+}
+
+void CavokeClientModel::gotIndexToDownload(int index) {
+    qDebug() << gamesList[index].id;
+    emit downloadGame(gamesList[index].id);
+}

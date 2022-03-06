@@ -16,8 +16,8 @@ QString cache_manager::get_cached_app_path(QString app_name) {
     return qml_file.fileName();
 }
 
-QString cache_manager::save_zip_to_cache(QFile archive_file) {
-    QFileInfo archiveFileInfo(archive_file.fileName());
+QString cache_manager::save_zip_to_cache(const QFile *archive_file) {
+    QFileInfo archiveFileInfo(archive_file->fileName());
     QString app_name = archiveFileInfo.baseName();
     QDir app_dir(APPS_DIR.filePath(app_name));
 
@@ -25,12 +25,12 @@ QString cache_manager::save_zip_to_cache(QFile archive_file) {
         app_dir.removeRecursively();
     }
 
-    unzip_to_folder(archive_file, APPS_DIR);
+    unzip_to_folder(*archive_file, APPS_DIR);
 
     return app_dir.filePath("app.qml");
 }
 
-void cache_manager::unzip_to_folder(QFile &archive_file, const QDir &dest_dir) {
+void cache_manager::unzip_to_folder(const QFile &archive_file, const QDir &dest_dir) {
     if (!archive_file.exists()) {
         qDebug() << "Can not unpack the archive: " << archive_file.fileName() << " does not exists\n";
         return;

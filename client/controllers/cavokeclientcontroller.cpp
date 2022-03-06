@@ -22,6 +22,8 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(showStartView()));
     connect(&createGameView, SIGNAL(shownStartView()), this,
             SLOT(showStartView()));
+    connect(&gamesListView, SIGNAL(shownStartView()), this,
+            SLOT(showStartView()));
     connect(&settingsView, SIGNAL(shownStartView()), this,
             SLOT(showStartView()));
 
@@ -31,6 +33,8 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(showJoinGameView()));
     connect(&startView, SIGNAL(shownCreateGameView()), this,
             SLOT(showCreateGameView()));
+    connect(&startView, SIGNAL(shownGamesListView()), this,
+            SLOT(showGamesListView()));
     connect(&startView, SIGNAL(shownSettingsView()), this,
             SLOT(showSettingsView()));
 
@@ -44,13 +48,30 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(updateGamesList(QJsonArray)));
     connect(&model, SIGNAL(gamesListUpdated(std::vector<GameInfo>)),
             &createGameView, SLOT(gotGamesListUpdate(std::vector<GameInfo>)));
+
+    connect(&model, SIGNAL(gamesListUpdated(std::vector<GameInfo>)),
+            &gamesListView, SLOT(gotGamesListUpdate(std::vector<GameInfo>)));
+
     connect(&createGameView, SIGNAL(currentIndexChanged(int)), &model,
             SLOT(receivedGameIndexChange(int)));
     connect(&model, SIGNAL(updateSelectedGame(GameInfo)), &createGameView,
             SLOT(gotNewSelectedGame(GameInfo)));
 
+    connect(&gamesListView, SIGNAL(currentIndexChanged(int)), &model,
+            SLOT(receivedGameIndexChangeInList(int)));
+    connect(&model, SIGNAL(updateSelectedGameInList(GameInfo)), &gamesListView,
+            SLOT(gotNewSelectedGame(GameInfo)));
+
     connect(&joinGameView, SIGNAL(joinedTicTacToe(QString)), this,
             SLOT(startQmlByPath(QString)));
+
+    connect(&gamesListView, SIGNAL(requestedDownloadGame(int)), &model,
+            SLOT(gotIndexToDownload(int)));
+    connect(&model, SIGNAL(downloadGame(QString)), &networkManager,
+            SLOT(downloadGame(QString)));
+
+    connect(&networkManager, SIGNAL(downloadedGameFile(QFile *)), this,
+            SLOT(unpackDownloadedQml(QFile *)));
 
     startView.show();
 
@@ -67,6 +88,10 @@ void CavokeClientController::showStartView() {
 
 void CavokeClientController::showJoinGameView() {
     joinGameView.show();
+}
+
+void CavokeClientController::showGamesListView() {
+    gamesListView.show();
 }
 
 void CavokeClientController::showCreateGameView() {
@@ -103,6 +128,7 @@ void CavokeClientController::startQmlApplication(
 void CavokeClientController::exitApplication() {
     testWindowView.close();
     joinGameView.close();
+    gamesListView.close();
     createGameView.close();
     startView.close();
 }
@@ -122,4 +148,10 @@ void CavokeClientController::stopQml() {
     startView.show();
     currentQmlGameModel->deleteLater();
     networkManager.stopPolling();
+}
+
+void CavokeClientController::unpackDownloadedQml(QFile *file) {
+    cache_manager::save_zip_to_cache(file);
+    qDebug() << "At least I finished";
+    file->deleteLater();
 }
