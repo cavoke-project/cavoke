@@ -1,6 +1,7 @@
 #ifndef CAVOKECLIENTCONTROLLER_H
 #define CAVOKECLIENTCONTROLLER_H
 
+#include <cache_manager.h>
 #include <views/gameslistview.h>
 #include <QObject>
 #include <QtQuick>
@@ -11,7 +12,6 @@
 #include "settingsview.h"
 #include "startview.h"
 #include "testwindowview.h"
-#include <cache_manager.h>
 
 class CavokeClientController : public QObject {
     Q_OBJECT
@@ -34,7 +34,7 @@ private slots:
     void exitApplication();
     void startQmlByPath(const QString &path);
     void stopQml();
-    void unpackDownloadedQml(QFile *file);
+    void unpackDownloadedQml(QFile *file, const QString &app_name);
 
 private:
     NetworkManager networkManager;

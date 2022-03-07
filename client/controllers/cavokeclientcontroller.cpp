@@ -70,8 +70,8 @@ CavokeClientController::CavokeClientController(QObject *parent)
     connect(&model, SIGNAL(downloadGame(QString)), &networkManager,
             SLOT(downloadGame(QString)));
 
-    connect(&networkManager, SIGNAL(downloadedGameFile(QFile *)), this,
-            SLOT(unpackDownloadedQml(QFile *)));
+    connect(&networkManager, SIGNAL(downloadedGameFile(QFile *, QString)), this,
+            SLOT(unpackDownloadedQml(QFile *, QString)));
 
     startView.show();
 
@@ -150,8 +150,8 @@ void CavokeClientController::stopQml() {
     networkManager.stopPolling();
 }
 
-void CavokeClientController::unpackDownloadedQml(QFile *file) {
-    cache_manager::save_zip_to_cache(file);
+void CavokeClientController::unpackDownloadedQml(QFile *file, const QString& app_name ) {
+    cache_manager::save_zip_to_cache(file, app_name);
     qDebug() << "At least I finished";
     file->deleteLater();
 }
