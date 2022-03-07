@@ -18,7 +18,7 @@ struct game_session_error : cavoke_base_exception {
 };
 
 struct GameSession {
-    explicit GameSession(GameConfig game_config);
+    explicit GameSession(GameConfig game_config, std::optional<json> game_settings);
     GameSession() =
         default;  // FIXME: required by map in `sessions_storage.cpp`
 
@@ -39,11 +39,14 @@ struct GameSession {
 
     [[nodiscard]] GameSessionInfo get_session_info() const;
 
+    [[nodiscard]] std::vector<int> get_occupied_positions() const;
+
 private:
     std::string id;
     GameConfig m_game_config;
     std::string m_invite_code;
     boost::bimap<std::string, int> m_userid_to_playerid{};
+    json m_game_settings;
 
     static std::string generate_invite_code();
 };
