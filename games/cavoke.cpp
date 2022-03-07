@@ -25,8 +25,8 @@ int main() {
     json result_json;
 
     if (command == "VALIDATE") {
-        cavoke::GameSettings settings =
-            argument_json.get<cavoke::GameSettings>();
+        cavoke::InitSettings settings =
+            argument_json.get<cavoke::InitSettings>();
         std::string message;
         bool success = cavoke::validate_settings(
             settings.settings, settings.occupied_positions,
@@ -35,8 +35,8 @@ int main() {
             });
         result_json = cavoke::ValidationResult{success, message};
     } else if (command == "INIT") {
-        cavoke::GameSettings settings =
-            argument_json.get<cavoke::GameSettings>();
+        cavoke::InitSettings settings =
+            argument_json.get<cavoke::InitSettings>();
         result_json =
             cavoke::init_state(settings.settings, settings.occupied_positions);
     } else {

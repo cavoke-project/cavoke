@@ -29,11 +29,11 @@ struct GameMove {  // NOLINT(cppcoreguidelines-pro-type-member-init)
 };
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameMove, player_id, move, global_state)
 
-struct GameSettings {
+struct InitSettings {
     json settings;
     std::vector<int> occupied_positions;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSettings,
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(InitSettings,
                                    settings,
                                    occupied_positions);
 
