@@ -16,7 +16,6 @@ struct GameState {  // NOLINT(cppcoreguidelines-pro-type-member-init)
     std::vector<std::string> players_state;
     std::vector<int> winners;
 };
-
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameState,
                                    is_terminal,
                                    global_state,
@@ -28,29 +27,35 @@ struct GameMove {  // NOLINT(cppcoreguidelines-pro-type-member-init)
     std::string move;
     std::string global_state;
 };
-
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameMove, player_id, move, global_state)
 
-namespace {
+struct GameSettings {
+    json settings;
+    std::vector<int> occupied_positions;
+};
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSettings,
+                                   settings,
+                                   occupied_positions);
 
 struct ValidationResult {
     bool success;
     std::string message;
 };
-
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ValidationResult, success, message);
-
-}  // namespace
 
 // called every time admin changes settings or new player arrives
 // returns true if game can be started with current settings; false otherwise
 // use message_callback(<some_message>) to display message to the players
-bool validate_settings(const json &settings, const std::vector<int> &occupied_positions, const std::function<void(std::string)> &message_callback);
+bool validate_settings(
+    const json &settings,
+    const std::vector<int> &occupied_positions,
+    const std::function<void(std::string)> &message_callback);
 
 // called once when the game session is started
 // generates initial state
 // settings have passed the validation
-GameState init_state(const json &settings, const std::vector<int> &occupied_positions);
+GameState init_state(const json &settings,
+                     const std::vector<int> &occupied_positions);
 
 // applies move to the state
 GameState apply_move(GameMove &new_move);

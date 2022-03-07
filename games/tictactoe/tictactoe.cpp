@@ -2,12 +2,38 @@
 #include "../cavoke.h"
 
 namespace cavoke {
-const int BOARD_SIZE = 3 * 3;
+
+bool validate_settings(
+    const json &settings,
+    const std::vector<int> &occupied_positions,
+    const std::function<void(std::string)> &message_callback) {
+    if (occupied_positions.size() != 2) {
+        message_callback("Not enough players");
+        return false;
+    }
+
+    if (!settings.contains("board_size")) {
+        message_callback("No bord_size property");
+        return false;
+    }
+
+    if (settings["board_size"].get<int>() != 3 &&
+        settings["board_size"].get<int>() != 5) {
+        message_callback("Only 3 and 5 board_size values are supported");
+        return false;
+    }
+
+    return true;
+}
+
+int get_board_size(const std::string &board) {
+    return static_cast<int>(sqrt(static_cast<double>(board.size())));
+}
 
 char current_player(std::string &board) {
     int xs_cnt = 0;
     int os_cnt = 0;
-    for (int i = 0; i < BOARD_SIZE; ++i) {
+    for (int i = 0; i < get_board_size(board); ++i) {
         if (board[i] == 'X') {
             xs_cnt++;
         } else if (board[i] == 'O') {
@@ -28,11 +54,12 @@ int extract_position(std::string &move) {
 };
 
 bool is_valid_move(std::string &board, int position) {
-    return board[position] == ' ';
+    return position > 0 && position < board.size() && board[position] == ' ';
 }
 
+// TODO: fix for 5x5 board
 bool winner(const std::string &board) {
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < get_board_size(board); ++i) {
         if (board[i] != ' ' && board[i] == board[i + 3] &&
             board[i] == board[i + 6])
             return true;
@@ -51,8 +78,10 @@ bool winner(const std::string &board) {
     return false;
 }
 
-GameState init_state() {
-    std::string board(BOARD_SIZE, ' ');
+GameState init_state(const json &settings,
+                     const std::vector<int> &occupied_positions) {
+    int board_size = settings["board_size"];
+    std::string board(board_size * board_size, ' ');
 
     return GameState{false, board, {board, board}, {}};
 }
