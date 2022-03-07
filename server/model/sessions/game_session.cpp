@@ -93,3 +93,8 @@ std::vector<int> cavoke::server::model::GameSession::get_occupied_positions()
     }
     return result;
 }
+
+const cavoke::server::model::json &
+cavoke::server::model::GameSession::get_game_settings() const {
+    return m_game_settings;
+}
