@@ -94,10 +94,10 @@ void NetworkManager::downloadGame(const QString &gameId) {
     auto request = QNetworkRequest(route);
     auto reply = manager.get(request);
     connect(reply, &QNetworkReply::finished, this,
-            [reply, this]() { gotGameDownloaded(reply); });
+            [reply, gameId, this]() { gotGameDownloaded(reply, gameId); });
 }
 
-void NetworkManager::gotGameDownloaded(QNetworkReply *reply) {
+void NetworkManager::gotGameDownloaded(QNetworkReply *reply, const QString &app_name) {
     if (reply->error()) {
         qDebug() << reply->errorString();
         return;
@@ -109,7 +109,7 @@ void NetworkManager::gotGameDownloaded(QNetworkReply *reply) {
         file->flush();
         file->close();
     }
-    emit downloadedGameFile(file);
+    emit downloadedGameFile(file, app_name);
     // End of the part
     reply->close();
     reply->deleteLater();

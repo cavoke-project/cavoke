@@ -16,16 +16,16 @@ QString cache_manager::get_cached_app_path(QString app_name) {
     return qml_file.fileName();
 }
 
-QString cache_manager::save_zip_to_cache(const QFile *archive_file) {
+QString cache_manager::save_zip_to_cache(const QFile *archive_file, const QString& app_name) {
     QFileInfo archiveFileInfo(archive_file->fileName());
-    QString app_name = archiveFileInfo.baseName();
+//    QString app_name = archiveFileInfo.baseName(); // always client, useless
     QDir app_dir(APPS_DIR.filePath(app_name));
 
     if (app_dir.exists()) {
         app_dir.removeRecursively();
     }
 
-    unzip_to_folder(*archive_file, APPS_DIR);
+    unzip_to_folder(*archive_file, app_dir);
 
     return app_dir.filePath("app.qml");
 }

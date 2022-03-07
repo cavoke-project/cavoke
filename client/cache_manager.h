@@ -13,7 +13,7 @@ namespace cache_manager {
 
     QString get_cached_app_path(QString app_name);
 
-    QString save_zip_to_cache(const QFile *archive);
+    QString save_zip_to_cache(const QFile *archive, const QString& app_name = "local-qml");
 
     void unzip_to_folder(const QFile &archive, const QDir &dest);
 
