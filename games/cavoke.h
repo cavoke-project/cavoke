@@ -41,6 +41,7 @@ struct ValidationResult {
     bool success;
     std::string message;
 };
+
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ValidationResult, success, message);
 
 // called every time admin changes settings or new player arrives

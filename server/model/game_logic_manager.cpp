@@ -8,29 +8,6 @@ GameLogicManager::GameLogicManager(std::shared_ptr<GamesStorage> games_storage)
     : m_games_storage(std::move(games_storage)) {
 }
 
-GameStateStorage::GameState GameLogicManager::send_move(
-    const std::string &game_id,
-    const GameLogicManager::GameMove &move) {
-    std::optional<Game> game_info = m_games_storage->get_game_by_id(game_id);
-    if (!game_info.has_value()) {
-        return {};
-    }
-
-    // TODO: error-handling
-    // TODO: move to nlohmann/json
-    // TODO: logging
-    std::string json_move = move.to_json().toStyledString();
-
-    std::cout << "SEND MOVE: '" << json_move << "'" << std::endl;
-    std::string json_result = invoke_logic(game_info.value(), json_move);
-
-    GameStateStorage::GameState result =
-        GameStateStorage::parse_state(json_result);
-    std::cout << "GET RESULT: '" << json_result << "'" << std::endl;
-
-    return result;
-}
-
 std::string GameLogicManager::invoke_logic(const Game &game,
                                            const std::string &input) {
     namespace bp = boost::process;
@@ -58,12 +35,68 @@ std::string GameLogicManager::invoke_logic(const Game &game,
     return output;
 }
 
-Json::Value GameLogicManager::GameMove::to_json() const {
-    Json::Value result;
-    result["player_id"] = player_id;
-    result["move"] = move;
-    result["global_state"] = global_state;
+bool GameLogicManager::validate_settings(
+    const std::string &game_id,
+    const json &settings,
+    const std::vector<int> &occupied_positions,
+    std::string &error_message) {
+    std::optional<Game> game_info = m_games_storage->get_game_by_id(game_id);
+    if (!game_info.has_value()) {
+        return {};
+    }
+
+    std::ostringstream request;
+    request << "VALIDATE ";
+    json request_data = InitSettings{settings, occupied_positions};
+    request << request_data;
+
+    json response_json =
+        json::parse(invoke_logic(game_info.value(), request.str()));
+    auto result = response_json.get<ValidationResult>();
+    error_message = std::move(result.message);
+
+    return result.success;
+}
+
+GameStateStorage::GameState GameLogicManager::init_state(
+    const std::string &game_id,
+    const json &settings,
+    const std::vector<int> &occupied_positions) {
+    std::optional<Game> game_info = m_games_storage->get_game_by_id(game_id);
+    if (!game_info.has_value()) {
+        return {};
+    }
+
+    std::ostringstream request;
+    request << "INIT ";
+    json request_data = InitSettings{settings, occupied_positions};
+    request << request_data;
+
+    json response_json =
+        json::parse(invoke_logic(game_info.value(), request.str()));
+    auto result = response_json.get<GameStateStorage::GameState>();
 
     return result;
 }
+
+GameStateStorage::GameState GameLogicManager::send_move(
+    const std::string &game_id,
+    const GameLogicManager::GameMove &move) {
+    std::optional<Game> game_info = m_games_storage->get_game_by_id(game_id);
+    if (!game_info.has_value()) {
+        return {};
+    }
+
+    std::ostringstream request;
+    request << "MOVE ";
+    json request_data = move;
+    request << request_data;
+
+    json response_json =
+        json::parse(invoke_logic(game_info.value(), request.str()));
+    auto result = response_json.get<GameStateStorage::GameState>();
+
+    return result;
+}
+
 }  // namespace cavoke::server::model
