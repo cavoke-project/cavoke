@@ -13,7 +13,7 @@ bool validate_settings(
     }
 
     if (!settings.contains("board_size")) {
-        message_callback("No bord_size property");
+        message_callback("No board_size property");
         return false;
     }
 
@@ -33,7 +33,7 @@ int get_board_size(const std::string &board) {
 char current_player(std::string &board) {
     int xs_cnt = 0;
     int os_cnt = 0;
-    for (int i = 0; i < get_board_size(board); ++i) {
+    for (int i = 0; i < board.size(); ++i) {
         if (board[i] == 'X') {
             xs_cnt++;
         } else if (board[i] == 'O') {
@@ -54,26 +54,82 @@ int extract_position(std::string &move) {
 };
 
 bool is_valid_move(std::string &board, int position) {
-    return position > 0 && position < board.size() && board[position] == ' ';
+    return position >= 0 && position < board.size() && board[position] == ' ';
+}
+
+int coord_to_pos(int x, int y, int board_size) {
+    return x * board_size + y;
 }
 
 // TODO: fix for 5x5 board
 bool winner(const std::string &board) {
-    for (int i = 0; i < get_board_size(board); ++i) {
-        if (board[i] != ' ' && board[i] == board[i + 3] &&
-            board[i] == board[i + 6])
-            return true;
+    int board_size = get_board_size(board);
+    int row_to_win = (board_size == 3 ? 3 : 4);
 
-        if (board[i * 3] != ' ' && board[i * 3] == board[i * 3 + 1] &&
-            board[i * 3] == board[i * 3 + 2])
-            return true;
+    for (int i = 0; i < board_size; ++i) {
+        for (int j = 0; j < board_size; ++j) {
+            char cur = board[coord_to_pos(i, j, board_size)];
+            if (cur == ' ') {
+                continue;
+            }
+
+            // vertical
+            if (i + row_to_win <= board_size) {
+                bool flag = true;
+                for (int k = 1; k < row_to_win; ++k) {
+                    if (board[coord_to_pos(i + k, j, board_size)] != cur) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) {
+                    return true;
+                }
+            }
+
+            // horizontal
+            if (j + row_to_win <= board_size) {
+                bool flag = true;
+                for (int k = 1; k < row_to_win; ++k) {
+                    if (board[coord_to_pos(i, j + k, board_size)] != cur) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) {
+                    return true;
+                }
+            }
+
+            // diag 1
+            if (i + row_to_win <= board_size && j + row_to_win <= board_size) {
+                bool flag = true;
+                for (int k = 1; k < row_to_win; ++k) {
+                    if (board[coord_to_pos(i + k, j + k, board_size)] != cur) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) {
+                    return true;
+                }
+            }
+
+            // diag 2
+            if (i - row_to_win >= -1 && j + row_to_win <= board_size) {
+                bool flag = true;
+                for (int k = 1; k < row_to_win; ++k) {
+                    if (board[coord_to_pos(i - k, j + k, board_size)] != cur) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) {
+                    return true;
+                }
+            }
+        }
     }
-
-    if (board[0] != ' ' && board[0] == board[4] && board[0] == board[8])
-        return true;
-
-    if (board[2] != ' ' && board[2] == board[4] && board[2] == board[6])
-        return true;
 
     return false;
 }
