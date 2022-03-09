@@ -7,7 +7,7 @@ cavoke::server::model::game_session_error::game_session_error(
 }
 cavoke::server::model::GameSession::GameSession(
     cavoke::server::model::GameConfig game_config,
-    std::optional<json> game_settings = {})
+    std::optional<json> game_settings)
     : id(drogon::utils::getUuid()),
       m_game_config(std::move(game_config)),
       m_invite_code(generate_invite_code()) {

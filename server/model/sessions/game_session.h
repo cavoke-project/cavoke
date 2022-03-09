@@ -19,7 +19,7 @@ struct game_session_error : cavoke_base_exception {
 
 struct GameSession {
     explicit GameSession(GameConfig game_config,
-                         std::optional<json> game_settings);
+                         std::optional<json> game_settings = {});
     GameSession() =
         default;  // FIXME: required by map in `sessions_storage.cpp`
 

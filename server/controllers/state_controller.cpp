@@ -43,16 +43,7 @@ void StateController::send_move(
         m_game_state_storage->get_state(session_id);
 
     if (!current_state.has_value()) {
-        // new session
-        auto game = m_games_storage->get_game_by_id(session_info.game_id);
-        if (!game.has_value()) {
-            return CALLBACK_STATUS_CODE(k400BadRequest);
-        }
-
-        // TODO: validate settings
-        // TODO: get actual connected players
-        current_state = m_game_logic_manager->init_state(
-            session_info.game_id, game.value().config.default_settings, {});
+        return CALLBACK_STATUS_CODE(k400BadRequest);
     }
 
     if (current_state->is_terminal) {
