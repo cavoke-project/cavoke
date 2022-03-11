@@ -6,10 +6,16 @@ cavoke::server::model::game_session_error::game_session_error(
                             "cavoke/sessions") {
 }
 cavoke::server::model::GameSession::GameSession(
-    cavoke::server::model::GameConfig game_config)
+    cavoke::server::model::GameConfig game_config,
+    std::optional<json> game_settings)
     : id(drogon::utils::getUuid()),
       m_game_config(std::move(game_config)),
       m_invite_code(generate_invite_code()) {
+    if (game_settings.has_value()) {
+        m_game_settings = game_settings.value();
+    } else {
+        m_game_settings = m_game_config.default_settings;
+    }
 }
 /**
  * Adds given user to session.
@@ -77,4 +83,18 @@ std::string cavoke::server::model::GameSession::generate_invite_code() {
         c = dist(engine);
     }
     return res;
+}
+
+std::vector<int> cavoke::server::model::GameSession::get_occupied_positions()
+    const {
+    std::vector<int> result;
+    for (const auto &e : m_userid_to_playerid) {
+        result.push_back(e.right);
+    }
+    return result;
+}
+
+const cavoke::server::model::json &
+cavoke::server::model::GameSession::get_game_settings() const {
+    return m_game_settings;
 }

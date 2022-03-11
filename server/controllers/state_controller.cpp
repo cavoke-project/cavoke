@@ -1,7 +1,9 @@
 #include "state_controller.h"
 #include <utility>
 
-void cavoke::server::controllers::StateController::send_move(
+namespace cavoke::server::controllers {
+
+void StateController::send_move(
     const drogon::HttpRequestPtr &req,
     std::function<void(const drogon::HttpResponsePtr &)> &&callback,
     const std::string &session_id) {
@@ -41,9 +43,7 @@ void cavoke::server::controllers::StateController::send_move(
         m_game_state_storage->get_state(session_id);
 
     if (!current_state.has_value()) {
-        // new session
-        current_state =
-            m_game_logic_manager->send_move("tictactoe", {-1, "", ""});
+        return CALLBACK_STATUS_CODE(k400BadRequest);
     }
 
     if (current_state->is_terminal) {
@@ -51,8 +51,7 @@ void cavoke::server::controllers::StateController::send_move(
     }
 
     current_state = m_game_logic_manager->send_move(
-        session_info.game_id,
-        {player_id, move, current_state->global_state});
+        session_info.game_id, {player_id, move, current_state->global_state});
 
     m_game_state_storage->save_state(session_id, current_state.value());
 
@@ -61,7 +60,7 @@ void cavoke::server::controllers::StateController::send_move(
     callback(resp);
 }
 
-void cavoke::server::controllers::StateController::get_state(
+void StateController::get_state(
     const drogon::HttpRequestPtr &req,
     std::function<void(const drogon::HttpResponsePtr &)> &&callback,
     const std::string &session_id) {
@@ -101,7 +100,7 @@ void cavoke::server::controllers::StateController::get_state(
     callback(resp);
 }
 
-cavoke::server::controllers::StateController::StateController(
+StateController::StateController(
     std::shared_ptr<model::GamesStorage> mGamesStorage,
     std::shared_ptr<model::GameLogicManager> mGameLogicManager,
     std::shared_ptr<model::GameStateStorage> mGameStateStorage,
@@ -111,3 +110,5 @@ cavoke::server::controllers::StateController::StateController(
       m_game_state_storage(std::move(mGameStateStorage)),
       m_participation_storage(std::move(mParticipationStorage)) {
 }
+
+}  // namespace cavoke::server::controllers

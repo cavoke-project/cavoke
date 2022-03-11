@@ -2,12 +2,38 @@
 #include "../cavoke.h"
 
 namespace cavoke {
-const int BOARD_SIZE = 3 * 3;
+
+bool validate_settings(
+    const json &settings,
+    const std::vector<int> &occupied_positions,
+    const std::function<void(std::string)> &message_callback) {
+    if (occupied_positions.size() != 2) {
+        message_callback("Not enough players");
+        return false;
+    }
+
+    if (!settings.contains("board_size")) {
+        message_callback("No board_size property");
+        return false;
+    }
+
+    if (settings["board_size"].get<int>() != 3 &&
+        settings["board_size"].get<int>() != 5) {
+        message_callback("Only 3 and 5 board_size values are supported");
+        return false;
+    }
+
+    return true;
+}
+
+int get_board_size(const std::string &board) {
+    return static_cast<int>(sqrt(static_cast<double>(board.size())));
+}
 
 char current_player(std::string &board) {
     int xs_cnt = 0;
     int os_cnt = 0;
-    for (int i = 0; i < BOARD_SIZE; ++i) {
+    for (int i = 0; i < board.size(); ++i) {
         if (board[i] == 'X') {
             xs_cnt++;
         } else if (board[i] == 'O') {
@@ -28,31 +54,90 @@ int extract_position(std::string &move) {
 };
 
 bool is_valid_move(std::string &board, int position) {
-    return board[position] == ' ';
+    return position >= 0 && position < board.size() && board[position] == ' ';
 }
 
+int coord_to_pos(int x, int y, int board_size) {
+    return x * board_size + y;
+}
+
+// TODO: fix for 5x5 board
 bool winner(const std::string &board) {
-    for (int i = 0; i < 3; ++i) {
-        if (board[i] != ' ' && board[i] == board[i + 3] &&
-            board[i] == board[i + 6])
-            return true;
+    int board_size = get_board_size(board);
+    int row_to_win = (board_size == 3 ? 3 : 4);
 
-        if (board[i * 3] != ' ' && board[i * 3] == board[i * 3 + 1] &&
-            board[i * 3] == board[i * 3 + 2])
-            return true;
+    for (int i = 0; i < board_size; ++i) {
+        for (int j = 0; j < board_size; ++j) {
+            char cur = board[coord_to_pos(i, j, board_size)];
+            if (cur == ' ') {
+                continue;
+            }
+
+            // vertical
+            if (i + row_to_win <= board_size) {
+                bool flag = true;
+                for (int k = 1; k < row_to_win; ++k) {
+                    if (board[coord_to_pos(i + k, j, board_size)] != cur) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) {
+                    return true;
+                }
+            }
+
+            // horizontal
+            if (j + row_to_win <= board_size) {
+                bool flag = true;
+                for (int k = 1; k < row_to_win; ++k) {
+                    if (board[coord_to_pos(i, j + k, board_size)] != cur) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) {
+                    return true;
+                }
+            }
+
+            // diag 1
+            if (i + row_to_win <= board_size && j + row_to_win <= board_size) {
+                bool flag = true;
+                for (int k = 1; k < row_to_win; ++k) {
+                    if (board[coord_to_pos(i + k, j + k, board_size)] != cur) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) {
+                    return true;
+                }
+            }
+
+            // diag 2
+            if (i - row_to_win >= -1 && j + row_to_win <= board_size) {
+                bool flag = true;
+                for (int k = 1; k < row_to_win; ++k) {
+                    if (board[coord_to_pos(i - k, j + k, board_size)] != cur) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) {
+                    return true;
+                }
+            }
+        }
     }
-
-    if (board[0] != ' ' && board[0] == board[4] && board[0] == board[8])
-        return true;
-
-    if (board[2] != ' ' && board[2] == board[4] && board[2] == board[6])
-        return true;
 
     return false;
 }
 
-GameState init_state() {
-    std::string board(BOARD_SIZE, ' ');
+GameState init_state(const json &settings,
+                     const std::vector<int> &occupied_positions) {
+    int board_size = settings["board_size"];
+    std::string board(board_size * board_size, ' ');
 
     return GameState{false, board, {board, board}, {}};
 }

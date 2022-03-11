@@ -2,6 +2,7 @@
 #define CAVOKE_SERVER_GAME_STATE_STORAGE_H
 
 #include <map>
+#include <nlohmann/json.hpp>
 #include <optional>
 #include <string>
 #include <vector>
@@ -29,6 +30,12 @@ public:
 private:
     std::map<std::string, GameState> m_states;
 };
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameStateStorage::GameState,
+                                   is_terminal,
+                                   global_state,
+                                   players_state,
+                                   winners);
 
 }  // namespace cavoke::server::model
 

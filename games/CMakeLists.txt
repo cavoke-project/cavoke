@@ -4,5 +4,7 @@ project(tictactoe)
 find_package(nlohmann_json 3.9.0 REQUIRED)
 
 add_executable(tictactoe
-        tictactoe/tictactoe.cpp)
+        tictactoe/tictactoe.cpp
+        cavoke.cpp)
+
 target_link_libraries(tictactoe nlohmann_json::nlohmann_json)

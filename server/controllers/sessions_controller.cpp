@@ -38,9 +38,13 @@ void cavoke::server::controllers::SessionsController::create(
     }
 
     // configurate initial state for session
+
+    // TODO: validate settings
+    // TODO: get actual connected players
     m_game_state_storage->save_state(
         session_info.session_id,
-        m_game_logic_manager->send_move(game_id.value(), {-1, "", ""}));
+        m_game_logic_manager->init_state(
+            game_id.value(), game.value().config.default_settings, {0, 1}));
 
     return callback(newNlohmannJsonResponse(session_info));
 }
