@@ -12,6 +12,7 @@
 #include "settingsview.h"
 #include "startview.h"
 #include "testwindowview.h"
+#include "middlescreenview.h"
 
 class CavokeClientController : public QObject {
     Q_OBJECT
@@ -28,13 +29,18 @@ public slots:
 
 signals:
     void loadGamesList();
+    void createGameDownloaded();
 
 private slots:
     void startQmlApplication(CavokeQmlGameModel *);
     void exitApplication();
     void startQmlByPath(const QString &path);
+    void startQmlByName(const QString &name);
     void stopQml();
     void unpackDownloadedQml(QFile *file, const QString &app_name);
+    void createGameDownload(int gameIndex);
+    void createGameSendRequest();
+    void createGameShowMiddleScreen(const QString &inviteCode);
 
 private:
     NetworkManager networkManager;
@@ -45,7 +51,10 @@ private:
     CreateGameView createGameView;
     GamesListView gamesListView;
     SettingsView settingsView;
+    MiddleScreenView middleScreenView;
     CavokeQmlGameModel *currentQmlGameModel = nullptr;
+    bool isCreatingSession = false; // FIXME: oh no, flags
+    QString creatingGameId;
 };
 
 #endif  // CAVOKECLIENTCONTROLLER_H

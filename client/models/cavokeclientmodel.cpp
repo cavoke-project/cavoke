@@ -39,3 +39,6 @@ void CavokeClientModel::gotIndexToDownload(int index) {
     qDebug() << gamesList[index].id;
     emit downloadGame(gamesList[index].id);
 }
+QString CavokeClientModel::getGameIdByIndex(int index) {
+    return gamesList[index].id;
+}

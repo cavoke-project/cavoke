@@ -10,6 +10,7 @@ class CavokeClientModel : public QObject {
 
 public:
     explicit CavokeClientModel(QObject *parent = nullptr);
+    QString getGameIdByIndex(int index);    // FIXME: oh no, cringe
 public slots:
     void loadQmlGame(const QString &gameName);
     void updateGamesList(const QJsonArray &newGamesList);

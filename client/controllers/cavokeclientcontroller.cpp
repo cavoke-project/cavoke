@@ -7,7 +7,8 @@ CavokeClientController::CavokeClientController(QObject *parent)
       testWindowView{},
       startView{},
       joinGameView{},
-      settingsView{} {
+      settingsView{},
+      middleScreenView{} {
     connect(this, SIGNAL(loadGamesList()), &networkManager,
             SLOT(getGamesList()));
 
@@ -42,7 +43,7 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(exitApplication()), Qt::QueuedConnection);
 
     connect(&testWindowView, SIGNAL(testHealthConnectionButton()),
-            &networkManager, SLOT(doTestHealthCheck()));
+            &networkManager, SLOT(getHealth()));
 
     connect(&networkManager, SIGNAL(finalizedGamesList(QJsonArray)), &model,
             SLOT(updateGamesList(QJsonArray)));
@@ -68,10 +69,21 @@ CavokeClientController::CavokeClientController(QObject *parent)
     connect(&gamesListView, SIGNAL(requestedDownloadGame(int)), &model,
             SLOT(gotIndexToDownload(int)));
     connect(&model, SIGNAL(downloadGame(QString)), &networkManager,
-            SLOT(downloadGame(QString)));
+            SLOT(getGamesClient(QString)));
 
     connect(&networkManager, SIGNAL(downloadedGameFile(QFile *, QString)), this,
             SLOT(unpackDownloadedQml(QFile *, QString)));
+
+    connect(&createGameView, SIGNAL(startedCreateGameRoutine(int)), this,
+            SLOT(createGameDownload(int)));
+
+    connect(this, SIGNAL(createGameDownloaded()), this,
+            SLOT(createGameSendRequest()));
+
+    connect(&networkManager, SIGNAL(gotSessionInfo(QString)), this,
+            SLOT(createGameShowMiddleScreen(QString)));
+    
+    connect(&middleScreenView, SIGNAL(joinedCreatedGame(QString)), this, SLOT(startQmlByName(QString)));
 
     startView.show();
 
@@ -144,14 +156,61 @@ void CavokeClientController::startQmlByPath(const QString &path) {
     networkManager.startPolling();
 }
 
+void CavokeClientController::startQmlByName(const QString &name) {
+    currentQmlGameModel =
+        new CavokeQmlGameModel(QUrl(cache_manager::get_cached_app_path(name)));
+    startQmlApplication(currentQmlGameModel);
+    connect(currentQmlGameModel, SIGNAL(sendMoveToNetwork(QString)),
+            &networkManager, SLOT(sendMove(QString)));
+    connect(&networkManager, SIGNAL(gotGameUpdate(QString)),
+            currentQmlGameModel, SLOT(getUpdateFromNetwork(QString)));
+    connect(currentQmlGameModel, SIGNAL(closingQml()), this, SLOT(stopQml()));
+    joinGameView.close();
+    networkManager.startPolling();
+}
+
 void CavokeClientController::stopQml() {
     startView.show();
     currentQmlGameModel->deleteLater();
     networkManager.stopPolling();
 }
 
-void CavokeClientController::unpackDownloadedQml(QFile *file, const QString& app_name ) {
+void CavokeClientController::unpackDownloadedQml(QFile *file,
+                                                 const QString &app_name) {
     cache_manager::save_zip_to_cache(file, app_name);
-    qDebug() << "At least I finished";
+    qDebug() << "UnpackDownloadedQml Finished";
     file->deleteLater();
+    if (isCreatingSession) {
+        emit createGameDownloaded();
+    }
+}
+
+void CavokeClientController::createGameDownload(int gameIndex) {
+    qDebug() << "Now we are createGameDownload with index: " << gameIndex;
+    isCreatingSession = true;
+    creatingGameId = model.getGameIdByIndex(gameIndex);
+    model.gotIndexToDownload(gameIndex);
+
+    middleScreenView.updateInviteCode("");
+    middleScreenView.updateStatus(CreatingGameStatus::DOWNLOAD);
+    middleScreenView.updateGameName(creatingGameId);
+
+    createGameView.close();
+    middleScreenView.show();
+}
+
+void CavokeClientController::createGameSendRequest() {
+    qDebug() << "Now we are createGameSendRequest with id: " << creatingGameId;
+
+    networkManager.createSession(creatingGameId);
+    middleScreenView.updateStatus(CreatingGameStatus::REQUESTED);
+    createGameView.close();
+}
+void CavokeClientController::createGameShowMiddleScreen(
+    const QString &inviteCode) {
+    qDebug() << "Now we are createGameShowMiddleScreen with inviteCode: "
+             << inviteCode;
+
+    middleScreenView.updateStatus(CreatingGameStatus::DONE);
+    middleScreenView.updateInviteCode(inviteCode);
 }

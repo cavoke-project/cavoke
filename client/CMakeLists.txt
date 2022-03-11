@@ -35,11 +35,12 @@ add_executable(cavoke_client
         views/creategameview.cpp
         views/settingsview.cpp
         views/gameslistview.cpp
+        views/middlescreenview.cpp
         tictactoelogic.cpp
         cache_manager.cpp
         network_manager.cpp
         gameinfo.cpp
-        )
+        sessioninfo.cpp)
 
 target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Widgets)
 target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Quick)
