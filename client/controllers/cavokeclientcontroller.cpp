@@ -63,8 +63,14 @@ CavokeClientController::CavokeClientController(QObject *parent)
     connect(&model, SIGNAL(updateSelectedGameInList(GameInfo)), &gamesListView,
             SLOT(gotNewSelectedGame(GameInfo)));
 
-    connect(&joinGameView, SIGNAL(joinedTicTacToe(QString)), this,
-            SLOT(startQmlByPath(QString)));
+    connect(&joinGameView, SIGNAL(joinedGame(QString)), this,
+            SLOT(joinGameRequest(QString)));
+
+    connect(&networkManager, SIGNAL(gotJoinedSessionInfo(QString)), this,
+            SLOT(joinGameDownload(QString)));
+
+    connect(this, SIGNAL(joinGameDownloaded()), this,
+            SLOT(joinGameShowMiddleScreen()));
 
     connect(&gamesListView, SIGNAL(requestedDownloadGame(int)), &model,
             SLOT(gotIndexToDownload(int)));
@@ -82,8 +88,9 @@ CavokeClientController::CavokeClientController(QObject *parent)
 
     connect(&networkManager, SIGNAL(gotSessionInfo(QString)), this,
             SLOT(createGameShowMiddleScreen(QString)));
-    
-    connect(&middleScreenView, SIGNAL(joinedCreatedGame(QString)), this, SLOT(startQmlByName(QString)));
+
+    connect(&middleScreenView, SIGNAL(joinedCreatedGame(QString)), this,
+            SLOT(startQmlByName(QString)));
 
     startView.show();
 
@@ -182,15 +189,19 @@ void CavokeClientController::unpackDownloadedQml(QFile *file,
     file->deleteLater();
     if (isCreatingSession) {
         emit createGameDownloaded();
+    } else if (isJoiningSession) {
+        emit joinGameDownloaded();
     }
 }
 
 void CavokeClientController::createGameDownload(int gameIndex) {
     qDebug() << "Now we are createGameDownload with index: " << gameIndex;
     isCreatingSession = true;
+    isJoiningSession = false;
     creatingGameId = model.getGameIdByIndex(gameIndex);
     model.gotIndexToDownload(gameIndex);
 
+    middleScreenView.prepareJoinCreate(false);
     middleScreenView.updateInviteCode("");
     middleScreenView.updateStatus(CreatingGameStatus::DOWNLOAD);
     middleScreenView.updateGameName(creatingGameId);
@@ -204,7 +215,6 @@ void CavokeClientController::createGameSendRequest() {
 
     networkManager.createSession(creatingGameId);
     middleScreenView.updateStatus(CreatingGameStatus::REQUESTED);
-    createGameView.close();
 }
 void CavokeClientController::createGameShowMiddleScreen(
     const QString &inviteCode) {
@@ -213,4 +223,30 @@ void CavokeClientController::createGameShowMiddleScreen(
 
     middleScreenView.updateStatus(CreatingGameStatus::DONE);
     middleScreenView.updateInviteCode(inviteCode);
+}
+void CavokeClientController::joinGameRequest(const QString &inviteCode) {
+    qDebug() << "Now we are joinGameRequest with inviteCode: " << inviteCode;
+    isCreatingSession = false;
+    isJoiningSession = true;
+
+    middleScreenView.prepareJoinCreate(false);
+    middleScreenView.updateInviteCode("");
+    middleScreenView.updateStatus(CreatingGameStatus::REQUESTED);
+
+    networkManager.joinSession(inviteCode);
+    joinGameView.close();
+    middleScreenView.show();
+}
+void CavokeClientController::joinGameDownload(const QString &app_name) {
+    qDebug() << "Now we are joinGameDownload with app_name: " << app_name;
+
+    middleScreenView.updateGameName(app_name);
+    middleScreenView.updateStatus(CreatingGameStatus::DOWNLOAD);
+
+    networkManager.getGamesClient(app_name);
+}
+void CavokeClientController::joinGameShowMiddleScreen() {
+    qDebug() << "Now we are joinGameShowMiddleScreen";
+    
+    middleScreenView.updateStatus(CreatingGameStatus::DONE);
 }

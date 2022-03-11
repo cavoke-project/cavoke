@@ -97,20 +97,41 @@ void NetworkManager::gotSessionCreated(QNetworkReply *reply) {
     reply->close();
     reply->deleteLater();
     qDebug() << answer;
-    
+
     SessionInfo sessionInfo;
     sessionInfo.read(QJsonDocument::fromJson(answer).object());
     sessionId = sessionInfo.session_id;
     emit gotSessionInfo(sessionInfo.invite_code);
 }
 
-void NetworkManager::joinSession() {
+void NetworkManager::joinSession(const QString &inviteCode) {
+    QUrl route = HOST.resolved(SESSIONS_JOIN);
+    route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)},
+                    {"invite_code", inviteCode}});
+    qDebug() << route.toString();
+    auto request = QNetworkRequest(route);
+    request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader,
+                      "application/json");
+    auto reply = manager.post(request, "{}");
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotSessionJoined(reply); });
+}
+
+void NetworkManager::gotSessionJoined(QNetworkReply *reply) {
+    QByteArray answer = reply->readAll();
+    reply->close();
+    reply->deleteLater();
+    qDebug() << answer;
+
+    SessionInfo sessionInfo;
+    sessionInfo.read(QJsonDocument::fromJson(answer).object());
+    sessionId = sessionInfo.session_id;
+    emit gotJoinedSessionInfo(sessionInfo.game_id);
 }
 
 void NetworkManager::sendMove(const QString &jsonMove) {
-    QUrl route = HOST.resolved(PLAY)
-                     .resolved(sessionId + "/")
-                     .resolved(SEND_MOVE);
+    QUrl route =
+        HOST.resolved(PLAY).resolved(sessionId + "/").resolved(SEND_MOVE);
     route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
     qDebug() << route.toString();
     auto request = QNetworkRequest(route);
@@ -129,9 +150,8 @@ void NetworkManager::gotPostResponse(QNetworkReply *reply) {
 }
 
 void NetworkManager::getUpdate() {
-    QUrl route = HOST.resolved(PLAY)
-                     .resolved(sessionId + "/")
-                     .resolved(GET_STATE);
+    QUrl route =
+        HOST.resolved(PLAY).resolved(sessionId + "/").resolved(GET_STATE);
     route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
     qDebug() << route.toString();
     auto request = QNetworkRequest(route);
@@ -152,7 +172,7 @@ void NetworkManager::gotUpdate(QNetworkReply *reply) {
     emit gotGameUpdate(answer);
 }
 void NetworkManager::startPolling() {
-//    sessionId = QUuid::createUuid();
+    //    sessionId = QUuid::createUuid();
     pollingTimer->start();
 }
 

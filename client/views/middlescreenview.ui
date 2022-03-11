@@ -27,7 +27,7 @@
      <string>Unknown</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="headerLabel">
     <property name="geometry">
      <rect>
       <x>220</x>
@@ -58,7 +58,7 @@
      <string>Current status:</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_3">
+   <widget class="QLabel" name="inviteCodeHLabel">
     <property name="geometry">
      <rect>
       <x>50</x>
@@ -82,7 +82,6 @@
     </property>
     <property name="font">
      <font>
-      <family>DejaVu Sans</family>
       <pointsize>14</pointsize>
      </font>
     </property>
@@ -107,6 +106,37 @@
     </property>
     <property name="checkable">
      <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="gameNameLabel">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>170</y>
+      <width>231</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Unknown</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="gameNameHLabel">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>190</y>
+      <width>91</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Game name:</string>
     </property>
    </widget>
   </widget>

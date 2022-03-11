@@ -19,6 +19,7 @@ public slots:
     void updateStatus(CreatingGameStatus newStatus);
     void updateInviteCode(const QString &newInviteCode);
     void updateGameName(const QString &name);
+    void prepareJoinCreate(bool _isJoining);
 
 signals:
     void joinedCreatedGame(const QString &appName);
@@ -35,6 +36,7 @@ private:
         {CreatingGameStatus::DONE, "Done"},
     };
     QString gameName;
+    bool isJoining = false;
 };
 
 #endif  // CAVOKE_CLIENT_MIDDLESCREENVIEW_H

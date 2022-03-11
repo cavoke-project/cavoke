@@ -22,7 +22,7 @@ public slots:
     void getGamesConfig(const QString &gameId);
     void getGamesClient(const QString &gameId);
     void createSession(const QString &gameId);
-    void joinSession();
+    void joinSession(const QString &inviteCode);
     void sendMove(const QString &jsonMove);
     void getUpdate();
     
@@ -34,12 +34,14 @@ signals:
     void gotGameUpdate(const QString &jsonField);
     void downloadedGameFile(QFile *file, const QString &app_name);
     void gotSessionInfo(const QString &inviteCode);
+    void gotJoinedSessionInfo(const QString &appName);
 
 private slots:
     void gotHealth(QNetworkReply *reply);
     void gotGamesList(QNetworkReply *reply);
     void gotGamesConfig(QNetworkReply *reply);
     void gotSessionCreated(QNetworkReply *reply);
+    void gotSessionJoined(QNetworkReply *reply);
     void gotPostResponse(QNetworkReply *reply);
     void gotUpdate(QNetworkReply *reply);
     void gotGamesClient(QNetworkReply *reply, const QString &app_name);

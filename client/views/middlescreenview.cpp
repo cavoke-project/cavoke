@@ -30,3 +30,19 @@ void MiddleScreenView::on_joinGameButton_clicked() {
 void MiddleScreenView::updateGameName(const QString &name) {
     gameName = name;
 }
+void MiddleScreenView::prepareJoinCreate(bool _isJoining) {
+    isJoining = _isJoining;
+    if (isJoining) {
+        ui->headerLabel->setText("Joining game session");
+        ui->gameNameHLabel->show();
+        ui->gameNameLabel->show();
+        ui->inviteCodeHLabel->hide();
+        ui->inviteCodeLabel->hide();
+    } else {
+        ui->headerLabel->setText("Creating game session");
+        ui->gameNameHLabel->hide();
+        ui->gameNameLabel->hide();
+        ui->inviteCodeHLabel->show();
+        ui->inviteCodeLabel->show();
+    }
+}

@@ -30,6 +30,7 @@ public slots:
 signals:
     void loadGamesList();
     void createGameDownloaded();
+    void joinGameDownloaded();
 
 private slots:
     void startQmlApplication(CavokeQmlGameModel *);
@@ -41,6 +42,9 @@ private slots:
     void createGameDownload(int gameIndex);
     void createGameSendRequest();
     void createGameShowMiddleScreen(const QString &inviteCode);
+    void joinGameRequest(const QString &inviteCode);
+    void joinGameDownload(const QString &app_name);
+    void joinGameShowMiddleScreen();
 
 private:
     NetworkManager networkManager;
@@ -54,6 +58,7 @@ private:
     MiddleScreenView middleScreenView;
     CavokeQmlGameModel *currentQmlGameModel = nullptr;
     bool isCreatingSession = false; // FIXME: oh no, flags
+    bool isJoiningSession = false; // FIXME: oh no, flags
     QString creatingGameId;
 };
 
