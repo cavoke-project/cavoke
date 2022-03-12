@@ -103,15 +103,6 @@ workflows:
       - games-docker
   codestyle:
     jobs:
-      - clangformat-master:
-          filters:
-            branches:
-              only: master
-      - clangtidy-master:
-          filters:
-            branches:
-              only: master
-      - cppcheck-master:
-          filters:
-            branches:
-              only: master
+      - clangformat-master
+      - clangtidy-master
+      - cppcheck-master
