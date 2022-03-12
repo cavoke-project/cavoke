@@ -89,19 +89,7 @@ void NetworkManager::createSession(const QString &gameId) {
                       "application/json");
     auto reply = manager.post(request, "{}");
     connect(reply, &QNetworkReply::finished, this,
-            [reply, this]() { gotSessionCreated(reply); });
-}
-
-void NetworkManager::gotSessionCreated(QNetworkReply *reply) {
-    QByteArray answer = reply->readAll();
-    reply->close();
-    reply->deleteLater();
-    qDebug() << answer;
-
-    SessionInfo sessionInfo;
-    sessionInfo.read(QJsonDocument::fromJson(answer).object());
-    sessionId = sessionInfo.session_id;
-    emit gotSessionInfo(sessionInfo.invite_code);
+            [reply, this]() { gotSession(reply); });
 }
 
 void NetworkManager::joinSession(const QString &inviteCode) {
@@ -114,10 +102,10 @@ void NetworkManager::joinSession(const QString &inviteCode) {
                       "application/json");
     auto reply = manager.post(request, "{}");
     connect(reply, &QNetworkReply::finished, this,
-            [reply, this]() { gotSessionJoined(reply); });
+            [reply, this]() { gotSession(reply); });
 }
 
-void NetworkManager::gotSessionJoined(QNetworkReply *reply) {
+void NetworkManager::gotSession(QNetworkReply *reply) {
     QByteArray answer = reply->readAll();
     reply->close();
     reply->deleteLater();
@@ -126,7 +114,7 @@ void NetworkManager::gotSessionJoined(QNetworkReply *reply) {
     SessionInfo sessionInfo;
     sessionInfo.read(QJsonDocument::fromJson(answer).object());
     sessionId = sessionInfo.session_id;
-    emit gotJoinedSessionInfo(sessionInfo.game_id);
+    emit gotSessionInfo(sessionInfo);
 }
 
 void NetworkManager::sendMove(const QString &jsonMove) {
@@ -146,7 +134,7 @@ void NetworkManager::gotPostResponse(QNetworkReply *reply) {
     QByteArray answer = reply->readAll();
     reply->close();
     reply->deleteLater();
-    qDebug() << answer;
+    qDebug() << "Got some post response: " << answer;
 }
 
 void NetworkManager::getUpdate() {
@@ -172,7 +160,6 @@ void NetworkManager::gotUpdate(QNetworkReply *reply) {
     emit gotGameUpdate(answer);
 }
 void NetworkManager::startPolling() {
-    //    sessionId = QUuid::createUuid();
     pollingTimer->start();
 }
 

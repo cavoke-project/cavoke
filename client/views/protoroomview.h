@@ -7,11 +7,10 @@ namespace Ui {
 class ProtoRoomView;
 }
 
-enum class CreatingGameStatus { UNKNOWN, DOWNLOAD, REQUESTED, DONE };
-
 class ProtoRoomView : public QMainWindow {
     Q_OBJECT
 public:
+    enum class CreatingGameStatus { UNKNOWN, DOWNLOAD, REQUESTED, DONE };
     explicit ProtoRoomView(QWidget *parent = nullptr);
     ~ProtoRoomView();
 
@@ -23,9 +22,11 @@ public slots:
 
 signals:
     void joinedCreatedGame(const QString &appName);
+    void shownStartView();
 
 private slots:
     void on_joinGameButton_clicked();
+    void on_backButton_clicked();
 
 private:
     Ui::ProtoRoomView *ui;

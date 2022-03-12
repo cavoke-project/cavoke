@@ -33,15 +33,13 @@ signals:
     void finalizedGamesList(QJsonArray list);
     void gotGameUpdate(const QString &jsonField);
     void downloadedGameFile(QFile *file, const QString &gameId);
-    void gotSessionInfo(const QString &inviteCode);
-    void gotJoinedSessionInfo(const QString &gameId);
+    void gotSessionInfo(const SessionInfo &sessionInfo);
 
 private slots:
     void gotHealth(QNetworkReply *reply);
     void gotGamesList(QNetworkReply *reply);
     void gotGamesConfig(QNetworkReply *reply);
-    void gotSessionCreated(QNetworkReply *reply);
-    void gotSessionJoined(QNetworkReply *reply);
+    void gotSession(QNetworkReply *reply);
     void gotPostResponse(QNetworkReply *reply);
     void gotUpdate(QNetworkReply *reply);
     void gotGamesClient(QNetworkReply *reply, const QString &gameId);

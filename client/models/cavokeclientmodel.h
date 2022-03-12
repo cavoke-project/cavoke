@@ -12,11 +12,12 @@ public:
     explicit CavokeClientModel(QObject *parent = nullptr);
     QString getGameIdByIndex(int index);    // FIXME: oh no, cringe
 public slots:
-    void loadQmlGame(const QString &gameName);
+    void loadQmlGame(const QString &gameId);
     void updateGamesList(const QJsonArray &newGamesList);
     void receivedGameIndexChange(int newIndex);
     void receivedGameIndexChangeInList(int newIndex);
     void gotIndexToDownload(int index);
+    void gotGameIdToDownload(const QString &gameId);
 signals:
     void startQmlApplication(CavokeQmlGameModel *);
     void gamesListUpdated(const std::vector<GameInfo> &newGamesList);

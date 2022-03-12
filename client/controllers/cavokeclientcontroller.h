@@ -15,6 +15,7 @@
 #include "testwindowview.h"
 
 class CavokeClientController : public QObject {
+    enum class CreateJoinControllerStatus {NOTHING, CREATING, JOINING};
     Q_OBJECT
 public:
     explicit CavokeClientController(QObject *parent = nullptr);
@@ -38,12 +39,12 @@ private slots:
     void startQmlByGameId(const QString &gameId);
     void stopQml();
     void unpackDownloadedQml(QFile *file, const QString &gameId);
-    void createGameDownload(int gameIndex);
+    void createGameStart(int gameIndex);
+    void joinGameStart(const QString &inviteCode);
+    void downloadCurrentGame();
+    void preparationsDone();
     void createGameSendRequest();
-    void createGameShowProtoRoomView(const QString &inviteCode);
-    void joinGameRequest(const QString &inviteCode);
-    void joinGameDownload(const QString &gameId);
-    void joinGameShowProtoRoomView();
+    void gotSessionInfo(const SessionInfo &sessionInfo);
 
 private:
     NetworkManager networkManager;
@@ -56,9 +57,8 @@ private:
     SettingsView settingsView;
     ProtoRoomView protoRoomView;
     CavokeQmlGameModel *currentQmlGameModel = nullptr;
-    bool isCreatingSession = false; // FIXME: oh no, flags
-    bool isJoiningSession = false; // FIXME: oh no, flags
-    QString creatingGameId;
+    CreateJoinControllerStatus status;
+    QString currentGameId;
 };
 
 #endif  // CAVOKECLIENTCONTROLLER_H

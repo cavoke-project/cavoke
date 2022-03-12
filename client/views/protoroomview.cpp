@@ -29,6 +29,7 @@ void ProtoRoomView::on_joinGameButton_clicked() {
 }
 void ProtoRoomView::updateGameName(const QString &name) {
     gameName = name;
+    ui->gameNameLabel->setText(gameName);
 }
 void ProtoRoomView::prepareJoinCreate(bool _isJoining) {
     isJoining = _isJoining;
@@ -45,4 +46,10 @@ void ProtoRoomView::prepareJoinCreate(bool _isJoining) {
         ui->inviteCodeHLabel->show();
         ui->inviteCodeLabel->show();
     }
+    updateInviteCode("");
+}
+
+void ProtoRoomView::on_backButton_clicked() {
+    this->close();
+    emit shownStartView();
 }
