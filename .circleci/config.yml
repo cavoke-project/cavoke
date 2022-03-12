@@ -59,7 +59,7 @@ jobs:
           command: cmake . -DBUILD_ALL=OFF -DBUILD_GAMES=ON
       - run:
           name: Make
-          command: make cavoke_server
+          command: make all
       - run:
           name: Simple healthcheck
           command: chmod +x .circleci/server-test-health.py && .circleci/server-test-health.py ./server/cavoke_server
