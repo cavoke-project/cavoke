@@ -45,7 +45,7 @@ jobs:
           command: cd build && make cavoke_server
       - run:
           name: Simple healthcheck
-          command: chmod +x .circleci/server-test-health.py && .circleci/server-test-health.py ./server/build/cavoke_server
+          command: chmod +x .circleci/server-test-health.py && .circleci/server-test-health.py ./build/server/cavoke_server
   games-docker:
     docker:
       - image: ghcr.io/cavoke-project/cavoke_ci:drogon # TODO: use circleci orbs
