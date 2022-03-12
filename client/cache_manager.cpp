@@ -13,7 +13,7 @@ QUrl cache_manager::get_cached_app_path(const QString &gameId) {
         qDebug() << "Can not find app.qml in directory " << cur_app_dir << '\n';
         return QString();
     }
-    return qml_file.fileName();
+    return QUrl::fromUserInput(qml_file.fileName());
 }
 
 QUrl cache_manager::save_zip_to_cache(const QFile *archive_file,
@@ -27,7 +27,7 @@ QUrl cache_manager::save_zip_to_cache(const QFile *archive_file,
 
     unzip_to_folder(*archive_file, app_dir);
 
-    return app_dir.filePath("app.qml");
+    return QUrl::fromUserInput(app_dir.filePath("app.qml"));
 }
 
 void cache_manager::unzip_to_folder(const QFile &archive_file,
