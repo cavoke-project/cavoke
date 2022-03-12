@@ -99,4 +99,10 @@ GameStateStorage::GameState GameLogicManager::send_move(
     return result;
 }
 
+validation_error::validation_error(std::string message)
+    : cavoke_base_exception(std::move(message),
+                            InvalidConfig,
+                            "cavoke/validation") {
+}
+
 }  // namespace cavoke::server::model

@@ -36,15 +36,28 @@ void cavoke::server::controllers::SessionsController::create(
     } catch (const model::game_session_error &err) {
         return callback(newCavokeErrorResponse(err, drogon::k400BadRequest));
     }
+    auto session =
+        m_participation_storage->get_session(session_info.session_id);
 
     // configurate initial state for session
+    // TODO: get settings from body
+    auto current_settings = game.value().config.default_settings;
+    auto current_occupied_positions = session->get_occupied_positions();
+    std::string validation_message;
+    bool validation_success = m_game_logic_manager->validate_settings(
+        current_settings, current_occupied_positions, validation_message);
 
-    // TODO: validate settings
-    // TODO: get actual connected players
+    if (!validation_success) {
+        return callback(
+            newCavokeErrorResponse(model::validation_error(validation_message),
+                                   drogon::k400BadRequest));
+    }
+
     m_game_state_storage->save_state(
         session_info.session_id,
-        m_game_logic_manager->init_state(
-            game_id.value(), game.value().config.default_settings, {0, 1}));
+        m_game_logic_manager->init_state(game_id.value(),
+                                         game.value().config.default_settings,
+                                         session->get_occupied_positions()));
 
     return callback(newNlohmannJsonResponse(session_info));
 }

@@ -8,6 +8,11 @@
 
 namespace cavoke::server::model {
 
+/// is thrown when trying to start a new session with invalid config
+struct validation_error : cavoke_base_exception {
+    explicit validation_error(std::string message);
+};
+
 class GameLogicManager {
     std::shared_ptr<GamesStorage> m_games_storage;
 
