@@ -79,7 +79,7 @@ Rectangle {
                     height: board.height/3
 
                     onClicked: {
-                            cavoke.getMoveFromQml("X " + String(index));
+                            Interact.sendMove(String(index));
                     }
                 }
             }

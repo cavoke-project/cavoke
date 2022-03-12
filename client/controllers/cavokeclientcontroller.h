@@ -9,11 +9,13 @@
 #include "creategameview.h"
 #include "joingameview.h"
 #include "network_manager.h"
+#include "protoroomview.h"
 #include "settingsview.h"
 #include "startview.h"
 #include "testwindowview.h"
 
 class CavokeClientController : public QObject {
+    enum class CreateJoinControllerStatus {NOTHING, CREATING, JOINING};
     Q_OBJECT
 public:
     explicit CavokeClientController(QObject *parent = nullptr);
@@ -28,13 +30,21 @@ public slots:
 
 signals:
     void loadGamesList();
+    void createGameDownloaded();
+    void joinGameDownloaded();
 
 private slots:
     void startQmlApplication(CavokeQmlGameModel *);
     void exitApplication();
-    void startQmlByPath(const QString &path);
+    void startQmlByGameId(const QString &gameId);
     void stopQml();
-    void unpackDownloadedQml(QFile *file, const QString &app_name);
+    void unpackDownloadedQml(QFile *file, const QString &gameId);
+    void createGameStart(int gameIndex);
+    void joinGameStart(const QString &inviteCode);
+    void downloadCurrentGame();
+    void creatingJoiningGameDone();
+    void createGameSendRequest();
+    void gotSessionInfo(const SessionInfo &sessionInfo);
 
 private:
     NetworkManager networkManager;
@@ -45,7 +55,10 @@ private:
     CreateGameView createGameView;
     GamesListView gamesListView;
     SettingsView settingsView;
+    ProtoRoomView protoRoomView;
     CavokeQmlGameModel *currentQmlGameModel = nullptr;
+    CreateJoinControllerStatus status;
+    QString currentGameId;
 };
 
 #endif  // CAVOKECLIENTCONTROLLER_H

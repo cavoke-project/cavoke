@@ -21,9 +21,11 @@ public slots:
 signals:
     void shownStartView();
     void currentIndexChanged(int index);
+    void startedCreateGameRoutine(int gameIndex);
 
 private slots:
     void on_backButton_clicked();
+    void on_createGameButton_clicked();
     void repeaterCurrentIndexChanged(int index);
 
 private:

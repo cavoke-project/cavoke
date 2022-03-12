@@ -4,13 +4,13 @@
 CavokeClientModel::CavokeClientModel(QObject *parent) : QObject{parent} {
 }
 
-void CavokeClientModel::loadQmlGame(const QString &appPath) {
+void CavokeClientModel::loadQmlGame(const QString &gameId) {
     // TODO: change to url loading from cache, not resources
     auto *gameModel =
-        new CavokeQmlGameModel(QUrl::fromUserInput(appPath),
+        new CavokeQmlGameModel(QUrl::fromUserInput(gameId),
                                this);  // must be alive when accessed from QML
 
-    qDebug() << "Starting game from: " << appPath;
+    qDebug() << "Starting game from: " << gameId;
 
     emit startQmlApplication(gameModel);
 }
@@ -36,6 +36,14 @@ void CavokeClientModel::receivedGameIndexChangeInList(int newIndex) {
 }
 
 void CavokeClientModel::gotIndexToDownload(int index) {
-    qDebug() << gamesList[index].id;
-    emit downloadGame(gamesList[index].id);
+    gotGameIdToDownload(gamesList[index].id);
+}
+
+QString CavokeClientModel::getGameIdByIndex(int index) {
+    return gamesList[index].id;
+}
+
+void CavokeClientModel::gotGameIdToDownload(const QString &gameId) {
+    qDebug() << gameId;
+    emit downloadGame(gameId);
 }
