@@ -4,6 +4,7 @@
 #include <QDir>
 #include <QStandardPaths>
 #include <QString>
+#include <QUrl>
 
 namespace cache_manager {
 const QDir CACHE_DIR =
@@ -12,10 +13,10 @@ const QDir CACHE_DIR =
 const QDir APPS_DIR = CACHE_DIR.filePath("apps");
 const int BUFFER_SIZE = 1'000'000;
 
-QString get_cached_app_path(const QString &gameId);
+QUrl get_cached_app_path(const QString &gameId);
 
-QString save_zip_to_cache(const QFile *archive,
-                          const QString &gameId = "local-qml");
+QUrl save_zip_to_cache(const QFile *archive,
+                       const QString &gameId = "local-qml");
 
 void unzip_to_folder(const QFile &archive, const QDir &dest);
 

@@ -42,7 +42,7 @@ private slots:
     void createGameStart(int gameIndex);
     void joinGameStart(const QString &inviteCode);
     void downloadCurrentGame();
-    void preparationsDone();
+    void creatingJoiningGameDone();
     void createGameSendRequest();
     void gotSessionInfo(const SessionInfo &sessionInfo);
 

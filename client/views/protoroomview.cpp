@@ -12,11 +12,7 @@ ProtoRoomView::~ProtoRoomView() {
 
 void ProtoRoomView::updateStatus(CreatingGameStatus newStatus) {
     ui->statusLabel->setText(STATUS.at(newStatus));
-    if (newStatus == CreatingGameStatus::DONE) {
-        ui->joinGameButton->setEnabled(true);
-    } else {
-        ui->joinGameButton->setEnabled(false);
-    }
+    ui->joinGameButton->setEnabled(newStatus == CreatingGameStatus::DONE);
 }
 
 void ProtoRoomView::updateInviteCode(const QString &newInviteCode) {

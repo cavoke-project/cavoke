@@ -2,7 +2,7 @@
 #include <kzip.h>
 #include <QtDebug>
 
-QString cache_manager::get_cached_app_path(const QString &gameId) {
+QUrl cache_manager::get_cached_app_path(const QString &gameId) {
     QDir cur_app_dir =
         QDir(APPS_DIR.filePath(gameId + "/client"));  // Seems bad
     if (!cur_app_dir.exists()) {
@@ -16,8 +16,8 @@ QString cache_manager::get_cached_app_path(const QString &gameId) {
     return qml_file.fileName();
 }
 
-QString cache_manager::save_zip_to_cache(const QFile *archive_file,
-                                         const QString &gameId) {
+QUrl cache_manager::save_zip_to_cache(const QFile *archive_file,
+                                      const QString &gameId) {
     QFileInfo archiveFileInfo(archive_file->fileName());
     QDir app_dir(APPS_DIR.filePath(gameId));
 

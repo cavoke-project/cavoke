@@ -54,7 +54,7 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(receivedGameIndexChange(int)));
     connect(&model, SIGNAL(updateSelectedGame(GameInfo)), &createGameView,
             SLOT(gotNewSelectedGame(GameInfo)));
-    
+
     connect(&createGameView, SIGNAL(startedCreateGameRoutine(int)), this,
             SLOT(createGameStart(int)));
     connect(this, SIGNAL(createGameDownloaded()), this,
@@ -67,7 +67,8 @@ CavokeClientController::CavokeClientController(QObject *parent)
     // joinGameView workflow
     connect(&joinGameView, SIGNAL(joinedGame(QString)), this,
             SLOT(joinGameStart(QString)));
-    connect(this, SIGNAL(joinGameDownloaded()), this, SLOT(preparationsDone()));
+    connect(this, SIGNAL(joinGameDownloaded()), this,
+            SLOT(creatingJoiningGameDone()));
 
     // gamesListView actions
     connect(&gamesListView, SIGNAL(currentIndexChanged(int)), &model,
@@ -156,8 +157,8 @@ void CavokeClientController::exitApplication() {
 }
 
 void CavokeClientController::startQmlByGameId(const QString &gameId) {
-    currentQmlGameModel = new CavokeQmlGameModel(
-        QUrl(cache_manager::get_cached_app_path(gameId)));
+    currentQmlGameModel =
+        new CavokeQmlGameModel(cache_manager::get_cached_app_path(gameId));
     startQmlApplication(currentQmlGameModel);
     connect(currentQmlGameModel, SIGNAL(sendMoveToNetwork(QString)),
             &networkManager, SLOT(sendMove(QString)));
@@ -234,7 +235,7 @@ void CavokeClientController::gotSessionInfo(const SessionInfo &sessionInfo) {
     protoRoomView.updateInviteCode(sessionInfo.invite_code);
 
     if (status == CreateJoinControllerStatus::CREATING) {
-        preparationsDone();
+        creatingJoiningGameDone();
     } else if (status == CreateJoinControllerStatus::JOINING) {
         currentGameId = sessionInfo.game_id;
         protoRoomView.updateGameName(currentGameId);
@@ -242,7 +243,7 @@ void CavokeClientController::gotSessionInfo(const SessionInfo &sessionInfo) {
     }
 }
 
-void CavokeClientController::preparationsDone() {
+void CavokeClientController::creatingJoiningGameDone() {
     qDebug() << "Now creating/joining game preparations are done";
 
     protoRoomView.updateStatus(ProtoRoomView::CreatingGameStatus::DONE);
