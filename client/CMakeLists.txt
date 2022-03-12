@@ -35,7 +35,7 @@ add_executable(cavoke_client
         views/creategameview.cpp
         views/settingsview.cpp
         views/gameslistview.cpp
-        views/middlescreenview.cpp
+        views/protoroomview.cpp
         cache_manager.cpp
         network_manager.cpp
         gameinfo.cpp

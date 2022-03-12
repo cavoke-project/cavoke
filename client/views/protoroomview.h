@@ -4,16 +4,16 @@
 #include <QMainWindow>
 
 namespace Ui {
-class MiddleScreenView;
+class ProtoRoomView;
 }
 
 enum class CreatingGameStatus { UNKNOWN, DOWNLOAD, REQUESTED, DONE };
 
-class MiddleScreenView : public QMainWindow {
+class ProtoRoomView : public QMainWindow {
     Q_OBJECT
 public:
-    explicit MiddleScreenView(QWidget *parent = nullptr);
-    ~MiddleScreenView();
+    explicit ProtoRoomView(QWidget *parent = nullptr);
+    ~ProtoRoomView();
 
 public slots:
     void updateStatus(CreatingGameStatus newStatus);
@@ -28,7 +28,7 @@ private slots:
     void on_joinGameButton_clicked();
 
 private:
-    Ui::MiddleScreenView *ui;
+    Ui::ProtoRoomView *ui;
     const std::map<CreatingGameStatus, QString> STATUS = {
         {CreatingGameStatus::UNKNOWN, "Unknown"},
         {CreatingGameStatus::DOWNLOAD, "Downloading"},

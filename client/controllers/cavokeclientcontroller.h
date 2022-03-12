@@ -9,10 +9,10 @@
 #include "creategameview.h"
 #include "joingameview.h"
 #include "network_manager.h"
+#include "protoroomview.h"
 #include "settingsview.h"
 #include "startview.h"
 #include "testwindowview.h"
-#include "middlescreenview.h"
 
 class CavokeClientController : public QObject {
     Q_OBJECT
@@ -35,16 +35,15 @@ signals:
 private slots:
     void startQmlApplication(CavokeQmlGameModel *);
     void exitApplication();
-    void startQmlByPath(const QString &path);
     void startQmlByName(const QString &name);
     void stopQml();
     void unpackDownloadedQml(QFile *file, const QString &app_name);
     void createGameDownload(int gameIndex);
     void createGameSendRequest();
-    void createGameShowMiddleScreen(const QString &inviteCode);
+    void createGameShowProtoRoomView(const QString &inviteCode);
     void joinGameRequest(const QString &inviteCode);
     void joinGameDownload(const QString &app_name);
-    void joinGameShowMiddleScreen();
+    void joinGameShowProtoRoomView();
 
 private:
     NetworkManager networkManager;
@@ -55,7 +54,7 @@ private:
     CreateGameView createGameView;
     GamesListView gamesListView;
     SettingsView settingsView;
-    MiddleScreenView middleScreenView;
+    ProtoRoomView protoRoomView;
     CavokeQmlGameModel *currentQmlGameModel = nullptr;
     bool isCreatingSession = false; // FIXME: oh no, flags
     bool isJoiningSession = false; // FIXME: oh no, flags
