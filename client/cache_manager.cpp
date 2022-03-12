@@ -2,7 +2,7 @@
 #include <kzip.h>
 #include <QtDebug>
 
-QString cache_manager::get_cached_app_path(QString app_name) {
+QString cache_manager::get_cached_app_path(const QString &app_name) {
     QDir cur_app_dir =
         QDir(APPS_DIR.filePath(app_name + "/client"));  // Seems bad
     if (!cur_app_dir.exists()) {
@@ -19,8 +19,6 @@ QString cache_manager::get_cached_app_path(QString app_name) {
 QString cache_manager::save_zip_to_cache(const QFile *archive_file,
                                          const QString &app_name) {
     QFileInfo archiveFileInfo(archive_file->fileName());
-    //    QString app_name = archiveFileInfo.baseName(); // always client,
-    //    useless
     QDir app_dir(APPS_DIR.filePath(app_name));
 
     if (app_dir.exists()) {
@@ -36,7 +34,7 @@ void cache_manager::unzip_to_folder(const QFile &archive_file,
                                     const QDir &dest_dir) {
     if (!archive_file.exists()) {
         qDebug() << "Can not unpack the archive: " << archive_file.fileName()
-                 << " does not exists\n";
+                 << " does not exist\n";
         return;
     }
     dest_dir.mkpath(".");

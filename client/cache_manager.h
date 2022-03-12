@@ -11,7 +11,7 @@ namespace cache_manager {
     const QDir APPS_DIR = CACHE_DIR.filePath("apps");
     const int BUFFER_SIZE = 1'000'000;
 
-    QString get_cached_app_path(QString app_name);
+    QString get_cached_app_path(const QString& app_name);
 
     QString save_zip_to_cache(const QFile *archive, const QString& app_name = "local-qml");
 
