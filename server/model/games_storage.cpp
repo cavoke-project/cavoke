@@ -31,7 +31,8 @@ std::vector<Game> GamesStorage::list_games() {
     update();
 
     std::vector<Game> result;
-    for (auto e : m_games) {
+    for (const auto &e : m_games) {
+        // cppcheck-suppress useStlAlgorithm
         result.emplace_back(e.second);
     }
     return result;
