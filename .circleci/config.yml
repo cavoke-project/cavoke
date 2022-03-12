@@ -104,5 +104,5 @@ workflows:
   codestyle:
     jobs:
       - clangformat-master
-      - clangtidy-master
+#      - clangtidy-master
       - cppcheck-master
