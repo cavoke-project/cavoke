@@ -66,14 +66,10 @@ jobs:
   clangformat-master:
     docker:
       - image: ubuntu
-    filters:
-      branches:
-        only:
-          - master
     steps:
       - run:
           name: Install Clangformat
-          run: apt update && apt install clang-format-12 -y
+          command: apt update && apt install clang-format-12 -y
       - checkout
       - run:
           name: Clangformat
@@ -81,14 +77,10 @@ jobs:
   clangtidy-master:
     docker:
       - image: ubuntu
-    filters:
-      branches:
-        only:
-          - master
     steps:
       - run:
           name: Install Clang-tidy
-          run: apt update && apt install clang-tidy-12 -y
+          command: apt update && apt install clang-tidy-12 -y
       - checkout
       - run:
           name: Clang-tidy
@@ -96,14 +88,10 @@ jobs:
   cppcheck-master:
     docker:
       - image: ubuntu
-    filters:
-      branches:
-        only:
-          - master
     steps:
       - run:
           name: Install Cppcheck
-          run: apt update && apt install cppcheck -y
+          command: apt update && apt install cppcheck -y
       - checkout
       - run:
           name: Cppcheck
@@ -115,8 +103,18 @@ workflows:
       - client-suse-qt5-notests
       - client-suse-qt6-notests
       - server-docker-healthcheck
+      - games-docker
   codestyle:
     jobs:
-      - clangformat-master
-      - clangtidy-master
-      - cppcheck-master
+      - clangformat-master:
+          filters:
+            branches:
+              only: master
+      - clangtidy-master:
+          filters:
+            branches:
+              only: master
+      - cppcheck-master:
+          filters:
+            branches:
+              only: master
