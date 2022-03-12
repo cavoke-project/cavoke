@@ -35,14 +35,14 @@ signals:
 private slots:
     void startQmlApplication(CavokeQmlGameModel *);
     void exitApplication();
-    void startQmlByName(const QString &name);
+    void startQmlByGameId(const QString &gameId);
     void stopQml();
-    void unpackDownloadedQml(QFile *file, const QString &app_name);
+    void unpackDownloadedQml(QFile *file, const QString &gameId);
     void createGameDownload(int gameIndex);
     void createGameSendRequest();
     void createGameShowProtoRoomView(const QString &inviteCode);
     void joinGameRequest(const QString &inviteCode);
-    void joinGameDownload(const QString &app_name);
+    void joinGameDownload(const QString &gameId);
     void joinGameShowProtoRoomView();
 
 private:

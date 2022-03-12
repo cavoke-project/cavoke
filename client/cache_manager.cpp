@@ -2,9 +2,9 @@
 #include <kzip.h>
 #include <QtDebug>
 
-QString cache_manager::get_cached_app_path(const QString &app_name) {
+QString cache_manager::get_cached_app_path(const QString &gameId) {
     QDir cur_app_dir =
-        QDir(APPS_DIR.filePath(app_name + "/client"));  // Seems bad
+        QDir(APPS_DIR.filePath(gameId + "/client"));  // Seems bad
     if (!cur_app_dir.exists()) {
         return QString();
     }
@@ -17,9 +17,9 @@ QString cache_manager::get_cached_app_path(const QString &app_name) {
 }
 
 QString cache_manager::save_zip_to_cache(const QFile *archive_file,
-                                         const QString &app_name) {
+                                         const QString &gameId) {
     QFileInfo archiveFileInfo(archive_file->fileName());
-    QDir app_dir(APPS_DIR.filePath(app_name));
+    QDir app_dir(APPS_DIR.filePath(gameId));
 
     if (app_dir.exists()) {
         app_dir.removeRecursively();

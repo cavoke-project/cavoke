@@ -82,7 +82,7 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(updateGamesList(QJsonArray)));
     connect(&model, SIGNAL(gamesListUpdated(std::vector<GameInfo>)),
             &createGameView, SLOT(gotGamesListUpdate(std::vector<GameInfo>)));
-    
+
     // Download and unpack game workflow
     connect(&model, SIGNAL(downloadGame(QString)), &networkManager,
             SLOT(getGamesClient(QString)));
@@ -91,7 +91,7 @@ CavokeClientController::CavokeClientController(QObject *parent)
 
     // protoRoomView actions
     connect(&protoRoomView, SIGNAL(joinedCreatedGame(QString)), this,
-            SLOT(startQmlByName(QString)));
+            SLOT(startQmlByGameId(QString)));
 
     startView.show();
 
@@ -150,16 +150,15 @@ void CavokeClientController::exitApplication() {
     startView.close();
 }
 
-void CavokeClientController::startQmlByName(const QString &name) {
-    currentQmlGameModel =
-        new CavokeQmlGameModel(QUrl(cache_manager::get_cached_app_path(name)));
+void CavokeClientController::startQmlByGameId(const QString &gameId) {
+    currentQmlGameModel = new CavokeQmlGameModel(
+        QUrl(cache_manager::get_cached_app_path(gameId)));
     startQmlApplication(currentQmlGameModel);
     connect(currentQmlGameModel, SIGNAL(sendMoveToNetwork(QString)),
             &networkManager, SLOT(sendMove(QString)));
     connect(&networkManager, SIGNAL(gotGameUpdate(QString)),
             currentQmlGameModel, SLOT(getUpdateFromNetwork(QString)));
     connect(currentQmlGameModel, SIGNAL(closingQml()), this, SLOT(stopQml()));
-    joinGameView.close();
     networkManager.startPolling();
 }
 
@@ -170,8 +169,8 @@ void CavokeClientController::stopQml() {
 }
 
 void CavokeClientController::unpackDownloadedQml(QFile *file,
-                                                 const QString &app_name) {
-    cache_manager::save_zip_to_cache(file, app_name);
+                                                 const QString &gameId) {
+    cache_manager::save_zip_to_cache(file, gameId);
     qDebug() << "UnpackDownloadedQml Finished";
     file->deleteLater();
     if (isCreatingSession) {
@@ -224,13 +223,13 @@ void CavokeClientController::joinGameRequest(const QString &inviteCode) {
     joinGameView.close();
     protoRoomView.show();
 }
-void CavokeClientController::joinGameDownload(const QString &app_name) {
-    qDebug() << "Now we are joinGameDownload with app_name: " << app_name;
+void CavokeClientController::joinGameDownload(const QString &gameId) {
+    qDebug() << "Now we are joinGameDownload with gameId: " << gameId;
 
-    protoRoomView.updateGameName(app_name);
+    protoRoomView.updateGameName(gameId);
     protoRoomView.updateStatus(CreatingGameStatus::DOWNLOAD);
 
-    networkManager.getGamesClient(app_name);
+    networkManager.getGamesClient(gameId);
 }
 void CavokeClientController::joinGameShowProtoRoomView() {
     qDebug() << "Now we are joinGameShowProtoRoomView";

@@ -61,7 +61,7 @@ void NetworkManager::getGamesClient(const QString &gameId) {
 }
 
 void NetworkManager::gotGamesClient(QNetworkReply *reply,
-                                    const QString &app_name) {
+                                    const QString &gameId) {
     if (reply->error()) {
         qDebug() << reply->errorString();
         return;
@@ -73,7 +73,7 @@ void NetworkManager::gotGamesClient(QNetworkReply *reply,
         file->flush();
         file->close();
     }
-    emit downloadedGameFile(file, app_name);
+    emit downloadedGameFile(file, gameId);
     // End of the part
     reply->close();
     reply->deleteLater();

@@ -32,9 +32,9 @@ public slots:
 signals:
     void finalizedGamesList(QJsonArray list);
     void gotGameUpdate(const QString &jsonField);
-    void downloadedGameFile(QFile *file, const QString &app_name);
+    void downloadedGameFile(QFile *file, const QString &gameId);
     void gotSessionInfo(const QString &inviteCode);
-    void gotJoinedSessionInfo(const QString &appName);
+    void gotJoinedSessionInfo(const QString &gameId);
 
 private slots:
     void gotHealth(QNetworkReply *reply);
@@ -44,7 +44,7 @@ private slots:
     void gotSessionJoined(QNetworkReply *reply);
     void gotPostResponse(QNetworkReply *reply);
     void gotUpdate(QNetworkReply *reply);
-    void gotGamesClient(QNetworkReply *reply, const QString &app_name);
+    void gotGamesClient(QNetworkReply *reply, const QString &gameId);
 
 private:
     QNetworkAccessManager manager;
