@@ -14,7 +14,7 @@ jobs:
           command: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=5
       - run:
           name: Make
-          command: make cavoke_client
+          command: cd build && make cavoke_client
   client-suse-qt6-notests:
     docker:
       - image: kdeorg/ci-suse-qt62
@@ -28,7 +28,7 @@ jobs:
           command: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=6  # QT_MAJOR_VERSION=6 by default, so not necessary
       - run:
           name: Make
-          command: make cavoke_client
+          command: cd build && make cavoke_client
   server-docker-healthcheck:
     docker:
       - image: ghcr.io/cavoke-project/cavoke_ci:drogon # TODO: use circleci orbs
@@ -42,7 +42,7 @@ jobs:
           command: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
       - run:
           name: Make
-          command: make cavoke_server
+          command: cd build && make cavoke_server
       - run:
           name: Simple healthcheck
           command: chmod +x .circleci/server-test-health.py && .circleci/server-test-health.py ./server/cavoke_server
@@ -59,7 +59,7 @@ jobs:
           command: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_GAMES=ON
       - run:
           name: Make
-          command: make all
+          command: cd build && make all
       - run:
           name: Simple healthcheck
           command: chmod +x .circleci/server-test-health.py && .circleci/server-test-health.py ./server/cavoke_server
