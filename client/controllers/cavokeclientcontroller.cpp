@@ -84,6 +84,8 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(updateGamesList(QJsonArray)));
     connect(&model, SIGNAL(gamesListUpdated(std::vector<GameInfo>)),
             &createGameView, SLOT(gotGamesListUpdate(std::vector<GameInfo>)));
+    connect(&model, SIGNAL(gamesListUpdated(std::vector<GameInfo>)),
+            &gamesListView, SLOT(gotGamesListUpdate(std::vector<GameInfo>)));
 
     // Download and unpack game workflow
     connect(&model, SIGNAL(downloadGame(QString)), &networkManager,
