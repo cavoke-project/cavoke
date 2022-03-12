@@ -46,10 +46,77 @@ jobs:
       - run:
           name: Simple healthcheck
           command: chmod +x .circleci/server-test-health.py && .circleci/server-test-health.py ./server/cavoke_server
+  games-docker:
+    docker:
+      - image: ghcr.io/cavoke-project/cavoke_ci:drogon # TODO: use circleci orbs
+        auth:
+          username: $GHCR_USERNAME
+          password: $GHCR_PASSWORD
+    steps:
+      - checkout
+      - run:
+          name: Cmake
+          command: cmake . -DBUILD_ALL=OFF -DBUILD_GAMES=ON
+      - run:
+          name: Make
+          command: make cavoke_server
+      - run:
+          name: Simple healthcheck
+          command: chmod +x .circleci/server-test-health.py && .circleci/server-test-health.py ./server/cavoke_server
+  clangformat-master:
+    docker:
+      - image: ubuntu
+    filters:
+      branches:
+        only:
+          - master
+    steps:
+      - run:
+          name: Install Clangformat
+          run: apt update && apt install clang-format-12 -y
+      - checkout
+      - run:
+          name: Clangformat
+          command: for file in $(find . -iname '*.cpp' -or -iname '*.c' -or -iname '*.h' -and -not -iname 'doctest.h' ); do diff -u <(cat "$file") <(clang-format-12 "$file") || exit 1; done
+  clangtidy-master:
+    docker:
+      - image: ubuntu
+    filters:
+      branches:
+        only:
+          - master
+    steps:
+      - run:
+          name: Install Clang-tidy
+          run: apt update && apt install clang-tidy-12 -y
+      - checkout
+      - run:
+          name: Clang-tidy
+          command: clang-tidy-12 -extra-arg=-Iinclude  -extra-arg=-Idoctest $(find . -path '*/CMakeFiles/*' -prune -or \( -iname '*.cpp' -and -not -iname '*_test.cpp' -or -iname '*.h' -and -not -iname 'doctest.h' \) -print)
+  cppcheck-master:
+    docker:
+      - image: ubuntu
+    filters:
+      branches:
+        only:
+          - master
+    steps:
+      - run:
+          name: Install Cppcheck
+          run: apt update && apt install cppcheck -y
+      - checkout
+      - run:
+          name: Cppcheck
+          command: cppcheck --language=c++ -DSOME_DEFINE_TO_FIX_CONFIG --enable=all --suppress=*:doctest.h --suppress=unusedFunction --error-exitcode=1 --inline-suppr $(find . -iname '*.cpp')
 
 workflows:
-  client-workflow:
+  app:
     jobs:
       - client-suse-qt5-notests
       - client-suse-qt6-notests
       - server-docker-healthcheck
+  codestyle:
+    jobs:
+      - clangformat-master
+      - clangtidy-master
+      - cppcheck-master
