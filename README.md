@@ -1,4 +1,4 @@
-<a href="https://wikirace.wlko.me">
+<a href="https://github.com/cavoke-project/cavoke">
   <img align="left" height="80px" src="https://avatars.githubusercontent.com/u/52053547?s=200&v=4">
 </a>
 <h1 style="display: inline;">
