@@ -18,7 +18,7 @@ public:
     GameSession::GameSessionInfo join_session(const std::string &invite_code,
                                               const std::string &user_id);
 
-    GameSession &get_session(const std::string &session_id);
+    GameSession *get_session(const std::string &session_id);
 
 private:
     std::map<std::string, GameSession> m_sessions{};

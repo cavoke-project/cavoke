@@ -61,11 +61,11 @@ cavoke::server::model::SessionsStorage::join_session(
  *
  * Throws `game_session_error` if no such session
  */
-cavoke::server::model::GameSession &
+cavoke::server::model::GameSession *
 cavoke::server::model::SessionsStorage::get_session(
     const std::string &session_id) {
     try {  // slow?
-        return m_sessions.at(session_id);
+        return &m_sessions.at(session_id);
     } catch (const std::out_of_range &) {
         throw game_session_error("session does not exist: '" + session_id +
                                  "'");

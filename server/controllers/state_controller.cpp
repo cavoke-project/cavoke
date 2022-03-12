@@ -3,6 +3,8 @@
 
 namespace cavoke::server::controllers {
 
+using json = nlohmann::json;
+
 void StateController::send_move(
     const drogon::HttpRequestPtr &req,
     std::function<void(const drogon::HttpResponsePtr &)> &&callback,
@@ -17,43 +19,42 @@ void StateController::send_move(
         return;
     }
 
-    // TODO: do we want `try-catch` or `optional`?
-    model::GameSession::GameSessionInfo session_info;
-    int player_id;
+    model::GameSession *session;
     try {
-        auto &session = m_participation_storage->get_session(session_id);
-        session_info = session.get_session_info();
-        player_id = session.get_player_id(user_id.value());
+        session = m_participation_storage->get_session(session_id);
     } catch (const model::game_session_error &) {
         return CALLBACK_STATUS_CODE(k400BadRequest);
     }
+    int player_id = session->get_player_id(user_id.value());
+    auto session_info = session->get_session_info();
 
-    // TODO: nlohman/json
-    std::string body(req->getBody());
-    Json::Reader reader;
-    Json::Value json_body;
-    bool valid_json = reader.parse(body, json_body);
-    if (!valid_json || !json_body.isMember("move")) {
+    json json_body;
+    try {
+        json_body = json::parse(req->getBody());
+    } catch (const json::parse_error &) {
+        return CALLBACK_STATUS_CODE(k400BadRequest);
+    }
+    if (!json_body.contains("move")) {
         return CALLBACK_STATUS_CODE(k400BadRequest);
     }
 
-    std::string move = json_body["move"].asString();
+    std::string move = json_body["move"];
 
-    std::optional<model::GameStateStorage::GameState> current_state =
-        m_game_state_storage->get_state(session_id);
-
-    if (!current_state.has_value()) {
-        return CALLBACK_STATUS_CODE(k400BadRequest);
+    const model::GameStateStorage::GameState *current_state;
+    try {
+        current_state = m_game_state_storage->get_state(session_id);
+    } catch (const model::game_state_error &) {
+        return CALLBACK_STATUS_CODE(k404NotFound);
     }
 
     if (current_state->is_terminal) {
         return CALLBACK_STATUS_CODE(k403Forbidden);
     }
 
-    current_state = m_game_logic_manager->send_move(
+    auto next_state = m_game_logic_manager->send_move(
         session_info.game_id, {player_id, move, current_state->global_state});
 
-    m_game_state_storage->save_state(session_id, current_state.value());
+    m_game_state_storage->save_state(session_id, next_state);
 
     auto resp = drogon::HttpResponse::newHttpResponse();
     resp->setStatusCode(drogon::HttpStatusCode::k200OK);
@@ -74,29 +75,35 @@ void StateController::get_state(
         return;
     }
 
-    // TODO: do we want `try-catch` or `optional`?
-    int player_id;
+    model::GameSession *session;
     try {
-        player_id = m_participation_storage->get_session(session_id)
-                        .get_player_id(user_id.value());
+        session = m_participation_storage->get_session(session_id);
     } catch (const model::game_session_error &) {
-        return CALLBACK_STATUS_CODE(k403Forbidden);
+        return CALLBACK_STATUS_CODE(k400BadRequest);
+    }
+    int player_id = session->get_player_id(user_id.value());
+    auto session_info = session->get_session_info();
+
+    const std::string *player_state;
+    try {
+        player_state =
+            m_game_state_storage->get_player_state(session_id, player_id);
+    } catch (const model::game_state_error &) {
     }
 
-    auto state = m_game_state_storage->get_player_state(session_id, player_id);
-
-    if (!state.has_value()) {
-        auto resp = drogon::HttpResponse::newNotFoundResponse();
-        callback(resp);
-        return;
+    json resp_json;
+    resp_json["state"] = *player_state;
+    auto game_state = m_game_state_storage->get_state(session_id);
+    resp_json["is_terminal"] = game_state->is_terminal;
+    if (game_state->is_terminal) {
+        std::vector<std::string> winners;
+        for (const auto &e : game_state->winners) {
+            winners.push_back(session->get_user_id(e));
+        }
+        resp_json["winners"] = winners;
     }
 
-    Json::Value resp_json;
-    resp_json["state"] = state.value();
-    resp_json["is_terminal"] =
-        m_game_state_storage->get_state(session_id)->is_terminal;
-    auto resp = drogon::HttpResponse::newHttpJsonResponse(resp_json);
-    resp->setStatusCode(drogon::HttpStatusCode::k200OK);
+    auto resp = newNlohmannJsonResponse(resp_json);
     callback(resp);
 }
 

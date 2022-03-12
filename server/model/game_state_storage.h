@@ -6,8 +6,14 @@
 #include <optional>
 #include <string>
 #include <vector>
+#include "cavoke_base_exception.h"
 
 namespace cavoke::server::model {
+
+/// exception for errors thrown during actions with game states
+struct game_state_error : cavoke_base_exception {
+    explicit game_state_error(std::string message);
+};
 
 class GameStateStorage {  // TODO: thread safety
 public:
@@ -18,13 +24,11 @@ public:
         std::vector<int> winners;
     };
 
-    static GameState parse_state(const std::string &s);
-
     void save_state(const std::string &session_id, GameState new_state);
 
-    std::optional<GameState> get_state(const std::string &session_id);
+    const GameState *get_state(const std::string &session_id);
 
-    std::optional<std::string> get_player_state(const std::string &session_id,
+    const std::string *get_player_state(const std::string &session_id,
                                                 int player_id);
 
 private:
