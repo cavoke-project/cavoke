@@ -9,14 +9,11 @@ CavokeClientController::CavokeClientController(QObject *parent)
       joinGameView{},
       settingsView{},
       protoRoomView{} {
-    connect(this, SIGNAL(loadGamesList()), &networkManager,
-            SLOT(getGamesList()));
-
-    connect(&testWindowView, SIGNAL(startGame(QString)), &model,
-            SLOT(loadQmlGame(QString)));
+    // startQml connection
     connect(&model, SIGNAL(startQmlApplication(CavokeQmlGameModel *)), this,
             SLOT(startQmlApplication(CavokeQmlGameModel *)));
 
+    // All back buttons
     connect(&testWindowView, SIGNAL(shownStartView()), this,
             SLOT(showStartView()));
     connect(&joinGameView, SIGNAL(shownStartView()), this,
@@ -28,6 +25,7 @@ CavokeClientController::CavokeClientController(QObject *parent)
     connect(&settingsView, SIGNAL(shownStartView()), this,
             SLOT(showStartView()));
 
+    // Main navigation buttons from startView
     connect(&startView, SIGNAL(shownTestWindowView()), this,
             SLOT(showTestWindowView()));
     connect(&startView, SIGNAL(shownJoinGameView()), this,
@@ -39,56 +37,59 @@ CavokeClientController::CavokeClientController(QObject *parent)
     connect(&startView, SIGNAL(shownSettingsView()), this,
             SLOT(showSettingsView()));
 
+    // startView Exit button
     connect(&startView, SIGNAL(clickedExitButton()), this,
             SLOT(exitApplication()), Qt::QueuedConnection);
 
+    // testWindowView actions
+    connect(&testWindowView, SIGNAL(startGame(QString)), &model,
+            SLOT(loadQmlGame(QString)));
     connect(&testWindowView, SIGNAL(testHealthConnectionButton()),
             &networkManager, SLOT(getHealth()));
 
-    connect(&networkManager, SIGNAL(finalizedGamesList(QJsonArray)), &model,
-            SLOT(updateGamesList(QJsonArray)));
-    connect(&model, SIGNAL(gamesListUpdated(std::vector<GameInfo>)),
-            &createGameView, SLOT(gotGamesListUpdate(std::vector<GameInfo>)));
-
-    connect(&model, SIGNAL(gamesListUpdated(std::vector<GameInfo>)),
-            &gamesListView, SLOT(gotGamesListUpdate(std::vector<GameInfo>)));
-
+    // createGameView actions
     connect(&createGameView, SIGNAL(currentIndexChanged(int)), &model,
             SLOT(receivedGameIndexChange(int)));
     connect(&model, SIGNAL(updateSelectedGame(GameInfo)), &createGameView,
             SLOT(gotNewSelectedGame(GameInfo)));
+    connect(&createGameView, SIGNAL(startedCreateGameRoutine(int)), this,
+            SLOT(createGameDownload(int)));
+    connect(this, SIGNAL(createGameDownloaded()), this,
+            SLOT(createGameSendRequest()));
+    connect(&networkManager, SIGNAL(gotSessionInfo(QString)), this,
+            SLOT(createGameShowProtoRoomView(QString)));
 
+    // joinGameView workflow
+    connect(&joinGameView, SIGNAL(joinedGame(QString)), this,
+            SLOT(joinGameRequest(QString)));
+    connect(&networkManager, SIGNAL(gotJoinedSessionInfo(QString)), this,
+            SLOT(joinGameDownload(QString)));
+    connect(this, SIGNAL(joinGameDownloaded()), this,
+            SLOT(joinGameShowProtoRoomView()));
+
+    // gamesListView actions
     connect(&gamesListView, SIGNAL(currentIndexChanged(int)), &model,
             SLOT(receivedGameIndexChangeInList(int)));
     connect(&model, SIGNAL(updateSelectedGameInList(GameInfo)), &gamesListView,
             SLOT(gotNewSelectedGame(GameInfo)));
-
-    connect(&joinGameView, SIGNAL(joinedGame(QString)), this,
-            SLOT(joinGameRequest(QString)));
-
-    connect(&networkManager, SIGNAL(gotJoinedSessionInfo(QString)), this,
-            SLOT(joinGameDownload(QString)));
-
-    connect(this, SIGNAL(joinGameDownloaded()), this,
-            SLOT(joinGameShowProtoRoomView()));
-
     connect(&gamesListView, SIGNAL(requestedDownloadGame(int)), &model,
             SLOT(gotIndexToDownload(int)));
+
+    // Download games list from server workflow
+    connect(this, SIGNAL(loadGamesList()), &networkManager,
+            SLOT(getGamesList()));
+    connect(&networkManager, SIGNAL(finalizedGamesList(QJsonArray)), &model,
+            SLOT(updateGamesList(QJsonArray)));
+    connect(&model, SIGNAL(gamesListUpdated(std::vector<GameInfo>)),
+            &createGameView, SLOT(gotGamesListUpdate(std::vector<GameInfo>)));
+    
+    // Download and unpack game workflow
     connect(&model, SIGNAL(downloadGame(QString)), &networkManager,
             SLOT(getGamesClient(QString)));
-
     connect(&networkManager, SIGNAL(downloadedGameFile(QFile *, QString)), this,
             SLOT(unpackDownloadedQml(QFile *, QString)));
 
-    connect(&createGameView, SIGNAL(startedCreateGameRoutine(int)), this,
-            SLOT(createGameDownload(int)));
-
-    connect(this, SIGNAL(createGameDownloaded()), this,
-            SLOT(createGameSendRequest()));
-
-    connect(&networkManager, SIGNAL(gotSessionInfo(QString)), this,
-            SLOT(createGameShowProtoRoomView(QString)));
-
+    // protoRoomView actions
     connect(&protoRoomView, SIGNAL(joinedCreatedGame(QString)), this,
             SLOT(startQmlByName(QString)));
 
@@ -139,9 +140,6 @@ void CavokeClientController::startQmlApplication(
         return;
     }
     qmlView->show();
-
-    // Test
-    emit gameModel->receiveUpdate("c++ -> qml working!");
 }
 
 void CavokeClientController::exitApplication() {
