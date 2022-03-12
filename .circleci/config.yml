@@ -66,11 +66,11 @@ jobs:
     steps:
       - run:
           name: Install Clangformat
-          command: apt update && apt install clang-format-12 -y
+          command: apt update && apt install clang-format -y
       - checkout
       - run:
           name: Clangformat
-          command: for file in $(find . -iname '*.cpp' -or -iname '*.c' -or -iname '*.h' -and -not -iname 'doctest.h' ); do diff -u <(cat "$file") <(clang-format-12 "$file") || exit 1; done
+          command: for file in $(find . -iname '*.cpp' -or -iname '*.c' -or -iname '*.h' -and -not -iname 'doctest.h' ); do diff -u <(cat "$file") <(clang-format "$file") || exit 1; done
   clangtidy-master:
     docker:
       - image: ubuntu
