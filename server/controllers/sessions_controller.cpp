@@ -45,7 +45,8 @@ void cavoke::server::controllers::SessionsController::create(
     auto current_occupied_positions = session->get_occupied_positions();
     std::string validation_message;
     bool validation_success = m_game_logic_manager->validate_settings(
-        current_settings, current_occupied_positions, validation_message);
+        game_id.value(), current_settings, current_occupied_positions,
+        validation_message);
 
     if (!validation_success) {
         return callback(
