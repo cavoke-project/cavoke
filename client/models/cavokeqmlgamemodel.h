@@ -6,11 +6,9 @@
 #include <QUrl>
 #include <QtCore/QUuid>
 #include <QtQuick/QtQuick>
-#include "tictactoelogic.h"
 
 class CavokeQmlGameModel : public QObject {
     Q_OBJECT
-    tictactoe::tictactoelogic logic{};
 
 public:
     explicit CavokeQmlGameModel(QUrl qmlPath, QObject *parent = nullptr);
