@@ -33,9 +33,7 @@ struct InitSettings {
     json settings;
     std::vector<int> occupied_positions;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(InitSettings,
-                                   settings,
-                                   occupied_positions);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(InitSettings, settings, occupied_positions);
 
 struct ValidationResult {
     bool success;

@@ -15,7 +15,7 @@
 #include "testwindowview.h"
 
 class CavokeClientController : public QObject {
-    enum class CreateJoinControllerStatus {NOTHING, CREATING, JOINING};
+    enum class CreateJoinControllerStatus { NOTHING, CREATING, JOINING };
     Q_OBJECT
 public:
     explicit CavokeClientController(QObject *parent = nullptr);
