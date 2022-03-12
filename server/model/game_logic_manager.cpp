@@ -1,4 +1,9 @@
 #include "game_logic_manager.h"
+// workaround for a boost bug...
+// https://github.com/boostorg/process/issues/96
+#ifndef __kernel_entry
+#define __kernel_entry
+#endif
 #include <boost/process.hpp>
 #include <utility>
 
