@@ -11,7 +11,7 @@ jobs:
       - checkout
       - run:
           name: Cmake
-          command: cmake . -DBUILD_SERVER=OFF -DBUILD_GAMES=OFF -DQT_MAJOR_VERSION=5  # TODO: enable cmake targets by choice
+          command: cmake . -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=5
       - run:
           name: Make
           command: make cavoke_client
@@ -25,7 +25,7 @@ jobs:
           command: chmod +x .circleci/suse-qt6-install-karchive.sh && .circleci/suse-qt6-install-karchive.sh
       - run:
           name: Cmake
-          command: cmake . -DBUILD_SERVER=OFF -DBUILD_GAMES=OFF -DQT_MAJOR_VERSION=6  # QT_MAJOR_VERSION=6 by default, so not necessary # TODO: enable cmake targets by choice
+          command: cmake . -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=6  # QT_MAJOR_VERSION=6 by default, so not necessary
       - run:
           name: Make
           command: make cavoke_client
@@ -39,7 +39,7 @@ jobs:
       - checkout
       - run:
           name: Cmake
-          command: cmake . -DBUILD_CLIENT=OFF
+          command: cmake . -DBUILD_ALL=OFF -DBUILD_SERVER=ON
       - run:
           name: Make
           command: make cavoke_server
