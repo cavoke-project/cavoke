@@ -9,15 +9,15 @@ class GamesListView;
 }
 
 class GamesListView : public QMainWindow {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit GamesListView(QWidget *parent = nullptr);
     ~GamesListView();
-    
+
 public slots:
     void gotGamesListUpdate(const std::vector<GameInfo> &newGamesList);
     void gotNewSelectedGame(const GameInfo &gameInfo);
-    
+
 signals:
     void shownStartView();
     void currentIndexChanged(int index);

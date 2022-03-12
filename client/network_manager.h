@@ -2,14 +2,14 @@
 #define CAVOKE_CLIENT_NETWORK_MANAGER_H
 
 #include <QUrlQuery>
+#include <QtCore/QFile>
 #include <QtCore/QJsonArray>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
+#include <QtCore/QTemporaryFile>
 #include <QtCore/QTimer>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
-#include <QtCore/QFile>
-#include <QtCore/QTemporaryFile>
 #include "sessioninfo.h"
 struct NetworkManager : public QObject {
     Q_OBJECT
@@ -25,7 +25,7 @@ public slots:
     void joinSession(const QString &inviteCode);
     void sendMove(const QString &jsonMove);
     void getUpdate();
-    
+
     void startPolling();
     void stopPolling();
 

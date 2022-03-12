@@ -33,6 +33,6 @@ void CreateGameView::gotNewSelectedGame(const GameInfo &gameInfo) {
     ui->createGameButton->setEnabled(true);
 }
 void CreateGameView::on_createGameButton_clicked() {
-//    this->close();
+    //    this->close();
     emit startedCreateGameRoutine(ui->gamesListComboBox->currentIndex());
 }
