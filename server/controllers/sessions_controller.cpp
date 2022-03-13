@@ -1,6 +1,10 @@
 #include "sessions_controller.h"
 
-void cavoke::server::controllers::SessionsController::create(
+namespace cavoke::server::controllers {
+
+using json = nlohmann::json;
+
+void SessionsController::create(
     const drogon::HttpRequestPtr &req,
     std::function<void(const drogon::HttpResponsePtr &)> &&callback) {
     // get user id
@@ -36,33 +40,10 @@ void cavoke::server::controllers::SessionsController::create(
     } catch (const model::game_session_error &err) {
         return callback(newCavokeErrorResponse(err, drogon::k400BadRequest));
     }
-    auto session =
-        m_participation_storage->get_session(session_info.session_id);
-
-    // configurate initial state for session
-    // TODO: get settings from body
-    auto current_settings = game.value().config.default_settings;
-    auto current_occupied_positions = session->get_occupied_positions();
-    std::string validation_message;
-    bool validation_success = m_game_logic_manager->validate_settings(
-        game_id.value(), current_settings, current_occupied_positions);
-
-    if (!validation_success) {
-        return callback(
-            newCavokeErrorResponse(model::validation_error(validation_message),
-                                   drogon::k400BadRequest));
-    }
-
-    m_game_state_storage->save_state(
-        session_info.session_id,
-        m_game_logic_manager->init_state(game_id.value(),
-                                         game.value().config.default_settings,
-                                         session->get_occupied_positions()));
-
     return callback(newNlohmannJsonResponse(session_info));
 }
 
-void cavoke::server::controllers::SessionsController::join(
+void SessionsController::join(
     const drogon::HttpRequestPtr &req,
     std::function<void(const drogon::HttpResponsePtr &)> &&callback) {
     // get user id
@@ -93,7 +74,8 @@ void cavoke::server::controllers::SessionsController::join(
 
     return callback(newNlohmannJsonResponse(session_info));
 }
-cavoke::server::controllers::SessionsController::SessionsController(
+
+SessionsController::SessionsController(
     std::shared_ptr<model::GamesStorage> mGamesStorage,
     std::shared_ptr<model::GameLogicManager> mGameLogicManager,
     std::shared_ptr<model::GameStateStorage> mGameStateStorage,
@@ -105,3 +87,103 @@ cavoke::server::controllers::SessionsController::SessionsController(
       m_participation_storage(std::move(mParticipationStorage)),
       m_authentication_manager(std::move(mAuthenticationManager)) {
 }
+
+void SessionsController::validate(
+    const drogon::HttpRequestPtr &req,
+    std::function<void(const drogon::HttpResponsePtr &)> &&callback,
+    const std::string &session_id) {
+    // get user id
+    auto user_id = req->getOptionalParameter<std::string>("user_id");
+    if (!user_id.has_value()) {
+        return CALLBACK_STATUS_CODE(k401Unauthorized);
+    }
+    // verify auth
+    if (!m_authentication_manager->verify_authentication(user_id.value())) {
+        return CALLBACK_STATUS_CODE(k401Unauthorized);
+    }
+
+    model::GameSession *session;
+    try {
+        session = m_participation_storage->get_session(session_id);
+    } catch (const model::game_session_error &err) {
+        return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
+    }
+
+    if (!session->is_player(user_id.value())) {
+        return CALLBACK_STATUS_CODE(k403Forbidden);
+    }
+
+    // session does exist
+    json result = m_participation_storage->validate_session(session_id);
+    if (result["success"].get<bool>()) {
+        result.erase(result.find("message"));
+    }
+    return callback(newNlohmannJsonResponse(result));
+}
+
+void SessionsController::start(
+    const drogon::HttpRequestPtr &req,
+    std::function<void(const drogon::HttpResponsePtr &)> &&callback,
+    const std::string &session_id) {
+    // get user id
+    auto user_id = req->getOptionalParameter<std::string>("user_id");
+    if (!user_id.has_value()) {
+        return CALLBACK_STATUS_CODE(k401Unauthorized);
+    }
+    // verify auth
+    if (!m_authentication_manager->verify_authentication(user_id.value())) {
+        return CALLBACK_STATUS_CODE(k401Unauthorized);
+    }
+
+    model::GameSession *session;
+    try {
+        session = m_participation_storage->get_session(session_id);
+    } catch (const model::game_session_error &err) {
+        return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
+    }
+
+    if (!session->is_player(user_id.value())) {
+        return CALLBACK_STATUS_CODE(k403Forbidden);
+    }
+
+    try {
+        // TODO: get settings from body
+        m_participation_storage->start_session(session_id);
+    } catch (const model::validation_error &err) {
+        return callback(newCavokeErrorResponse(err, drogon::k400BadRequest));
+    } catch (const model::game_session_error &err) {
+        return callback(newCavokeErrorResponse(err, drogon::k400BadRequest));
+    }
+
+    return CALLBACK_STATUS_CODE(k200OK);
+}
+
+void SessionsController::get_info(
+    const drogon::HttpRequestPtr &req,
+    std::function<void(const drogon::HttpResponsePtr &)> &&callback,
+    const std::string &session_id) {
+    // get user id
+    auto user_id = req->getOptionalParameter<std::string>("user_id");
+    if (!user_id.has_value()) {
+        return CALLBACK_STATUS_CODE(k401Unauthorized);
+    }
+    // verify auth
+    if (!m_authentication_manager->verify_authentication(user_id.value())) {
+        return CALLBACK_STATUS_CODE(k401Unauthorized);
+    }
+
+    model::GameSession *session;
+    try {
+        session = m_participation_storage->get_session(session_id);
+    } catch (const model::game_session_error &err) {
+        return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
+    }
+
+    if (!session->is_player(user_id.value())) {
+        return CALLBACK_STATUS_CODE(k403Forbidden);
+    }
+
+    return callback(newNlohmannJsonResponse(session->get_session_info()));
+}
+
+}  // namespace cavoke::server::controllers

@@ -105,14 +105,21 @@ void SessionsStorage::start_session(const std::string &session_id,
         throw validation_error(validation_result.message);
     }
 
+    m_game_state_storage->save_state(
+        session_id,
+        m_game_logic_manager->init_state(game_id, game_settings.value(),
+                                         session->get_occupied_positions()));
+
     session->start(game_settings.value());
 }
 
 SessionsStorage::SessionsStorage(
     std::shared_ptr<GameLogicManager> mGameLogicManager,
-    std::shared_ptr<GamesStorage> mGamesStorage)
+    std::shared_ptr<GamesStorage> mGamesStorage,
+    std::shared_ptr<GameStateStorage> mGameStateStorage)
     : m_game_logic_manager(std::move(mGameLogicManager)),
-      m_games_storage(std::move(mGamesStorage)) {
+      m_games_storage(std::move(mGamesStorage)),
+      m_game_state_storage(std::move(mGameStateStorage)) {
 }
 
 }  // namespace cavoke::server::model

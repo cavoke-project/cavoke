@@ -28,7 +28,11 @@ struct GameSession {
 
     void start(const json& game_settings);
 
+    void finish();
+
     [[nodiscard]] int get_player_id(const std::string &user_id) const;
+
+    [[nodiscard]] bool is_player(const std::string &user_id) const;
 
     [[nodiscard]] std::string get_user_id(int player_id) const;
 

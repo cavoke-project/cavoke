@@ -25,8 +25,22 @@ void StateController::send_move(
     } catch (const model::game_session_error &) {
         return CALLBACK_STATUS_CODE(k400BadRequest);
     }
-    int player_id = session->get_player_id(user_id.value());
+
+    int player_id;
+    try {
+        player_id = session->get_player_id(user_id.value());
+    } catch (const model::game_session_error &) {
+        return CALLBACK_STATUS_CODE(k403Forbidden);
+    }
+
     auto session_info = session->get_session_info();
+
+    if (session_info.status == model::GameSession::FINISHED) {
+        return CALLBACK_STATUS_CODE(k403Forbidden);
+    }
+    if (session_info.status == model::GameSession::NOT_STARTED) {
+        return CALLBACK_STATUS_CODE(k404NotFound);
+    }
 
     json json_body;
     try {
@@ -47,14 +61,14 @@ void StateController::send_move(
         return CALLBACK_STATUS_CODE(k404NotFound);
     }
 
-    if (current_state->is_terminal) {
-        return CALLBACK_STATUS_CODE(k403Forbidden);
-    }
-
     auto next_state = m_game_logic_manager->send_move(
         session_info.game_id, {player_id, move, current_state->global_state});
 
     m_game_state_storage->save_state(session_id, next_state);
+
+    if (next_state.is_terminal) {
+        session->finish();
+    }
 
     auto resp = drogon::HttpResponse::newHttpResponse();
     resp->setStatusCode(drogon::HttpStatusCode::k200OK);
@@ -79,10 +93,21 @@ void StateController::get_state(
     try {
         session = m_participation_storage->get_session(session_id);
     } catch (const model::game_session_error &) {
-        return CALLBACK_STATUS_CODE(k400BadRequest);
+        return CALLBACK_STATUS_CODE(k404NotFound);
     }
-    int player_id = session->get_player_id(user_id.value());
+
+    int player_id;
+    try {
+        player_id = session->get_player_id(user_id.value());
+    } catch (const model::game_session_error &) {
+        return CALLBACK_STATUS_CODE(k403Forbidden);
+    }
+
     auto session_info = session->get_session_info();
+
+    if (session_info.status == model::GameSession::NOT_STARTED) {
+        return CALLBACK_STATUS_CODE(k404NotFound);
+    }
 
     const std::string *player_state;
     try {

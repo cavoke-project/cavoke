@@ -1,5 +1,4 @@
 #include "game_logic_manager.h"
-#include "../../../games/cavoke.h"
 #include <boost/process.hpp>
 #include <utility>
 
@@ -36,7 +35,7 @@ std::string GameLogicManager::invoke_logic(const Game &game,
     return output;
 }
 
-ValidationResult GameLogicManager::validate_settings(
+GameLogicManager::ValidationResult GameLogicManager::validate_settings(
     const std::string &game_id,
     const json &settings,
     const std::vector<int> &occupied_positions) {

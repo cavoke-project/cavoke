@@ -29,11 +29,13 @@ public:
     GameSession *get_session(const std::string &session_id);
 
     SessionsStorage(std::shared_ptr<GameLogicManager> mGameLogicManager,
-                    std::shared_ptr<GamesStorage> mGamesStorage);
+                    std::shared_ptr<GamesStorage> mGamesStorage,
+                    std::shared_ptr<GameStateStorage> mGameStateStorage);
 
 private:
     std::shared_ptr<GameLogicManager> m_game_logic_manager;
     std::shared_ptr<GamesStorage> m_games_storage;
+    std::shared_ptr<GameStateStorage> m_game_state_storage;
     std::map<std::string, GameSession> m_sessions{};
     std::map<std::string, std::string> m_invite_codes_to_session_ids{};
 };

@@ -21,7 +21,7 @@ void run(const std::string &host,
         std::make_shared<model::GameLogicManager>(games_storage);
     auto game_state_storage = std::make_shared<model::GameStateStorage>();
     auto participation_storage = std::make_shared<model::SessionsStorage>(
-        game_logic_manager, game_state_storage);
+        game_logic_manager, games_storage, game_state_storage);
     auto authentication_manager =
         std::make_shared<model::AuthenticationManager>();
 

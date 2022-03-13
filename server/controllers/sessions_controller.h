@@ -3,8 +3,8 @@
 
 #include <drogon/HttpController.h>
 #include "model/auth/authentication_manager.h"
-#include "model/logic/game_logic_manager.h"
 #include "model/games/games_storage.h"
+#include "model/logic/game_logic_manager.h"
 #include "model/sessions/sessions_storage.h"
 
 namespace cavoke::server::controllers {
@@ -29,6 +29,15 @@ public:
     METHOD_LIST_BEGIN
     ADD_METHOD_TO(SessionsController::create, "/sessions/create", drogon::Post);
     ADD_METHOD_TO(SessionsController::join, "/sessions/join", drogon::Post);
+    ADD_METHOD_TO(SessionsController::get_info,
+                  "/sessions/{session_id}/get_info",
+                  drogon::Get);
+    ADD_METHOD_TO(SessionsController::start,
+                  "/sessions/{session_id}/start",
+                  drogon::Post);
+    ADD_METHOD_TO(SessionsController::validate,
+                  "/sessions/{session_id}/validate",
+                  drogon::Post);
     METHOD_LIST_END
 
 protected:
@@ -38,6 +47,20 @@ protected:
 
     void join(const drogon::HttpRequestPtr &req,
               std::function<void(const drogon::HttpResponsePtr &)> &&callback);
+
+    void validate(
+        const drogon::HttpRequestPtr &req,
+        std::function<void(const drogon::HttpResponsePtr &)> &&callback,
+        const std::string &session_id);
+
+    void start(const drogon::HttpRequestPtr &req,
+               std::function<void(const drogon::HttpResponsePtr &)> &&callback,
+               const std::string &session_id);
+
+    void get_info(
+        const drogon::HttpRequestPtr &req,
+        std::function<void(const drogon::HttpResponsePtr &)> &&callback,
+        const std::string &session_id);
 };
 
 }  // namespace cavoke::server::controllers

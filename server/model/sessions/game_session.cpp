@@ -117,4 +117,12 @@ void GameSession::start(const json &game_settings) {
     m_status = RUNNING;
 }
 
+bool GameSession::is_player(const std::string &user_id) const {
+    return m_userid_to_playerid.left.count(user_id) != 0;
+}
+
+void GameSession::finish() {
+    m_status = FINISHED;
+}
+
 }  // namespace cavoke::server::model
