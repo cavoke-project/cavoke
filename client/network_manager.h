@@ -10,8 +10,8 @@
 #include <QtCore/QTimer>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
-#include "sessioninfo.h"
-#include "validationresult.h"
+#include "entities/sessioninfo.h"
+#include "entities/validationresult.h"
 struct NetworkManager : public QObject {
     Q_OBJECT
 public:
