@@ -16,9 +16,10 @@ public:
         const GameConfig &game_config,
         const std::string &host_user_id);
 
-    GameSession::GameSessionInfo join_session(const std::string &invite_code,
-                                              const std::string &user_id,
-                                              std::optional<int> player_id = {});
+    GameSession::GameSessionInfo join_session(
+        const std::string &invite_code,
+        const std::string &user_id,
+        std::optional<int> player_id = {});
 
     void start_session(const std::string &session_id,
                        std::optional<json> game_settings = {});

@@ -29,7 +29,7 @@ public:
     const GameState *get_state(const std::string &session_id);
 
     const std::string *get_player_state(const std::string &session_id,
-                                                int player_id);
+                                        int player_id);
 
 private:
     std::map<std::string, GameState> m_states;
