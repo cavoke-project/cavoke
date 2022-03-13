@@ -41,7 +41,7 @@ add_executable(cavoke_client
         entities/validationresult.cpp
         cache_manager.cpp
         network_manager.cpp
-        )
+        entities/player.cpp)
 
 target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Widgets)
 target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Quick)
