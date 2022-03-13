@@ -30,37 +30,53 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>200</x>
+      <x>240</x>
       <y>60</y>
       <width>291</width>
       <height>71</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
     <property name="text">
-     <string>Join game view. Empty.</string>
+     <string>JOIN GAME</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="joinTicTacToeButton">
+   <widget class="QPushButton" name="joinGameButton">
     <property name="geometry">
      <rect>
-      <x>240</x>
-      <y>230</y>
-      <width>171</width>
+      <x>440</x>
+      <y>180</y>
+      <width>121</width>
       <height>41</height>
      </rect>
     </property>
     <property name="text">
-     <string>JoinTicTacToe</string>
+     <string>Join game</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="appPathInput">
+   <widget class="QLineEdit" name="inviteCodeInput">
     <property name="geometry">
      <rect>
-      <x>120</x>
+      <x>140</x>
       <y>170</y>
-      <width>331</width>
-      <height>25</height>
+      <width>261</width>
+      <height>61</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+     </font>
     </property>
     <property name="statusTip">
      <string/>
@@ -72,20 +88,7 @@
      <string/>
     </property>
     <property name="placeholderText">
-     <string>Your app folder</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="selectAppPathButton">
-    <property name="geometry">
-     <rect>
-      <x>470</x>
-      <y>170</y>
-      <width>131</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Select QML App</string>
+     <string>Invite code</string>
     </property>
    </widget>
   </widget>
@@ -95,7 +98,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>28</height>
+     <height>19</height>
     </rect>
    </property>
   </widget>

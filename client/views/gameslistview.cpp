@@ -1,5 +1,4 @@
 #include "gameslistview.h"
-
 #include "ui_gameslistview.h"
 
 GamesListView::GamesListView(QWidget *parent)
@@ -37,5 +36,5 @@ void GamesListView::gotNewSelectedGame(const GameInfo &gameInfo) {
     ui->gameNameLabel->setText(gameInfo.display_name);
     ui->gameDescriptionTextBrowser->setText(gameInfo.description);
     ui->playersAmountLabel->setText(QString::number(gameInfo.players_num));
-//    ui->createGameButton->setEnabled(true);
+    //    ui->createGameButton->setEnabled(true);
 }

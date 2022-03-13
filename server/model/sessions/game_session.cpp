@@ -102,15 +102,15 @@ std::string GameSession::generate_invite_code() {
     std::mt19937 engine(rd());
     std::uniform_int_distribution<char> dist('0', '9');
     // set every character to be a random digit
-    for (char &c : res) {
-        c = dist(engine);
-    }
+    std::generate(res.begin(), res.end(),
+                  [&dist, &engine]() { return dist(engine); });
     return res;
 }
 
 std::vector<int> GameSession::get_occupied_positions() const {
     std::vector<int> result;
     for (const auto &e : m_userid_to_playerid) {
+        // cppcheck-suppress useStlAlgorithm
         result.push_back(e.right);
     }
     return result;

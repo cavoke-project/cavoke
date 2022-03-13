@@ -11,10 +11,10 @@ jobs:
       - checkout
       - run:
           name: Cmake
-          command: cmake . -DBUILD_SERVER=OFF -DBUILD_GAMES=OFF -DQT_MAJOR_VERSION=5  # TODO: enable cmake targets by choice
+          command: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=5
       - run:
           name: Make
-          command: make cavoke_client
+          command: cd build && make cavoke_client
   client-suse-qt6-notests:
     docker:
       - image: kdeorg/ci-suse-qt62
@@ -25,10 +25,10 @@ jobs:
           command: chmod +x .circleci/suse-qt6-install-karchive.sh && .circleci/suse-qt6-install-karchive.sh
       - run:
           name: Cmake
-          command: cmake . -DBUILD_SERVER=OFF -DBUILD_GAMES=OFF -DQT_MAJOR_VERSION=6  # QT_MAJOR_VERSION=6 by default, so not necessary # TODO: enable cmake targets by choice
+          command: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=6  # QT_MAJOR_VERSION=6 by default, so not necessary
       - run:
           name: Make
-          command: make cavoke_client
+          command: cd build && make cavoke_client
   server-docker-healthcheck:
     docker:
       - image: ghcr.io/cavoke-project/cavoke_ci:drogon # TODO: use circleci orbs
@@ -39,17 +39,70 @@ jobs:
       - checkout
       - run:
           name: Cmake
-          command: cmake . -DBUILD_CLIENT=OFF
+          command: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
       - run:
           name: Make
-          command: make cavoke_server
+          command: cd build && make cavoke_server
       - run:
           name: Simple healthcheck
-          command: chmod +x .circleci/server-test-health.py && .circleci/server-test-health.py ./server/cavoke_server
+          command: chmod +x .circleci/server-test-health.py && .circleci/server-test-health.py ./build/server/cavoke_server
+  games-docker:
+    docker:
+      - image: ghcr.io/cavoke-project/cavoke_ci:drogon # TODO: use circleci orbs
+        auth:
+          username: $GHCR_USERNAME
+          password: $GHCR_PASSWORD
+    steps:
+      - checkout
+      - run:
+          name: Cmake
+          command: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_GAMES=ON
+      - run:
+          name: Make
+          command: cd build && make all
+  clangformat-master:
+    docker:
+      - image: ubuntu
+    steps:
+      - run:
+          name: Install Clangformat
+          command: apt update && apt install clang-format -y
+      - checkout
+      - run:
+          name: Clangformat
+          command: for file in $(find . -iname '*.cpp' -or -iname '*.c' -or -iname '*.h' -and -not -iname 'doctest.h' ); do diff -u <(cat "$file") <(clang-format "$file") || exit 1; done
+  clangtidy-master:
+    docker:
+      - image: ubuntu
+    steps:
+      - run:
+          name: Install Clang-tidy
+          command: apt update && apt install clang-tidy-12 -y
+      - checkout
+      - run:
+          name: Clang-tidy
+          command: clang-tidy-12 -extra-arg=-Iinclude  -extra-arg=-Idoctest $(find . -path '*/CMakeFiles/*' -prune -or \( -iname '*.cpp' -and -not -iname '*_test.cpp' -or -iname '*.h' -and -not -iname 'doctest.h' \) -print)
+  cppcheck-master:
+    docker:
+      - image: ubuntu
+    steps:
+      - run:
+          name: Install Cppcheck
+          command: apt update && apt install cppcheck -y
+      - checkout
+      - run:
+          name: Cppcheck
+          command: cppcheck --language=c++ -DSOME_DEFINE_TO_FIX_CONFIG --enable=all --suppress=*:doctest.h --suppress=unusedFunction --error-exitcode=1 --inline-suppr $(find . -iname '*.cpp')
 
 workflows:
-  client-workflow:
+  app:
     jobs:
       - client-suse-qt5-notests
       - client-suse-qt6-notests
       - server-docker-healthcheck
+      - games-docker
+  codestyle:
+    jobs:
+      - clangformat-master
+#      - clangtidy-master
+      - cppcheck-master

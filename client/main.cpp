@@ -1,6 +1,5 @@
-#include "cavokeclientcontroller.h"
-
 #include <QApplication>
+#include "cavokeclientcontroller.h"
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);

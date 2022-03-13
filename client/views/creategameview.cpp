@@ -32,3 +32,7 @@ void CreateGameView::gotNewSelectedGame(const GameInfo &gameInfo) {
     ui->playersAmountLabel->setText(QString::number(gameInfo.players_num));
     ui->createGameButton->setEnabled(true);
 }
+void CreateGameView::on_createGameButton_clicked() {
+    //    this->close();
+    emit startedCreateGameRoutine(ui->gamesListComboBox->currentIndex());
+}
