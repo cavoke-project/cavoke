@@ -2,8 +2,8 @@
 #define CAVOKE_STATE_CONTROLLER_H
 
 #include <drogon/HttpController.h>
-#include "../model/game_logic_manager.h"
-#include "../model/games_storage.h"
+#include "model/logic/game_logic_manager.h"
+#include "model/games/games_storage.h"
 #include "model/sessions/sessions_storage.h"
 
 namespace cavoke::server::controllers {

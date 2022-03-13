@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 #include "game_state_storage.h"
-#include "games_storage.h"
+#include "model/games/games_storage.h"
 
 namespace cavoke::server::model {
 

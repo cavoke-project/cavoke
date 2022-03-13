@@ -3,8 +3,8 @@
 #include "controllers/games_controller.h"
 #include "controllers/sessions_controller.h"
 #include "controllers/state_controller.h"
-#include "model/game_logic_manager.h"
-#include "model/games_storage.h"
+#include "model/logic/game_logic_manager.h"
+#include "model/games/games_storage.h"
 #include "model/sessions/sessions_storage.h"
 
 namespace cavoke::server {

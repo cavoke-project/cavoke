@@ -8,7 +8,7 @@
 #include <string>
 #include <utility>
 #include "cavoke_base_exception.h"
-#include "model/game.h"
+#include "model/games/game.h"
 
 namespace cavoke::server::model {
 
