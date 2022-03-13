@@ -24,14 +24,15 @@
 #### Установка через KDE Craft
 1. Установить KDE Craft (meta build system and package manager): https://community.kde.org/Craft#Setting_up_Craft. Этот вариант кажется удачнее, потому что это специальная утилита от KDE для установки их фреймворков (Саша).
 1. В интерфейсе KDE Craft установить библиотеки:
-   <!-- TODO: specify qt5 or qt6, as KArchive is only on Qt5 ><-->
-   ```bash
-   craft libs/qt6 karchive
-   ``` 
-   > **NOTE**: Для Qt5 можно загрузить только `craft karchive`
+   - Для Qt5 достаточно прописать.
+      ```bash
+      craft karchive
+      ```
+      Qt5 и зависимости загрузятся автоматически.
+   - Для Qt6, к сожалению, пока нет поддержки KArchive. Поэтому можно поставить qt6 через craft `craft libs/qt6`, но KArchive придётся собирать вручную (см. выше). [Статус KF6](https://phabricator.kde.org/project/board/310/query/all/).
 1. Установить QT Creator / загрузить профиль с Qt в CLion.
 ### Запуск проекта
-1. Открыть проект и запустить. Для использования Qt5 добавить cmake флаг `-DUSE_QT5`.
+1. Открыть проект и запустить. Для использования Qt5 добавить cmake флаг `-DQT_MAJOR_VERSION=5`.
 1. Выбрать путь к основному qml файлу приложения либо выбрать .zip архив, в корне которого будет лежать app.qml файл с приложением
 ![load zip demo](https://user-images.githubusercontent.com/24986722/153585100-28454edc-8b63-46e5-bda1-85337694a045.png)
 1. Открыть панель с выводом приложения. Убедиться, что соединение между C++ и QML работает.

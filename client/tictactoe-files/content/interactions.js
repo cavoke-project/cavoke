@@ -1,14 +1,16 @@
 function processResponse(response) {
-    var parts = response.split("\n"); // Result, Board
-    updateBoard(parts[1]);
-    if (parts[0].endsWith("wins")) {
-        gameFinished(parts[0]);
-    }
-    
+    let res = JSON.parse(response)
+    updateBoard(res["state"]);
+}
+
+function sendMove(moveString) {
+    let move = {}
+    move.move = "X" + moveString
+    cavoke.getMoveFromQml(JSON.stringify(move))
 }
 
 function updateBoard(boardString) {
-    for (var i = 0; i < 9; ++i) {
+    for (let i = 0; i < 9; ++i) {
         board.children[i].state = boardString[i];
     }
 }

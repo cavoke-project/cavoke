@@ -1,0 +1,225 @@
+{
+    "info": {
+        "_postman_id": "2b66a0c3-22a1-481a-83c6-68178c907d8a",
+        "name": "Cavoke REST API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Simple health check",
+            "id": "db43eafc-7c04-4bd0-81c3-9d775eee7020",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/health",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "health"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "List available games to play",
+            "id": "47f80185-289c-418b-971d-7397c1e1c2aa",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/games/list",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "games",
+                        "list"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Get GameInfo of specific game",
+            "id": "53aa843d-ce79-4ffd-9c93-8a89a08738b5",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/games/:game_id/get_config",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "games",
+                        ":game_id",
+                        "get_config"
+                    ],
+                    "variable": [
+                        {
+                            "id": "2788ef7c-a640-4c9f-a4cf-b157a7460bfe",
+                            "key": "game_id",
+                            "value": "deserunt voluptate culpa",
+                            "description": "(Required) String id of the game to get"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Download QML client zip of a game",
+            "id": "5b5e67c5-ab56-4966-81dc-a703521bced0",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/games/:game_id/get_client",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "games",
+                        ":game_id",
+                        "get_client"
+                    ],
+                    "variable": [
+                        {
+                            "id": "3cc760b2-83e2-4d0d-883d-5ab622b69967",
+                            "key": "game_id",
+                            "value": "deserunt voluptate culpa",
+                            "description": "(Required) String id of the game to get"
+                        }
+                    ]
+                }
+            },
+            "response": [
+                {
+                    "id": "669d21ec-5471-4b7e-80a4-cccded3ee4b4",
+                    "name": "Client zip file of an existing game",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/games/:game_id/get_client",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "games",
+                                ":game_id",
+                                "get_client"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "game_id",
+                                    "value": "deserunt voluptate culpa",
+                                    "description": "(Required) String id of the game to get"
+                                }
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "Text",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/octet-stream"
+                        }
+                    ],
+                    "cookie": [],
+                    "responseTime": null,
+                    "body": "qui labore"
+                },
+                {
+                    "id": "49473878-b93d-40ef-9f6d-34658fbebfaa",
+                    "name": "No such game",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/games/:game_id/get_client",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "games",
+                                ":game_id",
+                                "get_client"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "game_id",
+                                    "value": "deserunt voluptate culpa",
+                                    "description": "(Required) String id of the game to get"
+                                }
+                            ]
+                        }
+                    },
+                    "status": "Not Found",
+                    "code": 404,
+                    "_postman_previewlanguage": "Text",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "text/plain"
+                        }
+                    ],
+                    "cookie": [],
+                    "responseTime": null,
+                    "body": ""
+                },
+                {
+                    "id": "a239fae8-9480-4921-a2b2-080413f7cb85",
+                    "name": "Unexpected error",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/games/:game_id/get_client",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "games",
+                                ":game_id",
+                                "get_client"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "game_id",
+                                    "value": "deserunt voluptate culpa",
+                                    "description": "(Required) String id of the game to get"
+                                }
+                            ]
+                        }
+                    },
+                    "status": "Internal Server Error",
+                    "code": 500,
+                    "_postman_previewlanguage": "Text",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "cookie": [],
+                    "responseTime": null,
+                    "body": "{\n \"code\": -33611818,\n \"message\": \"Excepteur ut nulla\"\n}"
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "id": "f7afe901-2417-48e1-8d98-b7e71978434e",
+            "key": "baseUrl",
+            "value": "localhost:8080",
+            "type": "string"
+        }
+    ]
+}

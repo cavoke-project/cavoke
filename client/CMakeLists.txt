@@ -1,42 +1,48 @@
 cmake_minimum_required(VERSION 3.10)
-project(client)
+project(cavoke_client)
+
+set(QT_MAJOR_VERSION 6 CACHE STRING "Qt Major Version (e.g. Qt5/Qt6)")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-if (USE_QT5)
-    find_package(Qt5Widgets REQUIRED)
-    find_package(Qt5Quick REQUIRED)
-else(USE_QT5)
-    find_package(Qt6Widgets REQUIRED)
-    find_package(Qt6Quick REQUIRED)
-endif(USE_QT5)
+find_package(Qt${QT_MAJOR_VERSION}Widgets REQUIRED)
+find_package(Qt${QT_MAJOR_VERSION}Quick REQUIRED)
+find_package(Qt${QT_MAJOR_VERSION}Network REQUIRED)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-include_directories(${CMAKE_BINARY_DIR})
+include_directories(${CMAKE_BINARY_DIR}
+        controllers
+        models
+        views)
 
 # https://api.kde.org/frameworks-api/frameworks-apidocs/frameworks/karchive/html/index.html
 find_package(KF5Archive REQUIRED)
 
-add_executable(client-prototype
+#add_compile_definitions(MOCK)
+
+add_executable(cavoke_client
         main.cpp
-        cavokeclientcontroller.cpp
-        cavokeclientmodel.cpp
-        cavokeclientview.cpp
-        cavokeqmlgamemodel.cpp
-        tictactoelogic.cpp
-        cache_manager.cpp)
+        controllers/cavokeclientcontroller.cpp
+        models/cavokeclientmodel.cpp
+        models/cavokeqmlgamemodel.cpp
+        views/testwindowview.cpp
+        views/startview.cpp
+        views/joingameview.cpp
+        views/creategameview.cpp
+        views/settingsview.cpp
+        views/gameslistview.cpp
+        views/protoroomview.cpp
+        cache_manager.cpp
+        network_manager.cpp
+        gameinfo.cpp
+        sessioninfo.cpp
+        )
 
-if (USE_QT5)
-    target_link_libraries(client-prototype Qt5::Widgets)
-    target_link_libraries(client-prototype Qt5::Quick)
-else(USE_QT5)
-    target_link_libraries(client-prototype Qt6::Widgets)
-    target_link_libraries(client-prototype Qt6::Quick)
-endif(USE_QT5)
-
-target_link_libraries(client-prototype KF5::Archive)
-
+target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Widgets)
+target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Quick)
+target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Network)
+target_link_libraries(cavoke_client KF5::Archive)

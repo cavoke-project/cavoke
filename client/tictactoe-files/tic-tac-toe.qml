@@ -79,7 +79,7 @@ Rectangle {
                     height: board.height/3
 
                     onClicked: {
-                            cavoke.sendMove("M " + String(index));
+                            Interact.sendMove(String(index));
                     }
                 }
             }
@@ -91,15 +91,15 @@ Rectangle {
 
             Button {
                 text: "Hard"
-                onClicked: { cavoke.sendMove("D 1.0"); }
+                onClicked: { cavoke.getMoveFromQml("D 1.0"); }
             }
             Button {
                 text: "Moderate"
-                onClicked: { cavoke.sendMove("D 0.8"); }
+                onClicked: { cavoke.getMoveFromQml("D 0.8"); }
             }
             Button {
                 text: "Easy"
-                onClicked: { cavoke.sendMove("D 0.2"); }
+                onClicked: { cavoke.getMoveFromQml("D 0.2"); }
             }
         }
     }

@@ -1,0 +1,290 @@
+openapi: 3.0.0
+info:
+  version: '0.0.3'
+  title: 'cavoke'
+servers:
+  - url: 'localhost:8080'
+paths:
+  /health:
+    get:
+      summary: 'Simple health check'
+      operationId: health
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: OK
+
+  /games/list:
+    get:
+      summary: 'List available games to play'
+      operationId: listGames
+      responses:
+        '200':
+          description: 'List of available games as metadata'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GameInfo"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /games/{game_id}/get_config:
+    get:
+      summary: 'Get GameInfo of specific game'
+      operationId: configGame
+      parameters:
+        - in: path
+          name: game_id
+          schema:
+            $ref: '#/components/schemas/GameId'
+          required: true
+          description: 'String id of the game to get'
+          example: tictactoe
+      responses:
+        '200':
+          description: 'Config of an existing game'
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameInfo"
+        '404':
+          description: 'No such game'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /games/{game_id}/get_client:
+    get:
+      summary: 'Download QML client zip of a game'
+      operationId: downloadClient
+      parameters:
+        - in: path
+          name: game_id
+          schema:
+            $ref: '#/components/schemas/GameId'
+          required: true
+          description: 'String id of the game to get'
+          example: 'tictactoe'
+      responses:
+        '200':
+          description: 'Client zip file of an existing game'
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: 'No such game'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /sessions/create:
+    post:
+      summary: 'Create a game from requested game'
+      operationId: createSession
+      parameters:
+        - in: query
+          name: game_id
+          schema:
+            $ref: '#/components/schemas/GameId'
+          required: true
+          description: 'String id of the game to get'
+          example: tictactoe
+        - in: query
+          name: user_id
+          schema:
+            $ref: '#/components/schemas/UserId'
+          required: true
+          description: 'User id'
+          example: c84d0d6e-547a-4e3a-92ba-5a6ff6c3d51f
+      responses:
+        '200':
+          description: 'Created successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  game_id:
+                    $ref: '#/components/schemas/GameId'
+                  session_id:
+                    $ref: '#/components/schemas/SessionId'
+        '400':
+          description: 'Bad request'
+        '404':
+          description: 'No game with such game id'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /play/{session_id}/send_move:
+    post:
+      summary: 'Send a move from QML game'
+      operationId: sendMove
+      parameters:
+        - in: path
+          name: session_id
+          schema:
+            $ref: '#/components/schemas/SessionId'
+          required: true
+          example: 83896dd5-6f03-4805-8cf1-03ce6bd6077f
+        - in: query
+          name: user_id
+          schema:
+            $ref: '#/components/schemas/UserId'
+          required: true
+          description: 'User id'
+          example: c84d0d6e-547a-4e3a-92ba-5a6ff6c3d51f
+      requestBody:
+        description: Game move data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameMove'
+      responses:
+        '200':
+          description: 'Move accepted'
+
+        '404':
+          description: 'No such session / no such user'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /play/{session_id}/get_update:
+    get:
+      summary: 'Try get an update from QML game'
+      operationId: getUpdate
+      tags:
+        - play
+      parameters:
+        - in: path
+          name: session_id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: 'UUID of a game session (room to game pair)'
+        - in: query
+          name: user_id
+          schema:
+            $ref: '#/components/schemas/UserId'
+          required: true
+          description: 'User id'
+          example: c84d0d6e-547a-4e3a-92ba-5a6ff6c3d51f
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            format: int32
+          example: 32
+          description: 'Only get updates after this id (by default 0, so returns all updates throught the game)'
+      responses:
+        '200':
+          description: 'List updates (in an ascending order of ids)'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GameUpdate"
+        '404':
+          description: 'No such session / no such user'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    GameId:
+      type: string
+      example: tictactoe
+    GameInfo:
+      type: object
+      required:
+        - id
+        - display_name
+        - description
+        - players_num
+      properties:
+        id:
+          $ref: '#/components/schemas/GameId'
+        display_name:
+          type: string
+        description:
+          type: string
+        players_num:
+          type: integer
+          format: int32
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 31
+        message:
+          type: string
+          example: 'Something went wrong'
+    GameMove:
+      type: object
+      properties:
+        move:
+          type: string
+          description: 'Any information about the move supplied by QML. May be any string (e.g. JSON)'
+      required:
+        - user_id
+        - move
+    GameUpdate:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          example: c84d0d6e-547a-4e3a-92ba-5a6ff6c3d51f
+        update:
+          type: string
+          description: "Any information about the update supplied by app's logic. May be any string (e.g. JSON)"
+          example: '{"action": "x_move", x: 0, y: 2}'
+        id:
+          type: integer
+          format: int32
+          example: 1
+      required:
+        - user_id
+        - update
+    SessionId:
+      type: string
+      format: uuid
+      example: 83896dd5-6f03-4805-8cf1-03ce6bd6077f
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+# security:
+#  - BasicAuth: []
