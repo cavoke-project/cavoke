@@ -3,8 +3,8 @@
 #include "controllers/games_controller.h"
 #include "controllers/sessions_controller.h"
 #include "controllers/state_controller.h"
-#include "model/logic/game_logic_manager.h"
 #include "model/games/games_storage.h"
+#include "model/logic/game_logic_manager.h"
 #include "model/sessions/sessions_storage.h"
 
 namespace cavoke::server {
@@ -20,7 +20,8 @@ void run(const std::string &host,
     auto game_logic_manager =
         std::make_shared<model::GameLogicManager>(games_storage);
     auto game_state_storage = std::make_shared<model::GameStateStorage>();
-    auto participation_storage = std::make_shared<model::SessionsStorage>();
+    auto participation_storage = std::make_shared<model::SessionsStorage>(
+        game_logic_manager, game_state_storage);
     auto authentication_manager =
         std::make_shared<model::AuthenticationManager>();
 

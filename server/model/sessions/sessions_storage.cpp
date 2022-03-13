@@ -1,6 +1,8 @@
 #include "sessions_storage.h"
 #include <utility>
 
+namespace cavoke::server::model {
+
 /**
  * Creates a session with given game config.
  *
@@ -8,8 +10,7 @@
  *
  * @return session info
  */
-cavoke::server::model::GameSession::GameSessionInfo
-cavoke::server::model::SessionsStorage::create_session(
+GameSession::GameSessionInfo SessionsStorage::create_session(
     const GameConfig &game_config,
     const std::string &host_user_id) {
     // create session
@@ -35,8 +36,7 @@ cavoke::server::model::SessionsStorage::create_session(
  *
  * @return session info
  */
-cavoke::server::model::GameSession::GameSessionInfo
-cavoke::server::model::SessionsStorage::join_session(
+GameSession::GameSessionInfo SessionsStorage::join_session(
     const std::string &invite_code,
     const std::string &user_id) {
     // find session by invite
@@ -61,9 +61,7 @@ cavoke::server::model::SessionsStorage::join_session(
  *
  * Throws `game_session_error` if no such session
  */
-cavoke::server::model::GameSession *
-cavoke::server::model::SessionsStorage::get_session(
-    const std::string &session_id) {
+GameSession *SessionsStorage::get_session(const std::string &session_id) {
     try {  // slow?
         return &m_sessions.at(session_id);
     } catch (const std::out_of_range &) {
@@ -71,3 +69,50 @@ cavoke::server::model::SessionsStorage::get_session(
                                  "'");
     }
 }
+
+GameLogicManager::ValidationResult SessionsStorage::validate_session(
+    const std::string &session_id,
+    std::optional<json> game_settings) {
+    auto session = get_session(session_id);
+    std::string game_id = session->get_session_info().game_id;
+
+    if (!game_settings.has_value()) {
+        game_settings = m_games_storage->get_game_by_id(game_id)
+                            .value()
+                            .config.default_settings;
+    }
+
+    return m_game_logic_manager->validate_settings(
+        game_id, game_settings.value(), session->get_occupied_positions());
+}
+
+void SessionsStorage::start_session(const std::string &session_id,
+                                    std::optional<json> game_settings) {
+    // TODO: thread-safety
+    auto session = get_session(session_id);
+    std::string game_id = session->get_session_info().game_id;
+
+    if (!game_settings.has_value()) {
+        game_settings = m_games_storage->get_game_by_id(game_id)
+                            .value()
+                            .config.default_settings;
+    }
+
+    auto validation_result = m_game_logic_manager->validate_settings(
+        game_id, game_settings.value(), session->get_occupied_positions());
+
+    if (!validation_result.success) {
+        throw validation_error(validation_result.message);
+    }
+
+    session->start(game_settings.value());
+}
+
+SessionsStorage::SessionsStorage(
+    std::shared_ptr<GameLogicManager> mGameLogicManager,
+    std::shared_ptr<GamesStorage> mGamesStorage)
+    : m_game_logic_manager(std::move(mGameLogicManager)),
+      m_games_storage(std::move(mGamesStorage)) {
+}
+
+}  // namespace cavoke::server::model

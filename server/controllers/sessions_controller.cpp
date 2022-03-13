@@ -45,8 +45,7 @@ void cavoke::server::controllers::SessionsController::create(
     auto current_occupied_positions = session->get_occupied_positions();
     std::string validation_message;
     bool validation_success = m_game_logic_manager->validate_settings(
-        game_id.value(), current_settings, current_occupied_positions,
-        validation_message);
+        game_id.value(), current_settings, current_occupied_positions);
 
     if (!validation_success) {
         return callback(
@@ -62,6 +61,7 @@ void cavoke::server::controllers::SessionsController::create(
 
     return callback(newNlohmannJsonResponse(session_info));
 }
+
 void cavoke::server::controllers::SessionsController::join(
     const drogon::HttpRequestPtr &req,
     std::function<void(const drogon::HttpResponsePtr &)> &&callback) {

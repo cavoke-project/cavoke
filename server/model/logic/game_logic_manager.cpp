@@ -1,4 +1,5 @@
 #include "game_logic_manager.h"
+#include "../../../games/cavoke.h"
 #include <boost/process.hpp>
 #include <utility>
 
@@ -35,14 +36,13 @@ std::string GameLogicManager::invoke_logic(const Game &game,
     return output;
 }
 
-bool GameLogicManager::validate_settings(
+ValidationResult GameLogicManager::validate_settings(
     const std::string &game_id,
     const json &settings,
-    const std::vector<int> &occupied_positions,
-    std::string &error_message) {
+    const std::vector<int> &occupied_positions) {
     std::optional<Game> game_info = m_games_storage->get_game_by_id(game_id);
     if (!game_info.has_value()) {
-        return {};
+        throw validation_error("no game with id '" + game_id + "'");
     }
 
     std::ostringstream request;
@@ -53,9 +53,7 @@ bool GameLogicManager::validate_settings(
     json response_json =
         json::parse(invoke_logic(game_info.value(), request.str()));
     auto result = response_json.get<ValidationResult>();
-    error_message = std::move(result.message);
-
-    return result.success;
+    return result;
 }
 
 GameStateStorage::GameState GameLogicManager::init_state(

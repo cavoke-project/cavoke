@@ -37,10 +37,10 @@ public:
         std::string message;
     };
 
-    bool validate_settings(const std::string &game_id,
-                           const json &settings,
-                           const std::vector<int> &occupied_positions,
-                           std::string &error_message);
+    ValidationResult validate_settings(
+        const std::string &game_id,
+        const json &settings,
+        const std::vector<int> &occupied_positions);
 
     GameStateStorage::GameState init_state(
         const std::string &game_id,
