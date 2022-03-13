@@ -11,6 +11,7 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
 #include "sessioninfo.h"
+#include "validationresult.h"
 struct NetworkManager : public QObject {
     Q_OBJECT
 public:
@@ -43,12 +44,16 @@ signals:
     void gotGameUpdate(const QString &jsonField);
     void downloadedGameFile(QFile *file, const QString &gameId);
     void gotSessionInfo(const SessionInfo &sessionInfo);
+    void gotValidationResult(const ValidationResult &validationResult);
+    
 
 private slots:
     void gotHealth(QNetworkReply *reply);
     void gotGamesList(QNetworkReply *reply);
     void gotGamesConfig(QNetworkReply *reply);
     void gotSession(QNetworkReply *reply);
+    void gotValidatedSession(QNetworkReply *reply);
+    void gotRequestedSessionInfo(QNetworkReply *reply);
     void gotPostResponse(QNetworkReply *reply);
     void gotPlayState(QNetworkReply *reply);
     void gotGamesClient(QNetworkReply *reply, const QString &gameId);

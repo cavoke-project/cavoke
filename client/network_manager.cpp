@@ -164,9 +164,41 @@ void NetworkManager::gotPlayState(QNetworkReply *reply) {
 }
 
 void NetworkManager::validateSession() {
+    QUrl route =
+        HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(VALIDATE);
+    route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
+    qDebug() << route.toString();
+    auto request = QNetworkRequest(route);
+    auto reply = manager.get(request);
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotValidatedSession(reply); });
+}
+
+void NetworkManager::gotValidatedSession(QNetworkReply *reply) {
+    QByteArray answer = reply->readAll();
+    reply->close();
+    reply->deleteLater();
+    qDebug() << answer;
+
+    ValidationResult validationResult;
+    validationResult.read(QJsonDocument::fromJson(answer).object());
+    
+    emit gotValidationResult(validationResult);
 }
 
 void NetworkManager::getSessionInfo() {
+    QUrl route =
+        HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(VALIDATE);
+    route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
+    qDebug() << route.toString();
+    auto request = QNetworkRequest(route);
+    auto reply = manager.get(request);
+//    connect(reply, &QNetworkReply::finished, this,
+//            [reply, this]() { gotValidatedSession(reply); });
+}
+
+void NetworkManager::gotRequestedSessionInfo(QNetworkReply *reply) {
+    
 }
 
 void NetworkManager::startSession() {
@@ -183,7 +215,6 @@ void NetworkManager::stopGamePolling() {
 void NetworkManager::startSessionPolling() {
     sessionPollingTimer->start();
 }
-
 void NetworkManager::stopSessionPolling() {
     sessionPollingTimer->stop();
 }

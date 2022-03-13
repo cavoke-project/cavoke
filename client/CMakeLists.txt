@@ -40,7 +40,7 @@ add_executable(cavoke_client
         network_manager.cpp
         gameinfo.cpp
         sessioninfo.cpp
-        )
+        validationresult.cpp validationresult.h)
 
 target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Widgets)
 target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Quick)
