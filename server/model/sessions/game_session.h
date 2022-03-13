@@ -24,9 +24,9 @@ struct GameSession {
     GameSession() =
         default;  // FIXME: required by map in `sessions_storage.cpp`
 
-    void add_user(const std::string &user_id);
+    void add_user(const std::string &user_id, std::optional<int> player_id = {});
 
-    void start(const json& game_settings);
+    void start(const json &game_settings);
 
     void finish();
 

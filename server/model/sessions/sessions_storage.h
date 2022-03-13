@@ -17,7 +17,8 @@ public:
         const std::string &host_user_id);
 
     GameSession::GameSessionInfo join_session(const std::string &invite_code,
-                                              const std::string &user_id);
+                                              const std::string &user_id,
+                                              std::optional<int> player_id = {});
 
     void start_session(const std::string &session_id,
                        std::optional<json> game_settings = {});
@@ -27,6 +28,8 @@ public:
         std::optional<json> game_settings = {});
 
     GameSession *get_session(const std::string &session_id);
+
+    GameSession *get_session_by_invite_code(const std::string &session_id);
 
     SessionsStorage(std::shared_ptr<GameLogicManager> mGameLogicManager,
                     std::shared_ptr<GamesStorage> mGamesStorage,

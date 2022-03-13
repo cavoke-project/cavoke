@@ -32,6 +32,9 @@ public:
     ADD_METHOD_TO(SessionsController::get_info,
                   "/sessions/{session_id}/get_info",
                   drogon::Get);
+    ADD_METHOD_TO(SessionsController::get_info_by_invite_code,
+                  "/sessions/get_info_by_invite_code",
+                  drogon::Get);
     ADD_METHOD_TO(SessionsController::start,
                   "/sessions/{session_id}/start",
                   drogon::Post);
@@ -61,6 +64,10 @@ protected:
         const drogon::HttpRequestPtr &req,
         std::function<void(const drogon::HttpResponsePtr &)> &&callback,
         const std::string &session_id);
+
+    void get_info_by_invite_code(
+        const drogon::HttpRequestPtr &req,
+        std::function<void(const drogon::HttpResponsePtr &)> &&callback);
 };
 
 }  // namespace cavoke::server::controllers

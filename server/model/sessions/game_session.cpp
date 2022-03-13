@@ -20,7 +20,8 @@ GameSession::GameSession(GameConfig game_config)
  * Throws an exception if user already in this session, session has already
  * started or too many players in a session
  */
-void GameSession::add_user(const std::string &user_id) {
+void GameSession::add_user(const std::string &user_id,
+                           std::optional<int> player_id) {
     // TODO: thread-safety
     if (m_status != NOT_STARTED) {
         throw game_session_error("session has already started");
@@ -30,10 +31,28 @@ void GameSession::add_user(const std::string &user_id) {
         return;
     }
     // get player id for user
-    int pos = static_cast<int>(m_userid_to_playerid.size());
-    if (pos >= m_game_config.players_num) {
-        throw game_session_error("maximum number of players reached");
+    int pos;
+    if (player_id.has_value()) {
+        pos = player_id.value();
+        if (m_userid_to_playerid.right.count(pos) != 0) {
+            throw game_session_error("position is already occupied");
+        }
+    } else {
+        bool found_pos = false;
+        for (int candidate_pos = 0; candidate_pos < m_game_config.players_num;
+             ++candidate_pos) {
+            if (m_userid_to_playerid.right.count(candidate_pos) == 0) {
+                pos = candidate_pos;
+                found_pos = true;
+                break;
+            }
+        }
+
+        if (!found_pos) {
+            throw game_session_error("maximum number of players reached");
+        }
     }
+
     // add user to session
     auto [_, suc] = m_userid_to_playerid.insert({user_id, pos});
     std::cout << suc << std::endl;

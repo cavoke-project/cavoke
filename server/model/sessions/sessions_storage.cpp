@@ -16,7 +16,8 @@ GameSession::GameSessionInfo SessionsStorage::create_session(
     // create session
     auto session = GameSession(game_config);
     // add host
-    session.add_user(host_user_id);
+    // TODO: should we always add host on 0 position?
+    session.add_user(host_user_id, 0);
     // generate representation for user
     auto session_info = session.get_session_info();
     // save session
@@ -38,7 +39,8 @@ GameSession::GameSessionInfo SessionsStorage::create_session(
  */
 GameSession::GameSessionInfo SessionsStorage::join_session(
     const std::string &invite_code,
-    const std::string &user_id) {
+    const std::string &user_id,
+    std::optional<int> player_id) {
     // find session by invite
     try {
         auto &session =
@@ -48,7 +50,7 @@ GameSession::GameSessionInfo SessionsStorage::join_session(
             throw game_session_error("invalid invite code");
         }
         // add the user
-        session.add_user(user_id);
+        session.add_user(user_id, player_id);
         // generate representation for client
         return session.get_session_info();
     } catch (const std::out_of_range &) {
@@ -66,6 +68,16 @@ GameSession *SessionsStorage::get_session(const std::string &session_id) {
         return &m_sessions.at(session_id);
     } catch (const std::out_of_range &) {
         throw game_session_error("session does not exist: '" + session_id +
+                                 "'");
+    }
+}
+
+GameSession *SessionsStorage::get_session_by_invite_code(
+    const std::string &invite_code) {
+    try {  // slow?
+        return &m_sessions[m_invite_codes_to_session_ids.at(invite_code)];
+    } catch (const std::out_of_range &) {
+        throw game_session_error("invite code does not exist: '" + invite_code +
                                  "'");
     }
 }

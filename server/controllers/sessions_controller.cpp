@@ -67,7 +67,8 @@ void SessionsController::join(
     // TODO: do we want `try-catch` or `optional`?
     try {
         session_info = m_participation_storage->join_session(
-            invite_code.value(), user_id.value());
+            invite_code.value(), user_id.value(),
+            req->getOptionalParameter<int>("position"));
     } catch (const model::game_session_error &err) {
         return callback(newCavokeErrorResponse(err, drogon::k400BadRequest));
     }
@@ -179,8 +180,32 @@ void SessionsController::get_info(
         return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
     }
 
-    if (!session->is_player(user_id.value())) {
-        return CALLBACK_STATUS_CODE(k403Forbidden);
+    return callback(newNlohmannJsonResponse(session->get_session_info()));
+}
+
+void SessionsController::get_info_by_invite_code(
+    const drogon::HttpRequestPtr &req,
+    std::function<void(const drogon::HttpResponsePtr &)> &&callback) {
+    // get invite code
+    auto invite_code = req->getOptionalParameter<std::string>("invite_code");
+    if (!invite_code.has_value()) {
+        return CALLBACK_STATUS_CODE(k400BadRequest);
+    }
+    // get user id
+    auto user_id = req->getOptionalParameter<std::string>("user_id");
+    if (!user_id.has_value()) {
+        return CALLBACK_STATUS_CODE(k401Unauthorized);
+    }
+    // verify auth
+    if (!m_authentication_manager->verify_authentication(user_id.value())) {
+        return CALLBACK_STATUS_CODE(k401Unauthorized);
+    }
+
+    model::GameSession *session;
+    try {
+        session = m_participation_storage->get_session_by_invite_code(invite_code.value());
+    } catch (const model::game_session_error &err) {
+        return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
     }
 
     return callback(newNlohmannJsonResponse(session->get_session_info()));
