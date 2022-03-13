@@ -32,7 +32,7 @@ public slots:
     void validateSession();
     void getSessionInfo();
     void startSession();
-    
+
     void startGamePolling();
     void stopGamePolling();
     void startSessionPolling();
