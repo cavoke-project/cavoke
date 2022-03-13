@@ -165,13 +165,13 @@ void CavokeClientController::startQmlByGameId(const QString &gameId) {
     connect(&networkManager, SIGNAL(gotGameUpdate(QString)),
             currentQmlGameModel, SLOT(getUpdateFromNetwork(QString)));
     connect(currentQmlGameModel, SIGNAL(closingQml()), this, SLOT(stopQml()));
-    networkManager.startPolling();
+    networkManager.startGamePolling();
 }
 
 void CavokeClientController::stopQml() {
     startView.show();
     currentQmlGameModel->deleteLater();
-    networkManager.stopPolling();
+    networkManager.stopGamePolling();
 }
 
 void CavokeClientController::unpackDownloadedQml(QFile *file,

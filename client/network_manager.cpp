@@ -1,9 +1,12 @@
 #include "network_manager.h"
 
 NetworkManager::NetworkManager(QObject *parent) : manager(parent) {
-    pollingTimer = new QTimer(this);
-    pollingTimer->setInterval(500);
-    pollingTimer->callOnTimeout([this]() { getUpdate(); });
+    gamePollingTimer = new QTimer(this);
+    gamePollingTimer->setInterval(500);
+    gamePollingTimer->callOnTimeout([this]() { getPlayState(); });
+    sessionPollingTimer = new QTimer(this);
+    sessionPollingTimer->setInterval(500);
+    sessionPollingTimer->callOnTimeout([this]() { getSessionInfo(); });
     userId = QUuid::createUuid();
 }
 
@@ -137,7 +140,7 @@ void NetworkManager::gotPostResponse(QNetworkReply *reply) {
     qDebug() << "Got some post response: " << answer;
 }
 
-void NetworkManager::getUpdate() {
+void NetworkManager::getPlayState() {
     QUrl route =
         HOST.resolved(PLAY).resolved(sessionId + "/").resolved(GET_STATE);
     route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
@@ -145,10 +148,10 @@ void NetworkManager::getUpdate() {
     auto request = QNetworkRequest(route);
     auto reply = manager.get(request);
     connect(reply, &QNetworkReply::finished, this,
-            [reply, this]() { gotUpdate(reply); });
+            [reply, this]() { gotPlayState(reply); });
 }
 
-void NetworkManager::gotUpdate(QNetworkReply *reply) {
+void NetworkManager::gotPlayState(QNetworkReply *reply) {
     if (reply->error()) {
         qDebug() << reply->errorString();
         return;
@@ -159,10 +162,28 @@ void NetworkManager::gotUpdate(QNetworkReply *reply) {
     qDebug() << answer;
     emit gotGameUpdate(answer);
 }
-void NetworkManager::startPolling() {
-    pollingTimer->start();
+
+void NetworkManager::validateSession() {
 }
 
-void NetworkManager::stopPolling() {
-    pollingTimer->stop();
+void NetworkManager::getSessionInfo() {
+}
+
+void NetworkManager::startSession() {
+}
+
+void NetworkManager::startGamePolling() {
+    gamePollingTimer->start();
+}
+
+void NetworkManager::stopGamePolling() {
+    gamePollingTimer->stop();
+}
+
+void NetworkManager::startSessionPolling() {
+    sessionPollingTimer->start();
+}
+
+void NetworkManager::stopSessionPolling() {
+    sessionPollingTimer->stop();
 }
