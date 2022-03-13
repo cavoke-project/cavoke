@@ -123,6 +123,7 @@ const std::optional<json> &GameSession::get_game_settings() const {
 std::vector<GameSession::Player> GameSession::get_players() const {
     std::vector<Player> result;
     for (const auto &e : m_userid_to_playerid) {
+        // cppcheck-suppress useStlAlgorithm
         result.push_back({e.left, e.right});
     }
     return result;

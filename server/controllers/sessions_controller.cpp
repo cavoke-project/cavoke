@@ -203,7 +203,8 @@ void SessionsController::get_info_by_invite_code(
 
     model::GameSession *session;
     try {
-        session = m_participation_storage->get_session_by_invite_code(invite_code.value());
+        session = m_participation_storage->get_session_by_invite_code(
+            invite_code.value());
     } catch (const model::game_session_error &err) {
         return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
     }

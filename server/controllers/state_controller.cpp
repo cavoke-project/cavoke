@@ -123,6 +123,7 @@ void StateController::get_state(
     if (game_state->is_terminal) {
         std::vector<std::string> winners;
         for (const auto &e : game_state->winners) {
+            // cppcheck-suppress useStlAlgorithm
             winners.push_back(session->get_user_id(e));
         }
         resp_json["winners"] = winners;
