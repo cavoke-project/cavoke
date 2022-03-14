@@ -95,9 +95,12 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(unpackDownloadedQml(QFile *, QString)));
 
     // protoRoomView actions
-    connect(&protoRoomView, SIGNAL(joinedCreatedGame()), &networkManager,
-            SLOT(validateSession()));
-    connect(&networkManager, SIGNAL(gotValidationResult(ValidationResult)), this, TODO());
+    connect(&protoRoomView, SIGNAL(joinedCreatedGame()), this,
+            SLOT(startLoadedQml()));
+    connect(&networkManager, SIGNAL(gotValidationResult(ValidationResult)),
+            &protoRoomView, SLOT(updateValidationResult(ValidationResult)));
+    connect(&protoRoomView, SIGNAL(createdGame()), &networkManager,
+            SLOT(startSession()));
 
     startView.show();
 
@@ -167,8 +170,13 @@ void CavokeClientController::startQmlByGameId(const QString &gameId) {
     connect(&networkManager, SIGNAL(gotGameUpdate(QString)),
             currentQmlGameModel, SLOT(getUpdateFromNetwork(QString)));
     connect(currentQmlGameModel, SIGNAL(closingQml()), this, SLOT(stopQml()));
-    networkManager.stopSessionPolling();
     networkManager.startGamePolling();
+}
+
+void CavokeClientController::startLoadedQml() {
+    networkManager.stopSessionPolling();
+    networkManager.stopValidationPolling();
+    startQmlByGameId(currentGameId);
 }
 
 void CavokeClientController::stopQml() {
@@ -247,7 +255,12 @@ void CavokeClientController::gotSessionInfo(const SessionInfo &sessionInfo) {
 void CavokeClientController::creatingJoiningGameDone() {
     qDebug() << "Now creating/joining game preparations are done";
 
-    status = CreateJoinControllerStatus::DONE;
     protoRoomView.updateStatus(ProtoRoomView::CreatingGameStatus::DONE);
     networkManager.startSessionPolling();
+    if (status == CreateJoinControllerStatus::CREATING) {
+        networkManager.startValidationPolling();
+        status = CreateJoinControllerStatus::POLLING_CREATE;
+    } else if (status == CreateJoinControllerStatus::JOINING) {
+        status = CreateJoinControllerStatus::POLLING_JOIN;
+    }
 }

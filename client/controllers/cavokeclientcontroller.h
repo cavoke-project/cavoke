@@ -15,7 +15,13 @@
 #include "testwindowview.h"
 
 class CavokeClientController : public QObject {
-    enum class CreateJoinControllerStatus { NOTHING, CREATING, JOINING, DONE };
+    enum class CreateJoinControllerStatus {
+        NOTHING,
+        CREATING,
+        JOINING,
+        POLLING_CREATE,
+        POLLING_JOIN
+    };
     Q_OBJECT
 public:
     explicit CavokeClientController(QObject *parent = nullptr);
@@ -37,6 +43,7 @@ private slots:
     void startQmlApplication(CavokeQmlGameModel *);
     void exitApplication();
     void startQmlByGameId(const QString &gameId);
+    void startLoadedQml();
     void stopQml();
     void unpackDownloadedQml(QFile *file, const QString &gameId);
     void createGameStart(int gameIndex);

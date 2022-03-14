@@ -40,6 +40,8 @@ public slots:
     void stopGamePolling();
     void startSessionPolling();
     void stopSessionPolling();
+    void startValidationPolling();
+    void stopValidationPolling();
 
 signals:
     void finalizedGamesList(QJsonArray list);
@@ -62,13 +64,18 @@ private:
     QNetworkAccessManager manager;
     QTimer *gamePollingTimer = nullptr;
     QTimer *sessionPollingTimer = nullptr;
+    QTimer *validationPollingTimer = nullptr;
     QString sessionId;
     QUuid userId;
     const static inline QUrl HOST{
 #ifdef MOCK
         "https://764bbfca-c45a-46fc-9c79-11d9094b9ba8.mock.pstmn.io/"
 #else
+#ifdef REAL
+        "http://34.88.243.202:8081/"   
+#else
         "http://127.0.0.1:8080/"
+#endif
 #endif
     };
     const static inline QUrl HEALTH{"health"};  // FIXME: move to routes module

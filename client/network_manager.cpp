@@ -7,6 +7,9 @@ NetworkManager::NetworkManager(QObject *parent) : manager(parent) {
     sessionPollingTimer = new QTimer(this);
     sessionPollingTimer->setInterval(500);
     sessionPollingTimer->callOnTimeout([this]() { getSessionInfo(); });
+    validationPollingTimer = new QTimer(this);
+    validationPollingTimer->setInterval(500);
+    validationPollingTimer->callOnTimeout([this]() { validateSession(); });
     userId = QUuid::createUuid();
 }
 
@@ -169,7 +172,9 @@ void NetworkManager::validateSession() {
     route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
     qDebug() << route.toString();
     auto request = QNetworkRequest(route);
-    auto reply = manager.get(request);
+    request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader,
+                      "application/json");
+    auto reply = manager.post(request, "{}");
     connect(reply, &QNetworkReply::finished, this,
             [reply, this]() { gotValidatedSession(reply); });
 }
@@ -223,4 +228,11 @@ void NetworkManager::startSessionPolling() {
 }
 void NetworkManager::stopSessionPolling() {
     sessionPollingTimer->stop();
+}
+void NetworkManager::startValidationPolling() {
+    validationPollingTimer->start();
+}
+
+void NetworkManager::stopValidationPolling() {
+    validationPollingTimer->stop();
 }

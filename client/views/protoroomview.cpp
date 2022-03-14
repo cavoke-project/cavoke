@@ -12,7 +12,6 @@ ProtoRoomView::~ProtoRoomView() {
 
 void ProtoRoomView::updateStatus(CreatingGameStatus newStatus) {
     ui->statusLabel->setText(STATUS.at(newStatus));
-    ui->joinGameButton->setEnabled(newStatus == CreatingGameStatus::DONE);
     ui->currentPlayersHLabel->setHidden(newStatus != CreatingGameStatus::DONE);
     ui->playersListWidget->setHidden(newStatus != CreatingGameStatus::DONE);
 }
@@ -26,11 +25,20 @@ void ProtoRoomView::updateSessionInfo(const SessionInfo &sessionInfo) {
     for (const auto &player : sessionInfo.players) {
         ui->playersListWidget->addItem(player.user_id);
     }
+    if (sessionInfo.status == 1) {
+        this->close();
+        emit joinedCreatedGame();
+    }
+}
+
+void ProtoRoomView::updateValidationResult(
+    const ValidationResult &validationResult) {
+    ui->joinGameButton->setEnabled(validationResult.success);
+    ui->joinErrorLabel->setText(validationResult.message);
 }
 
 void ProtoRoomView::on_joinGameButton_clicked() {
-//    this->close();
-    emit joinedCreatedGame(gameName);
+    emit createdGame();
 }
 
 void ProtoRoomView::prepareJoinCreate(bool _isJoining) {
@@ -47,12 +55,16 @@ void ProtoRoomView::prepareJoinCreate(bool _isJoining) {
         ui->gameNameLabel->show();
         ui->inviteCodeHLabel->hide();
         ui->inviteCodeLabel->hide();
+        ui->waitForHostLabel->show();
+        ui->joinGameButton->hide();
     } else {
         ui->headerLabel->setText("Creating game session");
         ui->gameNameHLabel->hide();
         ui->gameNameLabel->hide();
         ui->inviteCodeHLabel->show();
         ui->inviteCodeLabel->show();
+        ui->waitForHostLabel->hide();
+        ui->joinGameButton->show();
     }
 }
 
