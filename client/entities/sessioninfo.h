@@ -1,9 +1,9 @@
 #ifndef CAVOKE_SESSIONINFO_H
 #define CAVOKE_SESSIONINFO_H
 
+#include <QtCore/QJsonArray>
 #include <QtCore/QJsonObject>
 #include <QtCore/QString>
-#include <QtCore/QJsonArray>
 #include "player.h"
 struct SessionInfo {
 public:
