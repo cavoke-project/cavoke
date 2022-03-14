@@ -23,7 +23,7 @@ include_directories(${CMAKE_BINARY_DIR}
 find_package(KF5Archive REQUIRED)
 
 #add_compile_definitions(MOCK)
-add_compile_definitions(REAL)
+#add_compile_definitions(REAL)
 
 add_executable(cavoke_client
         main.cpp
