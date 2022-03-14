@@ -95,8 +95,9 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(unpackDownloadedQml(QFile *, QString)));
 
     // protoRoomView actions
-    connect(&protoRoomView, SIGNAL(joinedCreatedGame(QString)), this,
-            SLOT(startQmlByGameId(QString)));
+    connect(&protoRoomView, SIGNAL(joinedCreatedGame()), &networkManager,
+            SLOT(validateSession()));
+    connect(&networkManager, SIGNAL(gotValidationResult(ValidationResult)), this, TODO());
 
     startView.show();
 
@@ -109,6 +110,7 @@ void CavokeClientController::showTestWindowView() {
 
 void CavokeClientController::showStartView() {
     startView.show();
+    status = CreateJoinControllerStatus::NOTHING;
 }
 
 void CavokeClientController::showJoinGameView() {

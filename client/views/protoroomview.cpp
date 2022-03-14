@@ -29,7 +29,7 @@ void ProtoRoomView::updateSessionInfo(const SessionInfo &sessionInfo) {
 }
 
 void ProtoRoomView::on_joinGameButton_clicked() {
-    this->close();
+//    this->close();
     emit joinedCreatedGame(gameName);
 }
 
