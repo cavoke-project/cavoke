@@ -165,6 +165,7 @@ void CavokeClientController::startQmlByGameId(const QString &gameId) {
     connect(&networkManager, SIGNAL(gotGameUpdate(QString)),
             currentQmlGameModel, SLOT(getUpdateFromNetwork(QString)));
     connect(currentQmlGameModel, SIGNAL(closingQml()), this, SLOT(stopQml()));
+    networkManager.stopSessionPolling();
     networkManager.startGamePolling();
 }
 
@@ -218,7 +219,6 @@ void CavokeClientController::downloadCurrentGame() {
     qDebug() << "Now we are downloading game: " << currentGameId;
 
     protoRoomView.updateStatus(ProtoRoomView::CreatingGameStatus::DOWNLOAD);
-    protoRoomView.updateGameName(currentGameId);
     model.gotGameIdToDownload(currentGameId);
 }
 
@@ -232,13 +232,12 @@ void CavokeClientController::createGameSendRequest() {
 void CavokeClientController::gotSessionInfo(const SessionInfo &sessionInfo) {
     qDebug() << "Now we got session info";
 
-    protoRoomView.updateInviteCode(sessionInfo.invite_code);
+    protoRoomView.updateSessionInfo(sessionInfo);
 
     if (status == CreateJoinControllerStatus::CREATING) {
         creatingJoiningGameDone();
     } else if (status == CreateJoinControllerStatus::JOINING) {
         currentGameId = sessionInfo.game_id;
-        protoRoomView.updateGameName(currentGameId);
         downloadCurrentGame();
     }
 }
@@ -246,5 +245,7 @@ void CavokeClientController::gotSessionInfo(const SessionInfo &sessionInfo) {
 void CavokeClientController::creatingJoiningGameDone() {
     qDebug() << "Now creating/joining game preparations are done";
 
+    status = CreateJoinControllerStatus::DONE;
     protoRoomView.updateStatus(ProtoRoomView::CreatingGameStatus::DONE);
+    networkManager.startSessionPolling();
 }

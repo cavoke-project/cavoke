@@ -15,7 +15,7 @@
 #include "testwindowview.h"
 
 class CavokeClientController : public QObject {
-    enum class CreateJoinControllerStatus { NOTHING, CREATING, JOINING };
+    enum class CreateJoinControllerStatus { NOTHING, CREATING, JOINING, DONE };
     Q_OBJECT
 public:
     explicit CavokeClientController(QObject *parent = nullptr);
@@ -57,7 +57,7 @@ private:
     SettingsView settingsView;
     ProtoRoomView protoRoomView;
     CavokeQmlGameModel *currentQmlGameModel = nullptr;
-    CreateJoinControllerStatus status;
+    CreateJoinControllerStatus status = CreateJoinControllerStatus::NOTHING;
     QString currentGameId;
 };
 
