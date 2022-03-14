@@ -4,6 +4,7 @@
 #include <QtCore/QJsonArray>
 #include <QtCore/QJsonObject>
 #include <QtCore/QString>
+#include <QtCore/QVector>
 #include "player.h"
 struct SessionInfo {
 public:
