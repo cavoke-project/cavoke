@@ -31,7 +31,7 @@ void SessionInfo::read(const QJsonObject &json) {
 
     if (json.contains(PLAYERS) && json[PLAYERS].isArray()) {
         for (auto obj : json[PLAYERS].toArray()) {
-            players.emplace_back(Player());
+            players.push_back(Player());
             players.back().read(obj.toObject());
         }
     }
