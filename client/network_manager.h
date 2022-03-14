@@ -33,6 +33,8 @@ public slots:
     void validateSession();
     void getSessionInfo();
     void startSession();
+    // TODO: Not implemented
+    //    void getSessionInfoByInviteCode(const QString &inviteCode);
 
     void startGamePolling();
     void stopGamePolling();
@@ -45,7 +47,6 @@ signals:
     void downloadedGameFile(QFile *file, const QString &gameId);
     void gotSessionInfo(const SessionInfo &sessionInfo);
     void gotValidationResult(const ValidationResult &validationResult);
-    
 
 private slots:
     void gotHealth(QNetworkReply *reply);
@@ -53,7 +54,6 @@ private slots:
     void gotGamesConfig(QNetworkReply *reply);
     void gotSession(QNetworkReply *reply);
     void gotValidatedSession(QNetworkReply *reply);
-    void gotRequestedSessionInfo(QNetworkReply *reply);
     void gotPostResponse(QNetworkReply *reply);
     void gotPlayState(QNetworkReply *reply);
     void gotGamesClient(QNetworkReply *reply, const QString &gameId);
@@ -97,6 +97,9 @@ private:
     //    const static inline QUrl GET_INFO{"get_info"}; // already exists in
     //    rooms block
     const static inline QUrl START{"start"};
+    // TODO: Not implemented
+    const static inline QUrl SESSIONS_GET_INFO_BY_INVITE_CODE{
+        "sessions/get_info_by_invite_code"};
 };
 
 #endif  // CAVOKE_CLIENT_NETWORK_MANAGER_H

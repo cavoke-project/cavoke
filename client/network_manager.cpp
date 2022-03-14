@@ -182,26 +182,32 @@ void NetworkManager::gotValidatedSession(QNetworkReply *reply) {
 
     ValidationResult validationResult;
     validationResult.read(QJsonDocument::fromJson(answer).object());
-    
+
     emit gotValidationResult(validationResult);
 }
 
 void NetworkManager::getSessionInfo() {
     QUrl route =
-        HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(VALIDATE);
+        HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(GET_INFO);
     route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
     qDebug() << route.toString();
     auto request = QNetworkRequest(route);
     auto reply = manager.get(request);
-//    connect(reply, &QNetworkReply::finished, this,
-//            [reply, this]() { gotValidatedSession(reply); });
-}
-
-void NetworkManager::gotRequestedSessionInfo(QNetworkReply *reply) {
-    
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotSession(reply); });
 }
 
 void NetworkManager::startSession() {
+    QUrl route =
+        HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(START);
+    route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
+    qDebug() << route.toString();
+    auto request = QNetworkRequest(route);
+    request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader,
+                      "application/json");
+    auto reply = manager.post(request, "{}");
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotPostResponse(reply); });
 }
 
 void NetworkManager::startGamePolling() {
