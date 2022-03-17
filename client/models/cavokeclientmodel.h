@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "cavokeqmlgamemodel.h"
-#include "gameinfo.h"
+#include "entities/gameinfo.h"
 
 class CavokeClientModel : public QObject {
     Q_OBJECT

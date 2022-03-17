@@ -2,7 +2,7 @@
 #define CAVOKE_CLIENT_CREATEGAMEVIEW_H
 
 #include <QMainWindow>
-#include "gameinfo.h"
+#include "entities/gameinfo.h"
 
 namespace Ui {
 class CreateGameView;

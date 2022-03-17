@@ -1,6 +1,8 @@
 #ifndef CAVOKE_CLIENT_MIDDLESCREENVIEW_H
 #define CAVOKE_CLIENT_MIDDLESCREENVIEW_H
 
+#include <entities/sessioninfo.h>
+#include <entities/validationresult.h>
 #include <QMainWindow>
 
 namespace Ui {
@@ -16,12 +18,13 @@ public:
 
 public slots:
     void updateStatus(CreatingGameStatus newStatus);
-    void updateInviteCode(const QString &newInviteCode);
-    void updateGameName(const QString &name);
+    void updateSessionInfo(const SessionInfo &sessionInfo);
     void prepareJoinCreate(bool _isJoining);
+    void updateValidationResult(const ValidationResult &validationResult);
 
 signals:
-    void joinedCreatedGame(const QString &appName);
+    void createdGame();
+    void joinedCreatedGame();
     void shownStartView();
 
 private slots:
