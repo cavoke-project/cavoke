@@ -2,7 +2,7 @@
 #define CAVOKE_SERVER_GAMES_CONTROLLER_H
 
 #include <drogon/HttpController.h>
-#include "../model/games_storage.h"
+#include "model/games/games_storage.h"
 
 namespace cavoke::server::controllers {
 

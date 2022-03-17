@@ -16,14 +16,14 @@ include_directories(.)
 
 add_executable(cavoke_server
         main.cpp
-        model/games_storage.cpp
-        model/game.cpp
+        model/games/games_storage.cpp
+        model/games/game.cpp
         controllers/games_controller.cpp
         controllers/health_controller.cpp
-        model/games_storage_config.cpp
-        model/game_state_storage.cpp
+        model/games/games_storage_config.cpp
+        model/logic/game_state_storage.cpp
         model/sessions/sessions_storage.cpp
-        model/game_logic_manager.cpp
+        model/logic/game_logic_manager.cpp
         controllers/state_controller.cpp
         controllers/sessions_controller.cpp
         model/auth/authentication_manager.cpp
