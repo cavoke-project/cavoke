@@ -23,7 +23,7 @@ include_directories(${CMAKE_BINARY_DIR}
 find_package(KF5Archive REQUIRED)
 
 #add_compile_definitions(MOCK)
-#add_compile_definitions(REAL)
+add_compile_definitions(REAL)
 
 add_executable(cavoke_client
         main.cpp
@@ -42,7 +42,8 @@ add_executable(cavoke_client
         entities/validationresult.cpp
         cache_manager.cpp
         network_manager.cpp
-        entities/player.cpp)
+        entities/player.cpp
+        resources/resources.qrc)
 
 target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Widgets)
 target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Quick)

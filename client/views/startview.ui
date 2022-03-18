@@ -148,7 +148,7 @@
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap>../resources/1054970_stack_layers_icon (1).png</pixmap>
+           <pixmap>../resources/images/cavoke_64.png</pixmap>
           </property>
          </widget>
         </item>
