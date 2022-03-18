@@ -75,9 +75,35 @@
          </spacer>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
+         <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,5,6">
+          <property name="spacing">
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="pushButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>1</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../resources/3669162_info_ic_icon.png</normaloff>../resources/3669162_info_ic_icon.png</iconset>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QPushButton" name="settingsButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>3</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
              <string>Settings</string>
             </property>
@@ -85,12 +111,67 @@
           </item>
           <item>
            <widget class="QPushButton" name="exitButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>3</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
              <string>Exit</string>
             </property>
            </widget>
           </item>
          </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="horizontalLayoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>230</x>
+         <y>30</y>
+         <width>321</width>
+         <height>91</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,4">
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="pixmap">
+           <pixmap>../resources/1054970_stack_layers_icon (1).png</pixmap>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>16</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>CAVOKE         </string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -104,7 +185,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>28</height>
+     <height>19</height>
     </rect>
    </property>
   </widget>
