@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="cavoke">images/cavoke_64.png</file>
+        <file alias="info">images/info_48.png</file>
+    </qresource>
+</RCC>
