@@ -88,19 +88,6 @@ Rectangle {
         Row {
             spacing: 4
             anchors.horizontalCenter: parent.horizontalCenter
-
-            Button {
-                text: "Hard"
-                onClicked: { cavoke.getMoveFromQml("D 1.0"); }
-            }
-            Button {
-                text: "Moderate"
-                onClicked: { cavoke.getMoveFromQml("D 0.8"); }
-            }
-            Button {
-                text: "Easy"
-                onClicked: { cavoke.getMoveFromQml("D 0.2"); }
-            }
         }
     }
 
