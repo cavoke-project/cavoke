@@ -6,7 +6,6 @@ jobs:
     container: ghcr.io/cavoke-project/codeql-ci
     timeout-minutes: 1
     steps:
-      - run: apt-get update -yqq &&
       - uses: actions/checkout@v2
       - run: clang-format --version
       - run: for file in $(find . -iname '*.cpp' -or -iname '*.c' -or -iname '*.h' -and -not -iname 'doctest.h' ); do diff -u <(cat "$file") <(clang-format "$file") || exit 1; done
