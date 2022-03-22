@@ -1,8 +1,5 @@
-name: Codes style and quality
-on:
-  push:
-    branches:
-      - '*'
+name: Code style and quality
+on: ['push', 'pull_request']
 jobs:
   clang-format:
     runs-on: ubuntu-latest
