@@ -13,7 +13,8 @@ RUN apt-get update -yqq \
     && apt-get install -yqq --no-install-recommends software-properties-common \
     curl wget cmake make pkg-config locales git gcc-10 g++-10 \
     openssl libssl-dev libjsoncpp-dev uuid-dev zlib1g-dev libc-ares-dev\
-    postgresql-server-dev-all libmariadbclient-dev libsqlite3-dev libhiredis-dev\
+    postgresql-server-dev-all libmariadbclient-dev libsqlite3-dev libhiredis-dev \
+    libboost-all-dev \
     && rm -rf /var/lib/apt/lists/* \
     && locale-gen en_US.UTF-8
 
@@ -33,7 +34,7 @@ RUN git clone https://github.com/an-tao/drogon $DROGON_ROOT
 WORKDIR $DROGON_ROOT
 RUN ./build.sh
 
-# Nlohmann
+# Nlohmann (TODO: use a package)
 ENV NLOHMANN_ROOT="$IROOT/json/"
 RUN git clone https://github.com/nlohmann/json $NLOHMANN_ROOT
 WORKDIR $NLOHMANN_ROOT
