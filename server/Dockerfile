@@ -10,7 +10,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV NLOHMANN_ROOT="$IROOT/json"
 RUN git clone https://github.com/nlohmann/json $NLOHMANN_ROOT
 WORKDIR $NLOHMANN_ROOT
-RUN cmake . && make install
+RUN cmake . -DJSON_BuildTests=OFF && make install
 
 # Cavoke
 ENV CAVOKE_ROOT="$IROOT/cavoke"
