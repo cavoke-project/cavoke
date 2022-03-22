@@ -3,7 +3,7 @@ on: ['push', 'pull_request']
 jobs:
   clang-format:
     runs-on: ubuntu-latest
-    container: ghcr.io/cavoke-project/codeql-ci
+    container: ghcr.io/cavoke-project/cavoke-ci:codeql
     timeout-minutes: 1
     steps:
       - uses: actions/checkout@v2
@@ -11,7 +11,7 @@ jobs:
       - run: for file in $(find . -iname '*.cpp' -or -iname '*.c' -or -iname '*.h' -and -not -iname 'doctest.h' ); do diff -u <(cat "$file") <(clang-format "$file") || exit 1; done
   cppcheck:
     runs-on: ubuntu-latest
-    container: ghcr.io/cavoke-project/codeql-ci
+    container: ghcr.io/cavoke-project/cavoke-ci:codeql
     timeout-minutes: 1
     steps:
       - uses: actions/checkout@v2

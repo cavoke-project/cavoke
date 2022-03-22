@@ -1,0 +1,32 @@
+name: Code style and quality
+on: ['push', 'pull_request']
+jobs:
+  client-notests-qt5-suse:
+    runs-on: ubuntu-latest
+    container: ghcr.io/cavoke-project/cavoke-ci:client-qt5-suse
+    steps:
+      - uses: actions/checkout@v2
+      - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=5
+      - run: cd build && make cavoke_client
+  client-notests-qt6-suse:
+    runs-on: ubuntu-latest
+    container: ghcr.io/cavoke-project/cavoke-ci:client-qt6-suse
+    steps:
+      - uses: actions/checkout@v2
+      - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=6  # QT_MAJOR_VERSION=6 by default, so not necessary
+      - run: cd build && make cavoke_client
+  server-healthcheck:
+    runs-on: ubuntu-latest
+    container: ghcr.io/cavoke-project/cavoke-ci:drogon
+    steps:
+      - uses: actions/checkout@v2
+      - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
+      - run: cd build && make cavoke_server
+      - run: chmod +x .circleci/server-test-health.py && .circleci/server-test-health.py ./build/server/cavoke_server
+  games-notests:
+    runs-on: ubuntu-latest
+    container: ghcr.io/cavoke-project/cavoke-ci:drogon
+    steps:
+      - uses: actions/checkout@v2
+      - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_GAMES=ON
+      - run: cd build && make all
