@@ -49,3 +49,22 @@ jobs:
       - uses: actions/checkout@v2
       - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_GAMES=ON
       - run: cd build && make all
+  server-deploy:
+    runs-on: ubuntu-latest
+    needs:
+      - server-healthcheck
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./server
+          push: true
+          tags: cavoke-project/cavoke-server:latest  # TODO: different tag for different branches
+      # TODO deploy to cloud run
