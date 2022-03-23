@@ -10,6 +10,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: clang-format-12 --version
       - run: for file in $(find . -iname '*.cpp' -or -iname '*.c' -or -iname '*.h'); do diff -u <(cat "$file") <(clang-format-12 "$file") || exit 1; done
+        shell: bash
   cppcheck:
     name: Cppcheck
     runs-on: ubuntu-latest
