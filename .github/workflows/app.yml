@@ -1,4 +1,4 @@
-name: Code style and quality
+name: Builds cavoke application and all its modules
 on: ['push', 'pull_request']
 jobs:
   client-notests-qt5-suse:
@@ -17,15 +17,15 @@ jobs:
       - run: cd build && make cavoke_client
   server-healthcheck:
     runs-on: ubuntu-latest
-    container: ghcr.io/cavoke-project/cavoke-ci:drogon
+    container: ghcr.io/cavoke-project/cavoke-ci:server
     steps:
       - uses: actions/checkout@v2
       - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
       - run: cd build && make cavoke_server
-      - run: chmod +x .circleci/server-test-health.py && .circleci/server-test-health.py ./build/server/cavoke_server
+      - run: chmod +x .github/scripts/server-test-health.py && .github/scripts/server-test-health.py ./build/server/cavoke_server
   games-notests:
     runs-on: ubuntu-latest
-    container: ghcr.io/cavoke-project/cavoke-ci:drogon
+    container: ghcr.io/cavoke-project/cavoke-ci:server
     steps:
       - uses: actions/checkout@v2
       - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_GAMES=ON

@@ -7,8 +7,8 @@ jobs:
     timeout-minutes: 1
     steps:
       - uses: actions/checkout@v2
-      - run: clang-format --version
-      - run: for file in $(find . -iname '*.cpp' -or -iname '*.c' -or -iname '*.h' -and -not -iname 'doctest.h' ); do diff -u <(cat "$file") <(clang-format "$file") || exit 1; done
+      - run: clang-format-12 --version
+      - run: for file in $(find . -iname '*.cpp' -or -iname '*.c' -or -iname '*.h' -and -not -iname 'doctest.h' ); do diff -u <(cat "$file") <(clang-format-12 "$file") || exit 1; done
   cppcheck:
     runs-on: ubuntu-latest
     container: ghcr.io/cavoke-project/cavoke-ci:codeql
