@@ -66,5 +66,5 @@ jobs:
         with:
           context: ./server
           push: true
-          tags: cavoke-project/cavoke-server:latest  # TODO: different tag for different branches
+          tags: ghcr.io/cavoke-project/cavoke-server:latest  # TODO: different tag for different branches
       # TODO deploy to cloud run
