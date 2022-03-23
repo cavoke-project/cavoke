@@ -1,6 +1,24 @@
-name: Builds cavoke application and all its modules
+name: app
 on: ['push', 'pull_request']
 jobs:
+  clang-format:
+    name: ClangFormat 12
+    runs-on: ubuntu-latest
+    container: ghcr.io/cavoke-project/cavoke-ci:codeql
+    timeout-minutes: 1
+    steps:
+      - uses: actions/checkout@v2
+      - run: clang-format-12 --version
+      - run: for file in $(find . -iname '*.cpp' -or -iname '*.c' -or -iname '*.h'); do diff -u <(cat "$file") <(clang-format-12 "$file") || exit 1; done
+  cppcheck:
+    name: Cppcheck
+    runs-on: ubuntu-latest
+    container: ghcr.io/cavoke-project/cavoke-ci:codeql
+    timeout-minutes: 1
+    steps:
+      - uses: actions/checkout@v2
+      - run: cppcheck --version
+      - run: cppcheck --language=c++ -DSOME_DEFINE_TO_FIX_CONFIG --enable=all --suppress=*:doctest.h --suppress=unusedFunction --error-exitcode=1 --inline-suppr $(find . -iname '*.cpp')
   client-notests-qt5-suse:
     runs-on: ubuntu-latest
     container: ghcr.io/cavoke-project/cavoke-ci:client-qt5-suse
