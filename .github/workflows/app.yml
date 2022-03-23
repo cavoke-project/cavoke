@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: clang-format-12 --version
-      - run: find . \( -iname '*.cpp' -or -iname '*.c' -or -iname '*.h' \) -exec .github/scripts/diff-clangformat-12.sh '{}' ';'
+      - run: chmod +x .github/scripts/diff-clangformat-12.sh && find . \( -iname '*.cpp' -or -iname '*.c' -or -iname '*.h' \) -exec .github/scripts/diff-clangformat-12.sh '{}' ';'
   cppcheck:
     name: Cppcheck
     runs-on: ubuntu-latest
