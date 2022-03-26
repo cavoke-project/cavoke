@@ -10,13 +10,13 @@
 namespace cavoke::server {
 void run(const std::string &host,
          uint16_t port,
-         const std::string &config_file) {
+         const model::GamesStorageConfig &games_storage_config) {
     // TODO: logging
 
     // init models
     std::cout << "Initialize models..." << std::endl;
-    auto games_storage = std::make_shared<model::GamesStorage>(
-        model::GamesStorageConfig::load(config_file));
+    auto games_storage =
+        std::make_shared<model::GamesStorage>(games_storage_config);
     auto game_logic_manager =
         std::make_shared<model::GameLogicManager>(games_storage);
     auto game_state_storage = std::make_shared<model::GameStateStorage>();
@@ -54,13 +54,18 @@ namespace po = boost::program_options;
 
 int main(int argc, char *argv[]) {
     po::options_description desc("Allowed options");
-    desc.add_options()("help,h", "Print help")(
-        "config-file,c", po::value<std::string>(),
-        "File with game storage configuration")(
-        "host,ip,a", po::value<std::string>()->default_value("0.0.0.0"),
-        "Host on which server is located")(
-        "port,p", po::value<uint16_t>()->default_value(8080),
-        "TCP/IP port number for connection");
+    auto add_desc_options = desc.add_options();
+    add_desc_options("help,h", "Print help");
+    add_desc_options("config-file,c", po::value<std::string>(),
+                     "File with game storage configuration");
+    add_desc_options(
+        "config,s", po::value<std::string>(),
+        "Game storage configuration as json (overrides config-file)");
+    add_desc_options("host,a",
+                     po::value<std::string>()->default_value("0.0.0.0"),
+                     "Host on which server is located");
+    add_desc_options("port,p", po::value<uint16_t>()->default_value(8080),
+                     "TCP/IP port number for connection");
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -71,17 +76,41 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    std::string config_file;
-    if (vm.count("config-file")) {
-        config_file = vm["config-file"].as<std::string>();
+    cavoke::server::model::GamesStorageConfig games_storage_config;
+    if (vm.count("config")) {
+        try {
+            games_storage_config =
+                nlohmann::json::parse(vm["config"].as<std::string>());
+            std::cout << "Games storage config loaded from an argument\n";
+        } catch (const std::exception &err) {
+            std::cerr << "Failed to parse games storage configuration: "
+                      << err.what() << '\n';
+            return 1;
+        }
+    } else if (vm.count("config-file")) {
+        try {
+            std::string file = vm["config-file"].as<std::string>();
+            games_storage_config =
+                cavoke::server::model::GamesStorageConfig::load(file);
+            std::cout << "Games storage config loaded from file: '" << file
+                      << "'\n";
+        } catch (const std::exception &err) {
+            std::cerr
+                << "Failed to load games storage configuration from file: "
+                << err.what() << '\n';
+            return 1;
+        }
     } else {
-        //    config_file = std::getenv("CAVOKE_SERVER_CONFIG"); // TODO: think
-        //    and discuss
+        std::cerr << "No games storage config specified. Using a default one. "
+                     "Please use `-c` option.\n";
+        // default configuration
+        games_storage_config = {"../../local_server/games", "logic",
+                                "client.zip", "config.json"};
     }
 
     std::string host = vm.at("host").as<std::string>();
     uint16_t port = vm.at("port").as<uint16_t>();
 
-    cavoke::server::run(host, port, config_file);
+    cavoke::server::run(host, port, games_storage_config);
     return 0;
 }
