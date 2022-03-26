@@ -2,4 +2,4 @@
 mkdir -p build
 # shellcheck disable=SC2164
 cd build
-cmake .. && ./configure make install
+cmake .. && make install
