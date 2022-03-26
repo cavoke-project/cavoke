@@ -13,4 +13,4 @@ WORKDIR $CAVOKE_ROOT
 RUN chmod +x ./install.sh && ./install.sh
 RUN rm -rf $CAVOKE_ROOT
 
-ENTRYPOINT /usr/local/cavoke_server
+ENTRYPOINT /usr/local/bin/cavoke_server
