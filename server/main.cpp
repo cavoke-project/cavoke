@@ -61,6 +61,9 @@ int main(int argc, char *argv[]) {
     add_desc_options(
         "config,s", po::value<std::string>(),
         "Game storage configuration as json (overrides config-file)");
+    add_desc_options("games-dir,g", po::value<std::string>(),
+                     "Overrides game directory location (both of config and "
+                     "config-file). Used for mounting.");
     add_desc_options("host,a",
                      po::value<std::string>()->default_value("0.0.0.0"),
                      "Host on which server is located");
@@ -78,6 +81,7 @@ int main(int argc, char *argv[]) {
 
     cavoke::server::model::GamesStorageConfig games_storage_config;
     if (vm.count("config")) {
+        // load from argument
         try {
             games_storage_config =
                 nlohmann::json::parse(vm["config"].as<std::string>());
@@ -88,6 +92,7 @@ int main(int argc, char *argv[]) {
             return 1;
         }
     } else if (vm.count("config-file")) {
+        // load from file
         try {
             std::string file = vm["config-file"].as<std::string>();
             games_storage_config =
@@ -101,11 +106,17 @@ int main(int argc, char *argv[]) {
             return 1;
         }
     } else {
+        // use default one
         std::cerr << "No games storage config specified. Using a default one. "
                      "Please use `-c` option.\n";
         // default configuration
         games_storage_config = {"../../local_server/games", "logic",
                                 "client.zip", "config.json"};
+    }
+    // try override games storage
+    if (vm.count("games-dir")) {
+        games_storage_config.games_directory =
+            vm["games-dir"].as<std::string>();
     }
 
     std::string host = vm.at("host").as<std::string>();
