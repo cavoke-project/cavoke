@@ -9,7 +9,8 @@ EXPOSE $SERVER_PORT
 ENV CAVOKE_ROOT="$IROOT/cavoke/"
 ADD ./ $CAVOKE_ROOT
 WORKDIR $CAVOKE_ROOT
-# Build server
-RUN chmod +x ./build.sh && ./build.sh
+# Install server
+RUN chmod +x ./install.sh && ./install.sh
+RUN rm -rf $CAVOKE_ROOT
 
-ENTRYPOINT $CAVOKE_ROOT/build/cavoke_server
+ENTRYPOINT /usr/local/cavoke_server

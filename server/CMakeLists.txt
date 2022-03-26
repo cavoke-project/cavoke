@@ -33,3 +33,5 @@ add_executable(cavoke_server
 target_link_libraries(cavoke_server Drogon::Drogon)
 target_link_libraries(cavoke_server ${Boost_LIBRARIES} ${CMAKE_DL_LIBS})
 target_link_libraries(cavoke_server nlohmann_json::nlohmann_json)
+
+install(TARGETS cavoke_server)
