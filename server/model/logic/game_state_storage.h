@@ -16,7 +16,7 @@ struct game_state_error : cavoke_base_exception {
     explicit game_state_error(std::string message);
 };
 
-class GameStateStorage {  // TODO: thread safety
+class GameStateStorage {
 public:
     struct GameState {
         bool is_terminal;

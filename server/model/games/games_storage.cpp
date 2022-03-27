@@ -39,6 +39,8 @@ std::vector<Game> GamesStorage::list_games() {
 }
 
 void GamesStorage::update() {
+    std::unique_lock lock(m_games_mtx);
+
     m_games.clear();
     for (auto &entry : boost::make_iterator_range(
              boost::filesystem::directory_iterator(m_config.games_directory),
