@@ -1,0 +1,102 @@
+name: app
+on:
+  push
+jobs:
+  clang-format:
+    name: ClangFormat 12
+    runs-on: ubuntu-latest
+    container: ghcr.io/cavoke-project/cavoke-ci:codeql
+    timeout-minutes: 1
+    steps:
+      - uses: actions/checkout@v2
+      - run: clang-format-12 --version
+      - run: chmod +x .github/scripts/diff-clangformat-12.sh && find . -iname '*.cpp' -or -iname '*.c' -or -iname '*.h' | xargs -n1 .github/scripts/diff-clangformat-12.sh
+  cppcheck:
+    name: Cppcheck
+    runs-on: ubuntu-latest
+    container: ghcr.io/cavoke-project/cavoke-ci:codeql
+    timeout-minutes: 1
+    steps:
+      - uses: actions/checkout@v2
+      - run: cppcheck --version
+      - run: cppcheck --language=c++ -DSOME_DEFINE_TO_FIX_CONFIG --enable=all --suppress=*:doctest.h --suppress=unusedFunction --error-exitcode=1 --inline-suppr $(find . -iname '*.cpp')
+  client-notests-qt5-suse:
+    runs-on: ubuntu-latest
+    container: ghcr.io/cavoke-project/cavoke-ci:client-qt5-suse
+    steps:
+      - uses: actions/checkout@v2
+      - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=5
+      - run: cd build && make cavoke_client
+  client-notests-qt6-suse:
+    runs-on: ubuntu-latest
+    container: ghcr.io/cavoke-project/cavoke-ci:client-qt6-suse
+    steps:
+      - uses: actions/checkout@v2
+      - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=6  # QT_MAJOR_VERSION=6 by default, so not necessary
+      - run: cd build && make cavoke_client
+  server-healthcheck:
+    runs-on: ubuntu-latest
+    container: ghcr.io/cavoke-project/cavoke-ci:server
+    steps:
+      - uses: actions/checkout@v2
+      - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
+      - run: cd build && make cavoke_server
+      - run: chmod +x .github/scripts/server-test-health.py && .github/scripts/server-test-health.py ./build/server/cavoke_server
+  games-notests:
+    runs-on: ubuntu-latest
+    container: ghcr.io/cavoke-project/cavoke-ci:server
+    steps:
+      - uses: actions/checkout@v2
+      - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_GAMES=ON
+      - run: cd build && make all
+  server-publish-image-develop:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+#    environment: develop
+    needs:
+      - server-healthcheck
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./server
+          push: true
+          tags: ghcr.io/cavoke-project/cavoke-server:latest  # TODO: different tag for different branches
+  server-deploy-cloud-run-develop:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: develop
+      url: https://develop.api.cavoke.wlko.me
+    needs:
+      - server-publish-image-develop
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+      - name: 'Deploy to Cloud Run'
+        run: |
+          gcloud components install beta && \
+          gcloud beta run deploy cavoke-server-develop \
+            --execution-environment gen2 \
+            --source server/.gcp \
+            --allow-unauthenticated \
+            --service-account ${{ env.SERVICE_ACCOUNT }} \
+            --region=${{ env.REGION }} \
+            --update-env-vars BUCKET=${{ env.BUCKET_NAME }}
+env:
+  PROJECT_ID: waleko-personal
+  SERVICE_ACCOUNT: fs-identity
+  BUCKET_NAME: cavoke-test-1
+  REGION: europe-north1
