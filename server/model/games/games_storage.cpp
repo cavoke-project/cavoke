@@ -58,6 +58,8 @@ void GamesStorage::update() {
 }
 
 std::optional<Game> GamesStorage::get_game_by_id(const std::string &game_id) {
+    std::shared_lock lock(m_games_mtx);
+
     if (m_games.count(game_id) > 0) {
         return m_games[game_id];
     }
