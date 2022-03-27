@@ -19,7 +19,7 @@ void StateController::send_move(
         return;
     }
 
-    model::GameSession *session;
+    std::shared_ptr<model::GameSession> session;
     try {
         session = m_participation_storage->get_session(session_id);
     } catch (const model::game_session_error &) {
@@ -89,7 +89,7 @@ void StateController::get_state(
         return;
     }
 
-    model::GameSession *session;
+    std::shared_ptr<model::GameSession> session;
     try {
         session = m_participation_storage->get_session(session_id);
     } catch (const model::game_session_error &) {

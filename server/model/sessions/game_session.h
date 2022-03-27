@@ -70,6 +70,8 @@ private:
     boost::bimap<std::string, int> m_userid_to_playerid{};
     std::optional<json> m_game_settings = std::nullopt;
 
+    mutable std::shared_mutex m_mtx;
+
 private:
     static std::string generate_invite_code();
 };

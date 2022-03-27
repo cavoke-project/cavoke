@@ -33,7 +33,7 @@ public:
 
 private:
     std::map<std::string, GameState> m_states;
-    std::shared_mutex m_states_mtx;
+    mutable std::shared_mutex m_states_mtx;
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameStateStorage::GameState,

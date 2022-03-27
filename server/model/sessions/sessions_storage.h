@@ -9,8 +9,6 @@
 namespace cavoke::server::model {
 
 class SessionsStorage {
-    // TODO: thread-safety
-
 public:
     GameSession::GameSessionInfo create_session(
         const GameConfig &game_config,
@@ -28,9 +26,10 @@ public:
         const std::string &session_id,
         std::optional<json> game_settings = {});
 
-    GameSession *get_session(const std::string &session_id);
+    std::shared_ptr<GameSession> get_session(const std::string &session_id);
 
-    GameSession *get_session_by_invite_code(const std::string &session_id);
+    std::shared_ptr<GameSession> get_session_by_invite_code(
+        const std::string &invite_code);
 
     SessionsStorage(std::shared_ptr<GameLogicManager> mGameLogicManager,
                     std::shared_ptr<GamesStorage> mGamesStorage,
@@ -40,8 +39,12 @@ private:
     std::shared_ptr<GameLogicManager> m_game_logic_manager;
     std::shared_ptr<GamesStorage> m_games_storage;
     std::shared_ptr<GameStateStorage> m_game_state_storage;
-    std::map<std::string, GameSession> m_sessions{};
+
+    std::map<std::string, std::shared_ptr<GameSession>> m_sessions{};
+    mutable std::shared_mutex m_sessions_mtx;
+
     std::map<std::string, std::string> m_invite_codes_to_session_ids{};
+    mutable std::shared_mutex m_invite_codes_map_mtx;
 };
 
 }  // namespace cavoke::server::model
