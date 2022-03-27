@@ -51,6 +51,7 @@ jobs:
       - run: cd build && make all
   server-publish-image-develop:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
     environment: develop
     needs:
       - server-healthcheck
@@ -70,6 +71,7 @@ jobs:
           tags: ghcr.io/cavoke-project/cavoke-server:latest  # TODO: different tag for different branches
   server-deploy-cloud-run-develop:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
     environment:
       name: develop
       url: https://develop.api.cavoke.wlko.me
