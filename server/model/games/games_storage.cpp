@@ -31,10 +31,15 @@ std::vector<Game> GamesStorage::list_games() {
     update();
 
     std::vector<Game> result;
-    for (const auto &e : m_games) {
-        // cppcheck-suppress useStlAlgorithm
-        result.emplace_back(e.second);
+
+    {
+        std::shared_lock lock(m_games_mtx);
+        for (const auto &e : m_games) {
+            // cppcheck-suppress useStlAlgorithm
+            result.emplace_back(e.second);
+        }
     }
+
     return result;
 }
 
