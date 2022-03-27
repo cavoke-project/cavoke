@@ -82,7 +82,7 @@ GameSession *SessionsStorage::get_session_by_invite_code(
     }
 }
 
-GameLogicManager::ValidationResult SessionsStorage::validate_session(
+cavoke::ValidationResult SessionsStorage::validate_session(
     const std::string &session_id,
     std::optional<json> game_settings) {
     auto session = get_session(session_id);

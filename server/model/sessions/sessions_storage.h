@@ -24,7 +24,7 @@ public:
     void start_session(const std::string &session_id,
                        std::optional<json> game_settings = {});
 
-    GameLogicManager::ValidationResult validate_session(
+    cavoke::ValidationResult validate_session(
         const std::string &session_id,
         std::optional<json> game_settings = {});
 
