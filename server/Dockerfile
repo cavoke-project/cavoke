@@ -11,6 +11,7 @@ ADD ./ $CAVOKE_ROOT
 WORKDIR $CAVOKE_ROOT
 # Install server
 RUN chmod +x ./install.sh && ./install.sh
+WORKDIR /
 RUN rm -rf $CAVOKE_ROOT
 
-CMD ["/usr/local/bin/cavoke_server"]
+ENTRYPOINT /usr/local/bin/cavoke_server
