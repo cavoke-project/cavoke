@@ -12,6 +12,9 @@
 #include <QtNetwork/QNetworkReply>
 #include "entities/sessioninfo.h"
 #include "entities/validationresult.h"
+
+#include "OAIDefaultApi.h"
+
 struct NetworkManager : public QObject {
     Q_OBJECT
 public:

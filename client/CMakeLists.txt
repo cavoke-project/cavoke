@@ -17,7 +17,8 @@ set(CMAKE_AUTORCC ON)
 include_directories(${CMAKE_BINARY_DIR}
         controllers
         models
-        views)
+        views
+        httpclient/client)
 
 # https://api.kde.org/frameworks-api/frameworks-apidocs/frameworks/karchive/html/index.html
 find_package(KF5Archive REQUIRED)
@@ -48,3 +49,8 @@ target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Widgets)
 target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Quick)
 target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Network)
 target_link_libraries(cavoke_client KF5::Archive)
+
+# Cavoke OpenAPI
+
+add_subdirectory(httpclient/client)
+target_link_libraries(cavoke_client openapi)
