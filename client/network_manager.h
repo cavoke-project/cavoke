@@ -10,10 +10,9 @@
 #include <QtCore/QTimer>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
+#include "OAIDefaultApi.h"
 #include "entities/sessioninfo.h"
 #include "entities/validationresult.h"
-
-#include "OAIDefaultApi.h"
 
 struct NetworkManager : public QObject {
     Q_OBJECT
