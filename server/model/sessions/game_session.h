@@ -5,6 +5,7 @@
 #include <boost/bimap.hpp>
 #include <map>
 #include <random>
+#include <shared_mutex>
 #include <string>
 #include <utility>
 #include "cavoke_base_exception.h"

@@ -3,6 +3,7 @@
 
 #include <drogon/drogon.h>
 #include <boost/filesystem/path.hpp>
+#include <shared_mutex>
 #include <string>
 #include "game.h"
 #include "games_storage_config.h"

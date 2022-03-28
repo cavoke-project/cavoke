@@ -2,6 +2,7 @@
 #define CAVOKE_SERVER_GAME_STATE_STORAGE_H
 
 #include <map>
+#include <mutex>
 #include <nlohmann/json.hpp>
 #include <optional>
 #include <shared_mutex>
