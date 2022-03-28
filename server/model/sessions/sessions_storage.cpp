@@ -49,10 +49,12 @@ GameSession::GameSessionInfo SessionsStorage::join_session(
     std::optional<int> player_id) {
     // find session by invite
     try {
-        std::unique_lock lock(m_sessions_mtx);
+        std::shared_ptr<GameSession> session;
+        {
+            std::unique_lock lock(m_sessions_mtx);
+            session = m_sessions[m_invite_codes_to_session_ids.at(invite_code)];
+        }
 
-        auto session =
-            m_sessions[m_invite_codes_to_session_ids.at(invite_code)];
         // validate invite code
         if (!session->verify_invite_code(invite_code)) {
             throw game_session_error("invalid invite code");
