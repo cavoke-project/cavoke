@@ -26,7 +26,7 @@ void ProtoRoomView::updateSessionInfo(const SessionInfo &sessionInfo) {
     for (const auto &player : sessionInfo.players) {
         if (cnt == 0) {
             ui->playersListWidget->addItem("Саша");
-        } else if (cnt == 1 ) {
+        } else if (cnt == 1) {
             ui->playersListWidget->addItem("Марк");
         } else {
             ui->playersListWidget->addItem(player.user_id);
