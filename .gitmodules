@@ -1,0 +1,3 @@
+[submodule "client/httpclient"]
+	path = client/httpclient
+	url = https://github.com/cavoke-project/cavoke-apiary
