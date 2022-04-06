@@ -47,6 +47,8 @@ class Players
         static const std::string _session_id;
         static const std::string _user_id;
         static const std::string _player_id;
+        static const std::string _score;
+        static const std::string _playerstate;
     };
 
     const static int primaryKeyNumber;
@@ -124,8 +126,26 @@ class Players
     ///Set the value of the column player_id
     void setPlayerId(const int32_t &pPlayerId) noexcept;
 
+    /**  For column score  */
+    ///Get the value of the column score, returns the default value if the column is null
+    const int32_t &getValueOfScore() const noexcept;
+    ///Return a shared_ptr object pointing to the column const value, or an empty shared_ptr object if the column is null
+    const std::shared_ptr<int32_t> &getScore() const noexcept;
+    ///Set the value of the column score
+    void setScore(const int32_t &pScore) noexcept;
+    void setScoreToNull() noexcept;
 
-    static size_t getColumnNumber() noexcept {  return 3;  }
+    /**  For column playerstate  */
+    ///Get the value of the column playerstate, returns the default value if the column is null
+    const std::string &getValueOfPlayerstate() const noexcept;
+    ///Return a shared_ptr object pointing to the column const value, or an empty shared_ptr object if the column is null
+    const std::shared_ptr<std::string> &getPlayerstate() const noexcept;
+    ///Set the value of the column playerstate
+    void setPlayerstate(const std::string &pPlayerstate) noexcept;
+    void setPlayerstate(std::string &&pPlayerstate) noexcept;
+
+
+    static size_t getColumnNumber() noexcept {  return 5;  }
     static const std::string &getColumnName(size_t index) noexcept(false);
 
     Json::Value toJson() const;
@@ -151,6 +171,8 @@ class Players
     std::shared_ptr<std::string> sessionId_;
     std::shared_ptr<std::string> userId_;
     std::shared_ptr<int32_t> playerId_;
+    std::shared_ptr<int32_t> score_;
+    std::shared_ptr<std::string> playerstate_;
     struct MetaData
     {
         const std::string colName_;
@@ -162,7 +184,7 @@ class Players
         const bool notNull_;
     };
     static const std::vector<MetaData> metaData_;
-    bool dirtyFlag_[3]={ false };
+    bool dirtyFlag_[5]={ false };
   public:
     static const std::string &sqlForFindingByPrimaryKey()
     {
@@ -195,6 +217,16 @@ class Players
             sql += "player_id,";
             ++parametersCount;
         }
+        if(dirtyFlag_[3])
+        {
+            sql += "score,";
+            ++parametersCount;
+        }
+        if(dirtyFlag_[4])
+        {
+            sql += "playerstate,";
+            ++parametersCount;
+        }
         if(parametersCount > 0)
         {
             sql[sql.length()-1]=')';
@@ -217,6 +249,16 @@ class Players
             sql.append(placeholderStr, n);
         }
         if(dirtyFlag_[2])
+        {
+            n = sprintf(placeholderStr,"$%d,",placeholder++);
+            sql.append(placeholderStr, n);
+        }
+        if(dirtyFlag_[3])
+        {
+            n = sprintf(placeholderStr,"$%d,",placeholder++);
+            sql.append(placeholderStr, n);
+        }
+        if(dirtyFlag_[4])
         {
             n = sprintf(placeholderStr,"$%d,",placeholder++);
             sql.append(placeholderStr, n);

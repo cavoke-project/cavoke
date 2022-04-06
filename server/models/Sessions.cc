@@ -19,8 +19,8 @@ using namespace drogon_model::cavoke_test;
 const std::string Sessions::Cols::_id = "id";
 const std::string Sessions::Cols::_game_id = "game_id";
 const std::string Sessions::Cols::_invite_code = "invite_code";
-const std::string Sessions::Cols::_status = "status";
 const std::string Sessions::Cols::_game_settings = "game_settings";
+const std::string Sessions::Cols::_status = "status";
 const std::string Sessions::primaryKeyName = "id";
 const bool Sessions::hasPrimaryKey = true;
 const std::string Sessions::tableName = "sessions";
@@ -29,8 +29,8 @@ const std::vector<typename Sessions::MetaData> Sessions::metaData_={
 {"id","std::string","uuid",0,0,1,1},
 {"game_id","std::string","character varying",0,0,0,1},
 {"invite_code","std::string","character varying",0,0,0,1},
-{"status","std::string","USER-DEFINED",0,0,0,0},
-{"game_settings","std::string","json",0,0,0,0}
+{"game_settings","std::string","json",0,0,0,0},
+{"status","int32_t","integer",4,0,0,0}
 };
 const std::string &Sessions::getColumnName(size_t index) noexcept(false)
 {
@@ -53,13 +53,13 @@ Sessions::Sessions(const Row &r, const ssize_t indexOffset) noexcept
         {
             inviteCode_=std::make_shared<std::string>(r["invite_code"].as<std::string>());
         }
-        if(!r["status"].isNull())
-        {
-            status_=std::make_shared<std::string>(r["status"].as<std::string>());
-        }
         if(!r["game_settings"].isNull())
         {
             gameSettings_=std::make_shared<std::string>(r["game_settings"].as<std::string>());
+        }
+        if(!r["status"].isNull())
+        {
+            status_=std::make_shared<int32_t>(r["status"].as<int32_t>());
         }
     }
     else
@@ -89,12 +89,12 @@ Sessions::Sessions(const Row &r, const ssize_t indexOffset) noexcept
         index = offset + 3;
         if(!r[index].isNull())
         {
-            status_=std::make_shared<std::string>(r[index].as<std::string>());
+            gameSettings_=std::make_shared<std::string>(r[index].as<std::string>());
         }
         index = offset + 4;
         if(!r[index].isNull())
         {
-            gameSettings_=std::make_shared<std::string>(r[index].as<std::string>());
+            status_=std::make_shared<int32_t>(r[index].as<int32_t>());
         }
     }
 
@@ -136,7 +136,7 @@ Sessions::Sessions(const Json::Value &pJson, const std::vector<std::string> &pMa
         dirtyFlag_[3] = true;
         if(!pJson[pMasqueradingVector[3]].isNull())
         {
-            status_=std::make_shared<std::string>(pJson[pMasqueradingVector[3]].asString());
+            gameSettings_=std::make_shared<std::string>(pJson[pMasqueradingVector[3]].asString());
         }
     }
     if(!pMasqueradingVector[4].empty() && pJson.isMember(pMasqueradingVector[4]))
@@ -144,7 +144,7 @@ Sessions::Sessions(const Json::Value &pJson, const std::vector<std::string> &pMa
         dirtyFlag_[4] = true;
         if(!pJson[pMasqueradingVector[4]].isNull())
         {
-            gameSettings_=std::make_shared<std::string>(pJson[pMasqueradingVector[4]].asString());
+            status_=std::make_shared<int32_t>((int32_t)pJson[pMasqueradingVector[4]].asInt64());
         }
     }
 }
@@ -175,20 +175,20 @@ Sessions::Sessions(const Json::Value &pJson) noexcept(false)
             inviteCode_=std::make_shared<std::string>(pJson["invite_code"].asString());
         }
     }
-    if(pJson.isMember("status"))
-    {
-        dirtyFlag_[3]=true;
-        if(!pJson["status"].isNull())
-        {
-            status_=std::make_shared<std::string>(pJson["status"].asString());
-        }
-    }
     if(pJson.isMember("game_settings"))
     {
-        dirtyFlag_[4]=true;
+        dirtyFlag_[3]=true;
         if(!pJson["game_settings"].isNull())
         {
             gameSettings_=std::make_shared<std::string>(pJson["game_settings"].asString());
+        }
+    }
+    if(pJson.isMember("status"))
+    {
+        dirtyFlag_[4]=true;
+        if(!pJson["status"].isNull())
+        {
+            status_=std::make_shared<int32_t>((int32_t)pJson["status"].asInt64());
         }
     }
 }
@@ -229,7 +229,7 @@ void Sessions::updateByMasqueradedJson(const Json::Value &pJson,
         dirtyFlag_[3] = true;
         if(!pJson[pMasqueradingVector[3]].isNull())
         {
-            status_=std::make_shared<std::string>(pJson[pMasqueradingVector[3]].asString());
+            gameSettings_=std::make_shared<std::string>(pJson[pMasqueradingVector[3]].asString());
         }
     }
     if(!pMasqueradingVector[4].empty() && pJson.isMember(pMasqueradingVector[4]))
@@ -237,7 +237,7 @@ void Sessions::updateByMasqueradedJson(const Json::Value &pJson,
         dirtyFlag_[4] = true;
         if(!pJson[pMasqueradingVector[4]].isNull())
         {
-            gameSettings_=std::make_shared<std::string>(pJson[pMasqueradingVector[4]].asString());
+            status_=std::make_shared<int32_t>((int32_t)pJson[pMasqueradingVector[4]].asInt64());
         }
     }
 }
@@ -267,20 +267,20 @@ void Sessions::updateByJson(const Json::Value &pJson) noexcept(false)
             inviteCode_=std::make_shared<std::string>(pJson["invite_code"].asString());
         }
     }
-    if(pJson.isMember("status"))
-    {
-        dirtyFlag_[3] = true;
-        if(!pJson["status"].isNull())
-        {
-            status_=std::make_shared<std::string>(pJson["status"].asString());
-        }
-    }
     if(pJson.isMember("game_settings"))
     {
-        dirtyFlag_[4] = true;
+        dirtyFlag_[3] = true;
         if(!pJson["game_settings"].isNull())
         {
             gameSettings_=std::make_shared<std::string>(pJson["game_settings"].asString());
+        }
+    }
+    if(pJson.isMember("status"))
+    {
+        dirtyFlag_[4] = true;
+        if(!pJson["status"].isNull())
+        {
+            status_=std::make_shared<int32_t>((int32_t)pJson["status"].asInt64());
         }
     }
 }
@@ -356,33 +356,6 @@ void Sessions::setInviteCode(std::string &&pInviteCode) noexcept
     dirtyFlag_[2] = true;
 }
 
-const std::string &Sessions::getValueOfStatus() const noexcept
-{
-    const static std::string defaultValue = std::string();
-    if(status_)
-        return *status_;
-    return defaultValue;
-}
-const std::shared_ptr<std::string> &Sessions::getStatus() const noexcept
-{
-    return status_;
-}
-void Sessions::setStatus(const std::string &pStatus) noexcept
-{
-    status_ = std::make_shared<std::string>(pStatus);
-    dirtyFlag_[3] = true;
-}
-void Sessions::setStatus(std::string &&pStatus) noexcept
-{
-    status_ = std::make_shared<std::string>(std::move(pStatus));
-    dirtyFlag_[3] = true;
-}
-void Sessions::setStatusToNull() noexcept
-{
-    status_.reset();
-    dirtyFlag_[3] = true;
-}
-
 const std::string &Sessions::getValueOfGameSettings() const noexcept
 {
     const static std::string defaultValue = std::string();
@@ -397,16 +370,38 @@ const std::shared_ptr<std::string> &Sessions::getGameSettings() const noexcept
 void Sessions::setGameSettings(const std::string &pGameSettings) noexcept
 {
     gameSettings_ = std::make_shared<std::string>(pGameSettings);
-    dirtyFlag_[4] = true;
+    dirtyFlag_[3] = true;
 }
 void Sessions::setGameSettings(std::string &&pGameSettings) noexcept
 {
     gameSettings_ = std::make_shared<std::string>(std::move(pGameSettings));
-    dirtyFlag_[4] = true;
+    dirtyFlag_[3] = true;
 }
 void Sessions::setGameSettingsToNull() noexcept
 {
     gameSettings_.reset();
+    dirtyFlag_[3] = true;
+}
+
+const int32_t &Sessions::getValueOfStatus() const noexcept
+{
+    const static int32_t defaultValue = int32_t();
+    if(status_)
+        return *status_;
+    return defaultValue;
+}
+const std::shared_ptr<int32_t> &Sessions::getStatus() const noexcept
+{
+    return status_;
+}
+void Sessions::setStatus(const int32_t &pStatus) noexcept
+{
+    status_ = std::make_shared<int32_t>(pStatus);
+    dirtyFlag_[4] = true;
+}
+void Sessions::setStatusToNull() noexcept
+{
+    status_.reset();
     dirtyFlag_[4] = true;
 }
 
@@ -420,8 +415,8 @@ const std::vector<std::string> &Sessions::insertColumns() noexcept
         "id",
         "game_id",
         "invite_code",
-        "status",
-        "game_settings"
+        "game_settings",
+        "status"
     };
     return inCols;
 }
@@ -463,9 +458,9 @@ void Sessions::outputArgs(drogon::orm::internal::SqlBinder &binder) const
     }
     if(dirtyFlag_[3])
     {
-        if(getStatus())
+        if(getGameSettings())
         {
-            binder << getValueOfStatus();
+            binder << getValueOfGameSettings();
         }
         else
         {
@@ -474,9 +469,9 @@ void Sessions::outputArgs(drogon::orm::internal::SqlBinder &binder) const
     }
     if(dirtyFlag_[4])
     {
-        if(getGameSettings())
+        if(getStatus())
         {
-            binder << getValueOfGameSettings();
+            binder << getValueOfStatus();
         }
         else
         {
@@ -548,9 +543,9 @@ void Sessions::updateArgs(drogon::orm::internal::SqlBinder &binder) const
     }
     if(dirtyFlag_[3])
     {
-        if(getStatus())
+        if(getGameSettings())
         {
-            binder << getValueOfStatus();
+            binder << getValueOfGameSettings();
         }
         else
         {
@@ -559,9 +554,9 @@ void Sessions::updateArgs(drogon::orm::internal::SqlBinder &binder) const
     }
     if(dirtyFlag_[4])
     {
-        if(getGameSettings())
+        if(getStatus())
         {
-            binder << getValueOfGameSettings();
+            binder << getValueOfStatus();
         }
         else
         {
@@ -596,14 +591,6 @@ Json::Value Sessions::toJson() const
     {
         ret["invite_code"]=Json::Value();
     }
-    if(getStatus())
-    {
-        ret["status"]=getValueOfStatus();
-    }
-    else
-    {
-        ret["status"]=Json::Value();
-    }
     if(getGameSettings())
     {
         ret["game_settings"]=getValueOfGameSettings();
@@ -611,6 +598,14 @@ Json::Value Sessions::toJson() const
     else
     {
         ret["game_settings"]=Json::Value();
+    }
+    if(getStatus())
+    {
+        ret["status"]=getValueOfStatus();
+    }
+    else
+    {
+        ret["status"]=Json::Value();
     }
     return ret;
 }
@@ -656,9 +651,9 @@ Json::Value Sessions::toMasqueradedJson(
         }
         if(!pMasqueradingVector[3].empty())
         {
-            if(getStatus())
+            if(getGameSettings())
             {
-                ret[pMasqueradingVector[3]]=getValueOfStatus();
+                ret[pMasqueradingVector[3]]=getValueOfGameSettings();
             }
             else
             {
@@ -667,9 +662,9 @@ Json::Value Sessions::toMasqueradedJson(
         }
         if(!pMasqueradingVector[4].empty())
         {
-            if(getGameSettings())
+            if(getStatus())
             {
-                ret[pMasqueradingVector[4]]=getValueOfGameSettings();
+                ret[pMasqueradingVector[4]]=getValueOfStatus();
             }
             else
             {
@@ -703,14 +698,6 @@ Json::Value Sessions::toMasqueradedJson(
     {
         ret["invite_code"]=Json::Value();
     }
-    if(getStatus())
-    {
-        ret["status"]=getValueOfStatus();
-    }
-    else
-    {
-        ret["status"]=Json::Value();
-    }
     if(getGameSettings())
     {
         ret["game_settings"]=getValueOfGameSettings();
@@ -718,6 +705,14 @@ Json::Value Sessions::toMasqueradedJson(
     else
     {
         ret["game_settings"]=Json::Value();
+    }
+    if(getStatus())
+    {
+        ret["status"]=getValueOfStatus();
+    }
+    else
+    {
+        ret["status"]=Json::Value();
     }
     return ret;
 }
@@ -754,14 +749,14 @@ bool Sessions::validateJsonForCreation(const Json::Value &pJson, std::string &er
         err="The invite_code column cannot be null";
         return false;
     }
-    if(pJson.isMember("status"))
-    {
-        if(!validJsonOfField(3, "status", pJson["status"], err, true))
-            return false;
-    }
     if(pJson.isMember("game_settings"))
     {
-        if(!validJsonOfField(4, "game_settings", pJson["game_settings"], err, true))
+        if(!validJsonOfField(3, "game_settings", pJson["game_settings"], err, true))
+            return false;
+    }
+    if(pJson.isMember("status"))
+    {
+        if(!validJsonOfField(4, "status", pJson["status"], err, true))
             return false;
     }
     return true;
@@ -861,14 +856,14 @@ bool Sessions::validateJsonForUpdate(const Json::Value &pJson, std::string &err)
         if(!validJsonOfField(2, "invite_code", pJson["invite_code"], err, false))
             return false;
     }
-    if(pJson.isMember("status"))
-    {
-        if(!validJsonOfField(3, "status", pJson["status"], err, false))
-            return false;
-    }
     if(pJson.isMember("game_settings"))
     {
-        if(!validJsonOfField(4, "game_settings", pJson["game_settings"], err, false))
+        if(!validJsonOfField(3, "game_settings", pJson["game_settings"], err, false))
+            return false;
+    }
+    if(pJson.isMember("status"))
+    {
+        if(!validJsonOfField(4, "status", pJson["status"], err, false))
             return false;
     }
     return true;
@@ -981,7 +976,7 @@ bool Sessions::validJsonOfField(size_t index,
             {
                 return true;
             }
-            if(!pJson.isString())
+            if(!pJson.isInt())
             {
                 err="Type error in the "+fieldName+" field";
                 return false;

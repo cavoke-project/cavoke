@@ -16,7 +16,6 @@ using namespace drogon_model::cavoke_test;
 
 const std::string Globalstates::Cols::_session_id = "session_id";
 const std::string Globalstates::Cols::_state = "state";
-const std::string Globalstates::Cols::_winners = "winners";
 const std::string Globalstates::Cols::_is_terminal = "is_terminal";
 const std::string Globalstates::primaryKeyName = "session_id";
 const bool Globalstates::hasPrimaryKey = true;
@@ -25,7 +24,6 @@ const std::string Globalstates::tableName = "globalstates";
 const std::vector<typename Globalstates::MetaData> Globalstates::metaData_={
 {"session_id","std::string","uuid",0,0,1,1},
 {"state","std::string","text",0,0,0,1},
-{"winners","std::string","ARRAY",0,0,0,1},
 {"is_terminal","bool","boolean",1,0,0,1}
 };
 const std::string &Globalstates::getColumnName(size_t index) noexcept(false)
@@ -45,10 +43,6 @@ Globalstates::Globalstates(const Row &r, const ssize_t indexOffset) noexcept
         {
             state_=std::make_shared<std::string>(r["state"].as<std::string>());
         }
-        if(!r["winners"].isNull())
-        {
-            winners_=std::make_shared<std::string>(r["winners"].as<std::string>());
-        }
         if(!r["is_terminal"].isNull())
         {
             isTerminal_=std::make_shared<bool>(r["is_terminal"].as<bool>());
@@ -57,7 +51,7 @@ Globalstates::Globalstates(const Row &r, const ssize_t indexOffset) noexcept
     else
     {
         size_t offset = (size_t)indexOffset;
-        if(offset + 4 > r.size())
+        if(offset + 3 > r.size())
         {
             LOG_FATAL << "Invalid SQL result for this model";
             return;
@@ -76,11 +70,6 @@ Globalstates::Globalstates(const Row &r, const ssize_t indexOffset) noexcept
         index = offset + 2;
         if(!r[index].isNull())
         {
-            winners_=std::make_shared<std::string>(r[index].as<std::string>());
-        }
-        index = offset + 3;
-        if(!r[index].isNull())
-        {
             isTerminal_=std::make_shared<bool>(r[index].as<bool>());
         }
     }
@@ -89,7 +78,7 @@ Globalstates::Globalstates(const Row &r, const ssize_t indexOffset) noexcept
 
 Globalstates::Globalstates(const Json::Value &pJson, const std::vector<std::string> &pMasqueradingVector) noexcept(false)
 {
-    if(pMasqueradingVector.size() != 4)
+    if(pMasqueradingVector.size() != 3)
     {
         LOG_ERROR << "Bad masquerading vector";
         return;
@@ -115,15 +104,7 @@ Globalstates::Globalstates(const Json::Value &pJson, const std::vector<std::stri
         dirtyFlag_[2] = true;
         if(!pJson[pMasqueradingVector[2]].isNull())
         {
-            winners_=std::make_shared<std::string>(pJson[pMasqueradingVector[2]].asString());
-        }
-    }
-    if(!pMasqueradingVector[3].empty() && pJson.isMember(pMasqueradingVector[3]))
-    {
-        dirtyFlag_[3] = true;
-        if(!pJson[pMasqueradingVector[3]].isNull())
-        {
-            isTerminal_=std::make_shared<bool>(pJson[pMasqueradingVector[3]].asBool());
+            isTerminal_=std::make_shared<bool>(pJson[pMasqueradingVector[2]].asBool());
         }
     }
 }
@@ -146,17 +127,9 @@ Globalstates::Globalstates(const Json::Value &pJson) noexcept(false)
             state_=std::make_shared<std::string>(pJson["state"].asString());
         }
     }
-    if(pJson.isMember("winners"))
-    {
-        dirtyFlag_[2]=true;
-        if(!pJson["winners"].isNull())
-        {
-            winners_=std::make_shared<std::string>(pJson["winners"].asString());
-        }
-    }
     if(pJson.isMember("is_terminal"))
     {
-        dirtyFlag_[3]=true;
+        dirtyFlag_[2]=true;
         if(!pJson["is_terminal"].isNull())
         {
             isTerminal_=std::make_shared<bool>(pJson["is_terminal"].asBool());
@@ -167,7 +140,7 @@ Globalstates::Globalstates(const Json::Value &pJson) noexcept(false)
 void Globalstates::updateByMasqueradedJson(const Json::Value &pJson,
                                             const std::vector<std::string> &pMasqueradingVector) noexcept(false)
 {
-    if(pMasqueradingVector.size() != 4)
+    if(pMasqueradingVector.size() != 3)
     {
         LOG_ERROR << "Bad masquerading vector";
         return;
@@ -192,15 +165,7 @@ void Globalstates::updateByMasqueradedJson(const Json::Value &pJson,
         dirtyFlag_[2] = true;
         if(!pJson[pMasqueradingVector[2]].isNull())
         {
-            winners_=std::make_shared<std::string>(pJson[pMasqueradingVector[2]].asString());
-        }
-    }
-    if(!pMasqueradingVector[3].empty() && pJson.isMember(pMasqueradingVector[3]))
-    {
-        dirtyFlag_[3] = true;
-        if(!pJson[pMasqueradingVector[3]].isNull())
-        {
-            isTerminal_=std::make_shared<bool>(pJson[pMasqueradingVector[3]].asBool());
+            isTerminal_=std::make_shared<bool>(pJson[pMasqueradingVector[2]].asBool());
         }
     }
 }
@@ -222,17 +187,9 @@ void Globalstates::updateByJson(const Json::Value &pJson) noexcept(false)
             state_=std::make_shared<std::string>(pJson["state"].asString());
         }
     }
-    if(pJson.isMember("winners"))
-    {
-        dirtyFlag_[2] = true;
-        if(!pJson["winners"].isNull())
-        {
-            winners_=std::make_shared<std::string>(pJson["winners"].asString());
-        }
-    }
     if(pJson.isMember("is_terminal"))
     {
-        dirtyFlag_[3] = true;
+        dirtyFlag_[2] = true;
         if(!pJson["is_terminal"].isNull())
         {
             isTerminal_=std::make_shared<bool>(pJson["is_terminal"].asBool());
@@ -289,28 +246,6 @@ void Globalstates::setState(std::string &&pState) noexcept
     dirtyFlag_[1] = true;
 }
 
-const std::string &Globalstates::getValueOfWinners() const noexcept
-{
-    const static std::string defaultValue = std::string();
-    if(winners_)
-        return *winners_;
-    return defaultValue;
-}
-const std::shared_ptr<std::string> &Globalstates::getWinners() const noexcept
-{
-    return winners_;
-}
-void Globalstates::setWinners(const std::string &pWinners) noexcept
-{
-    winners_ = std::make_shared<std::string>(pWinners);
-    dirtyFlag_[2] = true;
-}
-void Globalstates::setWinners(std::string &&pWinners) noexcept
-{
-    winners_ = std::make_shared<std::string>(std::move(pWinners));
-    dirtyFlag_[2] = true;
-}
-
 const bool &Globalstates::getValueOfIsTerminal() const noexcept
 {
     const static bool defaultValue = bool();
@@ -325,7 +260,7 @@ const std::shared_ptr<bool> &Globalstates::getIsTerminal() const noexcept
 void Globalstates::setIsTerminal(const bool &pIsTerminal) noexcept
 {
     isTerminal_ = std::make_shared<bool>(pIsTerminal);
-    dirtyFlag_[3] = true;
+    dirtyFlag_[2] = true;
 }
 
 void Globalstates::updateId(const uint64_t id)
@@ -337,7 +272,6 @@ const std::vector<std::string> &Globalstates::insertColumns() noexcept
     static const std::vector<std::string> inCols={
         "session_id",
         "state",
-        "winners",
         "is_terminal"
     };
     return inCols;
@@ -369,17 +303,6 @@ void Globalstates::outputArgs(drogon::orm::internal::SqlBinder &binder) const
     }
     if(dirtyFlag_[2])
     {
-        if(getWinners())
-        {
-            binder << getValueOfWinners();
-        }
-        else
-        {
-            binder << nullptr;
-        }
-    }
-    if(dirtyFlag_[3])
-    {
         if(getIsTerminal())
         {
             binder << getValueOfIsTerminal();
@@ -405,10 +328,6 @@ const std::vector<std::string> Globalstates::updateColumns() const
     if(dirtyFlag_[2])
     {
         ret.push_back(getColumnName(2));
-    }
-    if(dirtyFlag_[3])
-    {
-        ret.push_back(getColumnName(3));
     }
     return ret;
 }
@@ -439,17 +358,6 @@ void Globalstates::updateArgs(drogon::orm::internal::SqlBinder &binder) const
     }
     if(dirtyFlag_[2])
     {
-        if(getWinners())
-        {
-            binder << getValueOfWinners();
-        }
-        else
-        {
-            binder << nullptr;
-        }
-    }
-    if(dirtyFlag_[3])
-    {
         if(getIsTerminal())
         {
             binder << getValueOfIsTerminal();
@@ -479,14 +387,6 @@ Json::Value Globalstates::toJson() const
     {
         ret["state"]=Json::Value();
     }
-    if(getWinners())
-    {
-        ret["winners"]=getValueOfWinners();
-    }
-    else
-    {
-        ret["winners"]=Json::Value();
-    }
     if(getIsTerminal())
     {
         ret["is_terminal"]=getValueOfIsTerminal();
@@ -502,7 +402,7 @@ Json::Value Globalstates::toMasqueradedJson(
     const std::vector<std::string> &pMasqueradingVector) const
 {
     Json::Value ret;
-    if(pMasqueradingVector.size() == 4)
+    if(pMasqueradingVector.size() == 3)
     {
         if(!pMasqueradingVector[0].empty())
         {
@@ -528,24 +428,13 @@ Json::Value Globalstates::toMasqueradedJson(
         }
         if(!pMasqueradingVector[2].empty())
         {
-            if(getWinners())
+            if(getIsTerminal())
             {
-                ret[pMasqueradingVector[2]]=getValueOfWinners();
+                ret[pMasqueradingVector[2]]=getValueOfIsTerminal();
             }
             else
             {
                 ret[pMasqueradingVector[2]]=Json::Value();
-            }
-        }
-        if(!pMasqueradingVector[3].empty())
-        {
-            if(getIsTerminal())
-            {
-                ret[pMasqueradingVector[3]]=getValueOfIsTerminal();
-            }
-            else
-            {
-                ret[pMasqueradingVector[3]]=Json::Value();
             }
         }
         return ret;
@@ -566,14 +455,6 @@ Json::Value Globalstates::toMasqueradedJson(
     else
     {
         ret["state"]=Json::Value();
-    }
-    if(getWinners())
-    {
-        ret["winners"]=getValueOfWinners();
-    }
-    else
-    {
-        ret["winners"]=Json::Value();
     }
     if(getIsTerminal())
     {
@@ -608,19 +489,9 @@ bool Globalstates::validateJsonForCreation(const Json::Value &pJson, std::string
         err="The state column cannot be null";
         return false;
     }
-    if(pJson.isMember("winners"))
-    {
-        if(!validJsonOfField(2, "winners", pJson["winners"], err, true))
-            return false;
-    }
-    else
-    {
-        err="The winners column cannot be null";
-        return false;
-    }
     if(pJson.isMember("is_terminal"))
     {
-        if(!validJsonOfField(3, "is_terminal", pJson["is_terminal"], err, true))
+        if(!validJsonOfField(2, "is_terminal", pJson["is_terminal"], err, true))
             return false;
     }
     return true;
@@ -629,7 +500,7 @@ bool Globalstates::validateMasqueradedJsonForCreation(const Json::Value &pJson,
                                                       const std::vector<std::string> &pMasqueradingVector,
                                                       std::string &err)
 {
-    if(pMasqueradingVector.size() != 4)
+    if(pMasqueradingVector.size() != 3)
     {
         err = "Bad masquerading vector";
         return false;
@@ -668,19 +539,6 @@ bool Globalstates::validateMasqueradedJsonForCreation(const Json::Value &pJson,
               if(!validJsonOfField(2, pMasqueradingVector[2], pJson[pMasqueradingVector[2]], err, true))
                   return false;
           }
-        else
-        {
-            err="The " + pMasqueradingVector[2] + " column cannot be null";
-            return false;
-        }
-      }
-      if(!pMasqueradingVector[3].empty())
-      {
-          if(pJson.isMember(pMasqueradingVector[3]))
-          {
-              if(!validJsonOfField(3, pMasqueradingVector[3], pJson[pMasqueradingVector[3]], err, true))
-                  return false;
-          }
       }
     }
     catch(const Json::LogicError &e)
@@ -707,14 +565,9 @@ bool Globalstates::validateJsonForUpdate(const Json::Value &pJson, std::string &
         if(!validJsonOfField(1, "state", pJson["state"], err, false))
             return false;
     }
-    if(pJson.isMember("winners"))
-    {
-        if(!validJsonOfField(2, "winners", pJson["winners"], err, false))
-            return false;
-    }
     if(pJson.isMember("is_terminal"))
     {
-        if(!validJsonOfField(3, "is_terminal", pJson["is_terminal"], err, false))
+        if(!validJsonOfField(2, "is_terminal", pJson["is_terminal"], err, false))
             return false;
     }
     return true;
@@ -723,7 +576,7 @@ bool Globalstates::validateMasqueradedJsonForUpdate(const Json::Value &pJson,
                                                     const std::vector<std::string> &pMasqueradingVector,
                                                     std::string &err)
 {
-    if(pMasqueradingVector.size() != 4)
+    if(pMasqueradingVector.size() != 3)
     {
         err = "Bad masquerading vector";
         return false;
@@ -747,11 +600,6 @@ bool Globalstates::validateMasqueradedJsonForUpdate(const Json::Value &pJson,
       if(!pMasqueradingVector[2].empty() && pJson.isMember(pMasqueradingVector[2]))
       {
           if(!validJsonOfField(2, pMasqueradingVector[2], pJson[pMasqueradingVector[2]], err, false))
-              return false;
-      }
-      if(!pMasqueradingVector[3].empty() && pJson.isMember(pMasqueradingVector[3]))
-      {
-          if(!validJsonOfField(3, pMasqueradingVector[3], pJson[pMasqueradingVector[3]], err, false))
               return false;
       }
     }
@@ -795,18 +643,6 @@ bool Globalstates::validJsonOfField(size_t index,
             }
             break;
         case 2:
-            if(pJson.isNull())
-            {
-                err="The " + fieldName + " column cannot be null";
-                return false;
-            }
-            if(!pJson.isString())
-            {
-                err="Type error in the "+fieldName+" field";
-                return false;
-            }
-            break;
-        case 3:
             if(pJson.isNull())
             {
                 err="The " + fieldName + " column cannot be null";

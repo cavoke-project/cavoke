@@ -45,7 +45,6 @@ class Globalstates
     {
         static const std::string _session_id;
         static const std::string _state;
-        static const std::string _winners;
         static const std::string _is_terminal;
     };
 
@@ -116,15 +115,6 @@ class Globalstates
     void setState(const std::string &pState) noexcept;
     void setState(std::string &&pState) noexcept;
 
-    /**  For column winners  */
-    ///Get the value of the column winners, returns the default value if the column is null
-    const std::string &getValueOfWinners() const noexcept;
-    ///Return a shared_ptr object pointing to the column const value, or an empty shared_ptr object if the column is null
-    const std::shared_ptr<std::string> &getWinners() const noexcept;
-    ///Set the value of the column winners
-    void setWinners(const std::string &pWinners) noexcept;
-    void setWinners(std::string &&pWinners) noexcept;
-
     /**  For column is_terminal  */
     ///Get the value of the column is_terminal, returns the default value if the column is null
     const bool &getValueOfIsTerminal() const noexcept;
@@ -134,7 +124,7 @@ class Globalstates
     void setIsTerminal(const bool &pIsTerminal) noexcept;
 
 
-    static size_t getColumnNumber() noexcept {  return 4;  }
+    static size_t getColumnNumber() noexcept {  return 3;  }
     static const std::string &getColumnName(size_t index) noexcept(false);
 
     Json::Value toJson() const;
@@ -156,7 +146,6 @@ class Globalstates
     void updateId(const uint64_t id);
     std::shared_ptr<std::string> sessionId_;
     std::shared_ptr<std::string> state_;
-    std::shared_ptr<std::string> winners_;
     std::shared_ptr<bool> isTerminal_;
     struct MetaData
     {
@@ -169,7 +158,7 @@ class Globalstates
         const bool notNull_;
     };
     static const std::vector<MetaData> metaData_;
-    bool dirtyFlag_[4]={ false };
+    bool dirtyFlag_[3]={ false };
   public:
     static const std::string &sqlForFindingByPrimaryKey()
     {
@@ -197,14 +186,9 @@ class Globalstates
             sql += "state,";
             ++parametersCount;
         }
-        if(dirtyFlag_[2])
-        {
-            sql += "winners,";
-            ++parametersCount;
-        }
         sql += "is_terminal,";
         ++parametersCount;
-        if(!dirtyFlag_[3])
+        if(!dirtyFlag_[2])
         {
             needSelection=true;
         }
@@ -230,11 +214,6 @@ class Globalstates
             sql.append(placeholderStr, n);
         }
         if(dirtyFlag_[2])
-        {
-            n = sprintf(placeholderStr,"$%d,",placeholder++);
-            sql.append(placeholderStr, n);
-        }
-        if(dirtyFlag_[3])
         {
             n = sprintf(placeholderStr,"$%d,",placeholder++);
             sql.append(placeholderStr, n);

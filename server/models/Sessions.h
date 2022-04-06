@@ -48,8 +48,8 @@ class Sessions
         static const std::string _id;
         static const std::string _game_id;
         static const std::string _invite_code;
-        static const std::string _status;
         static const std::string _game_settings;
+        static const std::string _status;
     };
 
     const static int primaryKeyNumber;
@@ -128,16 +128,6 @@ class Sessions
     void setInviteCode(const std::string &pInviteCode) noexcept;
     void setInviteCode(std::string &&pInviteCode) noexcept;
 
-    /**  For column status  */
-    ///Get the value of the column status, returns the default value if the column is null
-    const std::string &getValueOfStatus() const noexcept;
-    ///Return a shared_ptr object pointing to the column const value, or an empty shared_ptr object if the column is null
-    const std::shared_ptr<std::string> &getStatus() const noexcept;
-    ///Set the value of the column status
-    void setStatus(const std::string &pStatus) noexcept;
-    void setStatus(std::string &&pStatus) noexcept;
-    void setStatusToNull() noexcept;
-
     /**  For column game_settings  */
     ///Get the value of the column game_settings, returns the default value if the column is null
     const std::string &getValueOfGameSettings() const noexcept;
@@ -147,6 +137,15 @@ class Sessions
     void setGameSettings(const std::string &pGameSettings) noexcept;
     void setGameSettings(std::string &&pGameSettings) noexcept;
     void setGameSettingsToNull() noexcept;
+
+    /**  For column status  */
+    ///Get the value of the column status, returns the default value if the column is null
+    const int32_t &getValueOfStatus() const noexcept;
+    ///Return a shared_ptr object pointing to the column const value, or an empty shared_ptr object if the column is null
+    const std::shared_ptr<int32_t> &getStatus() const noexcept;
+    ///Set the value of the column status
+    void setStatus(const int32_t &pStatus) noexcept;
+    void setStatusToNull() noexcept;
 
 
     static size_t getColumnNumber() noexcept {  return 5;  }
@@ -178,8 +177,8 @@ class Sessions
     std::shared_ptr<std::string> id_;
     std::shared_ptr<std::string> gameId_;
     std::shared_ptr<std::string> inviteCode_;
-    std::shared_ptr<std::string> status_;
     std::shared_ptr<std::string> gameSettings_;
+    std::shared_ptr<int32_t> status_;
     struct MetaData
     {
         const std::string colName_;
@@ -226,12 +225,12 @@ class Sessions
         }
         if(dirtyFlag_[3])
         {
-            sql += "status,";
+            sql += "game_settings,";
             ++parametersCount;
         }
         if(dirtyFlag_[4])
         {
-            sql += "game_settings,";
+            sql += "status,";
             ++parametersCount;
         }
         if(parametersCount > 0)
