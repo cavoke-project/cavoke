@@ -38,7 +38,6 @@ namespace cavoke_test
 {
 class Globalstates;
 class Players;
-class Playerstates;
 
 class Sessions
 {
@@ -160,9 +159,6 @@ class Sessions
     void getGlobalState(const drogon::orm::DbClientPtr &clientPtr,
                         const std::function<void(Globalstates)> &rcb,
                         const drogon::orm::ExceptionCallback &ecb) const;
-    void getPlayerstates(const drogon::orm::DbClientPtr &clientPtr,
-                         const std::function<void(std::vector<Playerstates>)> &rcb,
-                         const drogon::orm::ExceptionCallback &ecb) const;
   private:
     friend drogon::orm::Mapper<Sessions>;
 #ifdef __cpp_impl_coroutine

@@ -8,7 +8,6 @@
 #include "Sessions.h"
 #include "Globalstates.h"
 #include "Players.h"
-#include "Playerstates.h"
 #include <drogon/utils/Utilities.h>
 #include <string>
 
@@ -1027,24 +1026,6 @@ void Sessions::getGlobalState(const DbClientPtr &clientPtr,
                     {
                         rcb(Globalstates(r[0]));
                     }
-               }
-               >> ecb;
-}
-void Sessions::getPlayerstates(const DbClientPtr &clientPtr,
-                               const std::function<void(std::vector<Playerstates>)> &rcb,
-                               const ExceptionCallback &ecb) const
-{
-    const static std::string sql = "select * from playerstates where session_id = $1";
-    *clientPtr << sql
-               << *id_
-               >> [rcb = std::move(rcb)](const Result &r){
-                   std::vector<Playerstates> ret;
-                   ret.reserve(r.size());
-                   for (auto const &row : r)
-                   {
-                       ret.emplace_back(Playerstates(row));
-                   }
-                   rcb(ret);
                }
                >> ecb;
 }

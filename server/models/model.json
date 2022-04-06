@@ -52,27 +52,7 @@
                 "target_table_alias": "GlobalState",
                 "target_key": "session_id",
                 "enable_reverse": true
-            },
-            {
-                "type": "has many",
-                "original_table_name": "sessions",
-                "original_table_alias": "Session",
-                "original_key": "id",
-                "target_table_name": "playerstates",
-                "target_table_alias": "",
-                "target_key": "session_id",
-                "enable_reverse": true
             }
-//            {
-//                "type": "has one",
-//                "original_table_name": "players",
-//                "original_table_alias": "Player",
-//                "original_key": "player_pk",
-//                "target_table_name": "playerstates",
-//                "target_table_alias": "PlayerState",
-//                "target_key": "playerstate_pk",
-//                "enable_reverse": true
-//            }
         ]
     }
 }
