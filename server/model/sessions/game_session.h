@@ -5,6 +5,7 @@
 #include <boost/bimap.hpp>
 #include <map>
 #include <random>
+#include <shared_mutex>
 #include <string>
 #include <utility>
 #include "cavoke_base_exception.h"
@@ -69,6 +70,8 @@ private:
     SessionStatus m_status = NOT_STARTED;
     boost::bimap<std::string, int> m_userid_to_playerid{};
     std::optional<json> m_game_settings = std::nullopt;
+
+    mutable std::shared_mutex m_mtx;
 
 private:
     static std::string generate_invite_code();

@@ -31,14 +31,21 @@ std::vector<Game> GamesStorage::list_games() {
     update();
 
     std::vector<Game> result;
-    for (const auto &e : m_games) {
-        // cppcheck-suppress useStlAlgorithm
-        result.emplace_back(e.second);
+
+    {
+        std::shared_lock lock(m_games_mtx);
+        for (const auto &e : m_games) {
+            // cppcheck-suppress useStlAlgorithm
+            result.emplace_back(e.second);
+        }
     }
+
     return result;
 }
 
 void GamesStorage::update() {
+    std::unique_lock lock(m_games_mtx);
+
     m_games.clear();
     for (auto &entry : boost::make_iterator_range(
              boost::filesystem::directory_iterator(m_config.games_directory),
@@ -56,6 +63,8 @@ void GamesStorage::update() {
 }
 
 std::optional<Game> GamesStorage::get_game_by_id(const std::string &game_id) {
+    std::shared_lock lock(m_games_mtx);
+
     if (m_games.count(game_id) > 0) {
         return m_games[game_id];
     }

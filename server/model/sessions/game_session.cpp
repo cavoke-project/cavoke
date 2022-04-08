@@ -22,7 +22,8 @@ GameSession::GameSession(GameConfig game_config)
  */
 void GameSession::add_user(const std::string &user_id,
                            std::optional<int> player_id) {
-    // TODO: thread-safety
+    std::unique_lock lock(m_mtx);
+
     if (m_status != NOT_STARTED) {
         throw game_session_error("session has already started");
     }
@@ -64,6 +65,8 @@ void GameSession::add_user(const std::string &user_id,
  */
 int GameSession::get_player_id(const std::string &user_id) const {
     try {
+        std::shared_lock lock(m_mtx);
+
         return m_userid_to_playerid.left.at(user_id);
     } catch (const std::out_of_range &) {  // slow?
         throw game_session_error("user not in session");
@@ -76,6 +79,8 @@ int GameSession::get_player_id(const std::string &user_id) const {
  */
 std::string GameSession::get_user_id(int player_id) const {
     try {
+        std::shared_lock lock(m_mtx);
+
         return m_userid_to_playerid.right.at(player_id);
     } catch (const std::out_of_range &) {  // slow?
         throw game_session_error("player not in session");
@@ -84,6 +89,7 @@ std::string GameSession::get_user_id(int player_id) const {
 
 /// Validates the invite code for this session
 bool GameSession::verify_invite_code(const std::string &invite_code) const {
+    std::shared_lock lock(m_mtx);
     return invite_code == m_invite_code;
 }
 
@@ -108,6 +114,8 @@ std::string GameSession::generate_invite_code() {
 }
 
 std::vector<int> GameSession::get_occupied_positions() const {
+    std::shared_lock lock(m_mtx);
+
     std::vector<int> result;
     for (const auto &e : m_userid_to_playerid) {
         // cppcheck-suppress useStlAlgorithm
@@ -121,6 +129,8 @@ const std::optional<json> &GameSession::get_game_settings() const {
 }
 
 std::vector<GameSession::Player> GameSession::get_players() const {
+    std::shared_lock lock(m_mtx);
+
     std::vector<Player> result;
     for (const auto &e : m_userid_to_playerid) {
         // cppcheck-suppress useStlAlgorithm
@@ -130,6 +140,8 @@ std::vector<GameSession::Player> GameSession::get_players() const {
 }
 
 void GameSession::start(const json &game_settings) {
+    std::unique_lock lock(m_mtx);
+
     if (m_status != NOT_STARTED) {
         throw game_session_error("session has already started");
     }
@@ -138,10 +150,14 @@ void GameSession::start(const json &game_settings) {
 }
 
 bool GameSession::is_player(const std::string &user_id) const {
+    std::shared_lock lock(m_mtx);
+
     return m_userid_to_playerid.left.count(user_id) != 0;
 }
 
 void GameSession::finish() {
+    std::unique_lock lock(m_mtx);
+
     m_status = FINISHED;
 }
 
