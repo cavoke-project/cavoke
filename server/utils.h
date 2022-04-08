@@ -2,8 +2,10 @@
 #define CAVOKE_UTILS_H
 
 #include <drogon/HttpResponse.h>
+#include <json/json.h>
 #include <boost/filesystem/path.hpp>
 #include <nlohmann/json.hpp>
+#include <regex>
 #include "cavoke_base_exception.h"
 
 namespace nlohmann {
@@ -18,6 +20,11 @@ struct adl_serializer<boost::filesystem::path> {
         value = j.get<std::string>();
     }
 };
+
+inline nlohmann::json to_nlohmann(const Json::Value &obj) {
+    static Json::StreamWriterBuilder builder;
+    return json::parse(Json::writeString(builder, obj), nullptr, true, true);
+}
 }  // namespace nlohmann
 
 namespace cavoke::server::controllers {
@@ -56,5 +63,13 @@ inline drogon::HttpResponsePtr newCavokeErrorResponse(
 #define CALLBACK_STATUS_CODE(code) \
     callback(newStatusCodeResponse(::drogon::code))
 }  // namespace cavoke::server::controllers
+
+namespace cavoke::server {
+/// Hides password from sql connection info
+inline std::string hide_password(std::string str) {
+    return std::regex_replace(str, std::regex(R"(\b[^\s]*pass[^\s]*\b)"),
+                              R"(<pass hidden>)");
+}
+}  // namespace cavoke::server
 
 #endif  // CAVOKE_UTILS_H

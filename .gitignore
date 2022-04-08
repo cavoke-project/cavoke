@@ -172,4 +172,8 @@ fabric.properties
 
 .idea/
 
+# Local game files
 local_server/
+
+# Drogon logs
+*.log

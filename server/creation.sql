@@ -1,0 +1,51 @@
+create table users
+(
+    id uuid not null
+        constraint user_pk
+            primary key
+);
+
+alter table users
+    owner to postgres;
+
+create table sessions
+(
+    id            uuid                  not null
+        constraint session_pk
+            primary key,
+    game_id       varchar               not null,
+    invite_code   varchar               not null,
+    game_settings json,
+    status        integer,
+    globalstate   text                  not null,
+    is_terminal   boolean default false not null
+);
+
+alter table sessions
+    owner to postgres;
+
+create unique index session_id_uindex
+    on sessions (id);
+
+create unique index session_invite_code_uindex
+    on sessions (invite_code);
+
+create table players
+(
+    session_id  uuid    not null
+        constraint player_session_id_fk
+            references sessions
+            on delete cascade,
+    user_id     uuid    not null
+        constraint player_user_id_fk
+            references users
+            on delete restrict,
+    player_id   integer not null,
+    score       integer,
+    playerstate text    not null,
+    constraint player_pk
+        primary key (session_id, user_id)
+);
+
+alter table players
+    owner to postgres;

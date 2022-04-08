@@ -1,5 +1,7 @@
 #include <drogon/HttpAppFramework.h>
+#include <boost/algorithm/string/join.hpp>
 #include <boost/program_options.hpp>
+#include <boost/range/adaptor/transformed.hpp>
 #include "controllers/games_controller.h"
 #include "controllers/sessions_controller.h"
 #include "controllers/state_controller.h"
@@ -8,9 +10,7 @@
 #include "model/sessions/sessions_storage.h"
 
 namespace cavoke::server {
-void run(const std::string &host,
-         uint16_t port,
-         const model::GamesStorageConfig &games_storage_config) {
+void run(const model::GamesStorageConfig &games_storage_config) {
     // TODO: logging
 
     // init models
@@ -44,9 +44,31 @@ void run(const std::string &host,
     app.registerController(state_controller);
     app.registerController(sessions_controller);
 
+    // print db and listeners on start
+    app.registerBeginningAdvice([]() {
+        auto dbclient = drogon::app().getDbClient();
+        dbclient->connectionInfo();
+        std::cout << "Database connection: "
+                  << (dbclient == nullptr
+                          ? "FAILED"
+                          : hide_password(dbclient->connectionInfo()))
+                  << std::endl;
+
+        auto listeners = drogon::app().getListeners();
+        std::string ips =
+            listeners.empty()
+                ? "<NO LISTENERS>"
+                : boost::join(
+                      listeners | boost::adaptors::transformed(
+                                      [](const trantor::InetAddress &e) {
+                                          return e.toIpPort();
+                                      }),
+                      ", ");
+        std::cout << "Listening at " << ips << "... " << std::endl;
+    });
+
     // start server
-    std::cout << "Listening at " << host << ":" << port << std::endl;
-    app.addListener(host, port).run();
+    app.run();
 }
 }  // namespace cavoke::server
 
@@ -58,15 +80,6 @@ int main(int argc, char *argv[]) {
     add_desc_options("help,h", "Print help");
     add_desc_options("config-file,c", po::value<std::string>(),
                      "File with game storage configuration");
-    add_desc_options(
-        "config,s", po::value<std::string>(),
-        "Game storage configuration as json (overrides config-file)");
-    add_desc_options("games-dir,g", po::value<std::string>(),
-                     "Overrides game directory location (both of config and "
-                     "config-file). Used for mounting.");
-    add_desc_options("host,a",
-                     po::value<std::string>()->default_value("0.0.0.0"),
-                     "Host on which server is located");
     add_desc_options("port,p", po::value<uint16_t>()->default_value(8080),
                      "TCP/IP port number for connection");
 
@@ -80,25 +93,15 @@ int main(int argc, char *argv[]) {
     }
 
     cavoke::server::model::GamesStorageConfig games_storage_config;
-    if (vm.count("config")) {
-        // load from argument
-        try {
-            games_storage_config =
-                nlohmann::json::parse(vm["config"].as<std::string>());
-            std::cout << "Games storage config loaded from an argument\n";
-        } catch (const std::exception &err) {
-            std::cerr << "Failed to parse games storage configuration: "
-                      << err.what() << '\n';
-            return 1;
-        }
-    } else if (vm.count("config-file")) {
+    if (vm.count("config-file")) {
         // load from file
         try {
             std::string file = vm["config-file"].as<std::string>();
+            drogon::app().loadConfigFile(file);
             games_storage_config =
-                cavoke::server::model::GamesStorageConfig::load(file);
-            std::cout << "Games storage config loaded from file: '" << file
-                      << "'\n";
+                nlohmann::to_nlohmann(drogon::app().getCustomConfig())
+                    .get<cavoke::server::model::GamesStorageConfig>();
+            std::cout << "Server configuration loaded from: '" << file << "'\n";
         } catch (const std::exception &err) {
             std::cerr
                 << "Failed to load games storage configuration from file: "
@@ -107,21 +110,20 @@ int main(int argc, char *argv[]) {
         }
     } else {
         // use default one
-        std::cerr << "No games storage config specified. Using a default one. "
-                     "Please use `-c` option.\n";
+        std::cerr
+            << "No server configuration file specified. Using a default "
+               "one.\nWARNING: No database requests will succeed.\nPlease use "
+               "`-c` option to specify config file.\n";
         // default configuration
         games_storage_config = {"../../local_server/games", "logic",
                                 "client.zip", "config.json"};
     }
-    // try override games storage
-    if (vm.count("games-dir")) {
-        games_storage_config.games_directory =
-            vm["games-dir"].as<std::string>();
+
+    if (vm.count("port")) {
+        uint16_t port = vm.at("port").as<uint16_t>();
+        drogon::app().addListener("0.0.0.0", port);
     }
 
-    std::string host = vm.at("host").as<std::string>();
-    uint16_t port = vm.at("port").as<uint16_t>();
-
-    cavoke::server::run(host, port, games_storage_config);
+    cavoke::server::run(games_storage_config);
     return 0;
 }

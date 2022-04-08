@@ -6,10 +6,9 @@
  */
 
 #include "Sessions.h"
-#include "Globalstates.h"
-#include "Players.h"
 #include <drogon/utils/Utilities.h>
 #include <string>
+#include "Players.h"
 
 using namespace drogon;
 using namespace drogon::orm;
@@ -20,898 +19,951 @@ const std::string Sessions::Cols::_game_id = "game_id";
 const std::string Sessions::Cols::_invite_code = "invite_code";
 const std::string Sessions::Cols::_game_settings = "game_settings";
 const std::string Sessions::Cols::_status = "status";
+const std::string Sessions::Cols::_globalstate = "globalstate";
+const std::string Sessions::Cols::_is_terminal = "is_terminal";
 const std::string Sessions::primaryKeyName = "id";
 const bool Sessions::hasPrimaryKey = true;
 const std::string Sessions::tableName = "sessions";
 
-const std::vector<typename Sessions::MetaData> Sessions::metaData_={
-{"id","std::string","uuid",0,0,1,1},
-{"game_id","std::string","character varying",0,0,0,1},
-{"invite_code","std::string","character varying",0,0,0,1},
-{"game_settings","std::string","json",0,0,0,0},
-{"status","int32_t","integer",4,0,0,0}
-};
-const std::string &Sessions::getColumnName(size_t index) noexcept(false)
-{
+const std::vector<typename Sessions::MetaData> Sessions::metaData_ = {
+    {"id", "std::string", "uuid", 0, 0, 1, 1},
+    {"game_id", "std::string", "character varying", 0, 0, 0, 1},
+    {"invite_code", "std::string", "character varying", 0, 0, 0, 1},
+    {"game_settings", "std::string", "json", 0, 0, 0, 0},
+    {"status", "int32_t", "integer", 4, 0, 0, 0},
+    {"globalstate", "std::string", "text", 0, 0, 0, 1},
+    {"is_terminal", "bool", "boolean", 1, 0, 0, 1}};
+const std::string &Sessions::getColumnName(size_t index) noexcept(false) {
     assert(index < metaData_.size());
     return metaData_[index].colName_;
 }
-Sessions::Sessions(const Row &r, const ssize_t indexOffset) noexcept
-{
-    if(indexOffset < 0)
-    {
-        if(!r["id"].isNull())
-        {
-            id_=std::make_shared<std::string>(r["id"].as<std::string>());
+Sessions::Sessions(const Row &r, const ssize_t indexOffset) noexcept {
+    if (indexOffset < 0) {
+        if (!r["id"].isNull()) {
+            id_ = std::make_shared<std::string>(r["id"].as<std::string>());
         }
-        if(!r["game_id"].isNull())
-        {
-            gameId_=std::make_shared<std::string>(r["game_id"].as<std::string>());
+        if (!r["game_id"].isNull()) {
+            gameId_ =
+                std::make_shared<std::string>(r["game_id"].as<std::string>());
         }
-        if(!r["invite_code"].isNull())
-        {
-            inviteCode_=std::make_shared<std::string>(r["invite_code"].as<std::string>());
+        if (!r["invite_code"].isNull()) {
+            inviteCode_ = std::make_shared<std::string>(
+                r["invite_code"].as<std::string>());
         }
-        if(!r["game_settings"].isNull())
-        {
-            gameSettings_=std::make_shared<std::string>(r["game_settings"].as<std::string>());
+        if (!r["game_settings"].isNull()) {
+            gameSettings_ = std::make_shared<std::string>(
+                r["game_settings"].as<std::string>());
         }
-        if(!r["status"].isNull())
-        {
-            status_=std::make_shared<int32_t>(r["status"].as<int32_t>());
+        if (!r["status"].isNull()) {
+            status_ = std::make_shared<int32_t>(r["status"].as<int32_t>());
         }
-    }
-    else
-    {
+        if (!r["globalstate"].isNull()) {
+            globalstate_ = std::make_shared<std::string>(
+                r["globalstate"].as<std::string>());
+        }
+        if (!r["is_terminal"].isNull()) {
+            isTerminal_ = std::make_shared<bool>(r["is_terminal"].as<bool>());
+        }
+    } else {
         size_t offset = (size_t)indexOffset;
-        if(offset + 5 > r.size())
-        {
+        if (offset + 7 > r.size()) {
             LOG_FATAL << "Invalid SQL result for this model";
             return;
         }
         size_t index;
         index = offset + 0;
-        if(!r[index].isNull())
-        {
-            id_=std::make_shared<std::string>(r[index].as<std::string>());
+        if (!r[index].isNull()) {
+            id_ = std::make_shared<std::string>(r[index].as<std::string>());
         }
         index = offset + 1;
-        if(!r[index].isNull())
-        {
-            gameId_=std::make_shared<std::string>(r[index].as<std::string>());
+        if (!r[index].isNull()) {
+            gameId_ = std::make_shared<std::string>(r[index].as<std::string>());
         }
         index = offset + 2;
-        if(!r[index].isNull())
-        {
-            inviteCode_=std::make_shared<std::string>(r[index].as<std::string>());
+        if (!r[index].isNull()) {
+            inviteCode_ =
+                std::make_shared<std::string>(r[index].as<std::string>());
         }
         index = offset + 3;
-        if(!r[index].isNull())
-        {
-            gameSettings_=std::make_shared<std::string>(r[index].as<std::string>());
+        if (!r[index].isNull()) {
+            gameSettings_ =
+                std::make_shared<std::string>(r[index].as<std::string>());
         }
         index = offset + 4;
-        if(!r[index].isNull())
-        {
-            status_=std::make_shared<int32_t>(r[index].as<int32_t>());
+        if (!r[index].isNull()) {
+            status_ = std::make_shared<int32_t>(r[index].as<int32_t>());
+        }
+        index = offset + 5;
+        if (!r[index].isNull()) {
+            globalstate_ =
+                std::make_shared<std::string>(r[index].as<std::string>());
+        }
+        index = offset + 6;
+        if (!r[index].isNull()) {
+            isTerminal_ = std::make_shared<bool>(r[index].as<bool>());
         }
     }
-
 }
 
-Sessions::Sessions(const Json::Value &pJson, const std::vector<std::string> &pMasqueradingVector) noexcept(false)
-{
-    if(pMasqueradingVector.size() != 5)
-    {
+Sessions::Sessions(
+    const Json::Value &pJson,
+    const std::vector<std::string> &pMasqueradingVector) noexcept(false) {
+    if (pMasqueradingVector.size() != 7) {
         LOG_ERROR << "Bad masquerading vector";
         return;
     }
-    if(!pMasqueradingVector[0].empty() && pJson.isMember(pMasqueradingVector[0]))
-    {
+    if (!pMasqueradingVector[0].empty() &&
+        pJson.isMember(pMasqueradingVector[0])) {
         dirtyFlag_[0] = true;
-        if(!pJson[pMasqueradingVector[0]].isNull())
-        {
-            id_=std::make_shared<std::string>(pJson[pMasqueradingVector[0]].asString());
+        if (!pJson[pMasqueradingVector[0]].isNull()) {
+            id_ = std::make_shared<std::string>(
+                pJson[pMasqueradingVector[0]].asString());
         }
     }
-    if(!pMasqueradingVector[1].empty() && pJson.isMember(pMasqueradingVector[1]))
-    {
+    if (!pMasqueradingVector[1].empty() &&
+        pJson.isMember(pMasqueradingVector[1])) {
         dirtyFlag_[1] = true;
-        if(!pJson[pMasqueradingVector[1]].isNull())
-        {
-            gameId_=std::make_shared<std::string>(pJson[pMasqueradingVector[1]].asString());
+        if (!pJson[pMasqueradingVector[1]].isNull()) {
+            gameId_ = std::make_shared<std::string>(
+                pJson[pMasqueradingVector[1]].asString());
         }
     }
-    if(!pMasqueradingVector[2].empty() && pJson.isMember(pMasqueradingVector[2]))
-    {
+    if (!pMasqueradingVector[2].empty() &&
+        pJson.isMember(pMasqueradingVector[2])) {
         dirtyFlag_[2] = true;
-        if(!pJson[pMasqueradingVector[2]].isNull())
-        {
-            inviteCode_=std::make_shared<std::string>(pJson[pMasqueradingVector[2]].asString());
+        if (!pJson[pMasqueradingVector[2]].isNull()) {
+            inviteCode_ = std::make_shared<std::string>(
+                pJson[pMasqueradingVector[2]].asString());
         }
     }
-    if(!pMasqueradingVector[3].empty() && pJson.isMember(pMasqueradingVector[3]))
-    {
+    if (!pMasqueradingVector[3].empty() &&
+        pJson.isMember(pMasqueradingVector[3])) {
         dirtyFlag_[3] = true;
-        if(!pJson[pMasqueradingVector[3]].isNull())
-        {
-            gameSettings_=std::make_shared<std::string>(pJson[pMasqueradingVector[3]].asString());
+        if (!pJson[pMasqueradingVector[3]].isNull()) {
+            gameSettings_ = std::make_shared<std::string>(
+                pJson[pMasqueradingVector[3]].asString());
         }
     }
-    if(!pMasqueradingVector[4].empty() && pJson.isMember(pMasqueradingVector[4]))
-    {
+    if (!pMasqueradingVector[4].empty() &&
+        pJson.isMember(pMasqueradingVector[4])) {
         dirtyFlag_[4] = true;
-        if(!pJson[pMasqueradingVector[4]].isNull())
-        {
-            status_=std::make_shared<int32_t>((int32_t)pJson[pMasqueradingVector[4]].asInt64());
+        if (!pJson[pMasqueradingVector[4]].isNull()) {
+            status_ = std::make_shared<int32_t>(
+                (int32_t)pJson[pMasqueradingVector[4]].asInt64());
+        }
+    }
+    if (!pMasqueradingVector[5].empty() &&
+        pJson.isMember(pMasqueradingVector[5])) {
+        dirtyFlag_[5] = true;
+        if (!pJson[pMasqueradingVector[5]].isNull()) {
+            globalstate_ = std::make_shared<std::string>(
+                pJson[pMasqueradingVector[5]].asString());
+        }
+    }
+    if (!pMasqueradingVector[6].empty() &&
+        pJson.isMember(pMasqueradingVector[6])) {
+        dirtyFlag_[6] = true;
+        if (!pJson[pMasqueradingVector[6]].isNull()) {
+            isTerminal_ =
+                std::make_shared<bool>(pJson[pMasqueradingVector[6]].asBool());
         }
     }
 }
 
-Sessions::Sessions(const Json::Value &pJson) noexcept(false)
-{
-    if(pJson.isMember("id"))
-    {
-        dirtyFlag_[0]=true;
-        if(!pJson["id"].isNull())
-        {
-            id_=std::make_shared<std::string>(pJson["id"].asString());
+Sessions::Sessions(const Json::Value &pJson) noexcept(false) {
+    if (pJson.isMember("id")) {
+        dirtyFlag_[0] = true;
+        if (!pJson["id"].isNull()) {
+            id_ = std::make_shared<std::string>(pJson["id"].asString());
         }
     }
-    if(pJson.isMember("game_id"))
-    {
-        dirtyFlag_[1]=true;
-        if(!pJson["game_id"].isNull())
-        {
-            gameId_=std::make_shared<std::string>(pJson["game_id"].asString());
+    if (pJson.isMember("game_id")) {
+        dirtyFlag_[1] = true;
+        if (!pJson["game_id"].isNull()) {
+            gameId_ =
+                std::make_shared<std::string>(pJson["game_id"].asString());
         }
     }
-    if(pJson.isMember("invite_code"))
-    {
-        dirtyFlag_[2]=true;
-        if(!pJson["invite_code"].isNull())
-        {
-            inviteCode_=std::make_shared<std::string>(pJson["invite_code"].asString());
+    if (pJson.isMember("invite_code")) {
+        dirtyFlag_[2] = true;
+        if (!pJson["invite_code"].isNull()) {
+            inviteCode_ =
+                std::make_shared<std::string>(pJson["invite_code"].asString());
         }
     }
-    if(pJson.isMember("game_settings"))
-    {
-        dirtyFlag_[3]=true;
-        if(!pJson["game_settings"].isNull())
-        {
-            gameSettings_=std::make_shared<std::string>(pJson["game_settings"].asString());
+    if (pJson.isMember("game_settings")) {
+        dirtyFlag_[3] = true;
+        if (!pJson["game_settings"].isNull()) {
+            gameSettings_ = std::make_shared<std::string>(
+                pJson["game_settings"].asString());
         }
     }
-    if(pJson.isMember("status"))
-    {
-        dirtyFlag_[4]=true;
-        if(!pJson["status"].isNull())
-        {
-            status_=std::make_shared<int32_t>((int32_t)pJson["status"].asInt64());
+    if (pJson.isMember("status")) {
+        dirtyFlag_[4] = true;
+        if (!pJson["status"].isNull()) {
+            status_ =
+                std::make_shared<int32_t>((int32_t)pJson["status"].asInt64());
+        }
+    }
+    if (pJson.isMember("globalstate")) {
+        dirtyFlag_[5] = true;
+        if (!pJson["globalstate"].isNull()) {
+            globalstate_ =
+                std::make_shared<std::string>(pJson["globalstate"].asString());
+        }
+    }
+    if (pJson.isMember("is_terminal")) {
+        dirtyFlag_[6] = true;
+        if (!pJson["is_terminal"].isNull()) {
+            isTerminal_ = std::make_shared<bool>(pJson["is_terminal"].asBool());
         }
     }
 }
 
-void Sessions::updateByMasqueradedJson(const Json::Value &pJson,
-                                            const std::vector<std::string> &pMasqueradingVector) noexcept(false)
-{
-    if(pMasqueradingVector.size() != 5)
-    {
+void Sessions::updateByMasqueradedJson(
+    const Json::Value &pJson,
+    const std::vector<std::string> &pMasqueradingVector) noexcept(false) {
+    if (pMasqueradingVector.size() != 7) {
         LOG_ERROR << "Bad masquerading vector";
         return;
     }
-    if(!pMasqueradingVector[0].empty() && pJson.isMember(pMasqueradingVector[0]))
-    {
-        if(!pJson[pMasqueradingVector[0]].isNull())
-        {
-            id_=std::make_shared<std::string>(pJson[pMasqueradingVector[0]].asString());
+    if (!pMasqueradingVector[0].empty() &&
+        pJson.isMember(pMasqueradingVector[0])) {
+        if (!pJson[pMasqueradingVector[0]].isNull()) {
+            id_ = std::make_shared<std::string>(
+                pJson[pMasqueradingVector[0]].asString());
         }
     }
-    if(!pMasqueradingVector[1].empty() && pJson.isMember(pMasqueradingVector[1]))
-    {
+    if (!pMasqueradingVector[1].empty() &&
+        pJson.isMember(pMasqueradingVector[1])) {
         dirtyFlag_[1] = true;
-        if(!pJson[pMasqueradingVector[1]].isNull())
-        {
-            gameId_=std::make_shared<std::string>(pJson[pMasqueradingVector[1]].asString());
+        if (!pJson[pMasqueradingVector[1]].isNull()) {
+            gameId_ = std::make_shared<std::string>(
+                pJson[pMasqueradingVector[1]].asString());
         }
     }
-    if(!pMasqueradingVector[2].empty() && pJson.isMember(pMasqueradingVector[2]))
-    {
+    if (!pMasqueradingVector[2].empty() &&
+        pJson.isMember(pMasqueradingVector[2])) {
         dirtyFlag_[2] = true;
-        if(!pJson[pMasqueradingVector[2]].isNull())
-        {
-            inviteCode_=std::make_shared<std::string>(pJson[pMasqueradingVector[2]].asString());
+        if (!pJson[pMasqueradingVector[2]].isNull()) {
+            inviteCode_ = std::make_shared<std::string>(
+                pJson[pMasqueradingVector[2]].asString());
         }
     }
-    if(!pMasqueradingVector[3].empty() && pJson.isMember(pMasqueradingVector[3]))
-    {
+    if (!pMasqueradingVector[3].empty() &&
+        pJson.isMember(pMasqueradingVector[3])) {
         dirtyFlag_[3] = true;
-        if(!pJson[pMasqueradingVector[3]].isNull())
-        {
-            gameSettings_=std::make_shared<std::string>(pJson[pMasqueradingVector[3]].asString());
+        if (!pJson[pMasqueradingVector[3]].isNull()) {
+            gameSettings_ = std::make_shared<std::string>(
+                pJson[pMasqueradingVector[3]].asString());
         }
     }
-    if(!pMasqueradingVector[4].empty() && pJson.isMember(pMasqueradingVector[4]))
-    {
+    if (!pMasqueradingVector[4].empty() &&
+        pJson.isMember(pMasqueradingVector[4])) {
         dirtyFlag_[4] = true;
-        if(!pJson[pMasqueradingVector[4]].isNull())
-        {
-            status_=std::make_shared<int32_t>((int32_t)pJson[pMasqueradingVector[4]].asInt64());
+        if (!pJson[pMasqueradingVector[4]].isNull()) {
+            status_ = std::make_shared<int32_t>(
+                (int32_t)pJson[pMasqueradingVector[4]].asInt64());
+        }
+    }
+    if (!pMasqueradingVector[5].empty() &&
+        pJson.isMember(pMasqueradingVector[5])) {
+        dirtyFlag_[5] = true;
+        if (!pJson[pMasqueradingVector[5]].isNull()) {
+            globalstate_ = std::make_shared<std::string>(
+                pJson[pMasqueradingVector[5]].asString());
+        }
+    }
+    if (!pMasqueradingVector[6].empty() &&
+        pJson.isMember(pMasqueradingVector[6])) {
+        dirtyFlag_[6] = true;
+        if (!pJson[pMasqueradingVector[6]].isNull()) {
+            isTerminal_ =
+                std::make_shared<bool>(pJson[pMasqueradingVector[6]].asBool());
         }
     }
 }
 
-void Sessions::updateByJson(const Json::Value &pJson) noexcept(false)
-{
-    if(pJson.isMember("id"))
-    {
-        if(!pJson["id"].isNull())
-        {
-            id_=std::make_shared<std::string>(pJson["id"].asString());
+void Sessions::updateByJson(const Json::Value &pJson) noexcept(false) {
+    if (pJson.isMember("id")) {
+        if (!pJson["id"].isNull()) {
+            id_ = std::make_shared<std::string>(pJson["id"].asString());
         }
     }
-    if(pJson.isMember("game_id"))
-    {
+    if (pJson.isMember("game_id")) {
         dirtyFlag_[1] = true;
-        if(!pJson["game_id"].isNull())
-        {
-            gameId_=std::make_shared<std::string>(pJson["game_id"].asString());
+        if (!pJson["game_id"].isNull()) {
+            gameId_ =
+                std::make_shared<std::string>(pJson["game_id"].asString());
         }
     }
-    if(pJson.isMember("invite_code"))
-    {
+    if (pJson.isMember("invite_code")) {
         dirtyFlag_[2] = true;
-        if(!pJson["invite_code"].isNull())
-        {
-            inviteCode_=std::make_shared<std::string>(pJson["invite_code"].asString());
+        if (!pJson["invite_code"].isNull()) {
+            inviteCode_ =
+                std::make_shared<std::string>(pJson["invite_code"].asString());
         }
     }
-    if(pJson.isMember("game_settings"))
-    {
+    if (pJson.isMember("game_settings")) {
         dirtyFlag_[3] = true;
-        if(!pJson["game_settings"].isNull())
-        {
-            gameSettings_=std::make_shared<std::string>(pJson["game_settings"].asString());
+        if (!pJson["game_settings"].isNull()) {
+            gameSettings_ = std::make_shared<std::string>(
+                pJson["game_settings"].asString());
         }
     }
-    if(pJson.isMember("status"))
-    {
+    if (pJson.isMember("status")) {
         dirtyFlag_[4] = true;
-        if(!pJson["status"].isNull())
-        {
-            status_=std::make_shared<int32_t>((int32_t)pJson["status"].asInt64());
+        if (!pJson["status"].isNull()) {
+            status_ =
+                std::make_shared<int32_t>((int32_t)pJson["status"].asInt64());
+        }
+    }
+    if (pJson.isMember("globalstate")) {
+        dirtyFlag_[5] = true;
+        if (!pJson["globalstate"].isNull()) {
+            globalstate_ =
+                std::make_shared<std::string>(pJson["globalstate"].asString());
+        }
+    }
+    if (pJson.isMember("is_terminal")) {
+        dirtyFlag_[6] = true;
+        if (!pJson["is_terminal"].isNull()) {
+            isTerminal_ = std::make_shared<bool>(pJson["is_terminal"].asBool());
         }
     }
 }
 
-const std::string &Sessions::getValueOfId() const noexcept
-{
+const std::string &Sessions::getValueOfId() const noexcept {
     const static std::string defaultValue = std::string();
-    if(id_)
+    if (id_)
         return *id_;
     return defaultValue;
 }
-const std::shared_ptr<std::string> &Sessions::getId() const noexcept
-{
+const std::shared_ptr<std::string> &Sessions::getId() const noexcept {
     return id_;
 }
-void Sessions::setId(const std::string &pId) noexcept
-{
+void Sessions::setId(const std::string &pId) noexcept {
     id_ = std::make_shared<std::string>(pId);
     dirtyFlag_[0] = true;
 }
-void Sessions::setId(std::string &&pId) noexcept
-{
+void Sessions::setId(std::string &&pId) noexcept {
     id_ = std::make_shared<std::string>(std::move(pId));
     dirtyFlag_[0] = true;
 }
-const typename Sessions::PrimaryKeyType & Sessions::getPrimaryKey() const
-{
+const typename Sessions::PrimaryKeyType &Sessions::getPrimaryKey() const {
     assert(id_);
     return *id_;
 }
 
-const std::string &Sessions::getValueOfGameId() const noexcept
-{
+const std::string &Sessions::getValueOfGameId() const noexcept {
     const static std::string defaultValue = std::string();
-    if(gameId_)
+    if (gameId_)
         return *gameId_;
     return defaultValue;
 }
-const std::shared_ptr<std::string> &Sessions::getGameId() const noexcept
-{
+const std::shared_ptr<std::string> &Sessions::getGameId() const noexcept {
     return gameId_;
 }
-void Sessions::setGameId(const std::string &pGameId) noexcept
-{
+void Sessions::setGameId(const std::string &pGameId) noexcept {
     gameId_ = std::make_shared<std::string>(pGameId);
     dirtyFlag_[1] = true;
 }
-void Sessions::setGameId(std::string &&pGameId) noexcept
-{
+void Sessions::setGameId(std::string &&pGameId) noexcept {
     gameId_ = std::make_shared<std::string>(std::move(pGameId));
     dirtyFlag_[1] = true;
 }
 
-const std::string &Sessions::getValueOfInviteCode() const noexcept
-{
+const std::string &Sessions::getValueOfInviteCode() const noexcept {
     const static std::string defaultValue = std::string();
-    if(inviteCode_)
+    if (inviteCode_)
         return *inviteCode_;
     return defaultValue;
 }
-const std::shared_ptr<std::string> &Sessions::getInviteCode() const noexcept
-{
+const std::shared_ptr<std::string> &Sessions::getInviteCode() const noexcept {
     return inviteCode_;
 }
-void Sessions::setInviteCode(const std::string &pInviteCode) noexcept
-{
+void Sessions::setInviteCode(const std::string &pInviteCode) noexcept {
     inviteCode_ = std::make_shared<std::string>(pInviteCode);
     dirtyFlag_[2] = true;
 }
-void Sessions::setInviteCode(std::string &&pInviteCode) noexcept
-{
+void Sessions::setInviteCode(std::string &&pInviteCode) noexcept {
     inviteCode_ = std::make_shared<std::string>(std::move(pInviteCode));
     dirtyFlag_[2] = true;
 }
 
-const std::string &Sessions::getValueOfGameSettings() const noexcept
-{
+const std::string &Sessions::getValueOfGameSettings() const noexcept {
     const static std::string defaultValue = std::string();
-    if(gameSettings_)
+    if (gameSettings_)
         return *gameSettings_;
     return defaultValue;
 }
-const std::shared_ptr<std::string> &Sessions::getGameSettings() const noexcept
-{
+const std::shared_ptr<std::string> &Sessions::getGameSettings() const noexcept {
     return gameSettings_;
 }
-void Sessions::setGameSettings(const std::string &pGameSettings) noexcept
-{
+void Sessions::setGameSettings(const std::string &pGameSettings) noexcept {
     gameSettings_ = std::make_shared<std::string>(pGameSettings);
     dirtyFlag_[3] = true;
 }
-void Sessions::setGameSettings(std::string &&pGameSettings) noexcept
-{
+void Sessions::setGameSettings(std::string &&pGameSettings) noexcept {
     gameSettings_ = std::make_shared<std::string>(std::move(pGameSettings));
     dirtyFlag_[3] = true;
 }
-void Sessions::setGameSettingsToNull() noexcept
-{
+void Sessions::setGameSettingsToNull() noexcept {
     gameSettings_.reset();
     dirtyFlag_[3] = true;
 }
 
-const int32_t &Sessions::getValueOfStatus() const noexcept
-{
+const int32_t &Sessions::getValueOfStatus() const noexcept {
     const static int32_t defaultValue = int32_t();
-    if(status_)
+    if (status_)
         return *status_;
     return defaultValue;
 }
-const std::shared_ptr<int32_t> &Sessions::getStatus() const noexcept
-{
+const std::shared_ptr<int32_t> &Sessions::getStatus() const noexcept {
     return status_;
 }
-void Sessions::setStatus(const int32_t &pStatus) noexcept
-{
+void Sessions::setStatus(const int32_t &pStatus) noexcept {
     status_ = std::make_shared<int32_t>(pStatus);
     dirtyFlag_[4] = true;
 }
-void Sessions::setStatusToNull() noexcept
-{
+void Sessions::setStatusToNull() noexcept {
     status_.reset();
     dirtyFlag_[4] = true;
 }
 
-void Sessions::updateId(const uint64_t id)
-{
+const std::string &Sessions::getValueOfGlobalstate() const noexcept {
+    const static std::string defaultValue = std::string();
+    if (globalstate_)
+        return *globalstate_;
+    return defaultValue;
+}
+const std::shared_ptr<std::string> &Sessions::getGlobalstate() const noexcept {
+    return globalstate_;
+}
+void Sessions::setGlobalstate(const std::string &pGlobalstate) noexcept {
+    globalstate_ = std::make_shared<std::string>(pGlobalstate);
+    dirtyFlag_[5] = true;
+}
+void Sessions::setGlobalstate(std::string &&pGlobalstate) noexcept {
+    globalstate_ = std::make_shared<std::string>(std::move(pGlobalstate));
+    dirtyFlag_[5] = true;
 }
 
-const std::vector<std::string> &Sessions::insertColumns() noexcept
-{
-    static const std::vector<std::string> inCols={
-        "id",
-        "game_id",
-        "invite_code",
-        "game_settings",
-        "status"
-    };
+const bool &Sessions::getValueOfIsTerminal() const noexcept {
+    const static bool defaultValue = bool();
+    if (isTerminal_)
+        return *isTerminal_;
+    return defaultValue;
+}
+const std::shared_ptr<bool> &Sessions::getIsTerminal() const noexcept {
+    return isTerminal_;
+}
+void Sessions::setIsTerminal(const bool &pIsTerminal) noexcept {
+    isTerminal_ = std::make_shared<bool>(pIsTerminal);
+    dirtyFlag_[6] = true;
+}
+
+void Sessions::updateId(const uint64_t id) {
+}
+
+const std::vector<std::string> &Sessions::insertColumns() noexcept {
+    static const std::vector<std::string> inCols = {
+        "id",     "game_id",     "invite_code", "game_settings",
+        "status", "globalstate", "is_terminal"};
     return inCols;
 }
 
-void Sessions::outputArgs(drogon::orm::internal::SqlBinder &binder) const
-{
-    if(dirtyFlag_[0])
-    {
-        if(getId())
-        {
+void Sessions::outputArgs(drogon::orm::internal::SqlBinder &binder) const {
+    if (dirtyFlag_[0]) {
+        if (getId()) {
             binder << getValueOfId();
-        }
-        else
-        {
+        } else {
             binder << nullptr;
         }
     }
-    if(dirtyFlag_[1])
-    {
-        if(getGameId())
-        {
+    if (dirtyFlag_[1]) {
+        if (getGameId()) {
             binder << getValueOfGameId();
-        }
-        else
-        {
+        } else {
             binder << nullptr;
         }
     }
-    if(dirtyFlag_[2])
-    {
-        if(getInviteCode())
-        {
+    if (dirtyFlag_[2]) {
+        if (getInviteCode()) {
             binder << getValueOfInviteCode();
-        }
-        else
-        {
+        } else {
             binder << nullptr;
         }
     }
-    if(dirtyFlag_[3])
-    {
-        if(getGameSettings())
-        {
+    if (dirtyFlag_[3]) {
+        if (getGameSettings()) {
             binder << getValueOfGameSettings();
-        }
-        else
-        {
+        } else {
             binder << nullptr;
         }
     }
-    if(dirtyFlag_[4])
-    {
-        if(getStatus())
-        {
+    if (dirtyFlag_[4]) {
+        if (getStatus()) {
             binder << getValueOfStatus();
+        } else {
+            binder << nullptr;
         }
-        else
-        {
+    }
+    if (dirtyFlag_[5]) {
+        if (getGlobalstate()) {
+            binder << getValueOfGlobalstate();
+        } else {
+            binder << nullptr;
+        }
+    }
+    if (dirtyFlag_[6]) {
+        if (getIsTerminal()) {
+            binder << getValueOfIsTerminal();
+        } else {
             binder << nullptr;
         }
     }
 }
 
-const std::vector<std::string> Sessions::updateColumns() const
-{
+const std::vector<std::string> Sessions::updateColumns() const {
     std::vector<std::string> ret;
-    if(dirtyFlag_[0])
-    {
+    if (dirtyFlag_[0]) {
         ret.push_back(getColumnName(0));
     }
-    if(dirtyFlag_[1])
-    {
+    if (dirtyFlag_[1]) {
         ret.push_back(getColumnName(1));
     }
-    if(dirtyFlag_[2])
-    {
+    if (dirtyFlag_[2]) {
         ret.push_back(getColumnName(2));
     }
-    if(dirtyFlag_[3])
-    {
+    if (dirtyFlag_[3]) {
         ret.push_back(getColumnName(3));
     }
-    if(dirtyFlag_[4])
-    {
+    if (dirtyFlag_[4]) {
         ret.push_back(getColumnName(4));
+    }
+    if (dirtyFlag_[5]) {
+        ret.push_back(getColumnName(5));
+    }
+    if (dirtyFlag_[6]) {
+        ret.push_back(getColumnName(6));
     }
     return ret;
 }
 
-void Sessions::updateArgs(drogon::orm::internal::SqlBinder &binder) const
-{
-    if(dirtyFlag_[0])
-    {
-        if(getId())
-        {
+void Sessions::updateArgs(drogon::orm::internal::SqlBinder &binder) const {
+    if (dirtyFlag_[0]) {
+        if (getId()) {
             binder << getValueOfId();
-        }
-        else
-        {
+        } else {
             binder << nullptr;
         }
     }
-    if(dirtyFlag_[1])
-    {
-        if(getGameId())
-        {
+    if (dirtyFlag_[1]) {
+        if (getGameId()) {
             binder << getValueOfGameId();
-        }
-        else
-        {
+        } else {
             binder << nullptr;
         }
     }
-    if(dirtyFlag_[2])
-    {
-        if(getInviteCode())
-        {
+    if (dirtyFlag_[2]) {
+        if (getInviteCode()) {
             binder << getValueOfInviteCode();
-        }
-        else
-        {
+        } else {
             binder << nullptr;
         }
     }
-    if(dirtyFlag_[3])
-    {
-        if(getGameSettings())
-        {
+    if (dirtyFlag_[3]) {
+        if (getGameSettings()) {
             binder << getValueOfGameSettings();
-        }
-        else
-        {
+        } else {
             binder << nullptr;
         }
     }
-    if(dirtyFlag_[4])
-    {
-        if(getStatus())
-        {
+    if (dirtyFlag_[4]) {
+        if (getStatus()) {
             binder << getValueOfStatus();
+        } else {
+            binder << nullptr;
         }
-        else
-        {
+    }
+    if (dirtyFlag_[5]) {
+        if (getGlobalstate()) {
+            binder << getValueOfGlobalstate();
+        } else {
+            binder << nullptr;
+        }
+    }
+    if (dirtyFlag_[6]) {
+        if (getIsTerminal()) {
+            binder << getValueOfIsTerminal();
+        } else {
             binder << nullptr;
         }
     }
 }
-Json::Value Sessions::toJson() const
-{
+Json::Value Sessions::toJson() const {
     Json::Value ret;
-    if(getId())
-    {
-        ret["id"]=getValueOfId();
+    if (getId()) {
+        ret["id"] = getValueOfId();
+    } else {
+        ret["id"] = Json::Value();
     }
-    else
-    {
-        ret["id"]=Json::Value();
+    if (getGameId()) {
+        ret["game_id"] = getValueOfGameId();
+    } else {
+        ret["game_id"] = Json::Value();
     }
-    if(getGameId())
-    {
-        ret["game_id"]=getValueOfGameId();
+    if (getInviteCode()) {
+        ret["invite_code"] = getValueOfInviteCode();
+    } else {
+        ret["invite_code"] = Json::Value();
     }
-    else
-    {
-        ret["game_id"]=Json::Value();
+    if (getGameSettings()) {
+        ret["game_settings"] = getValueOfGameSettings();
+    } else {
+        ret["game_settings"] = Json::Value();
     }
-    if(getInviteCode())
-    {
-        ret["invite_code"]=getValueOfInviteCode();
+    if (getStatus()) {
+        ret["status"] = getValueOfStatus();
+    } else {
+        ret["status"] = Json::Value();
     }
-    else
-    {
-        ret["invite_code"]=Json::Value();
+    if (getGlobalstate()) {
+        ret["globalstate"] = getValueOfGlobalstate();
+    } else {
+        ret["globalstate"] = Json::Value();
     }
-    if(getGameSettings())
-    {
-        ret["game_settings"]=getValueOfGameSettings();
-    }
-    else
-    {
-        ret["game_settings"]=Json::Value();
-    }
-    if(getStatus())
-    {
-        ret["status"]=getValueOfStatus();
-    }
-    else
-    {
-        ret["status"]=Json::Value();
+    if (getIsTerminal()) {
+        ret["is_terminal"] = getValueOfIsTerminal();
+    } else {
+        ret["is_terminal"] = Json::Value();
     }
     return ret;
 }
 
 Json::Value Sessions::toMasqueradedJson(
-    const std::vector<std::string> &pMasqueradingVector) const
-{
+    const std::vector<std::string> &pMasqueradingVector) const {
     Json::Value ret;
-    if(pMasqueradingVector.size() == 5)
-    {
-        if(!pMasqueradingVector[0].empty())
-        {
-            if(getId())
-            {
-                ret[pMasqueradingVector[0]]=getValueOfId();
-            }
-            else
-            {
-                ret[pMasqueradingVector[0]]=Json::Value();
+    if (pMasqueradingVector.size() == 7) {
+        if (!pMasqueradingVector[0].empty()) {
+            if (getId()) {
+                ret[pMasqueradingVector[0]] = getValueOfId();
+            } else {
+                ret[pMasqueradingVector[0]] = Json::Value();
             }
         }
-        if(!pMasqueradingVector[1].empty())
-        {
-            if(getGameId())
-            {
-                ret[pMasqueradingVector[1]]=getValueOfGameId();
-            }
-            else
-            {
-                ret[pMasqueradingVector[1]]=Json::Value();
+        if (!pMasqueradingVector[1].empty()) {
+            if (getGameId()) {
+                ret[pMasqueradingVector[1]] = getValueOfGameId();
+            } else {
+                ret[pMasqueradingVector[1]] = Json::Value();
             }
         }
-        if(!pMasqueradingVector[2].empty())
-        {
-            if(getInviteCode())
-            {
-                ret[pMasqueradingVector[2]]=getValueOfInviteCode();
-            }
-            else
-            {
-                ret[pMasqueradingVector[2]]=Json::Value();
+        if (!pMasqueradingVector[2].empty()) {
+            if (getInviteCode()) {
+                ret[pMasqueradingVector[2]] = getValueOfInviteCode();
+            } else {
+                ret[pMasqueradingVector[2]] = Json::Value();
             }
         }
-        if(!pMasqueradingVector[3].empty())
-        {
-            if(getGameSettings())
-            {
-                ret[pMasqueradingVector[3]]=getValueOfGameSettings();
-            }
-            else
-            {
-                ret[pMasqueradingVector[3]]=Json::Value();
+        if (!pMasqueradingVector[3].empty()) {
+            if (getGameSettings()) {
+                ret[pMasqueradingVector[3]] = getValueOfGameSettings();
+            } else {
+                ret[pMasqueradingVector[3]] = Json::Value();
             }
         }
-        if(!pMasqueradingVector[4].empty())
-        {
-            if(getStatus())
-            {
-                ret[pMasqueradingVector[4]]=getValueOfStatus();
+        if (!pMasqueradingVector[4].empty()) {
+            if (getStatus()) {
+                ret[pMasqueradingVector[4]] = getValueOfStatus();
+            } else {
+                ret[pMasqueradingVector[4]] = Json::Value();
             }
-            else
-            {
-                ret[pMasqueradingVector[4]]=Json::Value();
+        }
+        if (!pMasqueradingVector[5].empty()) {
+            if (getGlobalstate()) {
+                ret[pMasqueradingVector[5]] = getValueOfGlobalstate();
+            } else {
+                ret[pMasqueradingVector[5]] = Json::Value();
+            }
+        }
+        if (!pMasqueradingVector[6].empty()) {
+            if (getIsTerminal()) {
+                ret[pMasqueradingVector[6]] = getValueOfIsTerminal();
+            } else {
+                ret[pMasqueradingVector[6]] = Json::Value();
             }
         }
         return ret;
     }
     LOG_ERROR << "Masquerade failed";
-    if(getId())
-    {
-        ret["id"]=getValueOfId();
+    if (getId()) {
+        ret["id"] = getValueOfId();
+    } else {
+        ret["id"] = Json::Value();
     }
-    else
-    {
-        ret["id"]=Json::Value();
+    if (getGameId()) {
+        ret["game_id"] = getValueOfGameId();
+    } else {
+        ret["game_id"] = Json::Value();
     }
-    if(getGameId())
-    {
-        ret["game_id"]=getValueOfGameId();
+    if (getInviteCode()) {
+        ret["invite_code"] = getValueOfInviteCode();
+    } else {
+        ret["invite_code"] = Json::Value();
     }
-    else
-    {
-        ret["game_id"]=Json::Value();
+    if (getGameSettings()) {
+        ret["game_settings"] = getValueOfGameSettings();
+    } else {
+        ret["game_settings"] = Json::Value();
     }
-    if(getInviteCode())
-    {
-        ret["invite_code"]=getValueOfInviteCode();
+    if (getStatus()) {
+        ret["status"] = getValueOfStatus();
+    } else {
+        ret["status"] = Json::Value();
     }
-    else
-    {
-        ret["invite_code"]=Json::Value();
+    if (getGlobalstate()) {
+        ret["globalstate"] = getValueOfGlobalstate();
+    } else {
+        ret["globalstate"] = Json::Value();
     }
-    if(getGameSettings())
-    {
-        ret["game_settings"]=getValueOfGameSettings();
-    }
-    else
-    {
-        ret["game_settings"]=Json::Value();
-    }
-    if(getStatus())
-    {
-        ret["status"]=getValueOfStatus();
-    }
-    else
-    {
-        ret["status"]=Json::Value();
+    if (getIsTerminal()) {
+        ret["is_terminal"] = getValueOfIsTerminal();
+    } else {
+        ret["is_terminal"] = Json::Value();
     }
     return ret;
 }
 
-bool Sessions::validateJsonForCreation(const Json::Value &pJson, std::string &err)
-{
-    if(pJson.isMember("id"))
-    {
-        if(!validJsonOfField(0, "id", pJson["id"], err, true))
+bool Sessions::validateJsonForCreation(const Json::Value &pJson,
+                                       std::string &err) {
+    if (pJson.isMember("id")) {
+        if (!validJsonOfField(0, "id", pJson["id"], err, true))
             return false;
-    }
-    else
-    {
-        err="The id column cannot be null";
+    } else {
+        err = "The id column cannot be null";
         return false;
     }
-    if(pJson.isMember("game_id"))
-    {
-        if(!validJsonOfField(1, "game_id", pJson["game_id"], err, true))
+    if (pJson.isMember("game_id")) {
+        if (!validJsonOfField(1, "game_id", pJson["game_id"], err, true))
             return false;
-    }
-    else
-    {
-        err="The game_id column cannot be null";
+    } else {
+        err = "The game_id column cannot be null";
         return false;
     }
-    if(pJson.isMember("invite_code"))
-    {
-        if(!validJsonOfField(2, "invite_code", pJson["invite_code"], err, true))
+    if (pJson.isMember("invite_code")) {
+        if (!validJsonOfField(2, "invite_code", pJson["invite_code"], err,
+                              true))
             return false;
-    }
-    else
-    {
-        err="The invite_code column cannot be null";
+    } else {
+        err = "The invite_code column cannot be null";
         return false;
     }
-    if(pJson.isMember("game_settings"))
-    {
-        if(!validJsonOfField(3, "game_settings", pJson["game_settings"], err, true))
+    if (pJson.isMember("game_settings")) {
+        if (!validJsonOfField(3, "game_settings", pJson["game_settings"], err,
+                              true))
             return false;
     }
-    if(pJson.isMember("status"))
-    {
-        if(!validJsonOfField(4, "status", pJson["status"], err, true))
+    if (pJson.isMember("status")) {
+        if (!validJsonOfField(4, "status", pJson["status"], err, true))
+            return false;
+    }
+    if (pJson.isMember("globalstate")) {
+        if (!validJsonOfField(5, "globalstate", pJson["globalstate"], err,
+                              true))
+            return false;
+    } else {
+        err = "The globalstate column cannot be null";
+        return false;
+    }
+    if (pJson.isMember("is_terminal")) {
+        if (!validJsonOfField(6, "is_terminal", pJson["is_terminal"], err,
+                              true))
             return false;
     }
     return true;
 }
-bool Sessions::validateMasqueradedJsonForCreation(const Json::Value &pJson,
-                                                  const std::vector<std::string> &pMasqueradingVector,
-                                                  std::string &err)
-{
-    if(pMasqueradingVector.size() != 5)
-    {
+bool Sessions::validateMasqueradedJsonForCreation(
+    const Json::Value &pJson,
+    const std::vector<std::string> &pMasqueradingVector,
+    std::string &err) {
+    if (pMasqueradingVector.size() != 7) {
         err = "Bad masquerading vector";
         return false;
     }
     try {
-      if(!pMasqueradingVector[0].empty())
-      {
-          if(pJson.isMember(pMasqueradingVector[0]))
-          {
-              if(!validJsonOfField(0, pMasqueradingVector[0], pJson[pMasqueradingVector[0]], err, true))
-                  return false;
-          }
-        else
-        {
-            err="The " + pMasqueradingVector[0] + " column cannot be null";
-            return false;
+        if (!pMasqueradingVector[0].empty()) {
+            if (pJson.isMember(pMasqueradingVector[0])) {
+                if (!validJsonOfField(0, pMasqueradingVector[0],
+                                      pJson[pMasqueradingVector[0]], err, true))
+                    return false;
+            } else {
+                err =
+                    "The " + pMasqueradingVector[0] + " column cannot be null";
+                return false;
+            }
         }
-      }
-      if(!pMasqueradingVector[1].empty())
-      {
-          if(pJson.isMember(pMasqueradingVector[1]))
-          {
-              if(!validJsonOfField(1, pMasqueradingVector[1], pJson[pMasqueradingVector[1]], err, true))
-                  return false;
-          }
-        else
-        {
-            err="The " + pMasqueradingVector[1] + " column cannot be null";
-            return false;
+        if (!pMasqueradingVector[1].empty()) {
+            if (pJson.isMember(pMasqueradingVector[1])) {
+                if (!validJsonOfField(1, pMasqueradingVector[1],
+                                      pJson[pMasqueradingVector[1]], err, true))
+                    return false;
+            } else {
+                err =
+                    "The " + pMasqueradingVector[1] + " column cannot be null";
+                return false;
+            }
         }
-      }
-      if(!pMasqueradingVector[2].empty())
-      {
-          if(pJson.isMember(pMasqueradingVector[2]))
-          {
-              if(!validJsonOfField(2, pMasqueradingVector[2], pJson[pMasqueradingVector[2]], err, true))
-                  return false;
-          }
-        else
-        {
-            err="The " + pMasqueradingVector[2] + " column cannot be null";
-            return false;
+        if (!pMasqueradingVector[2].empty()) {
+            if (pJson.isMember(pMasqueradingVector[2])) {
+                if (!validJsonOfField(2, pMasqueradingVector[2],
+                                      pJson[pMasqueradingVector[2]], err, true))
+                    return false;
+            } else {
+                err =
+                    "The " + pMasqueradingVector[2] + " column cannot be null";
+                return false;
+            }
         }
-      }
-      if(!pMasqueradingVector[3].empty())
-      {
-          if(pJson.isMember(pMasqueradingVector[3]))
-          {
-              if(!validJsonOfField(3, pMasqueradingVector[3], pJson[pMasqueradingVector[3]], err, true))
-                  return false;
-          }
-      }
-      if(!pMasqueradingVector[4].empty())
-      {
-          if(pJson.isMember(pMasqueradingVector[4]))
-          {
-              if(!validJsonOfField(4, pMasqueradingVector[4], pJson[pMasqueradingVector[4]], err, true))
-                  return false;
-          }
-      }
-    }
-    catch(const Json::LogicError &e)
-    {
-      err = e.what();
-      return false;
-    }
-    return true;
-}
-bool Sessions::validateJsonForUpdate(const Json::Value &pJson, std::string &err)
-{
-    if(pJson.isMember("id"))
-    {
-        if(!validJsonOfField(0, "id", pJson["id"], err, false))
-            return false;
-    }
-    else
-    {
-        err = "The value of primary key must be set in the json object for update";
+        if (!pMasqueradingVector[3].empty()) {
+            if (pJson.isMember(pMasqueradingVector[3])) {
+                if (!validJsonOfField(3, pMasqueradingVector[3],
+                                      pJson[pMasqueradingVector[3]], err, true))
+                    return false;
+            }
+        }
+        if (!pMasqueradingVector[4].empty()) {
+            if (pJson.isMember(pMasqueradingVector[4])) {
+                if (!validJsonOfField(4, pMasqueradingVector[4],
+                                      pJson[pMasqueradingVector[4]], err, true))
+                    return false;
+            }
+        }
+        if (!pMasqueradingVector[5].empty()) {
+            if (pJson.isMember(pMasqueradingVector[5])) {
+                if (!validJsonOfField(5, pMasqueradingVector[5],
+                                      pJson[pMasqueradingVector[5]], err, true))
+                    return false;
+            } else {
+                err =
+                    "The " + pMasqueradingVector[5] + " column cannot be null";
+                return false;
+            }
+        }
+        if (!pMasqueradingVector[6].empty()) {
+            if (pJson.isMember(pMasqueradingVector[6])) {
+                if (!validJsonOfField(6, pMasqueradingVector[6],
+                                      pJson[pMasqueradingVector[6]], err, true))
+                    return false;
+            }
+        }
+    } catch (const Json::LogicError &e) {
+        err = e.what();
         return false;
     }
-    if(pJson.isMember("game_id"))
-    {
-        if(!validJsonOfField(1, "game_id", pJson["game_id"], err, false))
+    return true;
+}
+bool Sessions::validateJsonForUpdate(const Json::Value &pJson,
+                                     std::string &err) {
+    if (pJson.isMember("id")) {
+        if (!validJsonOfField(0, "id", pJson["id"], err, false))
+            return false;
+    } else {
+        err =
+            "The value of primary key must be set in the json object for "
+            "update";
+        return false;
+    }
+    if (pJson.isMember("game_id")) {
+        if (!validJsonOfField(1, "game_id", pJson["game_id"], err, false))
             return false;
     }
-    if(pJson.isMember("invite_code"))
-    {
-        if(!validJsonOfField(2, "invite_code", pJson["invite_code"], err, false))
+    if (pJson.isMember("invite_code")) {
+        if (!validJsonOfField(2, "invite_code", pJson["invite_code"], err,
+                              false))
             return false;
     }
-    if(pJson.isMember("game_settings"))
-    {
-        if(!validJsonOfField(3, "game_settings", pJson["game_settings"], err, false))
+    if (pJson.isMember("game_settings")) {
+        if (!validJsonOfField(3, "game_settings", pJson["game_settings"], err,
+                              false))
             return false;
     }
-    if(pJson.isMember("status"))
-    {
-        if(!validJsonOfField(4, "status", pJson["status"], err, false))
+    if (pJson.isMember("status")) {
+        if (!validJsonOfField(4, "status", pJson["status"], err, false))
+            return false;
+    }
+    if (pJson.isMember("globalstate")) {
+        if (!validJsonOfField(5, "globalstate", pJson["globalstate"], err,
+                              false))
+            return false;
+    }
+    if (pJson.isMember("is_terminal")) {
+        if (!validJsonOfField(6, "is_terminal", pJson["is_terminal"], err,
+                              false))
             return false;
     }
     return true;
 }
-bool Sessions::validateMasqueradedJsonForUpdate(const Json::Value &pJson,
-                                                const std::vector<std::string> &pMasqueradingVector,
-                                                std::string &err)
-{
-    if(pMasqueradingVector.size() != 5)
-    {
+bool Sessions::validateMasqueradedJsonForUpdate(
+    const Json::Value &pJson,
+    const std::vector<std::string> &pMasqueradingVector,
+    std::string &err) {
+    if (pMasqueradingVector.size() != 7) {
         err = "Bad masquerading vector";
         return false;
     }
     try {
-      if(!pMasqueradingVector[0].empty() && pJson.isMember(pMasqueradingVector[0]))
-      {
-          if(!validJsonOfField(0, pMasqueradingVector[0], pJson[pMasqueradingVector[0]], err, false))
-              return false;
-      }
-    else
-    {
-        err = "The value of primary key must be set in the json object for update";
+        if (!pMasqueradingVector[0].empty() &&
+            pJson.isMember(pMasqueradingVector[0])) {
+            if (!validJsonOfField(0, pMasqueradingVector[0],
+                                  pJson[pMasqueradingVector[0]], err, false))
+                return false;
+        } else {
+            err =
+                "The value of primary key must be set in the json object for "
+                "update";
+            return false;
+        }
+        if (!pMasqueradingVector[1].empty() &&
+            pJson.isMember(pMasqueradingVector[1])) {
+            if (!validJsonOfField(1, pMasqueradingVector[1],
+                                  pJson[pMasqueradingVector[1]], err, false))
+                return false;
+        }
+        if (!pMasqueradingVector[2].empty() &&
+            pJson.isMember(pMasqueradingVector[2])) {
+            if (!validJsonOfField(2, pMasqueradingVector[2],
+                                  pJson[pMasqueradingVector[2]], err, false))
+                return false;
+        }
+        if (!pMasqueradingVector[3].empty() &&
+            pJson.isMember(pMasqueradingVector[3])) {
+            if (!validJsonOfField(3, pMasqueradingVector[3],
+                                  pJson[pMasqueradingVector[3]], err, false))
+                return false;
+        }
+        if (!pMasqueradingVector[4].empty() &&
+            pJson.isMember(pMasqueradingVector[4])) {
+            if (!validJsonOfField(4, pMasqueradingVector[4],
+                                  pJson[pMasqueradingVector[4]], err, false))
+                return false;
+        }
+        if (!pMasqueradingVector[5].empty() &&
+            pJson.isMember(pMasqueradingVector[5])) {
+            if (!validJsonOfField(5, pMasqueradingVector[5],
+                                  pJson[pMasqueradingVector[5]], err, false))
+                return false;
+        }
+        if (!pMasqueradingVector[6].empty() &&
+            pJson.isMember(pMasqueradingVector[6])) {
+            if (!validJsonOfField(6, pMasqueradingVector[6],
+                                  pJson[pMasqueradingVector[6]], err, false))
+                return false;
+        }
+    } catch (const Json::LogicError &e) {
+        err = e.what();
         return false;
-    }
-      if(!pMasqueradingVector[1].empty() && pJson.isMember(pMasqueradingVector[1]))
-      {
-          if(!validJsonOfField(1, pMasqueradingVector[1], pJson[pMasqueradingVector[1]], err, false))
-              return false;
-      }
-      if(!pMasqueradingVector[2].empty() && pJson.isMember(pMasqueradingVector[2]))
-      {
-          if(!validJsonOfField(2, pMasqueradingVector[2], pJson[pMasqueradingVector[2]], err, false))
-              return false;
-      }
-      if(!pMasqueradingVector[3].empty() && pJson.isMember(pMasqueradingVector[3]))
-      {
-          if(!validJsonOfField(3, pMasqueradingVector[3], pJson[pMasqueradingVector[3]], err, false))
-              return false;
-      }
-      if(!pMasqueradingVector[4].empty() && pJson.isMember(pMasqueradingVector[4]))
-      {
-          if(!validJsonOfField(4, pMasqueradingVector[4], pJson[pMasqueradingVector[4]], err, false))
-              return false;
-      }
-    }
-    catch(const Json::LogicError &e)
-    {
-      err = e.what();
-      return false;
     }
     return true;
 }
@@ -919,70 +971,78 @@ bool Sessions::validJsonOfField(size_t index,
                                 const std::string &fieldName,
                                 const Json::Value &pJson,
                                 std::string &err,
-                                bool isForCreation)
-{
-    switch(index)
-    {
+                                bool isForCreation) {
+    switch (index) {
         case 0:
-            if(pJson.isNull())
-            {
-                err="The " + fieldName + " column cannot be null";
+            if (pJson.isNull()) {
+                err = "The " + fieldName + " column cannot be null";
                 return false;
             }
-            if(!pJson.isString())
-            {
-                err="Type error in the "+fieldName+" field";
+            if (!pJson.isString()) {
+                err = "Type error in the " + fieldName + " field";
                 return false;
             }
             break;
         case 1:
-            if(pJson.isNull())
-            {
-                err="The " + fieldName + " column cannot be null";
+            if (pJson.isNull()) {
+                err = "The " + fieldName + " column cannot be null";
                 return false;
             }
-            if(!pJson.isString())
-            {
-                err="Type error in the "+fieldName+" field";
+            if (!pJson.isString()) {
+                err = "Type error in the " + fieldName + " field";
                 return false;
             }
             break;
         case 2:
-            if(pJson.isNull())
-            {
-                err="The " + fieldName + " column cannot be null";
+            if (pJson.isNull()) {
+                err = "The " + fieldName + " column cannot be null";
                 return false;
             }
-            if(!pJson.isString())
-            {
-                err="Type error in the "+fieldName+" field";
+            if (!pJson.isString()) {
+                err = "Type error in the " + fieldName + " field";
                 return false;
             }
             break;
         case 3:
-            if(pJson.isNull())
-            {
+            if (pJson.isNull()) {
                 return true;
             }
-            if(!pJson.isString())
-            {
-                err="Type error in the "+fieldName+" field";
+            if (!pJson.isString()) {
+                err = "Type error in the " + fieldName + " field";
                 return false;
             }
             break;
         case 4:
-            if(pJson.isNull())
-            {
+            if (pJson.isNull()) {
                 return true;
             }
-            if(!pJson.isInt())
-            {
-                err="Type error in the "+fieldName+" field";
+            if (!pJson.isInt()) {
+                err = "Type error in the " + fieldName + " field";
+                return false;
+            }
+            break;
+        case 5:
+            if (pJson.isNull()) {
+                err = "The " + fieldName + " column cannot be null";
+                return false;
+            }
+            if (!pJson.isString()) {
+                err = "Type error in the " + fieldName + " field";
+                return false;
+            }
+            break;
+        case 6:
+            if (pJson.isNull()) {
+                err = "The " + fieldName + " column cannot be null";
+                return false;
+            }
+            if (!pJson.isBool()) {
+                err = "Type error in the " + fieldName + " field";
                 return false;
             }
             break;
         default:
-            err="Internal error in the server";
+            err = "Internal error in the server";
             return false;
             break;
     }
@@ -990,42 +1050,15 @@ bool Sessions::validJsonOfField(size_t index,
 }
 void Sessions::getPlayers(const DbClientPtr &clientPtr,
                           const std::function<void(std::vector<Players>)> &rcb,
-                          const ExceptionCallback &ecb) const
-{
-    const static std::string sql = "select * from players where session_id = $1";
-    *clientPtr << sql
-               << *id_
-               >> [rcb = std::move(rcb)](const Result &r){
-                   std::vector<Players> ret;
-                   ret.reserve(r.size());
-                   for (auto const &row : r)
-                   {
-                       ret.emplace_back(Players(row));
-                   }
-                   rcb(ret);
-               }
-               >> ecb;
-}
-void Sessions::getGlobalState(const DbClientPtr &clientPtr,
-                              const std::function<void(Globalstates)> &rcb,
-                              const ExceptionCallback &ecb) const
-{
-    const static std::string sql = "select * from globalstates where session_id = $1";
-    *clientPtr << sql
-               << *id_
-               >> [rcb = std::move(rcb), ecb](const Result &r){
-                    if (r.size() == 0)
-                    {
-                        ecb(UnexpectedRows("0 rows found"));
-                    }
-                    else if (r.size() > 1)
-                    {
-                        ecb(UnexpectedRows("Found more than one row"));
-                    }
-                    else
-                    {
-                        rcb(Globalstates(r[0]));
-                    }
-               }
-               >> ecb;
+                          const ExceptionCallback &ecb) const {
+    const static std::string sql =
+        "select * from players where session_id = $1";
+    *clientPtr << sql << *id_ >> [rcb = std::move(rcb)](const Result &r) {
+        std::vector<Players> ret;
+        ret.reserve(r.size());
+        for (auto const &row : r) {
+            ret.emplace_back(Players(row));
+        }
+        rcb(ret);
+    } >> ecb;
 }

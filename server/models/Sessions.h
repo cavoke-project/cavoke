@@ -6,49 +6,44 @@
  */
 
 #pragma once
+#include <drogon/orm/Field.h>
+#include <drogon/orm/Mapper.h>
 #include <drogon/orm/Result.h>
 #include <drogon/orm/Row.h>
-#include <drogon/orm/Field.h>
 #include <drogon/orm/SqlBinder.h>
-#include <drogon/orm/Mapper.h>
 #ifdef __cpp_impl_coroutine
 #include <drogon/orm/CoroMapper.h>
 #endif
+#include <json/json.h>
+#include <stdint.h>
 #include <trantor/utils/Date.h>
 #include <trantor/utils/Logger.h>
-#include <json/json.h>
-#include <string>
-#include <memory>
-#include <vector>
-#include <tuple>
-#include <stdint.h>
 #include <iostream>
+#include <memory>
+#include <string>
+#include <tuple>
+#include <vector>
 
-namespace drogon
-{
-namespace orm
-{
+namespace drogon {
+namespace orm {
 class DbClient;
 using DbClientPtr = std::shared_ptr<DbClient>;
-}
-}
-namespace drogon_model
-{
-namespace cavoke_test
-{
-class Globalstates;
+}  // namespace orm
+}  // namespace drogon
+namespace drogon_model {
+namespace cavoke_test {
 class Players;
 
-class Sessions
-{
-  public:
-    struct Cols
-    {
+class Sessions {
+public:
+    struct Cols {
         static const std::string _id;
         static const std::string _game_id;
         static const std::string _invite_code;
         static const std::string _game_settings;
         static const std::string _status;
+        static const std::string _globalstate;
+        static const std::string _is_terminal;
     };
 
     const static int primaryKeyNumber;
@@ -61,12 +56,13 @@ class Sessions
     /**
      * @brief constructor
      * @param r One row of records in the SQL query result.
-     * @param indexOffset Set the offset to -1 to access all columns by column names,
-     * otherwise access all columns by offsets.
-     * @note If the SQL is not a style of 'select * from table_name ...' (select all
-     * columns by an asterisk), please set the offset to -1.
+     * @param indexOffset Set the offset to -1 to access all columns by column
+     * names, otherwise access all columns by offsets.
+     * @note If the SQL is not a style of 'select * from table_name ...' (select
+     * all columns by an asterisk), please set the offset to -1.
      */
-    explicit Sessions(const drogon::orm::Row &r, const ssize_t indexOffset = 0) noexcept;
+    explicit Sessions(const drogon::orm::Row &r,
+                      const ssize_t indexOffset = 0) noexcept;
 
     /**
      * @brief constructor
@@ -79,87 +75,125 @@ class Sessions
      * @param pJson The json object to construct a new instance.
      * @param pMasqueradingVector The aliases of table columns.
      */
-    Sessions(const Json::Value &pJson, const std::vector<std::string> &pMasqueradingVector) noexcept(false);
+    Sessions(
+        const Json::Value &pJson,
+        const std::vector<std::string> &pMasqueradingVector) noexcept(false);
 
     Sessions() = default;
 
     void updateByJson(const Json::Value &pJson) noexcept(false);
-    void updateByMasqueradedJson(const Json::Value &pJson,
-                                 const std::vector<std::string> &pMasqueradingVector) noexcept(false);
-    static bool validateJsonForCreation(const Json::Value &pJson, std::string &err);
-    static bool validateMasqueradedJsonForCreation(const Json::Value &,
-                                                const std::vector<std::string> &pMasqueradingVector,
-                                                    std::string &err);
-    static bool validateJsonForUpdate(const Json::Value &pJson, std::string &err);
-    static bool validateMasqueradedJsonForUpdate(const Json::Value &,
-                                          const std::vector<std::string> &pMasqueradingVector,
-                                          std::string &err);
+    void updateByMasqueradedJson(
+        const Json::Value &pJson,
+        const std::vector<std::string> &pMasqueradingVector) noexcept(false);
+    static bool validateJsonForCreation(const Json::Value &pJson,
+                                        std::string &err);
+    static bool validateMasqueradedJsonForCreation(
+        const Json::Value &,
+        const std::vector<std::string> &pMasqueradingVector,
+        std::string &err);
+    static bool validateJsonForUpdate(const Json::Value &pJson,
+                                      std::string &err);
+    static bool validateMasqueradedJsonForUpdate(
+        const Json::Value &,
+        const std::vector<std::string> &pMasqueradingVector,
+        std::string &err);
     static bool validJsonOfField(size_t index,
-                          const std::string &fieldName,
-                          const Json::Value &pJson,
-                          std::string &err,
-                          bool isForCreation);
+                                 const std::string &fieldName,
+                                 const Json::Value &pJson,
+                                 std::string &err,
+                                 bool isForCreation);
 
     /**  For column id  */
-    ///Get the value of the column id, returns the default value if the column is null
+    /// Get the value of the column id, returns the default value if the column
+    /// is null
     const std::string &getValueOfId() const noexcept;
-    ///Return a shared_ptr object pointing to the column const value, or an empty shared_ptr object if the column is null
+    /// Return a shared_ptr object pointing to the column const value, or an
+    /// empty shared_ptr object if the column is null
     const std::shared_ptr<std::string> &getId() const noexcept;
-    ///Set the value of the column id
+    /// Set the value of the column id
     void setId(const std::string &pId) noexcept;
     void setId(std::string &&pId) noexcept;
 
     /**  For column game_id  */
-    ///Get the value of the column game_id, returns the default value if the column is null
+    /// Get the value of the column game_id, returns the default value if the
+    /// column is null
     const std::string &getValueOfGameId() const noexcept;
-    ///Return a shared_ptr object pointing to the column const value, or an empty shared_ptr object if the column is null
+    /// Return a shared_ptr object pointing to the column const value, or an
+    /// empty shared_ptr object if the column is null
     const std::shared_ptr<std::string> &getGameId() const noexcept;
-    ///Set the value of the column game_id
+    /// Set the value of the column game_id
     void setGameId(const std::string &pGameId) noexcept;
     void setGameId(std::string &&pGameId) noexcept;
 
     /**  For column invite_code  */
-    ///Get the value of the column invite_code, returns the default value if the column is null
+    /// Get the value of the column invite_code, returns the default value if
+    /// the column is null
     const std::string &getValueOfInviteCode() const noexcept;
-    ///Return a shared_ptr object pointing to the column const value, or an empty shared_ptr object if the column is null
+    /// Return a shared_ptr object pointing to the column const value, or an
+    /// empty shared_ptr object if the column is null
     const std::shared_ptr<std::string> &getInviteCode() const noexcept;
-    ///Set the value of the column invite_code
+    /// Set the value of the column invite_code
     void setInviteCode(const std::string &pInviteCode) noexcept;
     void setInviteCode(std::string &&pInviteCode) noexcept;
 
     /**  For column game_settings  */
-    ///Get the value of the column game_settings, returns the default value if the column is null
+    /// Get the value of the column game_settings, returns the default value if
+    /// the column is null
     const std::string &getValueOfGameSettings() const noexcept;
-    ///Return a shared_ptr object pointing to the column const value, or an empty shared_ptr object if the column is null
+    /// Return a shared_ptr object pointing to the column const value, or an
+    /// empty shared_ptr object if the column is null
     const std::shared_ptr<std::string> &getGameSettings() const noexcept;
-    ///Set the value of the column game_settings
+    /// Set the value of the column game_settings
     void setGameSettings(const std::string &pGameSettings) noexcept;
     void setGameSettings(std::string &&pGameSettings) noexcept;
     void setGameSettingsToNull() noexcept;
 
     /**  For column status  */
-    ///Get the value of the column status, returns the default value if the column is null
+    /// Get the value of the column status, returns the default value if the
+    /// column is null
     const int32_t &getValueOfStatus() const noexcept;
-    ///Return a shared_ptr object pointing to the column const value, or an empty shared_ptr object if the column is null
+    /// Return a shared_ptr object pointing to the column const value, or an
+    /// empty shared_ptr object if the column is null
     const std::shared_ptr<int32_t> &getStatus() const noexcept;
-    ///Set the value of the column status
+    /// Set the value of the column status
     void setStatus(const int32_t &pStatus) noexcept;
     void setStatusToNull() noexcept;
 
+    /**  For column globalstate  */
+    /// Get the value of the column globalstate, returns the default value if
+    /// the column is null
+    const std::string &getValueOfGlobalstate() const noexcept;
+    /// Return a shared_ptr object pointing to the column const value, or an
+    /// empty shared_ptr object if the column is null
+    const std::shared_ptr<std::string> &getGlobalstate() const noexcept;
+    /// Set the value of the column globalstate
+    void setGlobalstate(const std::string &pGlobalstate) noexcept;
+    void setGlobalstate(std::string &&pGlobalstate) noexcept;
 
-    static size_t getColumnNumber() noexcept {  return 5;  }
+    /**  For column is_terminal  */
+    /// Get the value of the column is_terminal, returns the default value if
+    /// the column is null
+    const bool &getValueOfIsTerminal() const noexcept;
+    /// Return a shared_ptr object pointing to the column const value, or an
+    /// empty shared_ptr object if the column is null
+    const std::shared_ptr<bool> &getIsTerminal() const noexcept;
+    /// Set the value of the column is_terminal
+    void setIsTerminal(const bool &pIsTerminal) noexcept;
+
+    static size_t getColumnNumber() noexcept {
+        return 7;
+    }
     static const std::string &getColumnName(size_t index) noexcept(false);
 
     Json::Value toJson() const;
-    Json::Value toMasqueradedJson(const std::vector<std::string> &pMasqueradingVector) const;
+    Json::Value toMasqueradedJson(
+        const std::vector<std::string> &pMasqueradingVector) const;
     /// Relationship interfaces
     void getPlayers(const drogon::orm::DbClientPtr &clientPtr,
                     const std::function<void(std::vector<Players>)> &rcb,
                     const drogon::orm::ExceptionCallback &ecb) const;
-    void getGlobalState(const drogon::orm::DbClientPtr &clientPtr,
-                        const std::function<void(Globalstates)> &rcb,
-                        const drogon::orm::ExceptionCallback &ecb) const;
-  private:
+
+private:
     friend drogon::orm::Mapper<Sessions>;
 #ifdef __cpp_impl_coroutine
     friend drogon::orm::CoroMapper<Sessions>;
@@ -168,15 +202,16 @@ class Sessions
     void outputArgs(drogon::orm::internal::SqlBinder &binder) const;
     const std::vector<std::string> updateColumns() const;
     void updateArgs(drogon::orm::internal::SqlBinder &binder) const;
-    ///For mysql or sqlite3
+    /// For mysql or sqlite3
     void updateId(const uint64_t id);
     std::shared_ptr<std::string> id_;
     std::shared_ptr<std::string> gameId_;
     std::shared_ptr<std::string> inviteCode_;
     std::shared_ptr<std::string> gameSettings_;
     std::shared_ptr<int32_t> status_;
-    struct MetaData
-    {
+    std::shared_ptr<std::string> globalstate_;
+    std::shared_ptr<bool> isTerminal_;
+    struct MetaData {
         const std::string colName_;
         const std::string colType_;
         const std::string colDatabaseType_;
@@ -186,100 +221,103 @@ class Sessions
         const bool notNull_;
     };
     static const std::vector<MetaData> metaData_;
-    bool dirtyFlag_[5]={ false };
-  public:
-    static const std::string &sqlForFindingByPrimaryKey()
-    {
-        static const std::string sql="select * from " + tableName + " where id = $1";
+    bool dirtyFlag_[7] = {false};
+
+public:
+    static const std::string &sqlForFindingByPrimaryKey() {
+        static const std::string sql =
+            "select * from " + tableName + " where id = $1";
         return sql;
     }
 
-    static const std::string &sqlForDeletingByPrimaryKey()
-    {
-        static const std::string sql="delete from " + tableName + " where id = $1";
+    static const std::string &sqlForDeletingByPrimaryKey() {
+        static const std::string sql =
+            "delete from " + tableName + " where id = $1";
         return sql;
     }
-    std::string sqlForInserting(bool &needSelection) const
-    {
-        std::string sql="insert into " + tableName + " (";
+    std::string sqlForInserting(bool &needSelection) const {
+        std::string sql = "insert into " + tableName + " (";
         size_t parametersCount = 0;
         needSelection = false;
-        if(dirtyFlag_[0])
-        {
+        if (dirtyFlag_[0]) {
             sql += "id,";
             ++parametersCount;
         }
-        if(dirtyFlag_[1])
-        {
+        if (dirtyFlag_[1]) {
             sql += "game_id,";
             ++parametersCount;
         }
-        if(dirtyFlag_[2])
-        {
+        if (dirtyFlag_[2]) {
             sql += "invite_code,";
             ++parametersCount;
         }
-        if(dirtyFlag_[3])
-        {
+        if (dirtyFlag_[3]) {
             sql += "game_settings,";
             ++parametersCount;
         }
-        if(dirtyFlag_[4])
-        {
+        if (dirtyFlag_[4]) {
             sql += "status,";
             ++parametersCount;
         }
-        if(parametersCount > 0)
-        {
-            sql[sql.length()-1]=')';
-            sql += " values (";
+        if (dirtyFlag_[5]) {
+            sql += "globalstate,";
+            ++parametersCount;
         }
-        else
+        sql += "is_terminal,";
+        ++parametersCount;
+        if (!dirtyFlag_[6]) {
+            needSelection = true;
+        }
+        if (parametersCount > 0) {
+            sql[sql.length() - 1] = ')';
+            sql += " values (";
+        } else
             sql += ") values (";
 
-        int placeholder=1;
+        int placeholder = 1;
         char placeholderStr[64];
-        size_t n=0;
-        if(dirtyFlag_[0])
-        {
-            n = sprintf(placeholderStr,"$%d,",placeholder++);
+        size_t n = 0;
+        if (dirtyFlag_[0]) {
+            n = sprintf(placeholderStr, "$%d,", placeholder++);
             sql.append(placeholderStr, n);
         }
-        if(dirtyFlag_[1])
-        {
-            n = sprintf(placeholderStr,"$%d,",placeholder++);
+        if (dirtyFlag_[1]) {
+            n = sprintf(placeholderStr, "$%d,", placeholder++);
             sql.append(placeholderStr, n);
         }
-        if(dirtyFlag_[2])
-        {
-            n = sprintf(placeholderStr,"$%d,",placeholder++);
+        if (dirtyFlag_[2]) {
+            n = sprintf(placeholderStr, "$%d,", placeholder++);
             sql.append(placeholderStr, n);
         }
-        if(dirtyFlag_[3])
-        {
-            n = sprintf(placeholderStr,"$%d,",placeholder++);
+        if (dirtyFlag_[3]) {
+            n = sprintf(placeholderStr, "$%d,", placeholder++);
             sql.append(placeholderStr, n);
         }
-        if(dirtyFlag_[4])
-        {
-            n = sprintf(placeholderStr,"$%d,",placeholder++);
+        if (dirtyFlag_[4]) {
+            n = sprintf(placeholderStr, "$%d,", placeholder++);
             sql.append(placeholderStr, n);
         }
-        if(parametersCount > 0)
-        {
+        if (dirtyFlag_[5]) {
+            n = sprintf(placeholderStr, "$%d,", placeholder++);
+            sql.append(placeholderStr, n);
+        }
+        if (dirtyFlag_[6]) {
+            n = sprintf(placeholderStr, "$%d,", placeholder++);
+            sql.append(placeholderStr, n);
+        } else {
+            sql += "default,";
+        }
+        if (parametersCount > 0) {
             sql.resize(sql.length() - 1);
         }
-        if(needSelection)
-        {
+        if (needSelection) {
             sql.append(") returning *");
-        }
-        else
-        {
+        } else {
             sql.append(1, ')');
         }
         LOG_TRACE << sql;
         return sql;
     }
 };
-} // namespace cavoke_test
-} // namespace drogon_model
+}  // namespace cavoke_test
+}  // namespace drogon_model

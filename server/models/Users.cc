@@ -6,9 +6,9 @@
  */
 
 #include "Users.h"
-#include "Players.h"
 #include <drogon/utils/Utilities.h>
 #include <string>
+#include "Players.h"
 
 using namespace drogon;
 using namespace drogon::orm;
@@ -19,305 +19,242 @@ const std::string Users::primaryKeyName = "id";
 const bool Users::hasPrimaryKey = true;
 const std::string Users::tableName = "users";
 
-const std::vector<typename Users::MetaData> Users::metaData_={
-{"id","std::string","uuid",0,0,1,1}
-};
-const std::string &Users::getColumnName(size_t index) noexcept(false)
-{
+const std::vector<typename Users::MetaData> Users::metaData_ = {
+    {"id", "std::string", "uuid", 0, 0, 1, 1}};
+const std::string &Users::getColumnName(size_t index) noexcept(false) {
     assert(index < metaData_.size());
     return metaData_[index].colName_;
 }
-Users::Users(const Row &r, const ssize_t indexOffset) noexcept
-{
-    if(indexOffset < 0)
-    {
-        if(!r["id"].isNull())
-        {
-            id_=std::make_shared<std::string>(r["id"].as<std::string>());
+Users::Users(const Row &r, const ssize_t indexOffset) noexcept {
+    if (indexOffset < 0) {
+        if (!r["id"].isNull()) {
+            id_ = std::make_shared<std::string>(r["id"].as<std::string>());
         }
-    }
-    else
-    {
+    } else {
         size_t offset = (size_t)indexOffset;
-        if(offset + 1 > r.size())
-        {
+        if (offset + 1 > r.size()) {
             LOG_FATAL << "Invalid SQL result for this model";
             return;
         }
         size_t index;
         index = offset + 0;
-        if(!r[index].isNull())
-        {
-            id_=std::make_shared<std::string>(r[index].as<std::string>());
+        if (!r[index].isNull()) {
+            id_ = std::make_shared<std::string>(r[index].as<std::string>());
         }
     }
-
 }
 
-Users::Users(const Json::Value &pJson, const std::vector<std::string> &pMasqueradingVector) noexcept(false)
-{
-    if(pMasqueradingVector.size() != 1)
-    {
+Users::Users(
+    const Json::Value &pJson,
+    const std::vector<std::string> &pMasqueradingVector) noexcept(false) {
+    if (pMasqueradingVector.size() != 1) {
         LOG_ERROR << "Bad masquerading vector";
         return;
     }
-    if(!pMasqueradingVector[0].empty() && pJson.isMember(pMasqueradingVector[0]))
-    {
+    if (!pMasqueradingVector[0].empty() &&
+        pJson.isMember(pMasqueradingVector[0])) {
         dirtyFlag_[0] = true;
-        if(!pJson[pMasqueradingVector[0]].isNull())
-        {
-            id_=std::make_shared<std::string>(pJson[pMasqueradingVector[0]].asString());
+        if (!pJson[pMasqueradingVector[0]].isNull()) {
+            id_ = std::make_shared<std::string>(
+                pJson[pMasqueradingVector[0]].asString());
         }
     }
 }
 
-Users::Users(const Json::Value &pJson) noexcept(false)
-{
-    if(pJson.isMember("id"))
-    {
-        dirtyFlag_[0]=true;
-        if(!pJson["id"].isNull())
-        {
-            id_=std::make_shared<std::string>(pJson["id"].asString());
+Users::Users(const Json::Value &pJson) noexcept(false) {
+    if (pJson.isMember("id")) {
+        dirtyFlag_[0] = true;
+        if (!pJson["id"].isNull()) {
+            id_ = std::make_shared<std::string>(pJson["id"].asString());
         }
     }
 }
 
-void Users::updateByMasqueradedJson(const Json::Value &pJson,
-                                            const std::vector<std::string> &pMasqueradingVector) noexcept(false)
-{
-    if(pMasqueradingVector.size() != 1)
-    {
+void Users::updateByMasqueradedJson(
+    const Json::Value &pJson,
+    const std::vector<std::string> &pMasqueradingVector) noexcept(false) {
+    if (pMasqueradingVector.size() != 1) {
         LOG_ERROR << "Bad masquerading vector";
         return;
     }
-    if(!pMasqueradingVector[0].empty() && pJson.isMember(pMasqueradingVector[0]))
-    {
-        if(!pJson[pMasqueradingVector[0]].isNull())
-        {
-            id_=std::make_shared<std::string>(pJson[pMasqueradingVector[0]].asString());
+    if (!pMasqueradingVector[0].empty() &&
+        pJson.isMember(pMasqueradingVector[0])) {
+        if (!pJson[pMasqueradingVector[0]].isNull()) {
+            id_ = std::make_shared<std::string>(
+                pJson[pMasqueradingVector[0]].asString());
         }
     }
 }
 
-void Users::updateByJson(const Json::Value &pJson) noexcept(false)
-{
-    if(pJson.isMember("id"))
-    {
-        if(!pJson["id"].isNull())
-        {
-            id_=std::make_shared<std::string>(pJson["id"].asString());
+void Users::updateByJson(const Json::Value &pJson) noexcept(false) {
+    if (pJson.isMember("id")) {
+        if (!pJson["id"].isNull()) {
+            id_ = std::make_shared<std::string>(pJson["id"].asString());
         }
     }
 }
 
-const std::string &Users::getValueOfId() const noexcept
-{
+const std::string &Users::getValueOfId() const noexcept {
     const static std::string defaultValue = std::string();
-    if(id_)
+    if (id_)
         return *id_;
     return defaultValue;
 }
-const std::shared_ptr<std::string> &Users::getId() const noexcept
-{
+const std::shared_ptr<std::string> &Users::getId() const noexcept {
     return id_;
 }
-void Users::setId(const std::string &pId) noexcept
-{
+void Users::setId(const std::string &pId) noexcept {
     id_ = std::make_shared<std::string>(pId);
     dirtyFlag_[0] = true;
 }
-void Users::setId(std::string &&pId) noexcept
-{
+void Users::setId(std::string &&pId) noexcept {
     id_ = std::make_shared<std::string>(std::move(pId));
     dirtyFlag_[0] = true;
 }
-const typename Users::PrimaryKeyType & Users::getPrimaryKey() const
-{
+const typename Users::PrimaryKeyType &Users::getPrimaryKey() const {
     assert(id_);
     return *id_;
 }
 
-void Users::updateId(const uint64_t id)
-{
+void Users::updateId(const uint64_t id) {
 }
 
-const std::vector<std::string> &Users::insertColumns() noexcept
-{
-    static const std::vector<std::string> inCols={
-        "id"
-    };
+const std::vector<std::string> &Users::insertColumns() noexcept {
+    static const std::vector<std::string> inCols = {"id"};
     return inCols;
 }
 
-void Users::outputArgs(drogon::orm::internal::SqlBinder &binder) const
-{
-    if(dirtyFlag_[0])
-    {
-        if(getId())
-        {
+void Users::outputArgs(drogon::orm::internal::SqlBinder &binder) const {
+    if (dirtyFlag_[0]) {
+        if (getId()) {
             binder << getValueOfId();
-        }
-        else
-        {
+        } else {
             binder << nullptr;
         }
     }
 }
 
-const std::vector<std::string> Users::updateColumns() const
-{
+const std::vector<std::string> Users::updateColumns() const {
     std::vector<std::string> ret;
-    if(dirtyFlag_[0])
-    {
+    if (dirtyFlag_[0]) {
         ret.push_back(getColumnName(0));
     }
     return ret;
 }
 
-void Users::updateArgs(drogon::orm::internal::SqlBinder &binder) const
-{
-    if(dirtyFlag_[0])
-    {
-        if(getId())
-        {
+void Users::updateArgs(drogon::orm::internal::SqlBinder &binder) const {
+    if (dirtyFlag_[0]) {
+        if (getId()) {
             binder << getValueOfId();
-        }
-        else
-        {
+        } else {
             binder << nullptr;
         }
     }
 }
-Json::Value Users::toJson() const
-{
+Json::Value Users::toJson() const {
     Json::Value ret;
-    if(getId())
-    {
-        ret["id"]=getValueOfId();
-    }
-    else
-    {
-        ret["id"]=Json::Value();
+    if (getId()) {
+        ret["id"] = getValueOfId();
+    } else {
+        ret["id"] = Json::Value();
     }
     return ret;
 }
 
 Json::Value Users::toMasqueradedJson(
-    const std::vector<std::string> &pMasqueradingVector) const
-{
+    const std::vector<std::string> &pMasqueradingVector) const {
     Json::Value ret;
-    if(pMasqueradingVector.size() == 1)
-    {
-        if(!pMasqueradingVector[0].empty())
-        {
-            if(getId())
-            {
-                ret[pMasqueradingVector[0]]=getValueOfId();
-            }
-            else
-            {
-                ret[pMasqueradingVector[0]]=Json::Value();
+    if (pMasqueradingVector.size() == 1) {
+        if (!pMasqueradingVector[0].empty()) {
+            if (getId()) {
+                ret[pMasqueradingVector[0]] = getValueOfId();
+            } else {
+                ret[pMasqueradingVector[0]] = Json::Value();
             }
         }
         return ret;
     }
     LOG_ERROR << "Masquerade failed";
-    if(getId())
-    {
-        ret["id"]=getValueOfId();
-    }
-    else
-    {
-        ret["id"]=Json::Value();
+    if (getId()) {
+        ret["id"] = getValueOfId();
+    } else {
+        ret["id"] = Json::Value();
     }
     return ret;
 }
 
-bool Users::validateJsonForCreation(const Json::Value &pJson, std::string &err)
-{
-    if(pJson.isMember("id"))
-    {
-        if(!validJsonOfField(0, "id", pJson["id"], err, true))
+bool Users::validateJsonForCreation(const Json::Value &pJson,
+                                    std::string &err) {
+    if (pJson.isMember("id")) {
+        if (!validJsonOfField(0, "id", pJson["id"], err, true))
             return false;
-    }
-    else
-    {
-        err="The id column cannot be null";
+    } else {
+        err = "The id column cannot be null";
         return false;
     }
     return true;
 }
-bool Users::validateMasqueradedJsonForCreation(const Json::Value &pJson,
-                                               const std::vector<std::string> &pMasqueradingVector,
-                                               std::string &err)
-{
-    if(pMasqueradingVector.size() != 1)
-    {
+bool Users::validateMasqueradedJsonForCreation(
+    const Json::Value &pJson,
+    const std::vector<std::string> &pMasqueradingVector,
+    std::string &err) {
+    if (pMasqueradingVector.size() != 1) {
         err = "Bad masquerading vector";
         return false;
     }
     try {
-      if(!pMasqueradingVector[0].empty())
-      {
-          if(pJson.isMember(pMasqueradingVector[0]))
-          {
-              if(!validJsonOfField(0, pMasqueradingVector[0], pJson[pMasqueradingVector[0]], err, true))
-                  return false;
-          }
-        else
-        {
-            err="The " + pMasqueradingVector[0] + " column cannot be null";
+        if (!pMasqueradingVector[0].empty()) {
+            if (pJson.isMember(pMasqueradingVector[0])) {
+                if (!validJsonOfField(0, pMasqueradingVector[0],
+                                      pJson[pMasqueradingVector[0]], err, true))
+                    return false;
+            } else {
+                err =
+                    "The " + pMasqueradingVector[0] + " column cannot be null";
+                return false;
+            }
+        }
+    } catch (const Json::LogicError &e) {
+        err = e.what();
+        return false;
+    }
+    return true;
+}
+bool Users::validateJsonForUpdate(const Json::Value &pJson, std::string &err) {
+    if (pJson.isMember("id")) {
+        if (!validJsonOfField(0, "id", pJson["id"], err, false))
+            return false;
+    } else {
+        err =
+            "The value of primary key must be set in the json object for "
+            "update";
+        return false;
+    }
+    return true;
+}
+bool Users::validateMasqueradedJsonForUpdate(
+    const Json::Value &pJson,
+    const std::vector<std::string> &pMasqueradingVector,
+    std::string &err) {
+    if (pMasqueradingVector.size() != 1) {
+        err = "Bad masquerading vector";
+        return false;
+    }
+    try {
+        if (!pMasqueradingVector[0].empty() &&
+            pJson.isMember(pMasqueradingVector[0])) {
+            if (!validJsonOfField(0, pMasqueradingVector[0],
+                                  pJson[pMasqueradingVector[0]], err, false))
+                return false;
+        } else {
+            err =
+                "The value of primary key must be set in the json object for "
+                "update";
             return false;
         }
-      }
-    }
-    catch(const Json::LogicError &e)
-    {
-      err = e.what();
-      return false;
-    }
-    return true;
-}
-bool Users::validateJsonForUpdate(const Json::Value &pJson, std::string &err)
-{
-    if(pJson.isMember("id"))
-    {
-        if(!validJsonOfField(0, "id", pJson["id"], err, false))
-            return false;
-    }
-    else
-    {
-        err = "The value of primary key must be set in the json object for update";
+    } catch (const Json::LogicError &e) {
+        err = e.what();
         return false;
-    }
-    return true;
-}
-bool Users::validateMasqueradedJsonForUpdate(const Json::Value &pJson,
-                                             const std::vector<std::string> &pMasqueradingVector,
-                                             std::string &err)
-{
-    if(pMasqueradingVector.size() != 1)
-    {
-        err = "Bad masquerading vector";
-        return false;
-    }
-    try {
-      if(!pMasqueradingVector[0].empty() && pJson.isMember(pMasqueradingVector[0]))
-      {
-          if(!validJsonOfField(0, pMasqueradingVector[0], pJson[pMasqueradingVector[0]], err, false))
-              return false;
-      }
-    else
-    {
-        err = "The value of primary key must be set in the json object for update";
-        return false;
-    }
-    }
-    catch(const Json::LogicError &e)
-    {
-      err = e.what();
-      return false;
     }
     return true;
 }
@@ -325,24 +262,20 @@ bool Users::validJsonOfField(size_t index,
                              const std::string &fieldName,
                              const Json::Value &pJson,
                              std::string &err,
-                             bool isForCreation)
-{
-    switch(index)
-    {
+                             bool isForCreation) {
+    switch (index) {
         case 0:
-            if(pJson.isNull())
-            {
-                err="The " + fieldName + " column cannot be null";
+            if (pJson.isNull()) {
+                err = "The " + fieldName + " column cannot be null";
                 return false;
             }
-            if(!pJson.isString())
-            {
-                err="Type error in the "+fieldName+" field";
+            if (!pJson.isString()) {
+                err = "Type error in the " + fieldName + " field";
                 return false;
             }
             break;
         default:
-            err="Internal error in the server";
+            err = "Internal error in the server";
             return false;
             break;
     }
@@ -350,19 +283,14 @@ bool Users::validJsonOfField(size_t index,
 }
 void Users::getPlayers(const DbClientPtr &clientPtr,
                        const std::function<void(std::vector<Players>)> &rcb,
-                       const ExceptionCallback &ecb) const
-{
+                       const ExceptionCallback &ecb) const {
     const static std::string sql = "select * from players where user_id = $1";
-    *clientPtr << sql
-               << *id_
-               >> [rcb = std::move(rcb)](const Result &r){
-                   std::vector<Players> ret;
-                   ret.reserve(r.size());
-                   for (auto const &row : r)
-                   {
-                       ret.emplace_back(Players(row));
-                   }
-                   rcb(ret);
-               }
-               >> ecb;
+    *clientPtr << sql << *id_ >> [rcb = std::move(rcb)](const Result &r) {
+        std::vector<Players> ret;
+        ret.reserve(r.size());
+        for (auto const &row : r) {
+            ret.emplace_back(Players(row));
+        }
+        rcb(ret);
+    } >> ecb;
 }
