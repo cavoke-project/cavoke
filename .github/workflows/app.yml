@@ -37,11 +37,42 @@ jobs:
   server-healthcheck:
     runs-on: ubuntu-latest
     container: ghcr.io/cavoke-project/cavoke-ci:server
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: postgres_db
+          POSTGRES_PASSWORD: postgres_password
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: postgres_user
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install PostgreSQL client
+        run: |
+          apt-get update
+          apt-get install --yes postgresql-client
+      - name: Intialize the database
+        run: psql -h postgres -d postgres_db -U postgres_user -f server/creation.sql
+        env:
+          PGPASSWORD: postgres_password
+      - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
+      - run: cd build && make cavoke_server
+      - run: chmod +x .github/scripts/server-test-health.py && .github/scripts/server-test-health.py ./build/server/cavoke_server -c .github/files/ci_server_config.json
+  server-tests-with-db:
+    runs-on: ubuntu-latest
+    container: ghcr.io/cavoke-project/cavoke-ci:server
     steps:
       - uses: actions/checkout@v2
       - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
-      - run: cd build && make cavoke_server
-      - run: chmod +x .github/scripts/server-test-health.py && .github/scripts/server-test-health.py ./build/server/cavoke_server
+      - run: cd build && make cavoke_server_test
+      - run: ./build/server/test/cavoke_server_test
   games-notests:
     runs-on: ubuntu-latest
     container: ghcr.io/cavoke-project/cavoke-ci:server

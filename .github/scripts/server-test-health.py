@@ -14,13 +14,13 @@ def check_eq(expected, actual):
 
 
 def main():
-    _, *server_cmd = sys.argv
-    assert server_cmd, 'Expected usage: ./server-test-health.py <command-to-run>'
+    server_cmds = sys.argv[1:]
+    assert server_cmds, 'Expected usage: ./server-test-health.py <command-to-run> <args>'
 
     port = 8080
-    print(f'Booting server... at {server_cmd}', flush=True)
+    print(f'Booting server... at {server_cmds[0]}', flush=True)
 
-    server = subprocess.Popen(args=[*server_cmd, '-p', str(port)])
+    server = subprocess.Popen(args=server_cmds + ['-p', str(port)])
     def kill_server():
         try:
             server.wait(timeout=0.1)
