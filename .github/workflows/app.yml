@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: clang-format-12 --version
-      - run: chmod +x .github/scripts/diff-clangformat-12.sh && find . -iname '*.cpp' -or -iname '*.c' -or -iname '*.h' | xargs -n1 .github/scripts/diff-clangformat-12.sh
+      - run: chmod +x .github/scripts/diff-clangformat-12.sh && find . \( -iname '*.cpp' -or -iname '*.c' -or -iname '*.h' \) -and -not -path './server/models/*' | xargs -n1 .github/scripts/diff-clangformat-12.sh
   cppcheck:
     name: Cppcheck
     runs-on: ubuntu-latest
@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: cppcheck --version
-      - run: cppcheck --language=c++ -DSOME_DEFINE_TO_FIX_CONFIG --enable=all --suppress=*:doctest.h --suppress=unusedFunction --error-exitcode=1 --inline-suppr $(find . -iname '*.cpp')
+      - run: cppcheck --language=c++ -DSOME_DEFINE_TO_FIX_CONFIG --enable=all --suppress=*:doctest.h --suppress=unusedFunction --error-exitcode=1 --inline-suppr $(find . -iname '*.cpp' -and -not -path './server/models/*')
   client-notests-qt5-suse:
     runs-on: ubuntu-latest
     container: ghcr.io/cavoke-project/cavoke-ci:client-qt5-suse
@@ -65,7 +65,7 @@ jobs:
       - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
       - run: cd build && make cavoke_server
       - run: chmod +x .github/scripts/server-test-health.py && .github/scripts/server-test-health.py ./build/server/cavoke_server -c .github/files/ci_server_config.json
-  server-tests-with-db:
+  server-tests:
     runs-on: ubuntu-latest
     container: ghcr.io/cavoke-project/cavoke-ci:server
     steps:
@@ -95,8 +95,7 @@ jobs:
         run: |
           cd .github/scripts
           chmod +x server-test-health.py
-          chmod +x run-local-docker-server.sh
-          ./server-test-health.py ./run-local-docker-server.sh
+          ./server-test-health.py docker run -t -p 8080:8080 cavoke_server
   server-publish-image-develop:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop'
