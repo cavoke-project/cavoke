@@ -3,9 +3,9 @@
 
 #include <memory>
 #include <string>
+#include "../../../cavoke-dev-lib/cavoke.h"
 #include "game_state_storage.h"
 #include "model/games/games_storage.h"
-#include "../../../cavoke-dev-lib/cavoke.h"
 
 namespace cavoke::server::model {
 
