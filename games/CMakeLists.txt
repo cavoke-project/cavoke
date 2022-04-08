@@ -8,6 +8,6 @@ include_directories(${CAVOKE_H_DIR})
 
 add_executable(tictactoe
         tictactoe/tictactoe.cpp
-        ../cavoke-dev-lib/cavoke.cpp)
+        ${CAVOKE_H_DIR}/cavoke.cpp)
 
 target_link_libraries(tictactoe nlohmann_json::nlohmann_json)
