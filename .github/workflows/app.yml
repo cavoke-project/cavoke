@@ -49,12 +49,30 @@ jobs:
       - uses: actions/checkout@v2
       - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_GAMES=ON
       - run: cd build && make all
+  server-docker-healthcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - run: pip3 install requests
+      - uses: actions/checkout@v2
+      - name: Build docker image
+        uses: docker/build-push-action@v2
+        with:
+          file: server.Dockerfile
+          push: false
+          tags: cavoke_server
+      - name: Healthcheck
+        run: |
+          cd .github/scripts
+          chmod +x server-test-health.py
+          chmod +x run-local-docker-server.sh
+          ./server-test-health.py ./run-local-docker-server.sh
   server-publish-image-develop:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop'
 #    environment: develop
     needs:
       - server-healthcheck
+      - server-docker-healthcheck
     steps:
       - uses: actions/checkout@v2
       - name: Login to GitHub Container Registry
@@ -66,7 +84,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
-          context: ./server
+          file: server.Dockerfile
           push: true
           tags: ghcr.io/cavoke-project/cavoke-server:latest  # TODO: different tag for different branches
   server-deploy-cloud-run-develop:
