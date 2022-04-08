@@ -1,5 +1,5 @@
 #include <sstream>
-#include "../../cavoke-dev-lib/cavoke.h"
+#include "cavoke.h"
 
 namespace cavoke {
 

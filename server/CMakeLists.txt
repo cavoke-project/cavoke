@@ -14,6 +14,9 @@ find_package(nlohmann_json 3.9.0 REQUIRED)
 
 include_directories(.)
 
+set(CAVOKE_H_DIR ../cavoke-dev-lib CACHE PATH "Directory with cavoke.h library")
+include_directories(${CAVOKE_H_DIR})
+
 add_executable(cavoke_server
         main.cpp
         model/games/games_storage.cpp
