@@ -7,9 +7,13 @@
 
 <p>Платформа для создания и проведения сетевых пошаговых настольных игр</p>
 
-[![CircleCI Build Status](https://img.shields.io/circleci/build/github/cavoke-project/cavoke?style=flat-square)](https://app.circleci.com/pipelines/github/cavoke-project/cavoke?filter=all)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/cavoke-project/cavoke/app?style=flat-square)](https://github.com/cavoke-project/cavoke/actions/workflows/app.yml)
 [![GitHub top language](https://img.shields.io/github/languages/top/cavoke-project/cavoke?logo=github&style=flat-square)](https://github.com/cavoke-project/cavoke)
 [![license](https://img.shields.io/github/license/cavoke-project/cavoke?style=flat-square)](./LICENSE)
+
+<!-- TODO: add video -->
+
+<!-- TODO: add english -->
 
 ## Что это
 Cavoke – платформа для создания и проведения сетевых пошаговых настольных игр: позволяет разработчику не думать о создании комнат, подключении игроков, передаче данных от сервера к клиентам. Состоит из сервера и игрового клиента (отвечает за запуск интерфейсов игр). 
