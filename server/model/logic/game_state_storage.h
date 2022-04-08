@@ -2,8 +2,10 @@
 #define CAVOKE_SERVER_GAME_STATE_STORAGE_H
 
 #include <map>
+#include <mutex>
 #include <nlohmann/json.hpp>
 #include <optional>
+#include <shared_mutex>
 #include <string>
 #include <vector>
 #include "cavoke_base_exception.h"
@@ -15,7 +17,7 @@ struct game_state_error : cavoke_base_exception {
     explicit game_state_error(std::string message);
 };
 
-class GameStateStorage {  // TODO: thread safety
+class GameStateStorage {
 public:
     struct GameState {
         bool is_terminal;
@@ -26,13 +28,13 @@ public:
 
     void save_state(const std::string &session_id, GameState new_state);
 
-    const GameState *get_state(const std::string &session_id);
+    GameState get_state(const std::string &session_id);
 
-    const std::string *get_player_state(const std::string &session_id,
-                                        int player_id);
+    std::string get_player_state(const std::string &session_id, int player_id);
 
 private:
     std::map<std::string, GameState> m_states;
+    mutable std::shared_mutex m_states_mtx;
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameStateStorage::GameState,

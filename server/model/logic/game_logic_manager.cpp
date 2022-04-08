@@ -40,7 +40,7 @@ std::string GameLogicManager::invoke_logic(const Game &game,
     return output;
 }
 
-GameLogicManager::ValidationResult GameLogicManager::validate_settings(
+cavoke::ValidationResult GameLogicManager::validate_settings(
     const std::string &game_id,
     const json &settings,
     const std::vector<int> &occupied_positions) {
@@ -83,7 +83,7 @@ GameStateStorage::GameState GameLogicManager::init_state(
 
 GameStateStorage::GameState GameLogicManager::send_move(
     const std::string &game_id,
-    const GameLogicManager::GameMove &move) {
+    const cavoke::GameMove &move) {
     std::optional<Game> game_info = m_games_storage->get_game_by_id(game_id);
     if (!game_info.has_value()) {
         return {};
