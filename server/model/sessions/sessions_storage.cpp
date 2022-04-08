@@ -14,19 +14,25 @@ GameSession::GameSessionInfo SessionsStorage::create_session(
     const GameConfig &game_config,
     const std::string &host_user_id) {
     // create session
-    auto session = GameSession(game_config);
+    auto session = std::make_shared<GameSession>(game_config);
     // add host
     // TODO: should we always add host on 0 position?
-    session.add_user(host_user_id, 0);
+    session->add_user(host_user_id, 0);
     // generate representation for user
-    auto session_info = session.get_session_info();
-    // save session
-    m_sessions.emplace(session_info.session_id, std::move(session));
-    // associate invite code with session
-    // TODO: there are only 1e6 invite codes, something has to be done about
-    // collisions
-    m_invite_codes_to_session_ids[session_info.invite_code] =
-        session_info.session_id;
+    auto session_info = session->get_session_info();
+
+    {
+        std::scoped_lock lock(m_sessions_mtx, m_invite_codes_map_mtx);
+
+        // save session
+        m_sessions.emplace(session_info.session_id, session);
+        // associate invite code with session
+        // TODO: there are only 1e6 invite codes, something has to be done about
+        // collisions
+        m_invite_codes_to_session_ids[session_info.invite_code] =
+            session_info.session_id;
+    }
+
     return session_info;
 }
 
@@ -43,16 +49,20 @@ GameSession::GameSessionInfo SessionsStorage::join_session(
     std::optional<int> player_id) {
     // find session by invite
     try {
-        auto &session =
-            m_sessions[m_invite_codes_to_session_ids.at(invite_code)];
+        std::shared_ptr<GameSession> session;
+        {
+            std::unique_lock lock(m_sessions_mtx);
+            session = m_sessions[m_invite_codes_to_session_ids.at(invite_code)];
+        }
+
         // validate invite code
-        if (!session.verify_invite_code(invite_code)) {
+        if (!session->verify_invite_code(invite_code)) {
             throw game_session_error("invalid invite code");
         }
         // add the user
-        session.add_user(user_id, player_id);
+        session->add_user(user_id, player_id);
         // generate representation for client
-        return session.get_session_info();
+        return session->get_session_info();
     } catch (const std::out_of_range &) {
         throw game_session_error("invite code does not exist: '" + invite_code +
                                  "'");
@@ -63,29 +73,34 @@ GameSession::GameSessionInfo SessionsStorage::join_session(
  *
  * Throws `game_session_error` if no such session
  */
-GameSession *SessionsStorage::get_session(const std::string &session_id) {
+std::shared_ptr<GameSession> SessionsStorage::get_session(
+    const std::string &session_id) {
     try {  // slow?
-        return &m_sessions.at(session_id);
+        std::shared_lock lock(m_sessions_mtx);
+        return m_sessions.at(session_id);
     } catch (const std::out_of_range &) {
         throw game_session_error("session does not exist: '" + session_id +
                                  "'");
     }
 }
 
-GameSession *SessionsStorage::get_session_by_invite_code(
+std::shared_ptr<GameSession> SessionsStorage::get_session_by_invite_code(
     const std::string &invite_code) {
     try {  // slow?
-        return &m_sessions[m_invite_codes_to_session_ids.at(invite_code)];
+        std::shared_lock lock(m_sessions_mtx);
+
+        return m_sessions[m_invite_codes_to_session_ids.at(invite_code)];
     } catch (const std::out_of_range &) {
         throw game_session_error("invite code does not exist: '" + invite_code +
                                  "'");
     }
 }
 
-GameLogicManager::ValidationResult SessionsStorage::validate_session(
+cavoke::ValidationResult SessionsStorage::validate_session(
     const std::string &session_id,
     std::optional<json> game_settings) {
     auto session = get_session(session_id);
+
     std::string game_id = session->get_session_info().game_id;
 
     if (!game_settings.has_value()) {
@@ -100,8 +115,8 @@ GameLogicManager::ValidationResult SessionsStorage::validate_session(
 
 void SessionsStorage::start_session(const std::string &session_id,
                                     std::optional<json> game_settings) {
-    // TODO: thread-safety
     auto session = get_session(session_id);
+
     std::string game_id = session->get_session_info().game_id;
 
     if (!game_settings.has_value()) {
