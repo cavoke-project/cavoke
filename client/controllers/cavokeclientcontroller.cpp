@@ -8,7 +8,8 @@ CavokeClientController::CavokeClientController(QObject *parent)
       startView{},
       joinGameView{},
       settingsView{},
-      protoRoomView{} {
+      protoRoomView{},
+      settings{} {
     // startQml connection
     connect(&model, SIGNAL(startQmlApplication(CavokeQmlGameModel *)), this,
             SLOT(startQmlApplication(CavokeQmlGameModel *)));
@@ -101,6 +102,21 @@ CavokeClientController::CavokeClientController(QObject *parent)
             &protoRoomView, SLOT(updateValidationResult(ValidationResult)));
     connect(&protoRoomView, SIGNAL(createdGame()), &networkManager,
             SLOT(startSession()));
+
+    // settingsView actions
+    connect(this, SIGNAL(initSettingsValues(QString, QString)), &settingsView,
+            SLOT(initStartValues(QString, QString)));
+    connect(&settingsView, SIGNAL(updatedSettings(QString, QString)), this,
+            SLOT(updateSettings(QString, QString)));
+
+    // Default settings initialization
+    settings.setValue("player/nickname",
+                      settings.value("player/nickname", "Rzhaker"));
+    settings.setValue("network/host",
+                      settings.value("network/host", "No hosts?"));
+
+    emit initSettingsValues(settings.value("player/nickname").toString(),
+                            settings.value("network/host").toString());
 
     startView.show();
 
@@ -263,4 +279,9 @@ void CavokeClientController::creatingJoiningGameDone() {
     } else if (status == CreateJoinControllerStatus::JOINING) {
         status = CreateJoinControllerStatus::POLLING_JOIN;
     }
+}
+void CavokeClientController::updateSettings(const QString &nickname,
+                                            const QString &host) {
+    settings.setValue("player/nickname", nickname);
+    settings.setValue("network/host", host);
 }

@@ -33,11 +33,13 @@ public slots:
     void showGamesListView();
     void showCreateGameView();
     void showSettingsView();
+    void updateSettings(const QString &nickname, const QString &host);
 
 signals:
     void loadGamesList();
     void createGameDownloaded();
     void joinGameDownloaded();
+    void initSettingsValues(const QString &nickname, const QString &host);
 
 private slots:
     void startQmlApplication(CavokeQmlGameModel *);
@@ -66,6 +68,7 @@ private:
     CavokeQmlGameModel *currentQmlGameModel = nullptr;
     CreateJoinControllerStatus status = CreateJoinControllerStatus::NOTHING;
     QString currentGameId;
+    QSettings settings;
 };
 
 #endif  // CAVOKECLIENTCONTROLLER_H

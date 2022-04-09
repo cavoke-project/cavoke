@@ -10,7 +10,17 @@ SettingsView::~SettingsView() {
     delete ui;
 }
 
+void SettingsView::initStartValues(const QString &nickname,
+                                   const QString &host) {
+    ui->nicknameInput->setText(nickname);
+    ui->serverAddressInput->setText(host);
+}
+
 void SettingsView::on_backButton_clicked() {
     this->close();
     emit shownStartView();
+}
+void SettingsView::on_updateSettingsButton_clicked() {
+    emit updatedSettings(ui->nicknameInput->text(),
+                         ui->serverAddressInput->text());
 }
