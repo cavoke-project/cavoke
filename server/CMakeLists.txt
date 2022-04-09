@@ -23,7 +23,7 @@ aux_source_directory(model SRC_DIR)
 aux_source_directory(controllers CTL_SRC)
 aux_source_directory(filters FILTER_SRC)
 aux_source_directory(plugins PLUGIN_SRC)
-aux_source_directory(models MODEL_SRC)
+aux_source_directory(sql-models MODEL_SRC)
 
 add_executable(${PROJECT_NAME}
         main.cpp
@@ -58,7 +58,7 @@ drogon_create_views(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/views
 
 target_include_directories(${PROJECT_NAME}
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/models)
+        ${CMAKE_CURRENT_SOURCE_DIR}/sql-models)
 # ##############################################################################
 # uncomment the following line for dynamically loading views
 # set_property(TARGET ${PROJECT_NAME} PROPERTY ENABLE_EXPORTS ON)

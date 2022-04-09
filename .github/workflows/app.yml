@@ -25,15 +25,19 @@ jobs:
     container: ghcr.io/cavoke-project/cavoke-ci:client-qt5-suse
     steps:
       - uses: actions/checkout@v2
-      - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=5
-      - run: cd build && make cavoke_client
+      - name: Cmake
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=5
+      - name: Make
+        run: cd build && make cavoke_client
   client-notests-qt6-suse:
     runs-on: ubuntu-latest
     container: ghcr.io/cavoke-project/cavoke-ci:client-qt6-suse
     steps:
       - uses: actions/checkout@v2
-      - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=6  # QT_MAJOR_VERSION=6 by default, so not necessary
-      - run: cd build && make cavoke_client
+      - name: Cmake
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=6  # QT_MAJOR_VERSION=6 by default, so not necessary
+      - name: Make
+        run: cd build && make cavoke_client
   server-healthcheck:
     runs-on: ubuntu-latest
     container: ghcr.io/cavoke-project/cavoke-ci:server
@@ -58,27 +62,35 @@ jobs:
         run: |
           apt-get update
           apt-get install --yes postgresql-client
-      - name: Intialize the database
+      - name: Populate the database
         run: psql -h postgres -d postgres_db -U postgres_user -f server/creation.sql
         env:
           PGPASSWORD: postgres_password
-      - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
-      - run: cd build && make cavoke_server
-      - run: chmod +x .github/scripts/server-test-health.py && .github/scripts/server-test-health.py ./build/server/cavoke_server -c .github/files/ci_server_config.json
+      - name: Cmake
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
+      - name: Make
+        run: cd build && make cavoke_server
+      - name: Healthcheck
+        run: chmod +x .github/scripts/server-test-health.py && .github/scripts/server-test-health.py ./build/server/cavoke_server -c .github/files/ci_server_config.json
   server-tests:
     runs-on: ubuntu-latest
     container: ghcr.io/cavoke-project/cavoke-ci:server
     steps:
       - uses: actions/checkout@v2
-      - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
-      - run: cd build && make cavoke_server_test
-      - run: ./build/server/test/cavoke_server_test
+      - name: Cmake
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
+      - name: Make
+        run: cd build && make cavoke_server_test
+      - name: Run Tests
+        run: ./build/server/test/cavoke_server_test
   games-notests:
     runs-on: ubuntu-latest
     container: ghcr.io/cavoke-project/cavoke-ci:server
     steps:
       - uses: actions/checkout@v2
-      - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_GAMES=ON
+      - name: Cmake
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_GAMES=ON
+      - name: Make
       - run: cd build && make all
   server-docker-healthcheck:
     runs-on: ubuntu-latest
