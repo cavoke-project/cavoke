@@ -115,7 +115,7 @@ CavokeClientController::CavokeClientController(QObject *parent)
     settings.setValue(
         "network/host",
         settings.value("network/host", NetworkManager::BASE_HOST));
-    
+
     networkManager.changeHost(
         QUrl::fromUserInput(settings.value("network/host").toString()));
 
@@ -124,7 +124,7 @@ CavokeClientController::CavokeClientController(QObject *parent)
 
     startView.show();
 
-//    emit loadGamesList(); Now it loads games list inside of changeHost
+    //    emit loadGamesList(); Now it loads games list inside of changeHost
 }
 
 void CavokeClientController::showTestWindowView() {
