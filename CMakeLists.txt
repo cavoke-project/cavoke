@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 project(cavoke)
 
+set(QT_MAJOR_VERSION 5)
+
 option(BUILD_ALL "Build all subprojects (usually disabled for ci)" ON)
 
 option(BUILD_SERVER "Enable building server" OFF)

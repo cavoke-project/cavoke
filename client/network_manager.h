@@ -72,7 +72,7 @@ private:
         "https://764bbfca-c45a-46fc-9c79-11d9094b9ba8.mock.pstmn.io/"
 #else
 #ifdef REAL
-        "http://34.88.243.202:8081/"
+        "https://develop.api.cavoke.wlko.me"
 #else
         "http://127.0.0.1:8080/"
 #endif
