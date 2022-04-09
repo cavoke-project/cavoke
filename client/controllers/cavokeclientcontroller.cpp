@@ -111,16 +111,20 @@ CavokeClientController::CavokeClientController(QObject *parent)
 
     // Default settings initialization
     settings.setValue("player/nickname",
-                      settings.value("player/nickname", "Rzhaker"));
-    settings.setValue("network/host",
-                      settings.value("network/host", "No hosts?"));
+                      settings.value("player/nickname", "Guest"));
+    settings.setValue(
+        "network/host",
+        settings.value("network/host", NetworkManager::BASE_HOST));
+    
+    networkManager.changeHost(
+        QUrl::fromUserInput(settings.value("network/host").toString()));
 
     emit initSettingsValues(settings.value("player/nickname").toString(),
                             settings.value("network/host").toString());
 
     startView.show();
 
-    emit loadGamesList();
+//    emit loadGamesList(); Now it loads games list inside of changeHost
 }
 
 void CavokeClientController::showTestWindowView() {
@@ -284,4 +288,5 @@ void CavokeClientController::updateSettings(const QString &nickname,
                                             const QString &host) {
     settings.setValue("player/nickname", nickname);
     settings.setValue("network/host", host);
+    networkManager.changeHost(QUrl::fromUserInput(host));
 }
