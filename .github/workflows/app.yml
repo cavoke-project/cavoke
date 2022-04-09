@@ -91,7 +91,7 @@ jobs:
       - name: Cmake
         run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_GAMES=ON
       - name: Make
-      - run: cd build && make all
+        run: cd build && make all
   server-docker-healthcheck:
     runs-on: ubuntu-latest
     steps:
