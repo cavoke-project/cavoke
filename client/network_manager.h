@@ -17,7 +17,7 @@ struct NetworkManager : public QObject {
 public:
     const static inline QUrl BASE_HOST{"https://develop.api.cavoke.wlko.me"};
     explicit NetworkManager(QObject *parent = nullptr);
-    void changeHost(const QUrl &newHost);   // Blocking
+    void changeHost(const QUrl &newHost);  // Blocking
 
 public slots:
     void getHealth();
