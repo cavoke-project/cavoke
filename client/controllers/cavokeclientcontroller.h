@@ -69,6 +69,7 @@ private:
     CreateJoinControllerStatus status = CreateJoinControllerStatus::NOTHING;
     QString currentGameId;
     QSettings settings;
+    const static inline QUrl BASE_HOST{"https://develop.api.cavoke.wlko.me"};
 };
 
 #endif  // CAVOKECLIENTCONTROLLER_H
