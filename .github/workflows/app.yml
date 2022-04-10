@@ -93,6 +93,7 @@ jobs:
     environment:
       name: develop
       url: https://develop.api.cavoke.wlko.me
+    concurrency: develop
     needs:
       - server-publish-image-develop
     steps:
