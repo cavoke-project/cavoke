@@ -22,6 +22,7 @@ void CreateGameView::on_backButton_clicked() {
 }
 void CreateGameView::gotGamesListUpdate(
     const std::vector<GameInfo> &newGamesList) {
+    ui->gamesListComboBox->clear();
     for (const auto &gameInfo : newGamesList) {
         ui->gamesListComboBox->addItem(gameInfo.display_name);
     }

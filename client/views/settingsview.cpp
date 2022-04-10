@@ -23,4 +23,6 @@ void SettingsView::on_backButton_clicked() {
 void SettingsView::on_updateSettingsButton_clicked() {
     emit updatedSettings(ui->nicknameInput->text(),
                          ui->serverAddressInput->text());
+    this->close();
+    emit shownStartView();
 }

@@ -56,6 +56,10 @@ private slots:
     void gotSessionInfo(const SessionInfo &sessionInfo);
 
 private:
+    void defaultSettingsInitialization();
+    const static inline QString PLAYER_NICKNAME{"player/nickname"};
+    const static inline QString NETWORK_HOST{"network/host"};
+    const static inline QString DEFAULT_NICKNAME{"Guest"};
     NetworkManager networkManager;
     CavokeClientModel model;
     TestWindowView testWindowView;
@@ -69,7 +73,6 @@ private:
     CreateJoinControllerStatus status = CreateJoinControllerStatus::NOTHING;
     QString currentGameId;
     QSettings settings;
-    const static inline QUrl BASE_HOST{"https://develop.api.cavoke.wlko.me"};
 };
 
 #endif  // CAVOKECLIENTCONTROLLER_H
