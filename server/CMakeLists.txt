@@ -14,8 +14,6 @@ link_directories(${Boost_LIBRARY_DIRS})
 # https://github.com/nlohmann/json/releases/tag/v3.9.0 for convenience macros
 find_package(nlohmann_json 3.9.0 REQUIRED)
 
-include_directories(.)
-
 set(CAVOKE_H_DIR ../cavoke-dev-lib CACHE PATH "Directory with cavoke.h library")
 include_directories(${CAVOKE_H_DIR})
 
@@ -57,8 +55,7 @@ drogon_create_views(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/views
 #                     ${CMAKE_CURRENT_BINARY_DIR} TRUE)
 
 target_include_directories(${PROJECT_NAME}
-        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/sql-models)
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 # ##############################################################################
 # uncomment the following line for dynamically loading views
 # set_property(TARGET ${PROJECT_NAME} PROPERTY ENABLE_EXPORTS ON)

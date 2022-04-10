@@ -31,7 +31,7 @@ const std::vector<typename Sessions::MetaData> Sessions::metaData_ = {
     {"invite_code", "std::string", "character varying", 0, 0, 0, 1},
     {"game_settings", "std::string", "json", 0, 0, 0, 0},
     {"status", "int32_t", "integer", 4, 0, 0, 0},
-    {"globalstate", "std::string", "text", 0, 0, 0, 1},
+    {"globalstate", "std::string", "text", 0, 0, 0, 0},
     {"is_terminal", "bool", "boolean", 1, 0, 0, 1}};
 const std::string &Sessions::getColumnName(size_t index) noexcept(false) {
     assert(index < metaData_.size());
@@ -448,6 +448,10 @@ void Sessions::setGlobalstate(std::string &&pGlobalstate) noexcept {
     globalstate_ = std::make_shared<std::string>(std::move(pGlobalstate));
     dirtyFlag_[5] = true;
 }
+void Sessions::setGlobalstateToNull() noexcept {
+    globalstate_.reset();
+    dirtyFlag_[5] = true;
+}
 
 const bool &Sessions::getValueOfIsTerminal() const noexcept {
     const static bool defaultValue = bool();
@@ -773,9 +777,6 @@ bool Sessions::validateJsonForCreation(const Json::Value &pJson,
         if (!validJsonOfField(5, "globalstate", pJson["globalstate"], err,
                               true))
             return false;
-    } else {
-        err = "The globalstate column cannot be null";
-        return false;
     }
     if (pJson.isMember("is_terminal")) {
         if (!validJsonOfField(6, "is_terminal", pJson["is_terminal"], err,
@@ -845,10 +846,6 @@ bool Sessions::validateMasqueradedJsonForCreation(
                 if (!validJsonOfField(5, pMasqueradingVector[5],
                                       pJson[pMasqueradingVector[5]], err, true))
                     return false;
-            } else {
-                err =
-                    "The " + pMasqueradingVector[5] + " column cannot be null";
-                return false;
             }
         }
         if (!pMasqueradingVector[6].empty()) {
@@ -1023,8 +1020,7 @@ bool Sessions::validJsonOfField(size_t index,
             break;
         case 5:
             if (pJson.isNull()) {
-                err = "The " + fieldName + " column cannot be null";
-                return false;
+                return true;
             }
             if (!pJson.isString()) {
                 err = "Type error in the " + fieldName + " field";

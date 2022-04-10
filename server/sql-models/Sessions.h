@@ -169,6 +169,7 @@ public:
     /// Set the value of the column globalstate
     void setGlobalstate(const std::string &pGlobalstate) noexcept;
     void setGlobalstate(std::string &&pGlobalstate) noexcept;
+    void setGlobalstateToNull() noexcept;
 
     /**  For column is_terminal  */
     /// Get the value of the column is_terminal, returns the default value if

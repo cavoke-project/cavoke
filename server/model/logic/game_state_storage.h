@@ -31,10 +31,6 @@ public:
     GameState get_state(const std::string &session_id);
 
     std::string get_player_state(const std::string &session_id, int player_id);
-
-private:
-    std::map<std::string, GameState> m_states;
-    mutable std::shared_mutex m_states_mtx;
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameStateStorage::GameState,

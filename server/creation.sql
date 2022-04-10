@@ -5,9 +5,6 @@ create table users
             primary key
 );
 
-alter table users
-    owner to postgres;
-
 create table sessions
 (
     id            uuid                  not null
@@ -17,12 +14,9 @@ create table sessions
     invite_code   varchar               not null,
     game_settings json,
     status        integer,
-    globalstate   text                  not null,
+    globalstate   text,
     is_terminal   boolean default false not null
 );
-
-alter table sessions
-    owner to postgres;
 
 create unique index session_id_uindex
     on sessions (id);
@@ -44,8 +38,7 @@ create table players
     score       integer,
     playerstate text    not null,
     constraint player_pk
-        primary key (session_id, user_id)
+        primary key (session_id, user_id),
+    constraint uq_playerid_sessionid
+        unique (session_id, player_id)
 );
-
-alter table players
-    owner to postgres;

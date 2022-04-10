@@ -1,6 +1,7 @@
 #ifndef CAVOKE_GAME_SESSION_H
 #define CAVOKE_GAME_SESSION_H
 
+#include <drogon/HttpAppFramework.h>
 #include <drogon/utils/Utilities.h>
 #include <boost/bimap.hpp>
 #include <map>
@@ -8,8 +9,11 @@
 #include <shared_mutex>
 #include <string>
 #include <utility>
+#include "cavoke.h"
 #include "cavoke_base_exception.h"
 #include "model/games/game.h"
+#include "sql-models/Players.h"
+#include "sql-models/Sessions.h"
 
 namespace cavoke::server::model {
 
@@ -18,12 +22,13 @@ struct game_session_error : cavoke_base_exception {
     explicit game_session_error(std::string message);
 };
 
-struct GameSession {
+struct GameSessionAccessObject {
     enum SessionStatus { NOT_STARTED = 0, RUNNING = 1, FINISHED = 2 };
-
-    explicit GameSession(GameConfig game_config);
-    GameSession() =
-        default;  // FIXME: required by map in `sessions_storage.cpp`
+    GameSessionAccessObject() = default;
+    explicit GameSessionAccessObject(std::string session_id,
+                                     GameConfig game_config)
+        : id(std::move(session_id)), m_game_config(std::move(game_config)) {
+    }
 
     void add_user(const std::string &user_id,
                   std::optional<int> player_id = {});
@@ -41,7 +46,7 @@ struct GameSession {
     [[nodiscard]] bool verify_invite_code(const std::string &invite_code) const;
 
     /// Serializable representation of participant for client
-    struct Player {
+    struct PlayerInfo {
         std::string user_id;
         int player_id;
     };
@@ -52,34 +57,41 @@ struct GameSession {
         std::string game_id;
         std::string invite_code;
         SessionStatus status;
-        std::vector<Player> players;
+        std::vector<PlayerInfo> players;
     };
 
     [[nodiscard]] GameSessionInfo get_session_info() const;
 
     [[nodiscard]] std::vector<int> get_occupied_positions() const;
 
-    [[nodiscard]] std::vector<Player> get_players() const;
+    [[nodiscard]] std::vector<PlayerInfo> get_players() const;
 
-    [[nodiscard]] const std::optional<json> &get_game_settings() const;
+    //    [[nodiscard]] std::optional<json> &get_game_settings() const;
+
+    static drogon_model::cavoke_test::Sessions get_snapshot(
+        const std::string &session_id);
+
+    static GameSessionInfo make_session_info(
+        const drogon_model::cavoke_test::Sessions &session,
+        std::vector<PlayerInfo> players);
 
 private:
     std::string id;
     GameConfig m_game_config;
-    std::string m_invite_code;
-    SessionStatus m_status = NOT_STARTED;
-    boost::bimap<std::string, int> m_userid_to_playerid{};
-    std::optional<json> m_game_settings = std::nullopt;
 
-    mutable std::shared_mutex m_mtx;
+    mutable drogon::orm::Mapper<drogon_model::cavoke_test::Sessions>
+        default_mp_sessions{drogon::app().getDbClient()};
+    mutable drogon::orm::Mapper<drogon_model::cavoke_test::Players>
+        default_mp_players{drogon::app().getDbClient()};
 
-private:
-    static std::string generate_invite_code();
+    drogon_model::cavoke_test::Sessions get_snapshot() const;
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSession::Player, user_id, player_id);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSessionAccessObject::PlayerInfo,
+                                   user_id,
+                                   player_id);
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSession::GameSessionInfo,
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSessionAccessObject::GameSessionInfo,
                                    session_id,
                                    game_id,
                                    invite_code,

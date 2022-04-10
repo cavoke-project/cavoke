@@ -1,5 +1,4 @@
 #include "health_controller.h"
-#include <drogon/orm/Mapper.h>
 
 void cavoke::server::controllers::HealthController::health(
     const drogon::HttpRequestPtr &req,

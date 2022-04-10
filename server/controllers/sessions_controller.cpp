@@ -32,8 +32,7 @@ void SessionsController::create(
     }
 
     // create session and acquire session info
-    model::GameSession::GameSessionInfo session_info;
-    // TODO: do we want `try-catch` or `optional`?
+    model::GameSessionAccessObject::GameSessionInfo session_info;
     try {
         session_info = m_participation_storage->create_session(
             game.value().config, user_id.value());
@@ -63,8 +62,7 @@ void SessionsController::join(
     }
 
     // join session and acquire session info
-    model::GameSession::GameSessionInfo session_info;
-    // TODO: do we want `try-catch` or `optional`?
+    model::GameSessionAccessObject::GameSessionInfo session_info;
     try {
         session_info = m_participation_storage->join_session(
             invite_code.value(), user_id.value(),
@@ -103,19 +101,19 @@ void SessionsController::validate(
         return CALLBACK_STATUS_CODE(k401Unauthorized);
     }
 
-    std::shared_ptr<model::GameSession> session;
+    model::GameSessionAccessObject session;
     try {
-        session = m_participation_storage->get_session(session_id);
+        session = m_participation_storage->get_sessionAO(session_id);
     } catch (const model::game_session_error &err) {
         return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
     }
 
-    if (!session->is_player(user_id.value())) {
+    if (!session.is_player(user_id.value())) {
         return CALLBACK_STATUS_CODE(k403Forbidden);
     }
 
     // session does exist
-    json result = m_participation_storage->validate_session(session_id);
+    json result = m_participation_storage->validate_session(session_id, {});
     if (result["success"].get<bool>()) {
         result.erase(result.find("message"));
     }
@@ -136,20 +134,20 @@ void SessionsController::start(
         return CALLBACK_STATUS_CODE(k401Unauthorized);
     }
 
-    std::shared_ptr<model::GameSession> session;
+    model::GameSessionAccessObject session;
     try {
-        session = m_participation_storage->get_session(session_id);
+        session = m_participation_storage->get_sessionAO(session_id);
     } catch (const model::game_session_error &err) {
         return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
     }
 
-    if (!session->is_player(user_id.value())) {
+    if (!session.is_player(user_id.value())) {
         return CALLBACK_STATUS_CODE(k403Forbidden);
     }
 
     try {
         // TODO: get settings from body
-        m_participation_storage->start_session(session_id);
+        m_participation_storage->start_session(session_id, {});
     } catch (const model::validation_error &err) {
         return callback(newCavokeErrorResponse(err, drogon::k400BadRequest));
     } catch (const model::game_session_error &err) {
@@ -173,14 +171,14 @@ void SessionsController::get_info(
         return CALLBACK_STATUS_CODE(k401Unauthorized);
     }
 
-    std::shared_ptr<model::GameSession> session;
+    model::GameSessionAccessObject session;
     try {
-        session = m_participation_storage->get_session(session_id);
+        session = m_participation_storage->get_sessionAO(session_id);
     } catch (const model::game_session_error &err) {
         return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
     }
 
-    return callback(newNlohmannJsonResponse(session->get_session_info()));
+    return callback(newNlohmannJsonResponse(session.get_session_info()));
 }
 
 void SessionsController::get_info_by_invite_code(
@@ -201,15 +199,15 @@ void SessionsController::get_info_by_invite_code(
         return CALLBACK_STATUS_CODE(k401Unauthorized);
     }
 
-    std::shared_ptr<model::GameSession> session;
+    model::GameSessionAccessObject session;
     try {
-        session = m_participation_storage->get_session_by_invite_code(
+        session = m_participation_storage->get_sessionAO_by_invite(
             invite_code.value());
     } catch (const model::game_session_error &err) {
         return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
     }
 
-    return callback(newNlohmannJsonResponse(session->get_session_info()));
+    return callback(newNlohmannJsonResponse(session.get_session_info()));
 }
 
 }  // namespace cavoke::server::controllers
