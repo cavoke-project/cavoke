@@ -27,6 +27,7 @@ void GamesListView::on_downloadQmlButton_clicked() {
 
 void GamesListView::gotGamesListUpdate(
     const std::vector<GameInfo> &newGamesList) {
+    ui->gamesListWidget->clear();
     for (const auto &gameInfo : newGamesList) {
         ui->gamesListWidget->addItem(gameInfo.display_name);
     }

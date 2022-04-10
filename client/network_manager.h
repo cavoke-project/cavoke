@@ -15,9 +15,9 @@
 struct NetworkManager : public QObject {
     Q_OBJECT
 public:
-    const static inline QUrl BASE_HOST{"https://develop.api.cavoke.wlko.me"};
+    const static inline QUrl DEFAULT_HOST{"https://develop.api.cavoke.wlko.me"};
     explicit NetworkManager(QObject *parent = nullptr);
-    void changeHost(const QUrl &newHost);  // Blocking
+    void changeHost(const QUrl &newHost);
 
 public slots:
     void getHealth();
@@ -69,7 +69,7 @@ private:
     QTimer *validationPollingTimer = nullptr;
     QString sessionId;
     QUuid userId;
-    QUrl HOST{BASE_HOST};
+    QUrl HOST{DEFAULT_HOST};
     const static inline QUrl HEALTH{"health"};  // FIXME: move to routes module
     const static inline QUrl GAMES_LIST{"games/list"};
     const static inline QUrl GAMES{"games/"};

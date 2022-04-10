@@ -239,5 +239,5 @@ void NetworkManager::stopValidationPolling() {
 }
 void NetworkManager::changeHost(const QUrl &newHost) {
     HOST = newHost;
-    getGamesList();  // Reload games list. Seems bad
+    getGamesList();
 }
