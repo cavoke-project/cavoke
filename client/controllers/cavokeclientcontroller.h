@@ -40,6 +40,7 @@ signals:
     void createGameDownloaded();
     void joinGameDownloaded();
     void initSettingsValues(const QString &nickname, const QString &host);
+    void clearScreens();
 
 private slots:
     void startQmlApplication(CavokeQmlGameModel *);
