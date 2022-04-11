@@ -10,9 +10,7 @@
 namespace codenames {
 
 inline std::string path_sep() {
-    return {
-        std::filesystem::path::preferred_separator
-    }
+    return {std::filesystem::path::preferred_separator};
 }
 
 // NOLINTNEXTLINE(cert-err58-cpp)
@@ -31,7 +29,7 @@ struct WordList {
 
 private:
     std::vector<std::string> m_words;
-    std::mt19937 m_rnd;
+    mutable std::mt19937 m_rnd;
 };
 
 }  // namespace codenames

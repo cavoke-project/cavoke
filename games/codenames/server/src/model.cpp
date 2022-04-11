@@ -1,4 +1,5 @@
 #include "model.h"
+#include <utility>
 
 namespace codenames {
 
@@ -36,7 +37,7 @@ CodenamesModel::CodenamesModel(int height_,
 }
 
 void CodenamesModel::generate_cards() {
-    std::mt19937 rnd;
+    std::mt19937 rnd{std::random_device{}()};
 
     int red_cnt = m_height * m_width / 3;
     int blue_cnt = red_cnt + 1;
@@ -98,6 +99,7 @@ std::string CodenamesModel::get_player_state(int player) const {
 
     return result.dump();
 }
+
 void CodenamesModel::open_card(int pos) {
     if (m_stage == GAME_STAGE::BLUE_CAPTAIN ||
         m_stage == GAME_STAGE::RED_CAPTAIN) {
@@ -147,18 +149,27 @@ void CodenamesModel::open_card(int pos) {
 
         if (red_closed == 0) {
             m_result = GAME_RESULT::RED_WINS;
+            m_stage = GAME_STAGE::FINISHED;
         } else if (blue_closed == 0) {
             m_result = GAME_RESULT::BLUE_WINS;
+            m_stage = GAME_STAGE::FINISHED;
         }
     }
 }
+
 void CodenamesModel::make_hint(std::string hint) {
     if (m_stage != GAME_STAGE::BLUE_CAPTAIN &&
         m_stage != GAME_STAGE::RED_CAPTAIN) {
         throw invalid_move();
     }
 
-    m_last_hint = hint;
+    m_last_hint = std::move(hint);
+
+    if (m_stage == GAME_STAGE::BLUE_CAPTAIN) {
+        m_stage = GAME_STAGE::RED_TEAM;
+    } else {
+        m_stage = GAME_STAGE::BLUE_TEAM;
+    }
 }
 
 CodenamesModel::invalid_move::invalid_move()

@@ -9,7 +9,8 @@
 
 namespace codenames {
 
-class CodenamesModel {
+class CodenamesModel {  // NOLINT(cppcoreguidelines-pro-type-member-init)
+public:
     struct invalid_move : std::runtime_error {
         invalid_move();
     };
@@ -32,6 +33,7 @@ class CodenamesModel {
 
     enum class GAME_RESULT { IN_PROGRESS = 0, BLUE_WINS = 1, RED_WINS = 2 };
 
+private:
     void generate_cards();
 
     GAME_STAGE m_stage;
@@ -63,9 +65,11 @@ public:
                                    m_card_states,
                                    m_opened,
                                    m_height,
-                                   m_width)
+                                   m_width,
+                                   m_result)
 
     CodenamesModel(int height_, int width_, const WordList &wordlist_);
+    CodenamesModel() = default;
 };
 
 }  // namespace codenames
