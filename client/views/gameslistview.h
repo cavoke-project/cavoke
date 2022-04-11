@@ -17,6 +17,7 @@ public:
 public slots:
     void gotGamesListUpdate(const std::vector<GameInfo> &newGamesList);
     void gotNewSelectedGame(const GameInfo &gameInfo);
+    void displayEmpty();
 
 signals:
     void shownStartView();
@@ -29,7 +30,6 @@ private slots:
     void repeaterCurrentIndexChanged(int index);
 
 private:
-    void displayEmpty();
     Ui::GamesListView *ui;
 };
 

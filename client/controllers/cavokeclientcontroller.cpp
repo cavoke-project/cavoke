@@ -60,6 +60,7 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(createGameStart(int)));
     connect(this, SIGNAL(createGameDownloaded()), this,
             SLOT(createGameSendRequest()));
+    connect(this, SIGNAL(clearScreens()), &gamesListView, SLOT(displayEmpty()));
 
     // both Join and Create gameView actions
     connect(&networkManager, SIGNAL(gotSessionInfo(SessionInfo)), this,
@@ -78,6 +79,7 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(gotNewSelectedGame(GameInfo)));
     connect(&gamesListView, SIGNAL(requestedDownloadGame(int)), &model,
             SLOT(gotIndexToDownload(int)));
+    connect(this, SIGNAL(clearScreens()), &gamesListView, SLOT(displayEmpty()));
 
     // Download games list from server workflow
     connect(this, SIGNAL(loadGamesList()), &networkManager,
@@ -289,5 +291,6 @@ void CavokeClientController::updateSettings(const QString &nickname,
                                             const QString &host) {
     settings.setValue(PLAYER_NICKNAME, nickname);
     settings.setValue(NETWORK_HOST, host);
+    emit clearScreens();
     networkManager.changeHost(QUrl::fromUserInput(host));
 }
