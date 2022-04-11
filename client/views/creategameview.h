@@ -29,6 +29,7 @@ private slots:
     void repeaterCurrentIndexChanged(int index);
 
 private:
+    void displayEmpty();
     Ui::CreateGameView *ui;
 };
 
