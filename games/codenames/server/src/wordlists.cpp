@@ -17,14 +17,14 @@ WordList::WordList(const std::string &wordlist_name) {
         throw wordlist_not_found(wordlist_name);
     }
 }
-const std::vector<std::string> &WordList::all_words() {
+const std::vector<std::string> &WordList::all_words() const {
     return m_words;
 }
-int WordList::size() {
+int WordList::size() const {
     return static_cast<int>(m_words.size());
 }
-std::vector<std::string> WordList::sample(int n) {
-    std::vector<int> result(n);
+std::vector<std::string> WordList::sample(int n) const {
+    std::vector<std::string> result(n);
     std::sample(m_words.begin(), m_words.end(), result.begin(), n, m_rnd);
     return result;
 }

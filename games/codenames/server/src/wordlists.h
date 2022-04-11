@@ -15,6 +15,7 @@ inline std::string path_sep() {
     }
 }
 
+// NOLINTNEXTLINE(cert-err58-cpp)
 const std::string WORDLISTS_PATH = "assets" + path_sep() + "wordlists";
 
 struct WordList {
@@ -24,9 +25,9 @@ struct WordList {
         explicit wordlist_not_found(const std::string &wordlist);
     };
 
-    const std::vector<std::string> &all_words();
-    int size();
-    std::vector<std::string> sample(int n);
+    [[nodiscard]] const std::vector<std::string> &all_words() const;
+    [[nodiscard]] int size() const;
+    [[nodiscard]] std::vector<std::string> sample(int n) const;
 
 private:
     std::vector<std::string> m_words;

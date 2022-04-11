@@ -13,8 +13,8 @@ bool cavoke::validate_settings(
     const std::function<void(std::string)> &message_callback) {
     if (!settings.contains("board_h") || !settings.contains("board_w") ||
         !settings.contains("word_list") ||
-        settings["board_h"].get<int>() <= 0 ||
-        settings["board_w"].get<int>() <= 0) {
+        settings["board_h"].get<int>() <= 5 ||
+        settings["board_w"].get<int>() <= 4) {
         message_callback("Invalid config");
         return false;
     }
