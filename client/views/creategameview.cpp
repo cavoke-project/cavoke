@@ -30,7 +30,11 @@ void CreateGameView::gotGamesListUpdate(
     for (const auto &gameInfo : newGamesList) {
         ui->gamesListComboBox->addItem(gameInfo.display_name);
     }
-    ui->gamesListComboBox->setCurrentIndex(-1);
+    if (ui->gamesListComboBox->count() > 0) {
+        ui->gamesListComboBox->setCurrentIndex(0);
+    } else {
+        ui->gamesListComboBox->setCurrentIndex(-1);
+    }
 }
 
 void CreateGameView::gotNewSelectedGame(const GameInfo &gameInfo) {
