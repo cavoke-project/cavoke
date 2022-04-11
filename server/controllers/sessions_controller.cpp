@@ -103,7 +103,7 @@ void SessionsController::validate(
         return CALLBACK_STATUS_CODE(k401Unauthorized);
     }
 
-    model::GameSession *session;
+    std::shared_ptr<model::GameSession> session;
     try {
         session = m_participation_storage->get_session(session_id);
     } catch (const model::game_session_error &err) {
@@ -136,7 +136,7 @@ void SessionsController::start(
         return CALLBACK_STATUS_CODE(k401Unauthorized);
     }
 
-    model::GameSession *session;
+    std::shared_ptr<model::GameSession> session;
     try {
         session = m_participation_storage->get_session(session_id);
     } catch (const model::game_session_error &err) {
@@ -173,7 +173,7 @@ void SessionsController::get_info(
         return CALLBACK_STATUS_CODE(k401Unauthorized);
     }
 
-    model::GameSession *session;
+    std::shared_ptr<model::GameSession> session;
     try {
         session = m_participation_storage->get_session(session_id);
     } catch (const model::game_session_error &err) {
@@ -201,7 +201,7 @@ void SessionsController::get_info_by_invite_code(
         return CALLBACK_STATUS_CODE(k401Unauthorized);
     }
 
-    model::GameSession *session;
+    std::shared_ptr<model::GameSession> session;
     try {
         session = m_participation_storage->get_session_by_invite_code(
             invite_code.value());

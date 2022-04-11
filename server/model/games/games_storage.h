@@ -3,13 +3,13 @@
 
 #include <drogon/drogon.h>
 #include <boost/filesystem/path.hpp>
+#include <shared_mutex>
 #include <string>
 #include "game.h"
 #include "games_storage_config.h"
 namespace cavoke::server::model {
 
 class GamesStorage {
-    // TODO: thread-safety
 public:
     explicit GamesStorage(GamesStorageConfig config);
 
@@ -22,6 +22,7 @@ public:
 private:
     GamesStorageConfig m_config;
     std::map<std::string, Game> m_games;
+    std::shared_mutex m_games_mtx;
 };
 
 }  // namespace cavoke::server::model
