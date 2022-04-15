@@ -43,7 +43,7 @@ cavoke@ubuntu:~$ curl -s localhost:4200/games/list
 ### SQL
 Для обработки большинства запросов сервера требуется база данных [Postgresql](https://www.postgresql.org/).
 
-После того как сервер postgres запущен, создайте необходимые таблицы с помощью скрипта sql. Например, на linux:
+После того как сервер postgres запущен, создайте необходимые таблицы с помощью [скрипта sql](./creation.sql). Например, на linux:
 ```bash
 PGPASSWORD="postgres_password"
 psql -h postgres -d postgres_db -U postgres_user -f server/creation.sql
@@ -51,7 +51,7 @@ psql -h postgres -d postgres_db -U postgres_user -f server/creation.sql
 
 После этого нужно обновить ваш конфигурационный файл Drogon ([шаблон конфигурационного файла](./example_config.json)), дополнив его информацией о подключении к базе данных.
 
-Для того, чтобы передать конфигурационный файл серверу запустите его с ключом `-c`. Например:
+Для того чтобы передать серверу конфигурационный файл, запустите его с ключом `-c`. Например:
 ```console
 cavoke@ubuntu:~$ cavoke_server -c my_config.json
 Booting server... at /home/cavoke/build/server/cavoke_server
