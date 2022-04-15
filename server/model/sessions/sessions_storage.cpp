@@ -1,5 +1,6 @@
 #include "sessions_storage.h"
 #include <utility>
+#include "sql-models/Globalstates.h"
 #include "sql-models/Sessions.h"
 
 namespace cavoke::server::model {
@@ -26,7 +27,6 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
         session.setStatus(GameSessionAccessObject::NOT_STARTED);
         // TODO: there are only 1e6 invite codes, something has to be done about
         session.setInviteCode(generate_invite_code());
-        session.setGlobalstateToNull();
     }
     auto host_player = Players();
     {
@@ -37,6 +37,12 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
         host_player.setSessionId(session.getValueOfId());
         host_player.setUserId(host_user_id);
     }
+    auto global_state = Globalstates();
+    {
+        global_state.setSessionId(session.getValueOfId());
+        global_state.setIsTerminal(false);
+        global_state.setGlobalstateToNull();
+    }
 
     {
         auto transaction = drogon::app().getDbClient()->newTransaction();
@@ -44,6 +50,8 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
         mp_sessions.insert(session);
         auto mp_players = MAPPER_FOR_WITH_DB(Players, transaction);
         mp_players.insert(host_player);
+        auto mp_globalstates = MAPPER_FOR_WITH_DB(Globalstates, transaction);
+        mp_globalstates.insert(global_state);
     }
     LOG_DEBUG << "Session created: " << session.getValueOfId();
     // TODO: cleanup and use GameSessionAccessObject's non-static methods

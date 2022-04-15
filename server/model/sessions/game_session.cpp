@@ -165,17 +165,14 @@ void GameSessionAccessObject::finish() {
     session.setStatus(FINISHED);
     default_mp_sessions.update(session);
 }
-Sessions GameSessionAccessObject::get_snapshot()
-    const {
+Sessions GameSessionAccessObject::get_snapshot() const {
     return default_mp_sessions.findOne(
         Criteria(Sessions::Cols::_id, CompareOperator::EQ, id));
 }
-Sessions GameSessionAccessObject::get_snapshot(
-    const std::string &session_id) {
+Sessions GameSessionAccessObject::get_snapshot(const std::string &session_id) {
     auto mp_sessions = MAPPER_FOR(Sessions);
-    return mp_sessions.findOne(
-        Criteria(Sessions::Cols::_id,
-                 drogon::orm::CompareOperator::EQ, session_id));
+    return mp_sessions.findOne(Criteria(
+        Sessions::Cols::_id, drogon::orm::CompareOperator::EQ, session_id));
 }
 
 GameSessionAccessObject::GameSessionInfo

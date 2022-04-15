@@ -31,7 +31,7 @@ using DbClientPtr = std::shared_ptr<DbClient>;
 }  // namespace orm
 }  // namespace drogon
 namespace drogon_model {
-namespace cavoke_test {
+namespace cavoke {
 class Players;
 
 class Sessions {
@@ -42,8 +42,6 @@ public:
         static const std::string _invite_code;
         static const std::string _game_settings;
         static const std::string _status;
-        static const std::string _globalstate;
-        static const std::string _is_terminal;
     };
 
     const static int primaryKeyNumber;
@@ -159,30 +157,8 @@ public:
     void setStatus(const int32_t &pStatus) noexcept;
     void setStatusToNull() noexcept;
 
-    /**  For column globalstate  */
-    /// Get the value of the column globalstate, returns the default value if
-    /// the column is null
-    const std::string &getValueOfGlobalstate() const noexcept;
-    /// Return a shared_ptr object pointing to the column const value, or an
-    /// empty shared_ptr object if the column is null
-    const std::shared_ptr<std::string> &getGlobalstate() const noexcept;
-    /// Set the value of the column globalstate
-    void setGlobalstate(const std::string &pGlobalstate) noexcept;
-    void setGlobalstate(std::string &&pGlobalstate) noexcept;
-    void setGlobalstateToNull() noexcept;
-
-    /**  For column is_terminal  */
-    /// Get the value of the column is_terminal, returns the default value if
-    /// the column is null
-    const bool &getValueOfIsTerminal() const noexcept;
-    /// Return a shared_ptr object pointing to the column const value, or an
-    /// empty shared_ptr object if the column is null
-    const std::shared_ptr<bool> &getIsTerminal() const noexcept;
-    /// Set the value of the column is_terminal
-    void setIsTerminal(const bool &pIsTerminal) noexcept;
-
     static size_t getColumnNumber() noexcept {
-        return 7;
+        return 5;
     }
     static const std::string &getColumnName(size_t index) noexcept(false);
 
@@ -210,8 +186,6 @@ private:
     std::shared_ptr<std::string> inviteCode_;
     std::shared_ptr<std::string> gameSettings_;
     std::shared_ptr<int32_t> status_;
-    std::shared_ptr<std::string> globalstate_;
-    std::shared_ptr<bool> isTerminal_;
     struct MetaData {
         const std::string colName_;
         const std::string colType_;
@@ -222,7 +196,7 @@ private:
         const bool notNull_;
     };
     static const std::vector<MetaData> metaData_;
-    bool dirtyFlag_[7] = {false};
+    bool dirtyFlag_[5] = {false};
 
 public:
     static const std::string &sqlForFindingByPrimaryKey() {
@@ -260,15 +234,6 @@ public:
             sql += "status,";
             ++parametersCount;
         }
-        if (dirtyFlag_[5]) {
-            sql += "globalstate,";
-            ++parametersCount;
-        }
-        sql += "is_terminal,";
-        ++parametersCount;
-        if (!dirtyFlag_[6]) {
-            needSelection = true;
-        }
         if (parametersCount > 0) {
             sql[sql.length() - 1] = ')';
             sql += " values (";
@@ -298,16 +263,6 @@ public:
             n = sprintf(placeholderStr, "$%d,", placeholder++);
             sql.append(placeholderStr, n);
         }
-        if (dirtyFlag_[5]) {
-            n = sprintf(placeholderStr, "$%d,", placeholder++);
-            sql.append(placeholderStr, n);
-        }
-        if (dirtyFlag_[6]) {
-            n = sprintf(placeholderStr, "$%d,", placeholder++);
-            sql.append(placeholderStr, n);
-        } else {
-            sql += "default,";
-        }
         if (parametersCount > 0) {
             sql.resize(sql.length() - 1);
         }
@@ -320,5 +275,5 @@ public:
         return sql;
     }
 };
-}  // namespace cavoke_test
+}  // namespace cavoke
 }  // namespace drogon_model

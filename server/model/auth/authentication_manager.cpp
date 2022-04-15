@@ -15,9 +15,7 @@ bool cavoke::server::model::AuthenticationManager::verify_authentication(
                  Users::Cols::_id, CompareOperator::EQ, user_id))) {
         mp_users.insert(
             user,
-            [user_id](const Users &) {
-                LOG_DEBUG << "Added: " << user_id;
-            },
+            [user_id](const Users &) { LOG_DEBUG << "Added: " << user_id; },
             [user_id](const DrogonDbException &) {
                 LOG_DEBUG << "Skipped: " << user_id;
             });

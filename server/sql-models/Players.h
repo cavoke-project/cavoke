@@ -31,7 +31,7 @@ using DbClientPtr = std::shared_ptr<DbClient>;
 }  // namespace orm
 }  // namespace drogon
 namespace drogon_model {
-namespace cavoke_test {
+namespace cavoke {
 class Sessions;
 class Users;
 
@@ -280,5 +280,5 @@ public:
         return sql;
     }
 };
-}  // namespace cavoke_test
+}  // namespace cavoke
 }  // namespace drogon_model

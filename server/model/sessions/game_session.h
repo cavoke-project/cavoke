@@ -79,10 +79,10 @@ private:
     std::string id;
     GameConfig m_game_config;
 
-    mutable drogon::orm::Mapper<MODEL_NAMESPACE::Sessions>
-        default_mp_sessions{drogon::app().getDbClient()};
-    mutable drogon::orm::Mapper<MODEL_NAMESPACE::Players>
-        default_mp_players{drogon::app().getDbClient()};
+    mutable drogon::orm::Mapper<MODEL_NAMESPACE::Sessions> default_mp_sessions{
+        drogon::app().getDbClient()};
+    mutable drogon::orm::Mapper<MODEL_NAMESPACE::Players> default_mp_players{
+        drogon::app().getDbClient()};
 
     MODEL_NAMESPACE::Sessions get_snapshot() const;
 };

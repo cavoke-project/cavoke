@@ -12,7 +12,7 @@
 
 using namespace drogon;
 using namespace drogon::orm;
-using namespace drogon_model::cavoke_test;
+using namespace drogon_model::cavoke;
 
 const std::string Users::Cols::_id = "id";
 const std::string Users::primaryKeyName = "id";

@@ -23,7 +23,8 @@ aux_source_directory(filters FILTER_SRC)
 aux_source_directory(plugins PLUGIN_SRC)
 aux_source_directory(sql-models MODEL_SRC)
 
-add_compile_definitions(MODEL_NAMESPACE=::drogon_model::cavoke_test)
+# C++ namespace with sql models drogon ORM
+add_compile_definitions(MODEL_NAMESPACE=::drogon_model::cavoke)
 
 add_executable(${PROJECT_NAME}
         main.cpp

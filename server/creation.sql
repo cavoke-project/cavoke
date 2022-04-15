@@ -7,15 +7,13 @@ create table users
 
 create table sessions
 (
-    id            uuid                  not null
+    id            uuid    not null
         constraint session_pk
             primary key,
-    game_id       varchar               not null,
-    invite_code   varchar               not null,
+    game_id       varchar not null,
+    invite_code   varchar not null,
     game_settings json,
-    status        integer,
-    globalstate   text,
-    is_terminal   boolean default false not null
+    status        integer
 );
 
 create unique index session_id_uindex
@@ -41,4 +39,16 @@ create table players
         primary key (session_id, user_id),
     constraint uq_playerid_sessionid
         unique (session_id, player_id)
+);
+
+create table globalstates
+(
+    session_id  uuid                  not null
+        constraint globalstates_pk
+            primary key
+        constraint globalstates_sessions_id_fk
+            references sessions
+            on delete cascade,
+    globalstate text,
+    is_terminal boolean default false not null
 );
