@@ -10,7 +10,7 @@ namespace cavoke::server::model {
 
 using json = nlohmann::json;
 using namespace drogon::orm;
-using namespace drogon_model::cavoke_test;
+using namespace MODEL_NAMESPACE;
 
 void GameStateStorage::save_state(const std::string &session_id,
                                   GameStateStorage::GameState new_state) {

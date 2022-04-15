@@ -68,23 +68,23 @@ struct GameSessionAccessObject {
 
     //    [[nodiscard]] std::optional<json> &get_game_settings() const;
 
-    static drogon_model::cavoke_test::Sessions get_snapshot(
+    static MODEL_NAMESPACE::Sessions get_snapshot(
         const std::string &session_id);
 
     static GameSessionInfo make_session_info(
-        const drogon_model::cavoke_test::Sessions &session,
+        const MODEL_NAMESPACE::Sessions &session,
         std::vector<PlayerInfo> players);
 
 private:
     std::string id;
     GameConfig m_game_config;
 
-    mutable drogon::orm::Mapper<drogon_model::cavoke_test::Sessions>
+    mutable drogon::orm::Mapper<MODEL_NAMESPACE::Sessions>
         default_mp_sessions{drogon::app().getDbClient()};
-    mutable drogon::orm::Mapper<drogon_model::cavoke_test::Players>
+    mutable drogon::orm::Mapper<MODEL_NAMESPACE::Players>
         default_mp_players{drogon::app().getDbClient()};
 
-    drogon_model::cavoke_test::Sessions get_snapshot() const;
+    MODEL_NAMESPACE::Sessions get_snapshot() const;
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSessionAccessObject::PlayerInfo,

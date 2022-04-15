@@ -2,7 +2,7 @@
 
 namespace cavoke::server::model {
 using namespace drogon::orm;
-using namespace drogon_model::cavoke_test;
+using namespace MODEL_NAMESPACE;
 
 game_session_error::game_session_error(std::string message)
     : cavoke_base_exception(std::move(message),
@@ -165,16 +165,16 @@ void GameSessionAccessObject::finish() {
     session.setStatus(FINISHED);
     default_mp_sessions.update(session);
 }
-drogon_model::cavoke_test::Sessions GameSessionAccessObject::get_snapshot()
+Sessions GameSessionAccessObject::get_snapshot()
     const {
     return default_mp_sessions.findOne(
         Criteria(Sessions::Cols::_id, CompareOperator::EQ, id));
 }
-drogon_model::cavoke_test::Sessions GameSessionAccessObject::get_snapshot(
+Sessions GameSessionAccessObject::get_snapshot(
     const std::string &session_id) {
-    auto mp_sessions = MAPPER_FOR(drogon_model::cavoke_test::Sessions);
+    auto mp_sessions = MAPPER_FOR(Sessions);
     return mp_sessions.findOne(
-        Criteria(drogon_model::cavoke_test::Sessions::Cols::_id,
+        Criteria(Sessions::Cols::_id,
                  drogon::orm::CompareOperator::EQ, session_id));
 }
 

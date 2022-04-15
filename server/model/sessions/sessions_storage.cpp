@@ -4,7 +4,7 @@
 
 namespace cavoke::server::model {
 
-using namespace drogon_model::cavoke_test;
+using namespace MODEL_NAMESPACE;
 using namespace drogon::orm;
 
 /**
@@ -28,7 +28,7 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
         session.setInviteCode(generate_invite_code());
         session.setGlobalstateToNull();
     }
-    auto host_player = drogon_model::cavoke_test::Players();
+    auto host_player = Players();
     {
         // TODO: should we always add host on 0 position?
         host_player.setPlayerId(0);

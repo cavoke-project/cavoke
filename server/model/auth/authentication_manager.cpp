@@ -4,7 +4,7 @@
 #include "utils.h"
 namespace cavoke::server::model {
 using namespace drogon::orm;
-using namespace drogon_model::cavoke_test;
+using namespace MODEL_NAMESPACE;
 bool cavoke::server::model::AuthenticationManager::verify_authentication(
     const std::string &user_id) const {
     // TODO auth
@@ -15,10 +15,10 @@ bool cavoke::server::model::AuthenticationManager::verify_authentication(
                  Users::Cols::_id, CompareOperator::EQ, user_id))) {
         mp_users.insert(
             user,
-            [user_id](const drogon_model::cavoke_test::Users &) {
+            [user_id](const Users &) {
                 LOG_DEBUG << "Added: " << user_id;
             },
-            [user_id](const drogon::orm::DrogonDbException &) {
+            [user_id](const DrogonDbException &) {
                 LOG_DEBUG << "Skipped: " << user_id;
             });
     }
