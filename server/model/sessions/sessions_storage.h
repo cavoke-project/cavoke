@@ -14,23 +14,29 @@ public:
                     std::shared_ptr<GamesStorage> mGamesStorage,
                     std::shared_ptr<GameStateStorage> mGameStateStorage);
 
+    /// Creates session for given user with given game_config
     GameSessionAccessObject::GameSessionInfo create_session(
         const GameConfig &game_config,
         const std::string &host_user_id);
 
+    /// Starts session with given settings
     void start_session(const std::string &session_id,
                        std::optional<json> game_settings);
 
+    /// Tries to connect given user into a session
     GameSessionAccessObject::GameSessionInfo join_session(
         const std::string &invite_code,
         const std::string &user_id,
         std::optional<int> player_id = {});
 
+    /// Validates the settings for given session
     cavoke::ValidationResult validate_session(
         const std::string &session_id,
         std::optional<json> game_settings);
 
+    /// Gets an access object for given session
     GameSessionAccessObject get_sessionAO(const std::string &session_id);
+    /// Gets an access object for given session by an invite code
     GameSessionAccessObject get_sessionAO_by_invite(
         const std::string &invite_code);
 

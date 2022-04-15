@@ -22,6 +22,10 @@ struct game_session_error : cavoke_base_exception {
     explicit game_session_error(std::string message);
 };
 
+/// Access object for a game session.
+/// The fields of sessions may be spontaneously changed in another instance
+/// of the server. Therefore this class only provides methods to fetch DB data.
+/// Drogon ORM struct serves as the data holder.
 struct GameSessionAccessObject {
     enum SessionStatus { NOT_STARTED = 0, RUNNING = 1, FINISHED = 2 };
     GameSessionAccessObject() = default;
@@ -30,11 +34,14 @@ struct GameSessionAccessObject {
         : id(std::move(session_id)), m_game_config(std::move(game_config)) {
     }
 
+    /// Adds given user to the session into given or minimal available position
     void add_user(const std::string &user_id,
                   std::optional<int> player_id = {});
 
+    /// Marks session as starts
     void start(const json &game_settings);
 
+    /// Marks sessions as finished
     void finish();
 
     [[nodiscard]] int get_player_id(const std::string &user_id) const;
@@ -43,6 +50,7 @@ struct GameSessionAccessObject {
 
     [[nodiscard]] std::string get_user_id(int player_id) const;
 
+    // TODO: useless?
     [[nodiscard]] bool verify_invite_code(const std::string &invite_code) const;
 
     /// Serializable representation of participant for client
@@ -66,11 +74,14 @@ struct GameSessionAccessObject {
 
     [[nodiscard]] std::vector<PlayerInfo> get_players() const;
 
-    //    [[nodiscard]] std::optional<json> &get_game_settings() const;
+    //    [[nodiscard]] std::optional<json> &get_game_settings() const; //
+    //    unused, was non-trivial to implement.
 
+    /// Fetches current session information from the DB
     static MODEL_NAMESPACE::Sessions get_snapshot(
         const std::string &session_id);
 
+    /// Builds a session info from a session
     static GameSessionInfo make_session_info(
         const MODEL_NAMESPACE::Sessions &session,
         std::vector<PlayerInfo> players);
