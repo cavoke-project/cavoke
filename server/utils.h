@@ -73,7 +73,9 @@ inline std::string hide_password(std::string str) {
 }  // namespace cavoke::server
 
 #define MAPPER_TYPE(T) drogon::orm::Mapper<T>
-#define MAPPER_FOR_WITH_DB(T, dbclient) MAPPER_TYPE(T)(dbclient)
-#define MAPPER_FOR(T) MAPPER_FOR_WITH_DB(T, drogon::app().getDbClient())
+/// ORM mapper for given database client (e.g. transaction dbclient)
+#define MAPPER_WITH_CLIENT_FOR(T, dbclient) MAPPER_TYPE(T)(dbclient)
+/// ORM mapper for default database client
+#define MAPPER_FOR(T) MAPPER_WITH_CLIENT_FOR(T, drogon::app().getDbClient())
 
 #endif  // CAVOKE_UTILS_H

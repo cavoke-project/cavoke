@@ -26,8 +26,8 @@ void GameStateStorage::save_state(const std::string &session_id,
     global_state.setIsTerminal(new_state.is_terminal);
 
     auto transaction = drogon::app().getDbClient()->newTransaction();
-    auto mp_sessions_trans = MAPPER_FOR_WITH_DB(Globalstates, transaction);
-    auto mp_players_trans = MAPPER_FOR_WITH_DB(Players, transaction);
+    auto mp_sessions_trans = MAPPER_WITH_CLIENT_FOR(Globalstates, transaction);
+    auto mp_players_trans = MAPPER_WITH_CLIENT_FOR(Players, transaction);
 
     for (auto &player : players) {
         player.setPlayerstate(

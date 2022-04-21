@@ -46,11 +46,12 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
 
     {
         auto transaction = drogon::app().getDbClient()->newTransaction();
-        auto mp_sessions = MAPPER_FOR_WITH_DB(Sessions, transaction);
+        auto mp_sessions = MAPPER_WITH_CLIENT_FOR(Sessions, transaction);
         mp_sessions.insert(session);
-        auto mp_players = MAPPER_FOR_WITH_DB(Players, transaction);
+        auto mp_players = MAPPER_WITH_CLIENT_FOR(Players, transaction);
         mp_players.insert(host_player);
-        auto mp_globalstates = MAPPER_FOR_WITH_DB(Globalstates, transaction);
+        auto mp_globalstates =
+            MAPPER_WITH_CLIENT_FOR(Globalstates, transaction);
         mp_globalstates.insert(global_state);
     }
     LOG_DEBUG << "Session created: " << session.getValueOfId();
