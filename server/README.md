@@ -44,12 +44,12 @@ cavoke@ubuntu:~$ curl -s localhost:4200/games/list
 
 Для обработки большинства запросов сервера требуется база данных [Postgresql](https://www.postgresql.org/).
 
-После того как сервер postgres запущен, создайте необходимые таблицы с помощью [скрипта sql](./creation.sql). Например,
+После того как сервер postgres запущен, создайте необходимые таблицы с помощью [скрипта sql](db/schema.sql). Например,
 на linux:
 
 ```bash
 PGPASSWORD="postgres_password"
-psql -h postgres -d postgres_db -U postgres_user -f server/creation.sql
+psql -h postgres -d postgres_db -U postgres_user -f server/db/schema.sql
 ```
 
 После этого нужно обновить ваш конфигурационный файл Drogon ([шаблон конфигурационного файла](./example_config.json)),

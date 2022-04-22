@@ -63,7 +63,7 @@ jobs:
           apt-get update
           apt-get install --yes postgresql-client
       - name: Populate the database
-        run: psql -h postgres -d postgres_db -U postgres_user -f server/creation.sql
+        run: psql -h postgres -d postgres_db -U postgres_user -f server/db/schema.sql
         env:
           PGPASSWORD: postgres_password
       - name: Cmake
