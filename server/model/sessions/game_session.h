@@ -78,24 +78,24 @@ struct GameSessionAccessObject {
     //    unused, was non-trivial to implement.
 
     /// Fetches current session information from the DB
-    static MODEL_NAMESPACE::Sessions get_snapshot(
+    static drogon_model::cavoke_orm::Sessions get_snapshot(
         const std::string &session_id);
 
     /// Builds a session info from a session
     static GameSessionInfo make_session_info(
-        const MODEL_NAMESPACE::Sessions &session,
+        const drogon_model::cavoke_orm::Sessions &session,
         std::vector<PlayerInfo> players);
 
 private:
     std::string id;
     GameConfig m_game_config;
 
-    mutable drogon::orm::Mapper<MODEL_NAMESPACE::Sessions> default_mp_sessions{
-        drogon::app().getDbClient()};
-    mutable drogon::orm::Mapper<MODEL_NAMESPACE::Players> default_mp_players{
-        drogon::app().getDbClient()};
+    mutable drogon::orm::Mapper<drogon_model::cavoke_orm::Sessions>
+        default_mp_sessions{drogon::app().getDbClient()};
+    mutable drogon::orm::Mapper<drogon_model::cavoke_orm::Players>
+        default_mp_players{drogon::app().getDbClient()};
 
-    MODEL_NAMESPACE::Sessions get_snapshot() const;
+    drogon_model::cavoke_orm::Sessions get_snapshot() const;
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSessionAccessObject::PlayerInfo,

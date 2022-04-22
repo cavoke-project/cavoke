@@ -2,7 +2,6 @@
 
 namespace cavoke::server::model {
 using namespace drogon::orm;
-using namespace MODEL_NAMESPACE;
 
 game_session_error::game_session_error(std::string message)
     : cavoke_base_exception(std::move(message),
@@ -22,10 +21,11 @@ void GameSessionAccessObject::add_user(const std::string &user_id,
         throw game_session_error("session has already started");
     }
 
-    if (0 !=
-        default_mp_players.count(
-            Criteria(Players::Cols::_session_id, CompareOperator::EQ, id) &&
-            Criteria(Players::Cols::_user_id, CompareOperator::EQ, user_id))) {
+    if (0 != default_mp_players.count(
+                 Criteria(drogon_model::cavoke_orm::Players::Cols::_session_id,
+                          CompareOperator::EQ, id) &&
+                 Criteria(drogon_model::cavoke_orm::Players::Cols::_user_id,
+                          CompareOperator::EQ, user_id))) {
         return;
     }
     // get player id for user
@@ -47,7 +47,7 @@ void GameSessionAccessObject::add_user(const std::string &user_id,
         pos = *possible_positions.begin();
     }
     try {
-        Players new_player;
+        drogon_model::cavoke_orm::Players new_player;
         new_player.setUserId(user_id);
         new_player.setSessionId(id);
         new_player.setScoreToNull();
@@ -69,8 +69,10 @@ int GameSessionAccessObject::get_player_id(const std::string &user_id) const {
     try {
         return default_mp_players
             .findOne(
-                Criteria(Players::Cols::_session_id, CompareOperator::EQ, id) &&
-                Criteria(Players::Cols::_user_id, CompareOperator::EQ, user_id))
+                Criteria(drogon_model::cavoke_orm::Players::Cols::_session_id,
+                         CompareOperator::EQ, id) &&
+                Criteria(drogon_model::cavoke_orm::Players::Cols::_user_id,
+                         CompareOperator::EQ, user_id))
             .getValueOfPlayerId();
     } catch (const UnexpectedRows &) {
         throw game_session_error("user not in session");
@@ -85,9 +87,10 @@ std::string GameSessionAccessObject::get_user_id(int player_id) const {
     try {
         return default_mp_players
             .findOne(
-                Criteria(Players::Cols::_session_id, CompareOperator::EQ, id) &&
-                Criteria(Players::Cols::_player_id, CompareOperator::EQ,
-                         player_id))
+                Criteria(drogon_model::cavoke_orm::Players::Cols::_session_id,
+                         CompareOperator::EQ, id) &&
+                Criteria(drogon_model::cavoke_orm::Players::Cols::_player_id,
+                         CompareOperator::EQ, player_id))
             .getValueOfUserId();
     } catch (const UnexpectedRows &) {
         throw game_session_error("user not in session");
@@ -111,7 +114,8 @@ GameSessionAccessObject::get_session_info() const {
 std::vector<int> GameSessionAccessObject::get_occupied_positions() const {
     std::vector<int> result;
     for (const auto &player : default_mp_players.findBy(
-             Criteria(Players::Cols::_session_id, CompareOperator::EQ, id))) {
+             Criteria(drogon_model::cavoke_orm::Players::Cols::_session_id,
+                      CompareOperator::EQ, id))) {
         // cppcheck-suppress useStlAlgorithm
         result.push_back(player.getValueOfPlayerId());
     }
@@ -127,10 +131,11 @@ std::vector<int> GameSessionAccessObject::get_occupied_positions() const {
 std::vector<GameSessionAccessObject::PlayerInfo>
 GameSessionAccessObject::get_players() const {
     auto players = default_mp_players.findBy(
-        Criteria(Players::Cols::_session_id, CompareOperator::EQ, id));
+        Criteria(drogon_model::cavoke_orm::Players::Cols::_session_id,
+                 CompareOperator::EQ, id));
     std::vector<PlayerInfo> result;
     std::transform(players.begin(), players.end(), std::back_inserter(result),
-                   [](const Players &player) {
+                   [](const drogon_model::cavoke_orm::Players &player) {
                        return PlayerInfo{player.getValueOfUserId(),
                                          player.getValueOfPlayerId()};
                    });
@@ -139,7 +144,8 @@ GameSessionAccessObject::get_players() const {
 
 void GameSessionAccessObject::start(const json &game_settings) {
     auto session = default_mp_sessions.findOne(
-        Criteria(Sessions::Cols::_id, CompareOperator::EQ, id));
+        Criteria(drogon_model::cavoke_orm::Sessions::Cols::_id,
+                 CompareOperator::EQ, id));
     // FIXME: not atomic, transactions perhaps or some other blocking
     // sql-mechanism?
     if (session.getValueOfStatus() != NOT_STARTED) {
@@ -161,23 +167,29 @@ bool GameSessionAccessObject::is_player(const std::string &user_id) const {
 
 void GameSessionAccessObject::finish() {
     auto session = default_mp_sessions.findOne(
-        Criteria(Sessions::Cols::_id, CompareOperator::EQ, id));
+        Criteria(drogon_model::cavoke_orm::Sessions::Cols::_id,
+                 CompareOperator::EQ, id));
     session.setStatus(FINISHED);
     default_mp_sessions.update(session);
 }
-Sessions GameSessionAccessObject::get_snapshot() const {
+drogon_model::cavoke_orm::Sessions GameSessionAccessObject::get_snapshot()
+    const {
     return default_mp_sessions.findOne(
-        Criteria(Sessions::Cols::_id, CompareOperator::EQ, id));
+        Criteria(drogon_model::cavoke_orm::Sessions::Cols::_id,
+                 CompareOperator::EQ, id));
 }
-Sessions GameSessionAccessObject::get_snapshot(const std::string &session_id) {
-    auto mp_sessions = MAPPER_FOR(Sessions);
-    return mp_sessions.findOne(Criteria(
-        Sessions::Cols::_id, drogon::orm::CompareOperator::EQ, session_id));
+drogon_model::cavoke_orm::Sessions GameSessionAccessObject::get_snapshot(
+    const std::string &session_id) {
+    auto mp_sessions = MAPPER_FOR(drogon_model::cavoke_orm::Sessions);
+    return mp_sessions.findOne(
+        Criteria(drogon_model::cavoke_orm::Sessions::Cols::_id,
+                 drogon::orm::CompareOperator::EQ, session_id));
 }
 
 GameSessionAccessObject::GameSessionInfo
-GameSessionAccessObject::make_session_info(const Sessions &session,
-                                           std::vector<PlayerInfo> players) {
+GameSessionAccessObject::make_session_info(
+    const drogon_model::cavoke_orm::Sessions &session,
+    std::vector<PlayerInfo> players) {
     return {session.getValueOfId(), session.getValueOfGameId(),
             session.getValueOfInviteCode(),
             static_cast<SessionStatus>(session.getValueOfStatus()),

@@ -75,7 +75,7 @@ Listening at 0.0.0.0:8080...
 используется [Drogon ORM](https://github.com/drogonframework/drogon/wiki/ENG-08-3-DataBase-ORM). Модели находятся в
 директории [sql-models](./sql-models).
 
-Чтобы перегенерировать ORM, стоит воспользоваться утилитой 
+Чтобы перегенерировать ORM, стоит воспользоваться утилитой
 [`drogon_ctl`](https://github.com/drogonframework/drogon/wiki/ENG-11-drogon_ctl-Command), которая
 устанавливается вместе с Drogon.
 

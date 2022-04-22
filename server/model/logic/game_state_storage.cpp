@@ -10,24 +10,27 @@ namespace cavoke::server::model {
 
 using json = nlohmann::json;
 using namespace drogon::orm;
-using namespace MODEL_NAMESPACE;
 
 void GameStateStorage::save_state(const std::string &session_id,
                                   GameStateStorage::GameState new_state) {
-    auto mp_globalstates = MAPPER_FOR(Globalstates);
-    auto mp_players = MAPPER_FOR(Players);
+    auto mp_globalstates = MAPPER_FOR(drogon_model::cavoke_orm::Globalstates);
+    auto mp_players = MAPPER_FOR(drogon_model::cavoke_orm::Players);
 
-    auto global_state = mp_globalstates.findOne(Criteria(
-        Globalstates::Cols::_session_id, CompareOperator::EQ, session_id));
+    auto global_state = mp_globalstates.findOne(
+        Criteria(drogon_model::cavoke_orm::Globalstates::Cols::_session_id,
+                 CompareOperator::EQ, session_id));
     auto players = mp_players.findBy(
-        Criteria(Players::Cols::_session_id, CompareOperator::EQ, session_id));
+        Criteria(drogon_model::cavoke_orm::Players::Cols::_session_id,
+                 CompareOperator::EQ, session_id));
 
     global_state.setGlobalstate(new_state.global_state);
     global_state.setIsTerminal(new_state.is_terminal);
 
     auto transaction = drogon::app().getDbClient()->newTransaction();
-    auto mp_sessions_trans = MAPPER_WITH_CLIENT_FOR(Globalstates, transaction);
-    auto mp_players_trans = MAPPER_WITH_CLIENT_FOR(Players, transaction);
+    auto mp_sessions_trans = MAPPER_WITH_CLIENT_FOR(
+        drogon_model::cavoke_orm::Globalstates, transaction);
+    auto mp_players_trans =
+        MAPPER_WITH_CLIENT_FOR(drogon_model::cavoke_orm::Players, transaction);
 
     for (auto &player : players) {
         player.setPlayerstate(
@@ -52,17 +55,17 @@ GameStateStorage::GameState GameStateStorage::get_state(
     const std::string &session_id) {
     GameState state;
 
-    auto mp_globalstates = MAPPER_FOR(Globalstates);
-    auto global_state = mp_globalstates.findOne(
-        drogon::orm::Criteria(Globalstates::Cols::_session_id,
-                              drogon::orm::CompareOperator::EQ, session_id));
+    auto mp_globalstates = MAPPER_FOR(drogon_model::cavoke_orm::Globalstates);
+    auto global_state = mp_globalstates.findOne(drogon::orm::Criteria(
+        drogon_model::cavoke_orm::Globalstates::Cols::_session_id,
+        drogon::orm::CompareOperator::EQ, session_id));
     state.global_state = global_state.getValueOfGlobalstate();
     state.is_terminal = global_state.getValueOfIsTerminal();
 
-    auto mp_players = MAPPER_FOR(Players);
-    auto players = mp_players.findBy(
-        drogon::orm::Criteria(Players::Cols::_session_id,
-                              drogon::orm::CompareOperator::EQ, session_id));
+    auto mp_players = MAPPER_FOR(drogon_model::cavoke_orm::Players);
+    auto players = mp_players.findBy(drogon::orm::Criteria(
+        drogon_model::cavoke_orm::Players::Cols::_session_id,
+        drogon::orm::CompareOperator::EQ, session_id));
     state.players_state = std::vector<std::string>(players.size());
     for (auto &player : players) {
         int player_id = player.getValueOfPlayerId();
@@ -76,13 +79,13 @@ GameStateStorage::GameState GameStateStorage::get_state(
 
 std::string GameStateStorage::get_player_state(const std::string &session_id,
                                                int player_id) {
-    auto mp_players = MAPPER_FOR(Players);
+    auto mp_players = MAPPER_FOR(drogon_model::cavoke_orm::Players);
     try {
-        auto player =
-            mp_players.findOne(Criteria(Players::Cols::_session_id,
-                                        CompareOperator::EQ, session_id) &&
-                               Criteria(Players::Cols::_player_id,
-                                        CompareOperator::EQ, player_id));
+        auto player = mp_players.findOne(
+            Criteria(drogon_model::cavoke_orm::Players::Cols::_session_id,
+                     CompareOperator::EQ, session_id) &&
+            Criteria(drogon_model::cavoke_orm::Players::Cols::_player_id,
+                     CompareOperator::EQ, player_id));
         return player.getValueOfPlayerstate();
     } catch (const std::out_of_range &) {
         throw game_state_error("There's no player '" +

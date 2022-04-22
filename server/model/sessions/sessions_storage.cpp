@@ -5,7 +5,6 @@
 
 namespace cavoke::server::model {
 
-using namespace MODEL_NAMESPACE;
 using namespace drogon::orm;
 
 /**
@@ -19,7 +18,7 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
     const GameConfig &game_config,
     const std::string &host_user_id) {
     // create session
-    auto session = Sessions();
+    auto session = drogon_model::cavoke_orm::Sessions();
     {
         session.setId(drogon::utils::getUuid());
         session.setGameSettingsToNull();
@@ -28,7 +27,7 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
         // TODO: there are only 1e6 invite codes, something has to be done about
         session.setInviteCode(generate_invite_code());
     }
-    auto host_player = Players();
+    auto host_player = drogon_model::cavoke_orm::Players();
     {
         // TODO: should we always add host on 0 position?
         host_player.setPlayerId(0);
@@ -37,7 +36,7 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
         host_player.setSessionId(session.getValueOfId());
         host_player.setUserId(host_user_id);
     }
-    auto global_state = Globalstates();
+    auto global_state = drogon_model::cavoke_orm::Globalstates();
     {
         global_state.setSessionId(session.getValueOfId());
         global_state.setIsTerminal(false);
@@ -46,12 +45,14 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
 
     {
         auto transaction = drogon::app().getDbClient()->newTransaction();
-        auto mp_sessions = MAPPER_WITH_CLIENT_FOR(Sessions, transaction);
+        auto mp_sessions = MAPPER_WITH_CLIENT_FOR(
+            drogon_model::cavoke_orm::Sessions, transaction);
         mp_sessions.insert(session);
-        auto mp_players = MAPPER_WITH_CLIENT_FOR(Players, transaction);
+        auto mp_players = MAPPER_WITH_CLIENT_FOR(
+            drogon_model::cavoke_orm::Players, transaction);
         mp_players.insert(host_player);
-        auto mp_globalstates =
-            MAPPER_WITH_CLIENT_FOR(Globalstates, transaction);
+        auto mp_globalstates = MAPPER_WITH_CLIENT_FOR(
+            drogon_model::cavoke_orm::Globalstates, transaction);
         mp_globalstates.insert(global_state);
     }
     LOG_DEBUG << "Session created: " << session.getValueOfId();
@@ -151,10 +152,12 @@ GameSessionAccessObject SessionsStorage::get_sessionAO(
     const std::string &session_id) {
     // INFO: redundancy to check that session actually exists
     try {
-        auto mp_sessions = MAPPER_FOR(Sessions);  // TODO: use shared mappers
+        auto mp_sessions = MAPPER_FOR(
+            drogon_model::cavoke_orm::Sessions);  // TODO: use shared mappers
         // find session by invite
         auto session = mp_sessions.findOne(
-            Criteria(Sessions::Cols::_id, CompareOperator::EQ, session_id));
+            Criteria(drogon_model::cavoke_orm::Sessions::Cols::_id,
+                     CompareOperator::EQ, session_id));
         return GameSessionAccessObject(
             session.getValueOfId(),
             m_games_storage->get_game_by_id(session.getValueOfGameId())
@@ -167,10 +170,12 @@ GameSessionAccessObject SessionsStorage::get_sessionAO(
 GameSessionAccessObject SessionsStorage::get_sessionAO_by_invite(
     const std::string &invite_code) {
     try {
-        auto mp_sessions = MAPPER_FOR(Sessions);  // TODO: use shared mappers
+        auto mp_sessions = MAPPER_FOR(
+            drogon_model::cavoke_orm::Sessions);  // TODO: use shared mappers
         // find session by invite
-        auto session = mp_sessions.findOne(Criteria(
-            Sessions::Cols::_invite_code, CompareOperator::EQ, invite_code));
+        auto session = mp_sessions.findOne(
+            Criteria(drogon_model::cavoke_orm::Sessions::Cols::_invite_code,
+                     CompareOperator::EQ, invite_code));
         return GameSessionAccessObject(
             session.getValueOfId(),
             m_games_storage->get_game_by_id(session.getValueOfGameId())
