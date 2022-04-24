@@ -14,11 +14,12 @@ ProtoRoomView::~ProtoRoomView() {
 
 void ProtoRoomView::repeaterCurrentIndexChanged(int index) {
     if (index == -1 || ui->roleComboBox->itemData(index).toInt() == ourRole) {
-//        displayEmpty();
+        //        displayEmpty();
         return;
     }
-//    qDebug() << "Chosen: " << ui->roleComboBox->itemText(index);
-    qDebug() << "Got new role index: " << ui->roleComboBox->itemData(index).toInt();
+    //    qDebug() << "Chosen: " << ui->roleComboBox->itemText(index);
+    qDebug() << "Got new role index: "
+             << ui->roleComboBox->itemData(index).toInt();
     emit newRoleChosen(ui->roleComboBox->itemData(index).toInt());
 }
 
@@ -104,10 +105,11 @@ void ProtoRoomView::gotRolesListUpdate(
     ui->roleComboBox->clear();
     for (const auto &roleIdAndName : newRolesList) {
         ui->roleComboBox->addItem(roleIdAndName.first, roleIdAndName.second);
-//        qDebug() << roleIdAndName.first << ' ' << roleIdAndName.second;
+        //        qDebug() << roleIdAndName.first << ' ' <<
+        //        roleIdAndName.second;
     }
     if (ui->roleComboBox->count() > 0) {
-//        qDebug() << "SET: " << ui->roleComboBox->count() - 1;
+        //        qDebug() << "SET: " << ui->roleComboBox->count() - 1;
         ui->roleComboBox->setCurrentIndex(0);
     } else {
         ui->roleComboBox->setCurrentIndex(-1);

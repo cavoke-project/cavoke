@@ -40,7 +40,6 @@ public slots:
     void leaveSession();
     void changeRoleInSession(int newRole);
 
-
     void startGamePolling();
     void stopGamePolling();
     void startSessionPolling();
