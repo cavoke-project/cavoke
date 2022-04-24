@@ -18,7 +18,7 @@ void ProtoRoomView::updateStatus(CreatingGameStatus newStatus) {
 
 void ProtoRoomView::updateSessionInfo(const SessionInfo &sessionInfo) {
     ui->inviteCodeLabel->setText(sessionInfo.invite_code);
-//    ui->gameNameLabel->setText(sessionInfo.game_id);
+    //    ui->gameNameLabel->setText(sessionInfo.game_id);
 
     ui->playersListWidget->clear();
     int cnt = 0;
@@ -82,4 +82,19 @@ void ProtoRoomView::on_backButton_clicked() {
 }
 void ProtoRoomView::updateGameName(const QString &gameName) {
     ui->gameNameLabel->setText(gameName);
+}
+void ProtoRoomView::gotRolesListUpdate(
+    const std::vector<std::pair<QString, int>> &newRolesList) {
+    // Some bad way to check whether list actually updated
+    // TODO: implement it
+
+    ui->roleComboBox->clear();
+    for (const auto &roleIdAndName : newRolesList) {
+        ui->roleComboBox->addItem(roleIdAndName.first, roleIdAndName.second);
+    }
+    if (ui->roleComboBox->count() > 0) {
+        ui->roleComboBox->setCurrentIndex(ui->roleComboBox->count() - 1);
+    } else {
+        ui->roleComboBox->setCurrentIndex(-1);
+    }
 }

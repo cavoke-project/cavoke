@@ -43,6 +43,8 @@ signals:
     void setGameName(const QString &gameName);
     void initSettingsValues(const QString &nickname, const QString &host);
     void clearScreens();
+    void createdAvailableRolesList(
+        const std::vector<std::pair<QString, int>> &availableRoles);
 
 private slots:
     void startQmlApplication(CavokeQmlGameModel *);
@@ -58,6 +60,7 @@ private slots:
     void creatingJoiningGameDone();
     void createGameSendRequest();
     void gotSessionInfo(const SessionInfo &sessionInfo);
+    void collectListOfAvailableRoles();
 
 private:
     void defaultSettingsInitialization();

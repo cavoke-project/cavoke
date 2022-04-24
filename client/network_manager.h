@@ -19,6 +19,7 @@ public:
     const static inline QUrl DEFAULT_HOST{"https://develop.api.cavoke.wlko.me"};
     explicit NetworkManager(QObject *parent = nullptr);
     void changeHost(const QUrl &newHost);
+    const QString getUserId();
 
 public slots:
     void getHealth();
