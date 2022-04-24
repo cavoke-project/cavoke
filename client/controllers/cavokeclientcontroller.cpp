@@ -123,6 +123,8 @@ CavokeClientController::CavokeClientController(QObject *parent)
         SIGNAL(createdAvailableRolesList(std::vector<std::pair<QString, int>>)),
         &protoRoomView,
         SLOT(gotRolesListUpdate(std::vector<std::pair<QString, int>>)));
+    connect(&protoRoomView, SIGNAL(newRoleChosen(int)), &networkManager,
+            SLOT(changeRoleInSession(int)));
 
     // settingsView actions
     connect(this, SIGNAL(initSettingsValues(QString, QString)), &settingsView,
@@ -334,11 +336,12 @@ void CavokeClientController::collectListOfAvailableRoles() {
         }
     }
     std::vector<std::pair<QString, int>> availableRoles;
+    availableRoles.emplace_back(currentGameInfo.role_names[ourRole],
+                                ourRole);  // Now first.
     for (int i = 0; i < currentGameInfo.players_num; ++i) {
         if (isFree[i]) {
             availableRoles.emplace_back(currentGameInfo.role_names[i], i);
         }
     }
-    availableRoles.emplace_back(currentGameInfo.role_names[ourRole], ourRole);
     emit createdAvailableRolesList(availableRoles);
 }

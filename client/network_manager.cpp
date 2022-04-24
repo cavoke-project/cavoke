@@ -125,7 +125,7 @@ void NetworkManager::gotSession(QNetworkReply *reply) {
     QByteArray answer = reply->readAll();
     reply->close();
     reply->deleteLater();
-    qDebug() << answer;
+//    qDebug() << answer;
 
     SessionInfo sessionInfo;
     sessionInfo.read(QJsonDocument::fromJson(answer).object());
@@ -180,7 +180,7 @@ void NetworkManager::validateSession() {
     QUrl route =
         HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(VALIDATE);
     route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
-    qDebug() << route.toString();
+//    qDebug() << route.toString();
     auto request = QNetworkRequest(route);
     request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader,
                       "application/json");
@@ -193,7 +193,7 @@ void NetworkManager::gotValidatedSession(QNetworkReply *reply) {
     QByteArray answer = reply->readAll();
     reply->close();
     reply->deleteLater();
-    qDebug() << answer;
+//    qDebug() << answer;
 
     ValidationResult validationResult;
     validationResult.read(QJsonDocument::fromJson(answer).object());
@@ -205,7 +205,7 @@ void NetworkManager::getSessionInfo() {
     QUrl route =
         HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(GET_INFO);
     route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
-    qDebug() << route.toString();
+//    qDebug() << route.toString();
     auto request = QNetworkRequest(route);
     auto reply = manager.get(request);
     connect(reply, &QNetworkReply::finished, this,
