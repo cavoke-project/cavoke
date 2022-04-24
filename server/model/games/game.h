@@ -14,6 +14,7 @@ struct GameConfig {
     std::string description;
     int players_num;
     json default_settings;
+    std::vector<std::string> role_names;
 
     /// Validates config. Throws an exception if invalid
     void validate() const {
@@ -26,7 +27,8 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameConfig,
                                    display_name,
                                    description,
                                    players_num,
-                                   default_settings)
+                                   default_settings,
+                                   role_names)
 
 class Game {
     const std::string CONFIG_FILE;
