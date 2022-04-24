@@ -14,6 +14,9 @@ link_directories(${Boost_LIBRARY_DIRS})
 # https://github.com/nlohmann/json/releases/tag/v3.9.0 for convenience macros
 find_package(nlohmann_json 3.9.0 REQUIRED)
 
+# https://github.com/Thalhammer/jwt-cpp JWT authentication
+find_package(jwt-cpp REQUIRED)
+
 set(CAVOKE_H_DIR ../cavoke-dev-lib CACHE PATH "Directory with cavoke.h library")
 include_directories(${CAVOKE_H_DIR})
 
@@ -48,6 +51,7 @@ add_executable(${PROJECT_NAME}
 target_link_libraries(cavoke_server Drogon::Drogon)
 target_link_libraries(cavoke_server ${Boost_LIBRARIES} ${CMAKE_DL_LIBS})
 target_link_libraries(cavoke_server nlohmann_json::nlohmann_json)
+target_link_libraries(cavoke_server jwt-cpp::jwt-cpp)
 
 install(TARGETS ${PROJECT_NAME})
 
