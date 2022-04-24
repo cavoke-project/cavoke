@@ -31,10 +31,12 @@ signals:
     void joinedCreatedGame();
     void shownStartView();
     void leftRoom();
+    void newRoleChosen(int roleId);
 
 private slots:
     void on_joinGameButton_clicked();
     void on_backButton_clicked();
+    void repeaterCurrentIndexChanged(int index);
 
 private:
     Ui::ProtoRoomView *ui;
@@ -45,6 +47,7 @@ private:
         {CreatingGameStatus::DONE, "Done"},
     };
     bool isJoining = false;
+    int ourRole = -1;
 };
 
 #endif  // CAVOKE_CLIENT_MIDDLESCREENVIEW_H

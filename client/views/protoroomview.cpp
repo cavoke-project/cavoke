@@ -4,10 +4,22 @@
 ProtoRoomView::ProtoRoomView(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::ProtoRoomView) {
     ui->setupUi(this);
+    connect(ui->roleComboBox, SIGNAL(currentIndexChanged(int)), this,
+            SLOT(repeaterCurrentIndexChanged(int)));
 }
 
 ProtoRoomView::~ProtoRoomView() {
     delete ui;
+}
+
+void ProtoRoomView::repeaterCurrentIndexChanged(int index) {
+    if (index == -1 || ui->roleComboBox->itemData(index).toInt() == ourRole) {
+//        displayEmpty();
+        return;
+    }
+//    qDebug() << "Chosen: " << ui->roleComboBox->itemText(index);
+    qDebug() << "Got new role index: " << ui->roleComboBox->itemData(index).toInt();
+    emit newRoleChosen(ui->roleComboBox->itemData(index).toInt());
 }
 
 void ProtoRoomView::updateStatus(CreatingGameStatus newStatus) {
@@ -88,12 +100,15 @@ void ProtoRoomView::gotRolesListUpdate(
     // Some bad way to check whether list actually updated
     // TODO: implement it
 
+    ourRole = newRolesList.front().second;
     ui->roleComboBox->clear();
     for (const auto &roleIdAndName : newRolesList) {
         ui->roleComboBox->addItem(roleIdAndName.first, roleIdAndName.second);
+//        qDebug() << roleIdAndName.first << ' ' << roleIdAndName.second;
     }
     if (ui->roleComboBox->count() > 0) {
-        ui->roleComboBox->setCurrentIndex(ui->roleComboBox->count() - 1);
+//        qDebug() << "SET: " << ui->roleComboBox->count() - 1;
+        ui->roleComboBox->setCurrentIndex(0);
     } else {
         ui->roleComboBox->setCurrentIndex(-1);
     }
