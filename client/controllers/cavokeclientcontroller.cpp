@@ -110,6 +110,10 @@ CavokeClientController::CavokeClientController(QObject *parent)
             &protoRoomView, SLOT(updateValidationResult(ValidationResult)));
     connect(&protoRoomView, SIGNAL(createdGame()), &networkManager,
             SLOT(startSession()));
+    connect(&protoRoomView, SIGNAL(leftRoom()), &networkManager, SLOT(stopGamePolling()));
+    connect(&protoRoomView, SIGNAL(leftRoom()), &networkManager, SLOT(stopSessionPolling()));
+    connect(&protoRoomView, SIGNAL(leftRoom()), &networkManager, SLOT(stopValidationPolling()));
+    connect(&protoRoomView, SIGNAL(leftRoom()), &networkManager, SLOT(leaveSession()));
 
     // settingsView actions
     connect(this, SIGNAL(initSettingsValues(QString, QString)), &settingsView,

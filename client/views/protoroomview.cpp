@@ -77,6 +77,7 @@ void ProtoRoomView::prepareJoinCreate(bool _isJoining) {
 
 void ProtoRoomView::on_backButton_clicked() {
     this->close();
+    emit leftRoom();
     emit shownStartView();
 }
 void ProtoRoomView::updateGameName(const QString &gameName) {

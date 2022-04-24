@@ -225,6 +225,19 @@ void NetworkManager::startSession() {
             [reply, this]() { gotPostResponse(reply); });
 }
 
+void NetworkManager::leaveSession() {
+    QUrl route =
+        HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(LEAVE);
+    route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
+    qDebug() << route.toString();
+    auto request = QNetworkRequest(route);
+    request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader,
+                      "application/json");
+    auto reply = manager.post(request, "{}");
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotPostResponse(reply); });
+}
+
 void NetworkManager::startGamePolling() {
     gamePollingTimer->start();
 }
