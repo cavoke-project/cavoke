@@ -24,7 +24,7 @@ void CavokeClientModel::updateGamesList(const QJsonArray &newGamesList) {
                    });
     gamesList = std::move(got_from);
 
-    if (!gamesList.empty()) {
+    if (!newGamesList.empty()) {
         qDebug() << "First In Model: " << gamesList[0].id;
     }
     emit gamesListUpdated(gamesList);
