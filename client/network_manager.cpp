@@ -238,6 +238,20 @@ void NetworkManager::leaveSession() {
             [reply, this]() { gotPostResponse(reply); });
 }
 
+void NetworkManager::changeRoleInSession(int newRole) {
+    QUrl route =
+        HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(CHANGE_ROLE);
+    route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)},
+                    {"new_role", QString::number(newRole)}});
+    qDebug() << route.toString();
+    auto request = QNetworkRequest(route);
+    request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader,
+                      "application/json");
+    auto reply = manager.post(request, "{}");
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotPostResponse(reply); });
+}
+
 void NetworkManager::startGamePolling() {
     gamePollingTimer->start();
 }
@@ -263,6 +277,6 @@ void NetworkManager::changeHost(const QUrl &newHost) {
     HOST = newHost;
     getGamesList();
 }
-const QString NetworkManager::getUserId() {
+QString NetworkManager::getUserId() {
     return userId.toString(QUuid::WithoutBraces);
 }

@@ -19,7 +19,7 @@ public:
     const static inline QUrl DEFAULT_HOST{"https://develop.api.cavoke.wlko.me"};
     explicit NetworkManager(QObject *parent = nullptr);
     void changeHost(const QUrl &newHost);
-    const QString getUserId();
+    QString getUserId();
 
 public slots:
     void getHealth();
@@ -38,6 +38,8 @@ public slots:
     void getSessionInfo();
     void startSession();
     void leaveSession();
+    void changeRoleInSession(int newRole);
+
 
     void startGamePolling();
     void stopGamePolling();
@@ -99,6 +101,7 @@ private:
     //    rooms block
     const static inline QUrl START{"start"};
     const static inline QUrl LEAVE{"leave"};
+    const static inline QUrl CHANGE_ROLE{"change_role"};
 };
 
 #endif  // CAVOKE_CLIENT_NETWORK_MANAGER_H
