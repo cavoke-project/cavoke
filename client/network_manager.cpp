@@ -1,5 +1,6 @@
 #include "network_manager.h"
 #include <utility>
+#include "entities/gameinfo.h"
 
 NetworkManager::NetworkManager(QObject *parent) : manager(parent) {
     gamePollingTimer = new QTimer(this);
@@ -52,9 +53,17 @@ void NetworkManager::getGamesConfig(const QString &gameId) {
 }
 
 void NetworkManager::gotGamesConfig(QNetworkReply *reply) {
-    qDebug() << "Got Games Config:";
-    qDebug() << reply->readAll();
-    qDebug() << "Not implemented yet!!";
+    if (reply->error()) {
+        qDebug() << reply->errorString();
+        return;
+    }
+    QByteArray answer = reply->readAll();
+    reply->close();
+    reply->deleteLater();
+    qDebug() << answer;
+    GameInfo gameInfo;
+    gameInfo.read(QJsonDocument::fromJson(answer).object());
+    emit gotGameInfo(gameInfo);
 }
 
 void NetworkManager::getGamesClient(const QString &gameId) {

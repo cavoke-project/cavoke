@@ -65,12 +65,18 @@ CavokeClientController::CavokeClientController(QObject *parent)
     // both Join and Create gameView actions
     connect(&networkManager, SIGNAL(gotSessionInfo(SessionInfo)), this,
             SLOT(gotSessionInfo(SessionInfo)));
+    connect(this, SIGNAL(setGameName(QString)), &protoRoomView,
+            SLOT(updateGameName(QString)));
 
     // joinGameView workflow
     connect(&joinGameView, SIGNAL(joinedGame(QString)), this,
             SLOT(joinGameStart(QString)));
     connect(this, SIGNAL(joinGameDownloaded()), this,
             SLOT(creatingJoiningGameDone()));
+    connect(this, SIGNAL(gettingGameInfo(QString)), &networkManager,
+            SLOT(getGamesConfig(QString)));
+    connect(&networkManager, SIGNAL(gotGameInfo(GameInfo)), this,
+            SLOT(gotCurrentGameInfo(GameInfo)));
 
     // gamesListView actions
     connect(&gamesListView, SIGNAL(currentIndexChanged(int)), &model,
@@ -199,7 +205,7 @@ void CavokeClientController::startQmlByGameId(const QString &gameId) {
 void CavokeClientController::startLoadedQml() {
     networkManager.stopSessionPolling();
     networkManager.stopValidationPolling();
-    startQmlByGameId(currentGameId);
+    startQmlByGameId(currentGameInfo.id);
 }
 
 void CavokeClientController::stopQml() {
@@ -226,7 +232,7 @@ void CavokeClientController::createGameStart(int gameIndex) {
     status = CreateJoinControllerStatus::CREATING;
     protoRoomView.prepareJoinCreate(false);
 
-    currentGameId = model.getGameIdByIndex(gameIndex);
+    currentGameInfo = model.getGameByIndex(gameIndex);
 
     createGameView.close();
     protoRoomView.show();
@@ -249,16 +255,17 @@ void CavokeClientController::joinGameStart(const QString &inviteCode) {
 }
 
 void CavokeClientController::downloadCurrentGame() {
-    qDebug() << "Now we are downloading game: " << currentGameId;
+    qDebug() << "Now we are downloading game: " << currentGameInfo.id;
 
     protoRoomView.updateStatus(ProtoRoomView::CreatingGameStatus::DOWNLOAD);
-    model.gotGameIdToDownload(currentGameId);
+    model.gotGameIdToDownload(currentGameInfo.id);
 }
 
 void CavokeClientController::createGameSendRequest() {
-    qDebug() << "Now we are createGameSendRequest with id: " << currentGameId;
+    qDebug() << "Now we are createGameSendRequest with id: "
+             << currentGameInfo.id;
 
-    networkManager.createSession(currentGameId);
+    networkManager.createSession(currentGameInfo.id);
     protoRoomView.updateStatus(ProtoRoomView::CreatingGameStatus::REQUESTED);
 }
 
@@ -266,13 +273,19 @@ void CavokeClientController::gotSessionInfo(const SessionInfo &sessionInfo) {
     qDebug() << "Now we got session info";
 
     protoRoomView.updateSessionInfo(sessionInfo);
+    currentSessionInfo = sessionInfo;
 
     if (status == CreateJoinControllerStatus::CREATING) {
         creatingJoiningGameDone();
     } else if (status == CreateJoinControllerStatus::JOINING) {
-        currentGameId = sessionInfo.game_id;
-        downloadCurrentGame();
+        emit gettingGameInfo(currentSessionInfo.game_id);
     }
+}
+
+void CavokeClientController::gotCurrentGameInfo(const GameInfo &gameInfo) {
+    currentGameInfo = gameInfo;
+    emit setGameName(currentGameInfo.display_name);
+    downloadCurrentGame();
 }
 
 void CavokeClientController::creatingJoiningGameDone() {

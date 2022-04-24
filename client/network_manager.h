@@ -10,6 +10,7 @@
 #include <QtCore/QTimer>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
+#include "entities/gameinfo.h"
 #include "entities/sessioninfo.h"
 #include "entities/validationresult.h"
 struct NetworkManager : public QObject {
@@ -47,6 +48,7 @@ signals:
     void finalizedGamesList(QJsonArray list);
     void gotGameUpdate(const QString &jsonField);
     void downloadedGameFile(QFile *file, const QString &gameId);
+    void gotGameInfo(const GameInfo &gameInfo);
     void gotSessionInfo(const SessionInfo &sessionInfo);
     void gotValidationResult(const ValidationResult &validationResult);
 
