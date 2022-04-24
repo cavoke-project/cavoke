@@ -41,8 +41,8 @@ void CavokeClientModel::gotIndexToDownload(int index) {
     gotGameIdToDownload(gamesList[index].id);
 }
 
-QString CavokeClientModel::getGameIdByIndex(int index) {
-    return gamesList[index].id;
+GameInfo CavokeClientModel::getGameByIndex(int index) {
+    return gamesList[index];
 }
 
 void CavokeClientModel::gotGameIdToDownload(const QString &gameId) {

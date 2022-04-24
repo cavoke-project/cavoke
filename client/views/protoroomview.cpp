@@ -18,8 +18,7 @@ void ProtoRoomView::updateStatus(CreatingGameStatus newStatus) {
 
 void ProtoRoomView::updateSessionInfo(const SessionInfo &sessionInfo) {
     ui->inviteCodeLabel->setText(sessionInfo.invite_code);
-    ui->gameNameLabel->setText(sessionInfo.game_id);
-    gameName = sessionInfo.game_id;
+//    ui->gameNameLabel->setText(sessionInfo.game_id);
 
     ui->playersListWidget->clear();
     int cnt = 0;
@@ -79,4 +78,7 @@ void ProtoRoomView::prepareJoinCreate(bool _isJoining) {
 void ProtoRoomView::on_backButton_clicked() {
     this->close();
     emit shownStartView();
+}
+void ProtoRoomView::updateGameName(const QString &gameName) {
+    ui->gameNameLabel->setText(gameName);
 }

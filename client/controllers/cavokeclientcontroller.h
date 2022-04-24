@@ -39,6 +39,8 @@ signals:
     void loadGamesList();
     void createGameDownloaded();
     void joinGameDownloaded();
+    void gettingGameInfo(const QString &gameId);
+    void setGameName(const QString &gameName);
     void initSettingsValues(const QString &nickname, const QString &host);
     void clearScreens();
 
@@ -52,6 +54,7 @@ private slots:
     void createGameStart(int gameIndex);
     void joinGameStart(const QString &inviteCode);
     void downloadCurrentGame();
+    void gotCurrentGameInfo(const GameInfo &gameInfo);
     void creatingJoiningGameDone();
     void createGameSendRequest();
     void gotSessionInfo(const SessionInfo &sessionInfo);
@@ -71,8 +74,9 @@ private:
     SettingsView settingsView;
     ProtoRoomView protoRoomView;
     CavokeQmlGameModel *currentQmlGameModel = nullptr;
+    SessionInfo currentSessionInfo;
+    GameInfo currentGameInfo;
     CreateJoinControllerStatus status = CreateJoinControllerStatus::NOTHING;
-    QString currentGameId;
     QSettings settings;
 };
 

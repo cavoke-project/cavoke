@@ -21,6 +21,7 @@ public slots:
     void updateSessionInfo(const SessionInfo &sessionInfo);
     void prepareJoinCreate(bool _isJoining);
     void updateValidationResult(const ValidationResult &validationResult);
+    void updateGameName(const QString &gameName);
 
 signals:
     void createdGame();
@@ -39,7 +40,6 @@ private:
         {CreatingGameStatus::REQUESTED, "Sending request"},
         {CreatingGameStatus::DONE, "Done"},
     };
-    QString gameName;
     bool isJoining = false;
 };
 
