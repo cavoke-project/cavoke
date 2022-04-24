@@ -1,6 +1,7 @@
 #include "game_session.h"
 
 namespace cavoke::server::model {
+using namespace drogon::orm;
 
 game_session_error::game_session_error(std::string message)
     : cavoke_base_exception(std::move(message),
@@ -8,67 +9,72 @@ game_session_error::game_session_error(std::string message)
                             "cavoke/sessions") {
 }
 
-GameSession::GameSession(GameConfig game_config)
-    : id(drogon::utils::getUuid()),
-      m_game_config(std::move(game_config)),
-      m_status(NOT_STARTED),
-      m_invite_code(generate_invite_code()) {
-}
-
 /**
  * Adds given user to session.
  * Throws an exception if user already in this session, session has already
  * started or too many players in a session
  */
-void GameSession::add_user(const std::string &user_id,
-                           std::optional<int> player_id) {
-    std::unique_lock lock(m_mtx);
-
-    if (m_status != NOT_STARTED) {
+void GameSessionAccessObject::add_user(const std::string &user_id,
+                                       std::optional<int> player_id) {
+    auto session_snapshot = get_snapshot();
+    if (session_snapshot.getValueOfStatus() != NOT_STARTED) {
         throw game_session_error("session has already started");
     }
 
-    if (m_userid_to_playerid.left.count(user_id) != 0) {
+    if (0 != default_mp_players.count(
+                 Criteria(drogon_model::cavoke_orm::Players::Cols::_session_id,
+                          CompareOperator::EQ, id) &&
+                 Criteria(drogon_model::cavoke_orm::Players::Cols::_user_id,
+                          CompareOperator::EQ, user_id))) {
         return;
     }
     // get player id for user
     int pos;
     if (player_id.has_value()) {
         pos = player_id.value();
-        if (m_userid_to_playerid.right.count(pos) != 0) {
-            throw game_session_error("position is already occupied");
-        }
     } else {
-        bool found_pos = false;
+        std::set<int> possible_positions;
         for (int candidate_pos = 0; candidate_pos < m_game_config.players_num;
              ++candidate_pos) {
-            if (m_userid_to_playerid.right.count(candidate_pos) == 0) {
-                pos = candidate_pos;
-                found_pos = true;
-                break;
-            }
+            possible_positions.insert(candidate_pos);
         }
-
-        if (!found_pos) {
+        for (int occupied_pos : get_occupied_positions()) {
+            possible_positions.erase(occupied_pos);
+        }
+        if (possible_positions.empty()) {
             throw game_session_error("maximum number of players reached");
         }
+        pos = *possible_positions.begin();
     }
-
-    // add user to session
-    auto [_, suc] = m_userid_to_playerid.insert({user_id, pos});
-    std::cout << suc << std::endl;
+    try {
+        drogon_model::cavoke_orm::Players new_player;
+        new_player.setUserId(user_id);
+        new_player.setSessionId(id);
+        new_player.setScoreToNull();
+        new_player.setPlayerId(pos);
+        new_player.setPlayerstate("");
+        default_mp_players.insert(new_player);
+        LOG_DEBUG << "Added: " << user_id << " with player_id=" << pos << " to "
+                  << id;
+    } catch (const DrogonDbException &) {
+        throw game_session_error("position is already occupied");
+    }
 }
 
 /**
  * Gets player id for user.
  * Throws an exception if user not in this session
  */
-int GameSession::get_player_id(const std::string &user_id) const {
+int GameSessionAccessObject::get_player_id(const std::string &user_id) const {
     try {
-        std::shared_lock lock(m_mtx);
-
-        return m_userid_to_playerid.left.at(user_id);
-    } catch (const std::out_of_range &) {  // slow?
+        return default_mp_players
+            .findOne(
+                Criteria(drogon_model::cavoke_orm::Players::Cols::_session_id,
+                         CompareOperator::EQ, id) &&
+                Criteria(drogon_model::cavoke_orm::Players::Cols::_user_id,
+                         CompareOperator::EQ, user_id))
+            .getValueOfPlayerId();
+    } catch (const UnexpectedRows &) {
         throw game_session_error("user not in session");
     }
 }
@@ -77,88 +83,117 @@ int GameSession::get_player_id(const std::string &user_id) const {
  * Gets user id for player.
  * Throws an exception if player not in this session
  */
-std::string GameSession::get_user_id(int player_id) const {
+std::string GameSessionAccessObject::get_user_id(int player_id) const {
     try {
-        std::shared_lock lock(m_mtx);
-
-        return m_userid_to_playerid.right.at(player_id);
-    } catch (const std::out_of_range &) {  // slow?
-        throw game_session_error("player not in session");
+        return default_mp_players
+            .findOne(
+                Criteria(drogon_model::cavoke_orm::Players::Cols::_session_id,
+                         CompareOperator::EQ, id) &&
+                Criteria(drogon_model::cavoke_orm::Players::Cols::_player_id,
+                         CompareOperator::EQ, player_id))
+            .getValueOfUserId();
+    } catch (const UnexpectedRows &) {
+        throw game_session_error("user not in session");
     }
 }
 
 /// Validates the invite code for this session
-bool GameSession::verify_invite_code(const std::string &invite_code) const {
-    std::shared_lock lock(m_mtx);
-    return invite_code == m_invite_code;
+bool GameSessionAccessObject::verify_invite_code(
+    const std::string &invite_code) const {
+    auto session = get_snapshot();
+    return invite_code == session.getValueOfInviteCode();
 }
 
 /// Generates an info object (representation for client)
-GameSession::GameSessionInfo GameSession::get_session_info() const {
-    return {id, m_game_config.id, m_invite_code, m_status,
-            std::move(get_players())};
+GameSessionAccessObject::GameSessionInfo
+GameSessionAccessObject::get_session_info() const {
+    auto session_snapshot = get_snapshot();
+    return make_session_info(session_snapshot, get_players());
 }
 
-/// Generates an invite code for session
-std::string GameSession::generate_invite_code() {
-    // prepare template
-    std::string res = "......";
-    // random digits
-    std::random_device rd;
-    std::mt19937 engine(rd());
-    std::uniform_int_distribution<char> dist('0', '9');
-    // set every character to be a random digit
-    std::generate(res.begin(), res.end(),
-                  [&dist, &engine]() { return dist(engine); });
-    return res;
-}
-
-std::vector<int> GameSession::get_occupied_positions() const {
-    std::shared_lock lock(m_mtx);
-
+std::vector<int> GameSessionAccessObject::get_occupied_positions() const {
     std::vector<int> result;
-    for (const auto &e : m_userid_to_playerid) {
+    for (const auto &player : default_mp_players.findBy(
+             Criteria(drogon_model::cavoke_orm::Players::Cols::_session_id,
+                      CompareOperator::EQ, id))) {
         // cppcheck-suppress useStlAlgorithm
-        result.push_back(e.right);
+        result.push_back(player.getValueOfPlayerId());
     }
     return result;
 }
 
-const std::optional<json> &GameSession::get_game_settings() const {
-    return m_game_settings;
-}
+// std::optional<json> &GameSessionAccessObject::get_game_settings() const {
+//     auto session = get_snapshot();
+//     auto settings_ptr = session.getGameSettings();
+//     return *settings_ptr;
+// }
 
-std::vector<GameSession::Player> GameSession::get_players() const {
-    std::shared_lock lock(m_mtx);
-
-    std::vector<Player> result;
-    for (const auto &e : m_userid_to_playerid) {
-        // cppcheck-suppress useStlAlgorithm
-        result.push_back({e.left, e.right});
-    }
+std::vector<GameSessionAccessObject::PlayerInfo>
+GameSessionAccessObject::get_players() const {
+    auto players = default_mp_players.findBy(
+        Criteria(drogon_model::cavoke_orm::Players::Cols::_session_id,
+                 CompareOperator::EQ, id));
+    std::vector<PlayerInfo> result;
+    std::transform(players.begin(), players.end(), std::back_inserter(result),
+                   [](const drogon_model::cavoke_orm::Players &player) {
+                       return PlayerInfo{player.getValueOfUserId(),
+                                         player.getValueOfPlayerId()};
+                   });
     return result;
 }
 
-void GameSession::start(const json &game_settings) {
-    std::unique_lock lock(m_mtx);
-
-    if (m_status != NOT_STARTED) {
+void GameSessionAccessObject::start(const json &game_settings) {
+    auto session = default_mp_sessions.findOne(
+        Criteria(drogon_model::cavoke_orm::Sessions::Cols::_id,
+                 CompareOperator::EQ, id));
+    // FIXME: not atomic, transactions perhaps or some other blocking
+    // sql-mechanism?
+    if (session.getValueOfStatus() != NOT_STARTED) {
         throw game_session_error("session has already started");
     }
-    m_game_settings = game_settings;
-    m_status = RUNNING;
+    session.setGameSettings(game_settings.dump());
+    session.setStatus(RUNNING);
+    default_mp_sessions.update(session);
 }
 
-bool GameSession::is_player(const std::string &user_id) const {
-    std::shared_lock lock(m_mtx);
-
-    return m_userid_to_playerid.left.count(user_id) != 0;
+bool GameSessionAccessObject::is_player(const std::string &user_id) const {
+    try {
+        int tmp = get_player_id(user_id);
+        return true;
+    } catch (const std::out_of_range &) {
+        return false;
+    }
 }
 
-void GameSession::finish() {
-    std::unique_lock lock(m_mtx);
+void GameSessionAccessObject::finish() {
+    auto session = default_mp_sessions.findOne(
+        Criteria(drogon_model::cavoke_orm::Sessions::Cols::_id,
+                 CompareOperator::EQ, id));
+    session.setStatus(FINISHED);
+    default_mp_sessions.update(session);
+}
+drogon_model::cavoke_orm::Sessions GameSessionAccessObject::get_snapshot()
+    const {
+    return default_mp_sessions.findOne(
+        Criteria(drogon_model::cavoke_orm::Sessions::Cols::_id,
+                 CompareOperator::EQ, id));
+}
+drogon_model::cavoke_orm::Sessions GameSessionAccessObject::get_snapshot(
+    const std::string &session_id) {
+    auto mp_sessions = MAPPER_FOR(drogon_model::cavoke_orm::Sessions);
+    return mp_sessions.findOne(
+        Criteria(drogon_model::cavoke_orm::Sessions::Cols::_id,
+                 drogon::orm::CompareOperator::EQ, session_id));
+}
 
-    m_status = FINISHED;
+GameSessionAccessObject::GameSessionInfo
+GameSessionAccessObject::make_session_info(
+    const drogon_model::cavoke_orm::Sessions &session,
+    std::vector<PlayerInfo> players) {
+    return {session.getValueOfId(), session.getValueOfGameId(),
+            session.getValueOfInviteCode(),
+            static_cast<SessionStatus>(session.getValueOfStatus()),
+            std::move(players)};
 }
 
 }  // namespace cavoke::server::model

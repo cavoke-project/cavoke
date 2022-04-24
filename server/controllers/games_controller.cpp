@@ -11,8 +11,8 @@ void cavoke::server::controllers::GamesController::games_list(
     const drogon::HttpRequestPtr &req,
     std::function<void(const drogon::HttpResponsePtr &)> &&callback) {
     std::vector<model::Game> games = m_games_storage->list_games();
-    std::vector<model::GameConfig> configs(games.size());
-    std::transform(games.begin(), games.end(), configs.begin(),
+    std::vector<model::GameConfig> configs;
+    std::transform(games.begin(), games.end(), std::back_inserter(configs),
                    [](const model::Game &g) { return g.config; });
 
     auto resp = newNlohmannJsonResponse(configs);

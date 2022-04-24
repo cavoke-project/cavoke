@@ -15,8 +15,12 @@ RUN set -e; \
     apt-get install -y gcsfuse \
     && apt-get clean
 
+# Drogon configuration basename for
+ARG DROGON_CONFIG_BASENAME=drogon_config.json
+
 # Set fallback mount directory
 ENV MNT_DIR /mnt/gcs
+ENV DROGON_CONFIG_FILE $MNT_DIR/$DROGON_CONFIG_BASENAME
 
 # Copy local code to the container image.
 ENV APP_HOME /app

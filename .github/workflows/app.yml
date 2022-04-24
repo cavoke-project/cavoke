@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: clang-format-12 --version
-      - run: chmod +x .github/scripts/diff-clangformat-12.sh && find . -iname '*.cpp' -or -iname '*.c' -or -iname '*.h' | xargs -n1 .github/scripts/diff-clangformat-12.sh
+      - run: chmod +x .github/scripts/diff-clangformat-12.sh && find . \( -iname '*.cpp' -or -iname '*.c' -or -iname '*.h' \) -and -not -path './server/models/*' | xargs -n1 .github/scripts/diff-clangformat-12.sh
   cppcheck:
     name: Cppcheck
     runs-on: ubuntu-latest
@@ -19,36 +19,79 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: cppcheck --version
-      - run: cppcheck --language=c++ -DSOME_DEFINE_TO_FIX_CONFIG --enable=all --suppress=*:doctest.h --suppress=unusedFunction --error-exitcode=1 --inline-suppr $(find . -iname '*.cpp')
+      - run: cppcheck --language=c++ -DSOME_DEFINE_TO_FIX_CONFIG --enable=all --suppress=*:doctest.h --suppress=unusedFunction --error-exitcode=1 --inline-suppr $(find . -iname '*.cpp' -and -not -path './server/models/*')
   client-notests-qt5-suse:
     runs-on: ubuntu-latest
     container: ghcr.io/cavoke-project/cavoke-ci:client-qt5-suse
     steps:
       - uses: actions/checkout@v2
-      - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=5
-      - run: cd build && make cavoke_client
+      - name: Cmake
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=5
+      - name: Make
+        run: cd build && make cavoke_client
   client-notests-qt6-suse:
     runs-on: ubuntu-latest
     container: ghcr.io/cavoke-project/cavoke-ci:client-qt6-suse
     steps:
       - uses: actions/checkout@v2
-      - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=6  # QT_MAJOR_VERSION=6 by default, so not necessary
-      - run: cd build && make cavoke_client
+      - name: Cmake
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=6  # QT_MAJOR_VERSION=6 by default, so not necessary
+      - name: Make
+        run: cd build && make cavoke_client
   server-healthcheck:
+    runs-on: ubuntu-latest
+    container: ghcr.io/cavoke-project/cavoke-ci:server
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: postgres_db
+          POSTGRES_PASSWORD: postgres_password
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: postgres_user
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install PostgreSQL client
+        run: |
+          apt-get update
+          apt-get install --yes postgresql-client
+      - name: Populate the database
+        run: psql -h postgres -d postgres_db -U postgres_user -f server/db/schema.sql
+        env:
+          PGPASSWORD: postgres_password
+      - name: Cmake
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
+      - name: Make
+        run: cd build && make cavoke_server
+      - name: Healthcheck
+        run: chmod +x .github/scripts/server-test-health.py && .github/scripts/server-test-health.py ./build/server/cavoke_server -c .github/files/ci_server_config.json
+  server-tests:
     runs-on: ubuntu-latest
     container: ghcr.io/cavoke-project/cavoke-ci:server
     steps:
       - uses: actions/checkout@v2
-      - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
-      - run: cd build && make cavoke_server
-      - run: chmod +x .github/scripts/server-test-health.py && .github/scripts/server-test-health.py ./build/server/cavoke_server
+      - name: Cmake
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
+      - name: Make
+        run: cd build && make cavoke_server_test
+      - name: Run Tests
+        run: ./build/server/test/cavoke_server_test
   games-notests:
     runs-on: ubuntu-latest
     container: ghcr.io/cavoke-project/cavoke-ci:server
     steps:
       - uses: actions/checkout@v2
-      - run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_GAMES=ON
-      - run: cd build && make all
+      - name: Cmake
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_GAMES=ON
+      - name: Make
+        run: cd build && make all
   server-docker-healthcheck:
     runs-on: ubuntu-latest
     steps:
@@ -64,8 +107,7 @@ jobs:
         run: |
           cd .github/scripts
           chmod +x server-test-health.py
-          chmod +x run-local-docker-server.sh
-          ./server-test-health.py ./run-local-docker-server.sh
+          ./server-test-health.py docker run -t -p 8080:8080 cavoke_server
   server-publish-image-develop:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop'

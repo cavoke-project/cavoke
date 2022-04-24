@@ -19,26 +19,26 @@ void StateController::send_move(
         return;
     }
 
-    std::shared_ptr<model::GameSession> session;
+    model::GameSessionAccessObject session;
     try {
-        session = m_participation_storage->get_session(session_id);
+        session = m_participation_storage->get_sessionAO(session_id);
     } catch (const model::game_session_error &) {
         return CALLBACK_STATUS_CODE(k400BadRequest);
     }
 
     int player_id;
     try {
-        player_id = session->get_player_id(user_id.value());
+        player_id = session.get_player_id(user_id.value());
     } catch (const model::game_session_error &) {
         return CALLBACK_STATUS_CODE(k403Forbidden);
     }
 
-    auto session_info = session->get_session_info();
+    auto session_info = session.get_session_info();
 
-    if (session_info.status == model::GameSession::FINISHED) {
+    if (session_info.status == model::GameSessionAccessObject::FINISHED) {
         return CALLBACK_STATUS_CODE(k403Forbidden);
     }
-    if (session_info.status == model::GameSession::NOT_STARTED) {
+    if (session_info.status == model::GameSessionAccessObject::NOT_STARTED) {
         return CALLBACK_STATUS_CODE(k404NotFound);
     }
 
@@ -67,7 +67,7 @@ void StateController::send_move(
     m_game_state_storage->save_state(session_id, next_state);
 
     if (next_state.is_terminal) {
-        session->finish();
+        session.finish();
     }
 
     auto resp = drogon::HttpResponse::newHttpResponse();
@@ -89,23 +89,23 @@ void StateController::get_state(
         return;
     }
 
-    std::shared_ptr<model::GameSession> session;
+    model::GameSessionAccessObject session;
     try {
-        session = m_participation_storage->get_session(session_id);
+        session = m_participation_storage->get_sessionAO(session_id);
     } catch (const model::game_session_error &) {
         return CALLBACK_STATUS_CODE(k404NotFound);
     }
 
     int player_id;
     try {
-        player_id = session->get_player_id(user_id.value());
+        player_id = session.get_player_id(user_id.value());
     } catch (const model::game_session_error &) {
         return CALLBACK_STATUS_CODE(k403Forbidden);
     }
 
-    auto session_info = session->get_session_info();
+    auto session_info = session.get_session_info();
 
-    if (session_info.status == model::GameSession::NOT_STARTED) {
+    if (session_info.status == model::GameSessionAccessObject::NOT_STARTED) {
         return CALLBACK_STATUS_CODE(k404NotFound);
     }
 
@@ -124,7 +124,7 @@ void StateController::get_state(
         std::vector<std::string> winners;
         for (const auto &e : game_state.winners) {
             // cppcheck-suppress useStlAlgorithm
-            winners.push_back(session->get_user_id(e));
+            winners.push_back(session.get_user_id(e));
         }
         resp_json["winners"] = winners;
     }
