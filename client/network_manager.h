@@ -35,8 +35,6 @@ public slots:
     void validateSession();
     void getSessionInfo();
     void startSession();
-    // TODO: Not implemented
-    //    void getSessionInfoByInviteCode(const QString &inviteCode);
 
     void startGamePolling();
     void stopGamePolling();
@@ -96,9 +94,6 @@ private:
     //    const static inline QUrl GET_INFO{"get_info"}; // already exists in
     //    rooms block
     const static inline QUrl START{"start"};
-    // TODO: Not implemented
-    const static inline QUrl SESSIONS_GET_INFO_BY_INVITE_CODE{
-        "sessions/get_info_by_invite_code"};
 };
 
 #endif  // CAVOKE_CLIENT_NETWORK_MANAGER_H
