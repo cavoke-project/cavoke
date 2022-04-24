@@ -1,7 +1,9 @@
 #include "network_manager.h"
+#include <QDesktopServices>
+#include <QOAuthHttpServerReplyHandler>
 #include <utility>
 
-NetworkManager::NetworkManager(QObject *parent) : manager(parent) {
+NetworkManager::NetworkManager(QObject *parent) : manager{this}, oauth2{this} {
     gamePollingTimer = new QTimer(this);
     gamePollingTimer->setInterval(500);
     gamePollingTimer->callOnTimeout([this]() { getPlayState(); });
@@ -12,10 +14,43 @@ NetworkManager::NetworkManager(QObject *parent) : manager(parent) {
     validationPollingTimer->setInterval(500);
     validationPollingTimer->callOnTimeout([this]() { validateSession(); });
     userId = QUuid::createUuid();
+
+    // oauth reply handler
+    auto replyHandler = new QOAuthHttpServerReplyHandler(1337, this);
+    oauth2.setReplyHandler(replyHandler);
+    // setup oauth settings
+    oauth2.setAuthorizationUrl(QUrl(
+        "https://cavoke.eu.auth0.com/authorize"));  // FIXME: move to constants
+    oauth2.setAccessTokenUrl(
+        QUrl("https://cavoke.eu.auth0.com/oauth/token"));  // FIXME: move to
+                                                           // constants
+    oauth2.setClientIdentifier(
+        "yxkEiSikGF6JSaFwIikeLQlUNAUUR0ak");  // FIXME: move to constants
+    oauth2.setScope("identity read");         // FIXME: move to constants
+    oauth2.setNetworkAccessManager(&manager);
+
+    connect(&oauth2, &QOAuth2AuthorizationCodeFlow::statusChanged,
+            [=](QAbstractOAuth::Status status) {
+                if (status == QAbstractOAuth::Status::Granted) {
+                    qDebug() << "Authenticated!!";
+                }
+                // TODO: fatal error if unauthenticated
+            });
+    oauth2.setModifyParametersFunction(
+        [&](QAbstractOAuth::Stage stage, QVariantMap *parameters) {
+            if (stage == QAbstractOAuth::Stage::RequestingAuthorization)
+                parameters->insert("audience",
+                                   "https://develop.api.cavoke.wlko.me");
+            // TODO: use HOST
+        });
+    connect(&oauth2, &QOAuth2AuthorizationCodeFlow::authorizeWithBrowser,
+            &QDesktopServices::openUrl);
+    // try to authenticate via oauth
+    oauth2.grant();
 }
 
 void NetworkManager::getHealth() {
-    auto reply = manager.get(QNetworkRequest(HOST.resolved(HEALTH)));
+    auto reply = oauth2.get(HOST.resolved(HEALTH));
     connect(reply, &QNetworkReply::finished, this,
             [reply, this]() { gotHealth(reply); });
 }
@@ -28,7 +63,7 @@ void NetworkManager::gotHealth(QNetworkReply *reply) {
 }
 
 void NetworkManager::getGamesList() {
-    auto reply = manager.get(QNetworkRequest(HOST.resolved(GAMES_LIST)));
+    auto reply = oauth2.get(HOST.resolved(GAMES_LIST));
     connect(reply, &QNetworkReply::finished, this,
             [reply, this]() { gotGamesList(reply); });
 }
@@ -45,8 +80,7 @@ void NetworkManager::gotGamesList(QNetworkReply *reply) {
 void NetworkManager::getGamesConfig(const QString &gameId) {
     QUrl route =
         HOST.resolved(GAMES).resolved(gameId + "/").resolved(GET_CONFIG);
-    auto request = QNetworkRequest(route);
-    auto reply = manager.get(request);
+    auto reply = oauth2.get(route);
     connect(reply, &QNetworkReply::finished, this,
             [reply, this]() { gotGamesConfig(reply); });
 }
@@ -61,8 +95,7 @@ void NetworkManager::getGamesClient(const QString &gameId) {
     QUrl route =
         HOST.resolved(GAMES).resolved(gameId + "/").resolved(GET_CLIENT);
     qDebug() << route.toString();
-    auto request = QNetworkRequest(route);
-    auto reply = manager.get(request);
+    auto reply = oauth2.get(route);
     connect(reply, &QNetworkReply::finished, this,
             [reply, gameId, this]() { gotGamesClient(reply, gameId); });
 }

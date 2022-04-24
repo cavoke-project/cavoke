@@ -9,6 +9,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qt${QT_MAJOR_VERSION}Widgets REQUIRED)
 find_package(Qt${QT_MAJOR_VERSION}Quick REQUIRED)
 find_package(Qt${QT_MAJOR_VERSION}Network REQUIRED)
+find_package(Qt${QT_MAJOR_VERSION}NetworkAuth REQUIRED)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
@@ -48,4 +49,5 @@ add_executable(cavoke_client
 target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Widgets)
 target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Quick)
 target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Network)
+target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::NetworkAuth)
 target_link_libraries(cavoke_client KF5::Archive)
