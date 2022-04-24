@@ -263,3 +263,6 @@ void NetworkManager::changeHost(const QUrl &newHost) {
     HOST = newHost;
     getGamesList();
 }
+const QString NetworkManager::getUserId() {
+    return userId.toString(QUuid::WithoutBraces);
+}

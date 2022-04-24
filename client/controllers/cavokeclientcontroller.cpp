@@ -110,10 +110,19 @@ CavokeClientController::CavokeClientController(QObject *parent)
             &protoRoomView, SLOT(updateValidationResult(ValidationResult)));
     connect(&protoRoomView, SIGNAL(createdGame()), &networkManager,
             SLOT(startSession()));
-    connect(&protoRoomView, SIGNAL(leftRoom()), &networkManager, SLOT(stopGamePolling()));
-    connect(&protoRoomView, SIGNAL(leftRoom()), &networkManager, SLOT(stopSessionPolling()));
-    connect(&protoRoomView, SIGNAL(leftRoom()), &networkManager, SLOT(stopValidationPolling()));
-    connect(&protoRoomView, SIGNAL(leftRoom()), &networkManager, SLOT(leaveSession()));
+    connect(&protoRoomView, SIGNAL(leftRoom()), &networkManager,
+            SLOT(stopGamePolling()));
+    connect(&protoRoomView, SIGNAL(leftRoom()), &networkManager,
+            SLOT(stopSessionPolling()));
+    connect(&protoRoomView, SIGNAL(leftRoom()), &networkManager,
+            SLOT(stopValidationPolling()));
+    connect(&protoRoomView, SIGNAL(leftRoom()), &networkManager,
+            SLOT(leaveSession()));
+    connect(
+        this,
+        SIGNAL(createdAvailableRolesList(std::vector<std::pair<QString, int>>)),
+        &protoRoomView,
+        SLOT(gotRolesListUpdate(std::vector<std::pair<QString, int>>)));
 
     // settingsView actions
     connect(this, SIGNAL(initSettingsValues(QString, QString)), &settingsView,
@@ -283,6 +292,9 @@ void CavokeClientController::gotSessionInfo(const SessionInfo &sessionInfo) {
         creatingJoiningGameDone();
     } else if (status == CreateJoinControllerStatus::JOINING) {
         emit gettingGameInfo(currentSessionInfo.game_id);
+    } else if (status == CreateJoinControllerStatus::POLLING_CREATE ||
+               status == CreateJoinControllerStatus::POLLING_JOIN) {
+        collectListOfAvailableRoles();
     }
 }
 
@@ -310,4 +322,23 @@ void CavokeClientController::updateSettings(const QString &nickname,
     settings.setValue(NETWORK_HOST, host);
     emit clearScreens();
     networkManager.changeHost(QUrl::fromUserInput(host));
+}
+void CavokeClientController::collectListOfAvailableRoles() {
+    std::vector<bool> isFree(currentGameInfo.players_num, true);
+    int ourRole = -1;
+    QString userId = networkManager.getUserId();
+    for (const auto &player : currentSessionInfo.players) {
+        isFree[player.player_id] = false;
+        if (player.user_id == userId) {
+            ourRole = player.player_id;
+        }
+    }
+    std::vector<std::pair<QString, int>> availableRoles;
+    for (int i = 0; i < currentGameInfo.players_num; ++i) {
+        if (isFree[i]) {
+            availableRoles.emplace_back(currentGameInfo.role_names[i], i);
+        }
+    }
+    availableRoles.emplace_back(currentGameInfo.role_names[ourRole], ourRole);
+    emit createdAvailableRolesList(availableRoles);
 }

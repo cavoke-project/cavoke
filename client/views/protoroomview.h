@@ -22,6 +22,9 @@ public slots:
     void prepareJoinCreate(bool _isJoining);
     void updateValidationResult(const ValidationResult &validationResult);
     void updateGameName(const QString &gameName);
+    void gotRolesListUpdate(
+        const std::vector<std::pair<QString, int>>
+            &newRolesList);  // Probably should use some struct...
 
 signals:
     void createdGame();
