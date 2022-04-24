@@ -100,6 +100,7 @@ int main(int argc, char *argv[]) {
             drogon::app().loadConfigFile(file);
             games_storage_config =
                 nlohmann::to_nlohmann(drogon::app().getCustomConfig())
+                    .at("storage")
                     .get<cavoke::server::model::GamesStorageConfig>();
             std::cout << "Server configuration loaded from: '" << file << "'\n";
         } catch (const std::exception &err) {
