@@ -1,9 +1,9 @@
 #ifndef CAVOKE_CLIENT_GAMEINFO_H
 #define CAVOKE_CLIENT_GAMEINFO_H
 
+#include <QtCore/QJsonArray>
 #include <QtCore/QJsonObject>
 #include <QtCore/QString>
-#include <QtCore/QJsonArray>
 struct GameInfo {
 public:
     GameInfo();
