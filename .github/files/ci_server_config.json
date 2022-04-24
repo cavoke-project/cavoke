@@ -3,10 +3,20 @@
 {
   //custom_config: custom configuration for users. This object can be acquired by the app().getCustomConfig() method.
   "custom_config": {
-    "games_directory": "local_server/games",
-    "logic_name": "logic",
-    "zip_name": "client.zip",
-    "config_name": "config.json"
+    "storage": {
+      "games_directory": "local_server/games",
+      "logic_name": "logic",
+      "zip_name": "client.zip",
+      "config_name": "config.json"
+    },
+    // Authentication settings
+    //    "auth": {
+    //      "type": "JWT",
+    //      "algorithm": "RS256",
+    //      "audience": "https://develop.api.cavoke.wlko.me",
+    //      "issuer": "https://cavoke.eu.auth0.com/",
+    //      "public_key": "-----BEGIN CERTIFICATE-----\nMIIDATCCAemgAwIBAgIJUThDAEJOSIyCMA0GCSqGSIb3DQEBCwUAMB4xHDAaBgNV\nBAMTE2Nhdm9rZS5ldS5hdXRoMC5jb20wHhcNMjIwNDIzMTg0ODI2WhcNMzUxMjMx\nMTg0ODI2WjAeMRwwGgYDVQQDExNjYXZva2UuZXUuYXV0aDAuY29tMIIBIjANBgkq\nhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7FmeNLDehyQNzYlPLvaM4XuTCcWe48dC\n6bjwWeuboPscJoA8V7RYpNbs8zkR4mNaXEN1exJahFttU8t50kRSa302BplBRnsD\nwFotpCEptRkVNdPac+0/7qKboqwDyi9gl5uT/Hm2kR090tqJgfKKBazx1QS3j3iO\nChPcA1FE2/vhmOhcSV9zbwQXUiXFUShPjDhfmcqTxABbxs7LgSgcM8qz0IhquxJq\nlrwWv5cTuD45iXPj8oSONyvsP1pz2H7qvKJhYtobAnDt+P6SS1rO4nma2RV/tt3A\ngCZ9jcybz+9Hrp3Xs+Ip7Hn+vYb/CxK6UHaMzO1iGUWWVJNQcVOVzQIDAQABo0Iw\nQDAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBQlyPck1My8puTlg4tErVnUW+CE\nijAOBgNVHQ8BAf8EBAMCAoQwDQYJKoZIhvcNAQELBQADggEBAOOgBVDImV0D8ln8\n2mzAMDwO9plAx7mF9Qrfvr9/GW1BLisiBXJ56myMeXIvqatmf5hN/sWM/GjBdSoB\no5pdX5Wtbjik7GI1QCQB28ZHz2Y924NLAiZEllOW8jcCAfCt0fuqmz7fsJpjJBNY\nKp0ad8YsxnHjiclLTkjeShj/nN98O41pYx+thXuC9CSUtxxeAnzNyAgw5Tc67z7w\n5X5dubeRgsaTmFE665H+EzYAqAFyfUHXvNEkogqBPXRiBQUFuChFVFx6TTEfADV+\nKMTS0PaUX72LJpnLqsxUxquiJLqq515rBSc+9EH75xmKkD52DIeqfBHr1JPA5yP8\nXLXdlos=\n-----END CERTIFICATE-----"
+    //    }
   },
   "db_clients": [
     {
