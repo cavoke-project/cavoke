@@ -27,6 +27,7 @@ signals:
     void createdGame();
     void joinedCreatedGame();
     void shownStartView();
+    void leftRoom();
 
 private slots:
     void on_joinGameButton_clicked();

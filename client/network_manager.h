@@ -36,6 +36,7 @@ public slots:
     void validateSession();
     void getSessionInfo();
     void startSession();
+    void leaveSession();
 
     void startGamePolling();
     void stopGamePolling();
@@ -96,6 +97,7 @@ private:
     //    const static inline QUrl GET_INFO{"get_info"}; // already exists in
     //    rooms block
     const static inline QUrl START{"start"};
+    const static inline QUrl LEAVE{"leave"};
 };
 
 #endif  // CAVOKE_CLIENT_NETWORK_MANAGER_H
