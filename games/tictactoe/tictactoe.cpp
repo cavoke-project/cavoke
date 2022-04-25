@@ -44,7 +44,7 @@ char current_player(const std::string &board) {
     return (xs_cnt == os_cnt ? 'X' : 'O');
 }
 
-int extract_position(std::string &move) {
+int extract_position(const std::string &move) {
     std::stringstream to_split(move);
     char action;
     to_split >> action;
