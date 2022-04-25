@@ -236,4 +236,11 @@ void SessionsController::leave(
     return CALLBACK_STATUS_CODE(k200OK);
 }
 
+void SessionsController::change_role(
+    const drogon::HttpRequestPtr &req,
+    std::function<void(const drogon::HttpResponsePtr &)> &&callback,
+    const std::string &session_id) {
+    // TODO: huge thread-safety issues
+}
+
 }  // namespace cavoke::server::controllers
