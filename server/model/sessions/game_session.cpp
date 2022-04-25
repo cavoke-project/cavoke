@@ -196,4 +196,15 @@ GameSessionAccessObject::make_session_info(
             std::move(players)};
 }
 
+void GameSessionAccessObject::remove_user(const std::string &user_id) {
+    auto session_snapshot = get_snapshot();
+    if (session_snapshot.getValueOfStatus() != NOT_STARTED) {
+        throw game_session_error("session has already started");
+    }
+
+    default_mp_players.deleteBy(
+        Criteria(drogon_model::cavoke_orm::Players::Cols::_user_id,
+                 CompareOperator::EQ, user_id));
+}
+
 }  // namespace cavoke::server::model
