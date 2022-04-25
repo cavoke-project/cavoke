@@ -32,7 +32,7 @@ public:
     ADD_METHOD_TO(SessionsController::leave,
                   "/sessions/{session_id}/leave",
                   drogon::Post);
-    ADD_METHOD_TO(SessionsController::leave,
+    ADD_METHOD_TO(SessionsController::change_role,
                   "/sessions/{session_id}/change_role",
                   drogon::Post);
     ADD_METHOD_TO(SessionsController::get_info,

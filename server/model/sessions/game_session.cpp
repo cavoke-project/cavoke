@@ -158,9 +158,9 @@ void GameSessionAccessObject::start(const json &game_settings) {
 
 bool GameSessionAccessObject::is_player(const std::string &user_id) const {
     try {
-        int tmp = get_player_id(user_id);
+        [[maybe_unused]] int tmp = get_player_id(user_id);
         return true;
-    } catch (const std::out_of_range &) {
+    } catch (const game_session_error &) {
         return false;
     }
 }

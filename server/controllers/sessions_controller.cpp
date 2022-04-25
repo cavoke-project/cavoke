@@ -240,7 +240,50 @@ void SessionsController::change_role(
     const drogon::HttpRequestPtr &req,
     std::function<void(const drogon::HttpResponsePtr &)> &&callback,
     const std::string &session_id) {
-    // TODO: huge thread-safety issues
+    // get user id
+    auto user_id = req->getOptionalParameter<std::string>("user_id");
+    if (!user_id.has_value()) {
+        return CALLBACK_STATUS_CODE(k401Unauthorized);
+    }
+
+    // get new_role
+    auto new_role = req->getOptionalParameter<int>("new_role");
+    if (!new_role.has_value()) {
+        return CALLBACK_STATUS_CODE(k400BadRequest);
+    }
+
+    // verify auth
+    if (!m_authentication_manager->verify_authentication(user_id.value())) {
+        return CALLBACK_STATUS_CODE(k401Unauthorized);
+    }
+
+    model::GameSessionAccessObject session;
+    try {
+        session = m_participation_storage->get_sessionAO(session_id);
+    } catch (const model::game_session_error &err) {
+        return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
+    }
+
+    if (!session.is_player(user_id.value())) {
+        return CALLBACK_STATUS_CODE(k403Forbidden);
+    }
+
+    if (new_role.value() == session.get_player_id(user_id.value())) {
+        return CALLBACK_STATUS_CODE(k200OK);
+    }
+
+    // TODO: HUGE thread-safety issues!
+    const auto &occupied_positions = session.get_occupied_positions();
+    if (std::find(occupied_positions.begin(), occupied_positions.end(),
+                  new_role.value()) != occupied_positions.end()) {
+        return CALLBACK_STATUS_CODE(k400BadRequest);
+    }
+
+    // TODO: SQL update (?)
+    session.remove_user(user_id.value());
+    session.add_user(user_id.value(), new_role.value());
+
+    return CALLBACK_STATUS_CODE(k200OK);
 }
 
 }  // namespace cavoke::server::controllers
