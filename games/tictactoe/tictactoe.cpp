@@ -30,7 +30,7 @@ int get_board_size(const std::string &board) {
     return static_cast<int>(sqrt(static_cast<double>(board.size())));
 }
 
-char current_player(std::string &board) {
+char current_player(const std::string &board) {
     int xs_cnt = 0;
     int os_cnt = 0;
     for (int i = 0; i < board.size(); ++i) {
@@ -53,7 +53,7 @@ int extract_position(std::string &move) {
     return position;
 };
 
-bool is_valid_move(std::string &board, int position) {
+bool is_valid_move(const std::string &board, int position) {
     return position >= 0 && position < board.size() && board[position] == ' ';
 }
 
