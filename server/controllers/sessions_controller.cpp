@@ -232,6 +232,8 @@ void SessionsController::leave(
     }
 
     session.remove_user(user_id.value());
+
+    return CALLBACK_STATUS_CODE(k200OK);
 }
 
 }  // namespace cavoke::server::controllers
