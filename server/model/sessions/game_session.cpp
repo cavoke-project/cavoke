@@ -207,4 +207,19 @@ void GameSessionAccessObject::remove_user(const std::string &user_id) {
                  CompareOperator::EQ, user_id));
 }
 
+void GameSessionAccessObject::change_role(const std::string &user_id,
+                                          int new_role) {
+    try {
+        // INFO: does not differentiate the following cases: user not in this
+        // session, user in this session changes his role to his current one
+        default_mp_players.updateBy(
+            {drogon_model::cavoke_orm::Players::Cols::_player_id},
+            Criteria(drogon_model::cavoke_orm::Players::Cols::_user_id,
+                     CompareOperator::EQ, user_id),
+            new_role);
+    } catch (const std::exception &err) {
+        throw game_session_error("could not update role for player");
+    }
+}
+
 }  // namespace cavoke::server::model

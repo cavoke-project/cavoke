@@ -264,24 +264,11 @@ void SessionsController::change_role(
         return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
     }
 
-    if (!session.is_player(user_id.value())) {
-        return CALLBACK_STATUS_CODE(k403Forbidden);
+    try {
+        session.change_role(user_id.value(), new_role.value());
+    } catch (model::game_session_error &err) {
+        return callback(newCavokeErrorResponse(err, drogon::k400BadRequest));
     }
-
-    if (new_role.value() == session.get_player_id(user_id.value())) {
-        return CALLBACK_STATUS_CODE(k200OK);
-    }
-
-    // TODO: HUGE thread-safety issues!
-    const auto &occupied_positions = session.get_occupied_positions();
-    if (std::find(occupied_positions.begin(), occupied_positions.end(),
-                  new_role.value()) != occupied_positions.end()) {
-        return CALLBACK_STATUS_CODE(k400BadRequest);
-    }
-
-    // TODO: SQL update (?)
-    session.remove_user(user_id.value());
-    session.add_user(user_id.value(), new_role.value());
 
     return CALLBACK_STATUS_CODE(k200OK);
 }
