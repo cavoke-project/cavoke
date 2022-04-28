@@ -265,7 +265,7 @@ void SessionsController::change_role(
     }
 
     try {
-        session.change_role(user_id.value(), new_role.value());
+        session.set_role(user_id.value(), new_role.value());
     } catch (model::game_session_error &err) {
         return callback(newCavokeErrorResponse(err, drogon::k400BadRequest));
     }

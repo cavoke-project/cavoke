@@ -207,8 +207,12 @@ void GameSessionAccessObject::remove_user(const std::string &user_id) {
                  CompareOperator::EQ, user_id));
 }
 
-void GameSessionAccessObject::change_role(const std::string &user_id,
-                                          int new_role) {
+void GameSessionAccessObject::set_role(const std::string &user_id,
+                                       int new_role) {
+    // check role's validity
+    if (!(0 <= new_role && new_role < m_game_config.players_num)) {
+        throw game_session_error("no such role " + std::to_string(new_role));
+    }
     try {
         // INFO: does not differentiate the following cases: user not in this
         // session, user in this session changes his role to his current one

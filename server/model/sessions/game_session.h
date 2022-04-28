@@ -42,7 +42,7 @@ struct GameSessionAccessObject {
     void remove_user(const std::string &user_id);
 
     /// Changes game role for given user
-    void change_role(const std::string &user_id, int new_role);
+    void set_role(const std::string &user_id, int new_role);
 
     /// Marks session as starts
     void start(const json &game_settings);
