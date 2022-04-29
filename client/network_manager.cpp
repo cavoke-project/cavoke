@@ -37,7 +37,7 @@ NetworkManager::NetworkManager(QObject *parent) : manager{this}, oauth2{this} {
                 // TODO: fatal error if unauthenticated
             });
     oauth2.setModifyParametersFunction(
-        [&](QAbstractOAuth::Stage stage, QVariantMap *parameters) {
+        [&](QAbstractOAuth::Stage stage, auto *parameters) {
             if (stage == QAbstractOAuth::Stage::RequestingAuthorization)
                 parameters->insert("audience",
                                    "https://develop.api.cavoke.wlko.me");
