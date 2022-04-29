@@ -8,14 +8,7 @@ void SessionsController::create(
     const drogon::HttpRequestPtr &req,
     std::function<void(const drogon::HttpResponsePtr &)> &&callback) {
     // get user id
-    auto user_id = req->getOptionalParameter<std::string>("user_id");
-    if (!user_id.has_value()) {
-        return CALLBACK_STATUS_CODE(k401Unauthorized);
-    }
-    // verify auth
-    if (!m_authentication_manager->verify_authentication(user_id.value())) {
-        return CALLBACK_STATUS_CODE(k401Unauthorized);
-    }
+    auto user_id = AuthFilter::get_user_id(req);
 
     // get game id
     auto game_id = req->getOptionalParameter<std::string>("game_id");
@@ -35,7 +28,7 @@ void SessionsController::create(
     model::GameSessionAccessObject::GameSessionInfo session_info;
     try {
         session_info = m_participation_storage->create_session(
-            game.value().config, user_id.value());
+            game.value().config, user_id);
     } catch (const model::game_session_error &err) {
         return callback(newCavokeErrorResponse(err, drogon::k400BadRequest));
     }
@@ -46,14 +39,7 @@ void SessionsController::join(
     const drogon::HttpRequestPtr &req,
     std::function<void(const drogon::HttpResponsePtr &)> &&callback) {
     // get user id
-    auto user_id = req->getOptionalParameter<std::string>("user_id");
-    if (!user_id.has_value()) {
-        return CALLBACK_STATUS_CODE(k401Unauthorized);
-    }
-    // verify auth
-    if (!m_authentication_manager->verify_authentication(user_id.value())) {
-        return CALLBACK_STATUS_CODE(k401Unauthorized);
-    }
+    auto user_id = AuthFilter::get_user_id(req);
 
     // get invite code
     auto invite_code = req->getOptionalParameter<std::string>("invite_code");
@@ -65,7 +51,7 @@ void SessionsController::join(
     model::GameSessionAccessObject::GameSessionInfo session_info;
     try {
         session_info = m_participation_storage->join_session(
-            invite_code.value(), user_id.value(),
+            invite_code.value(), user_id,
             req->getOptionalParameter<int>("position"));
     } catch (const model::game_session_error &err) {
         return callback(newCavokeErrorResponse(err, drogon::k400BadRequest));
@@ -92,14 +78,7 @@ void SessionsController::validate(
     std::function<void(const drogon::HttpResponsePtr &)> &&callback,
     const std::string &session_id) {
     // get user id
-    auto user_id = req->getOptionalParameter<std::string>("user_id");
-    if (!user_id.has_value()) {
-        return CALLBACK_STATUS_CODE(k401Unauthorized);
-    }
-    // verify auth
-    if (!m_authentication_manager->verify_authentication(user_id.value())) {
-        return CALLBACK_STATUS_CODE(k401Unauthorized);
-    }
+    auto user_id = AuthFilter::get_user_id(req);
 
     model::GameSessionAccessObject session;
     try {
@@ -108,7 +87,7 @@ void SessionsController::validate(
         return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
     }
 
-    if (!session.is_player(user_id.value())) {
+    if (!session.is_player(user_id)) {
         return CALLBACK_STATUS_CODE(k403Forbidden);
     }
 
@@ -125,14 +104,7 @@ void SessionsController::start(
     std::function<void(const drogon::HttpResponsePtr &)> &&callback,
     const std::string &session_id) {
     // get user id
-    auto user_id = req->getOptionalParameter<std::string>("user_id");
-    if (!user_id.has_value()) {
-        return CALLBACK_STATUS_CODE(k401Unauthorized);
-    }
-    // verify auth
-    if (!m_authentication_manager->verify_authentication(user_id.value())) {
-        return CALLBACK_STATUS_CODE(k401Unauthorized);
-    }
+    auto user_id = AuthFilter::get_user_id(req);
 
     model::GameSessionAccessObject session;
     try {
@@ -141,7 +113,7 @@ void SessionsController::start(
         return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
     }
 
-    if (!session.is_player(user_id.value())) {
+    if (!session.is_player(user_id)) {
         return CALLBACK_STATUS_CODE(k403Forbidden);
     }
 
@@ -161,16 +133,6 @@ void SessionsController::get_info(
     const drogon::HttpRequestPtr &req,
     std::function<void(const drogon::HttpResponsePtr &)> &&callback,
     const std::string &session_id) {
-    // get user id
-    auto user_id = req->getOptionalParameter<std::string>("user_id");
-    if (!user_id.has_value()) {
-        return CALLBACK_STATUS_CODE(k401Unauthorized);
-    }
-    // verify auth
-    if (!m_authentication_manager->verify_authentication(user_id.value())) {
-        return CALLBACK_STATUS_CODE(k401Unauthorized);
-    }
-
     model::GameSessionAccessObject session;
     try {
         session = m_participation_storage->get_sessionAO(session_id);
@@ -188,15 +150,6 @@ void SessionsController::get_info_by_invite_code(
     auto invite_code = req->getOptionalParameter<std::string>("invite_code");
     if (!invite_code.has_value()) {
         return CALLBACK_STATUS_CODE(k400BadRequest);
-    }
-    // get user id
-    auto user_id = req->getOptionalParameter<std::string>("user_id");
-    if (!user_id.has_value()) {
-        return CALLBACK_STATUS_CODE(k401Unauthorized);
-    }
-    // verify auth
-    if (!m_authentication_manager->verify_authentication(user_id.value())) {
-        return CALLBACK_STATUS_CODE(k401Unauthorized);
     }
 
     model::GameSessionAccessObject session;

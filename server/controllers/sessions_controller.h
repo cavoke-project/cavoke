@@ -2,7 +2,7 @@
 #define CAVOKE_SESSIONS_CONTROLLER_H
 
 #include <drogon/HttpController.h>
-#include "model/auth/authentication_manager.h"
+#include "filters/AuthFilter.h"
 #include "model/games/games_storage.h"
 #include "model/logic/game_logic_manager.h"
 #include "model/sessions/sessions_storage.h"
@@ -27,8 +27,14 @@ public:
 
 public:
     METHOD_LIST_BEGIN
-    ADD_METHOD_TO(SessionsController::create, "/sessions/create", drogon::Post);
-    ADD_METHOD_TO(SessionsController::join, "/sessions/join", drogon::Post);
+    ADD_METHOD_TO(SessionsController::create,
+                  "/sessions/create",
+                  drogon::Post,
+                  "AuthFilter");
+    ADD_METHOD_TO(SessionsController::join,
+                  "/sessions/join",
+                  drogon::Post,
+                  "AuthFilter");
     ADD_METHOD_TO(SessionsController::leave,
                   "/sessions/{session_id}/leave",
                   drogon::Post);
@@ -37,16 +43,20 @@ public:
                   drogon::Post);
     ADD_METHOD_TO(SessionsController::get_info,
                   "/sessions/{session_id}/get_info",
-                  drogon::Get);
+                  drogon::Get,
+                  "AuthFilter");
     ADD_METHOD_TO(SessionsController::get_info_by_invite_code,
                   "/sessions/get_info_by_invite_code",
-                  drogon::Get);
+                  drogon::Get,
+                  "AuthFilter");
     ADD_METHOD_TO(SessionsController::start,
                   "/sessions/{session_id}/start",
-                  drogon::Post);
+                  drogon::Post,
+                  "AuthFilter");
     ADD_METHOD_TO(SessionsController::validate,
                   "/sessions/{session_id}/validate",
-                  drogon::Post);
+                  drogon::Post,
+                  "AuthFilter");
     METHOD_LIST_END
 
 protected:

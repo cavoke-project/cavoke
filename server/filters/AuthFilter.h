@@ -4,6 +4,7 @@
 #include <drogon/HttpFilter.h>
 #include <jwt-cpp/jwt.h>
 #include <jwt-cpp/traits/nlohmann-json/traits.h>
+#include "sql-models/Users.h"
 #include "utils.h"
 
 using namespace drogon;
@@ -24,14 +25,23 @@ public:
         std::string public_key;
     };
 
+    static std::string get_user_id(const HttpRequestPtr &);
+
 private:
     std::optional<nlohmann_verifier> verifier;
 
     static std::string extract_token_from_header(
         const std::string &auth_header);
+
+    mutable MAPPER_TYPE(drogon_model::cavoke_orm::Users) mp_users =
+        MAPPER_FOR(drogon_model::cavoke_orm::Users);
+
+    void register_user(const std::string &) const;
+
     static const std::string AUTHORIZATION_HEADER;
     static const std::string TOKEN_PREFIX;
     static const std::string SETTINGS_KEYNAME;
+    static const std::string USER_ID_QUERY_NAME;
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(AuthFilter::AuthConfig,
