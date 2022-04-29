@@ -28,7 +28,7 @@ create table players
         constraint player_session_id_fk
             references sessions
             on delete cascade,
-    user_id     varchar    not null
+    user_id     varchar not null
         constraint player_user_id_fk
             references users
             on delete restrict,
