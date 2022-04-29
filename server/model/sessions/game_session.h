@@ -38,6 +38,12 @@ struct GameSessionAccessObject {
     void add_user(const std::string &user_id,
                   std::optional<int> player_id = {});
 
+    /// Removes given user
+    void remove_user(const std::string &user_id);
+
+    /// Changes game role for given user
+    void set_role(const std::string &user_id, int new_role);
+
     /// Marks session as starts
     void start(const json &game_settings);
 

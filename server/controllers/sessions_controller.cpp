@@ -210,4 +210,67 @@ void SessionsController::get_info_by_invite_code(
     return callback(newNlohmannJsonResponse(session.get_session_info()));
 }
 
+void SessionsController::leave(
+    const drogon::HttpRequestPtr &req,
+    std::function<void(const drogon::HttpResponsePtr &)> &&callback,
+    const std::string &session_id) {
+    // get user id
+    auto user_id = req->getOptionalParameter<std::string>("user_id");
+    if (!user_id.has_value()) {
+        return CALLBACK_STATUS_CODE(k401Unauthorized);
+    }
+    // verify auth
+    if (!m_authentication_manager->verify_authentication(user_id.value())) {
+        return CALLBACK_STATUS_CODE(k401Unauthorized);
+    }
+
+    model::GameSessionAccessObject session;
+    try {
+        session = m_participation_storage->get_sessionAO(session_id);
+    } catch (const model::game_session_error &err) {
+        return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
+    }
+
+    session.remove_user(user_id.value());
+
+    return CALLBACK_STATUS_CODE(k200OK);
+}
+
+void SessionsController::change_role(
+    const drogon::HttpRequestPtr &req,
+    std::function<void(const drogon::HttpResponsePtr &)> &&callback,
+    const std::string &session_id) {
+    // get user id
+    auto user_id = req->getOptionalParameter<std::string>("user_id");
+    if (!user_id.has_value()) {
+        return CALLBACK_STATUS_CODE(k401Unauthorized);
+    }
+
+    // get new_role
+    auto new_role = req->getOptionalParameter<int>("new_role");
+    if (!new_role.has_value()) {
+        return CALLBACK_STATUS_CODE(k400BadRequest);
+    }
+
+    // verify auth
+    if (!m_authentication_manager->verify_authentication(user_id.value())) {
+        return CALLBACK_STATUS_CODE(k401Unauthorized);
+    }
+
+    model::GameSessionAccessObject session;
+    try {
+        session = m_participation_storage->get_sessionAO(session_id);
+    } catch (const model::game_session_error &err) {
+        return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
+    }
+
+    try {
+        session.set_role(user_id.value(), new_role.value());
+    } catch (model::game_session_error &err) {
+        return callback(newCavokeErrorResponse(err, drogon::k400BadRequest));
+    }
+
+    return CALLBACK_STATUS_CODE(k200OK);
+}
+
 }  // namespace cavoke::server::controllers

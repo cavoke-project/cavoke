@@ -158,9 +158,9 @@ void GameSessionAccessObject::start(const json &game_settings) {
 
 bool GameSessionAccessObject::is_player(const std::string &user_id) const {
     try {
-        int tmp = get_player_id(user_id);
+        [[maybe_unused]] int tmp = get_player_id(user_id);
         return true;
-    } catch (const std::out_of_range &) {
+    } catch (const game_session_error &) {
         return false;
     }
 }
@@ -194,6 +194,36 @@ GameSessionAccessObject::make_session_info(
             session.getValueOfInviteCode(),
             static_cast<SessionStatus>(session.getValueOfStatus()),
             std::move(players)};
+}
+
+void GameSessionAccessObject::remove_user(const std::string &user_id) {
+    auto session_snapshot = get_snapshot();
+    if (session_snapshot.getValueOfStatus() != NOT_STARTED) {
+        throw game_session_error("session has already started");
+    }
+
+    default_mp_players.deleteBy(
+        Criteria(drogon_model::cavoke_orm::Players::Cols::_user_id,
+                 CompareOperator::EQ, user_id));
+}
+
+void GameSessionAccessObject::set_role(const std::string &user_id,
+                                       int new_role) {
+    // check role's validity
+    if (!(0 <= new_role && new_role < m_game_config.players_num)) {
+        throw game_session_error("no such role " + std::to_string(new_role));
+    }
+    try {
+        // INFO: does not differentiate the following cases: user not in this
+        // session, user in this session changes his role to his current one
+        default_mp_players.updateBy(
+            {drogon_model::cavoke_orm::Players::Cols::_player_id},
+            Criteria(drogon_model::cavoke_orm::Players::Cols::_user_id,
+                     CompareOperator::EQ, user_id),
+            new_role);
+    } catch (const std::exception &err) {
+        throw game_session_error("could not update role for player");
+    }
 }
 
 }  // namespace cavoke::server::model
