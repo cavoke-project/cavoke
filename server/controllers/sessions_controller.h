@@ -15,15 +15,13 @@ class SessionsController
     std::shared_ptr<model::GameLogicManager> m_game_logic_manager;
     std::shared_ptr<model::GameStateStorage> m_game_state_storage;
     std::shared_ptr<model::SessionsStorage> m_participation_storage;
-    std::shared_ptr<model::AuthenticationManager> m_authentication_manager;
 
 public:
     SessionsController(
         std::shared_ptr<model::GamesStorage> mGamesStorage,
         std::shared_ptr<model::GameLogicManager> mGameLogicManager,
         std::shared_ptr<model::GameStateStorage> mGameStateStorage,
-        std::shared_ptr<model::SessionsStorage> mParticipationStorage,
-        std::shared_ptr<model::AuthenticationManager> mAuthenticationManager);
+        std::shared_ptr<model::SessionsStorage> mParticipationStorage);
 
 public:
     METHOD_LIST_BEGIN
@@ -37,10 +35,12 @@ public:
                   "AuthFilter");
     ADD_METHOD_TO(SessionsController::leave,
                   "/sessions/{session_id}/leave",
-                  drogon::Post);
+                  drogon::Post,
+                  "AuthFilter");
     ADD_METHOD_TO(SessionsController::change_role,
                   "/sessions/{session_id}/change_role",
-                  drogon::Post);
+                  drogon::Post,
+                  "AuthFilter");
     ADD_METHOD_TO(SessionsController::get_info,
                   "/sessions/{session_id}/get_info",
                   drogon::Get,

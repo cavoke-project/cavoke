@@ -45,7 +45,6 @@ add_executable(${PROJECT_NAME}
         model/logic/game_logic_manager.cpp
         controllers/state_controller.cpp
         controllers/sessions_controller.cpp
-        model/auth/authentication_manager.cpp
         model/sessions/game_session.cpp
         )
 target_link_libraries(cavoke_server Drogon::Drogon)

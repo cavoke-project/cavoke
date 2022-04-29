@@ -22,8 +22,6 @@ void run(const model::GamesStorageConfig &games_storage_config) {
     auto game_state_storage = std::make_shared<model::GameStateStorage>();
     auto participation_storage = std::make_shared<model::SessionsStorage>(
         game_logic_manager, games_storage, game_state_storage);
-    auto authentication_manager =
-        std::make_shared<model::AuthenticationManager>();
 
     // init controllers
     std::cout << "Initialize controllers..." << std::endl;
@@ -35,7 +33,7 @@ void run(const model::GamesStorageConfig &games_storage_config) {
     auto sessions_controller =
         std::make_shared<controllers::SessionsController>(
             games_storage, game_logic_manager, game_state_storage,
-            participation_storage, authentication_manager);
+            participation_storage);
 
     auto &app = drogon::app();
 
