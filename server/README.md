@@ -7,8 +7,17 @@ TODO
 ## Как запустить
 
 ### Docker
+Проще всего сервер запустить внутри docker контейнера.
 
-Проще всего сервер запустить внутри docker контейнера. Для этого можно воспользоваться актуальным
+#### Docker Compose
+Для локальной разработки в одну команду можно запустить сервер через docker-compose.
+```console
+cavoke@ubuntu:~$ docker-compose up -d
+cavoke@ubuntu:~$ curl -s localhost:8080/games/list
+[{"display_name":"Tic-tac-toe","id":"tictactoe", ... }]
+```
+
+Для этого можно воспользоваться актуальным
 image [`ghcr.io/cavoke-project/cavoke-server`](ghcr.io/cavoke-project/cavoke-server).
 
 #### Пример с mount игр
@@ -18,8 +27,8 @@ cavoke@ubuntu:~$ find . -type f
 ./local_games/tictactoe/client.zip
 ./local_games/tictactoe/logic
 ./local_games/tictactoe/config.json
-cavoke@ubuntu:~$ docker run -v `pwd`/local_games:/mnt/games -p 4200:8080 -d ghcr.io/cavoke-project/cavoke-server -g /mnt/games
-cavoke@ubuntu:~$ curl -s localhost:4200/games/list
+cavoke@ubuntu:~$ docker run -v `pwd`/local_games:/mnt/games -p 8080:8080 -d ghcr.io/cavoke-project/cavoke-server -g /mnt/games
+cavoke@ubuntu:~$ curl -s localhost:8080/games/list
 [{"display_name":"Tic-tac-toe","id":"tictactoe", ... }]
 ```
 
