@@ -108,6 +108,16 @@ jobs:
           cd .github/scripts
           chmod +x server-test-health.py
           ./server-test-health.py docker run -t -p 8080:8080 cavoke_server
+  server-docker-compose-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Start up the server with Docker Compose
+        run: docker-compose up -d
+      - name: Healthcheck
+        run: test $(curl -s localhost:8080/health) = "OK"
+      - name: Check that some games are available
+        run: curl -s localhost:8080/games/list | jq -e 'length >= 1'
   server-publish-image-develop:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop'
