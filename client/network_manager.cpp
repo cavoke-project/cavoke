@@ -1,4 +1,5 @@
 #include "network_manager.h"
+#include <utility>
 
 NetworkManager::NetworkManager(QObject *parent) : manager(parent) {
     gamePollingTimer = new QTimer(this);
@@ -235,4 +236,8 @@ void NetworkManager::startValidationPolling() {
 
 void NetworkManager::stopValidationPolling() {
     validationPollingTimer->stop();
+}
+void NetworkManager::changeHost(const QUrl &newHost) {
+    HOST = newHost;
+    getGamesList();
 }

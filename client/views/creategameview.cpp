@@ -9,6 +9,10 @@ CreateGameView::CreateGameView(QWidget *parent)
 }
 
 void CreateGameView::repeaterCurrentIndexChanged(int index) {
+    if (index == -1) {
+        displayEmpty();
+        return;
+    }
     emit currentIndexChanged(index);
 }
 
@@ -22,10 +26,17 @@ void CreateGameView::on_backButton_clicked() {
 }
 void CreateGameView::gotGamesListUpdate(
     const std::vector<GameInfo> &newGamesList) {
+    ui->gamesListComboBox->clear();
     for (const auto &gameInfo : newGamesList) {
         ui->gamesListComboBox->addItem(gameInfo.display_name);
     }
+    if (ui->gamesListComboBox->count() > 0) {
+        ui->gamesListComboBox->setCurrentIndex(0);
+    } else {
+        ui->gamesListComboBox->setCurrentIndex(-1);
+    }
 }
+
 void CreateGameView::gotNewSelectedGame(const GameInfo &gameInfo) {
     ui->gameNameLabel->setText(gameInfo.display_name);
     ui->gameDescriptionTextBrowser->setText(gameInfo.description);
@@ -35,4 +46,10 @@ void CreateGameView::gotNewSelectedGame(const GameInfo &gameInfo) {
 void CreateGameView::on_createGameButton_clicked() {
     //    this->close();
     emit startedCreateGameRoutine(ui->gamesListComboBox->currentIndex());
+}
+void CreateGameView::displayEmpty() {
+    ui->gameNameLabel->clear();
+    ui->gameDescriptionTextBrowser->clear();
+    ui->playersAmountLabel->clear();
+    ui->createGameButton->setEnabled(false);
 }

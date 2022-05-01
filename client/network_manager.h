@@ -15,7 +15,9 @@
 struct NetworkManager : public QObject {
     Q_OBJECT
 public:
+    const static inline QUrl DEFAULT_HOST{"https://develop.api.cavoke.wlko.me"};
     explicit NetworkManager(QObject *parent = nullptr);
+    void changeHost(const QUrl &newHost);
 
 public slots:
     void getHealth();
@@ -67,17 +69,7 @@ private:
     QTimer *validationPollingTimer = nullptr;
     QString sessionId;
     QUuid userId;
-    const static inline QUrl HOST{
-#ifdef MOCK
-        "https://764bbfca-c45a-46fc-9c79-11d9094b9ba8.mock.pstmn.io/"
-#else
-#ifdef REAL
-        "http://34.88.243.202:8081/"
-#else
-        "http://127.0.0.1:8080/"
-#endif
-#endif
-    };
+    QUrl HOST{DEFAULT_HOST};
     const static inline QUrl HEALTH{"health"};  // FIXME: move to routes module
     const static inline QUrl GAMES_LIST{"games/list"};
     const static inline QUrl GAMES{"games/"};

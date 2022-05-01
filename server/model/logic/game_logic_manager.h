@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <string>
-#include "../../../games/cavoke.h"
+#include "cavoke.h"
 #include "game_state_storage.h"
 #include "model/games/games_storage.h"
 

@@ -17,6 +17,7 @@ public:
 public slots:
     void gotGamesListUpdate(const std::vector<GameInfo> &newGamesList);
     void gotNewSelectedGame(const GameInfo &gameInfo);
+    void displayEmpty();
 
 signals:
     void shownStartView();

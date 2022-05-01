@@ -13,11 +13,16 @@ public:
     explicit SettingsView(QWidget *parent = nullptr);
     ~SettingsView();
 
+public slots:
+    void initStartValues(const QString &nickname, const QString &host);
+
 signals:
     void shownStartView();
+    void updatedSettings(const QString &nickname, const QString &host);
 
 private slots:
     void on_backButton_clicked();
+    void on_updateSettingsButton_clicked();
 
 private:
     Ui::SettingsView *ui;

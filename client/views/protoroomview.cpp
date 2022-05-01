@@ -58,7 +58,7 @@ void ProtoRoomView::prepareJoinCreate(bool _isJoining) {
 
     isJoining = _isJoining;
     if (isJoining) {
-        ui->headerLabel->setText("Joining game session");
+        //        ui->headerLabel->setText("Joining game session");
         ui->gameNameHLabel->show();
         ui->gameNameLabel->show();
         ui->inviteCodeHLabel->hide();
@@ -66,7 +66,7 @@ void ProtoRoomView::prepareJoinCreate(bool _isJoining) {
         ui->waitForHostLabel->show();
         ui->joinGameButton->hide();
     } else {
-        ui->headerLabel->setText("Creating game session");
+        //        ui->headerLabel->setText("Creating game session");
         ui->gameNameHLabel->hide();
         ui->gameNameLabel->hide();
         ui->inviteCodeHLabel->show();

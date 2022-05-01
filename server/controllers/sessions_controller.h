@@ -29,6 +29,12 @@ public:
     METHOD_LIST_BEGIN
     ADD_METHOD_TO(SessionsController::create, "/sessions/create", drogon::Post);
     ADD_METHOD_TO(SessionsController::join, "/sessions/join", drogon::Post);
+    ADD_METHOD_TO(SessionsController::leave,
+                  "/sessions/{session_id}/leave",
+                  drogon::Post);
+    ADD_METHOD_TO(SessionsController::change_role,
+                  "/sessions/{session_id}/change_role",
+                  drogon::Post);
     ADD_METHOD_TO(SessionsController::get_info,
                   "/sessions/{session_id}/get_info",
                   drogon::Get);
@@ -50,6 +56,15 @@ protected:
 
     void join(const drogon::HttpRequestPtr &req,
               std::function<void(const drogon::HttpResponsePtr &)> &&callback);
+
+    void leave(const drogon::HttpRequestPtr &req,
+               std::function<void(const drogon::HttpResponsePtr &)> &&callback,
+               const std::string &session_id);
+
+    void change_role(
+        const drogon::HttpRequestPtr &req,
+        std::function<void(const drogon::HttpResponsePtr &)> &&callback,
+        const std::string &session_id);
 
     void validate(
         const drogon::HttpRequestPtr &req,

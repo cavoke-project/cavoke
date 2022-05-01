@@ -33,11 +33,14 @@ public slots:
     void showGamesListView();
     void showCreateGameView();
     void showSettingsView();
+    void updateSettings(const QString &nickname, const QString &host);
 
 signals:
     void loadGamesList();
     void createGameDownloaded();
     void joinGameDownloaded();
+    void initSettingsValues(const QString &nickname, const QString &host);
+    void clearScreens();
 
 private slots:
     void startQmlApplication(CavokeQmlGameModel *);
@@ -54,6 +57,10 @@ private slots:
     void gotSessionInfo(const SessionInfo &sessionInfo);
 
 private:
+    void defaultSettingsInitialization();
+    const static inline QString PLAYER_NICKNAME{"player/nickname"};
+    const static inline QString NETWORK_HOST{"network/host"};
+    const static inline QString DEFAULT_NICKNAME{"Guest"};
     NetworkManager networkManager;
     CavokeClientModel model;
     TestWindowView testWindowView;
@@ -66,6 +73,7 @@ private:
     CavokeQmlGameModel *currentQmlGameModel = nullptr;
     CreateJoinControllerStatus status = CreateJoinControllerStatus::NOTHING;
     QString currentGameId;
+    QSettings settings;
 };
 
 #endif  // CAVOKECLIENTCONTROLLER_H
