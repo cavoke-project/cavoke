@@ -1,5 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file>app.qml</file>
+        <file>src/components/Card.qml</file>
+        <file>src/screens/Game.qml</file>
+        <file>src/interactions/interactions.js</file>
+        <file>app_qt_creator.qml</file>
     </qresource>
 </RCC>

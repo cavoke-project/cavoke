@@ -15,6 +15,6 @@ add_executable(tictactoe
 add_executable(codenames
         codenames/server/src/codenames.cpp
         codenames/server/src/wordlists.cpp
-        cavoke.cpp codenames/server/src/model.cpp)
+        ${CAVOKE_H_DIR}/cavoke.cpp codenames/server/src/model.cpp)
 
 target_link_libraries(tictactoe nlohmann_json::nlohmann_json)

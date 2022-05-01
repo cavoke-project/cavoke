@@ -1,4 +1,4 @@
-#include "../../../cavoke.h"
+#include "cavoke.h"
 #include "model.h"
 #include "wordlists.h"
 

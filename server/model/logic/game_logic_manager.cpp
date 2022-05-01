@@ -19,7 +19,8 @@ std::string GameLogicManager::invoke_logic(const Game &game,
     bp::opstream in;
     bp::ipstream out;
 
-    bp::child c(game.logic_file, bp::std_out > out, bp::std_in < in);
+    bp::child c(game.LOGIC_FILE, bp::start_dir(game.directory),
+                bp::std_out > out, bp::std_in < in);
     in.write(input.c_str(), static_cast<int>(input.size()));
     in.flush();
 
