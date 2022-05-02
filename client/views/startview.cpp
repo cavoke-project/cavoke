@@ -1,10 +1,13 @@
 #include "startview.h"
 #include "cavokeclientcontroller.h"
+#include "loginbox.h"
 #include "ui_startview.h"
 
 StartView::StartView(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::StartView) {
     ui->setupUi(this);
+    // add login box to start screen
+    ui->loginLayout->addWidget(new LoginBox(this));
 }
 
 StartView::~StartView() {

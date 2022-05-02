@@ -26,25 +26,22 @@ find_package(KF5Archive REQUIRED)
 #add_compile_definitions(MOCK)
 add_compile_definitions(REAL)
 
+aux_source_directory(views VIEWS_DIR)
+
 add_executable(cavoke_client
         main.cpp
         controllers/cavokeclientcontroller.cpp
         models/cavokeclientmodel.cpp
         models/cavokeqmlgamemodel.cpp
-        views/testwindowview.cpp
-        views/startview.cpp
-        views/joingameview.cpp
-        views/creategameview.cpp
-        views/settingsview.cpp
-        views/gameslistview.cpp
-        views/protoroomview.cpp
+        ${VIEWS_DIR}
         entities/gameinfo.cpp
         entities/sessioninfo.cpp
         entities/validationresult.cpp
         cache_manager.cpp
         network_manager.cpp
         entities/player.cpp
-        resources/resources.qrc)
+        resources/resources.qrc
+        AuthenticationManager.cpp)
 
 target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Widgets)
 target_link_libraries(cavoke_client Qt${QT_MAJOR_VERSION}::Quick)

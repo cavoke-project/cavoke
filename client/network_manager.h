@@ -10,6 +10,7 @@
 #include <QtCore/QTemporaryFile>
 #include <QtCore/QTimer>
 #include <QtNetwork/QNetworkReply>
+#include "AuthenticationManager.h"
 #include "entities/sessioninfo.h"
 #include "entities/validationresult.h"
 struct NetworkManager : public QObject {
@@ -63,13 +64,12 @@ private slots:
     void gotGamesClient(QNetworkReply *reply, const QString &gameId);
 
 private:
-    QOAuth2AuthorizationCodeFlow oauth2;
+    QOAuth2AuthorizationCodeFlow *oauth2;
     QNetworkAccessManager manager;
     QTimer *gamePollingTimer = nullptr;
     QTimer *sessionPollingTimer = nullptr;
     QTimer *validationPollingTimer = nullptr;
     QString sessionId;
-    QUuid userId;
     QUrl HOST{DEFAULT_HOST};
     const static inline QUrl HEALTH{"health"};  // FIXME: move to routes module
     const static inline QUrl GAMES_LIST{"games/list"};

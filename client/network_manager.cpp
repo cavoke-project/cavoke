@@ -3,7 +3,9 @@
 #include <QOAuthHttpServerReplyHandler>
 #include <utility>
 
-NetworkManager::NetworkManager(QObject *parent) : manager{this}, oauth2{this} {
+NetworkManager::NetworkManager(QObject *parent)
+    : manager{this},
+      oauth2{&cavoke::auth::AuthenticationManager::getInstance().oauth2} {
     gamePollingTimer = new QTimer(this);
     gamePollingTimer->setInterval(500);
     gamePollingTimer->callOnTimeout([this]() { getPlayState(); });
@@ -13,44 +15,12 @@ NetworkManager::NetworkManager(QObject *parent) : manager{this}, oauth2{this} {
     validationPollingTimer = new QTimer(this);
     validationPollingTimer->setInterval(500);
     validationPollingTimer->callOnTimeout([this]() { validateSession(); });
-    userId = QUuid::createUuid();
 
-    // oauth reply handler
-    auto replyHandler = new QOAuthHttpServerReplyHandler(1337, this);
-    oauth2.setReplyHandler(replyHandler);
-    // setup oauth settings
-    oauth2.setAuthorizationUrl(QUrl(
-        "https://cavoke.eu.auth0.com/authorize"));  // FIXME: move to constants
-    oauth2.setAccessTokenUrl(
-        QUrl("https://cavoke.eu.auth0.com/oauth/token"));  // FIXME: move to
-                                                           // constants
-    oauth2.setClientIdentifier(
-        "yxkEiSikGF6JSaFwIikeLQlUNAUUR0ak");  // FIXME: move to constants
-    oauth2.setScope("identity read");         // FIXME: move to constants
-    oauth2.setNetworkAccessManager(&manager);
-
-    connect(&oauth2, &QOAuth2AuthorizationCodeFlow::statusChanged,
-            [=](QAbstractOAuth::Status status) {
-                if (status == QAbstractOAuth::Status::Granted) {
-                    qDebug() << "Authenticated!!";
-                }
-                // TODO: fatal error if unauthenticated
-            });
-    oauth2.setModifyParametersFunction(
-        [&](QAbstractOAuth::Stage stage, auto *parameters) {
-            if (stage == QAbstractOAuth::Stage::RequestingAuthorization)
-                parameters->insert("audience",
-                                   "https://develop.api.cavoke.wlko.me");
-            // TODO: use HOST
-        });
-    connect(&oauth2, &QOAuth2AuthorizationCodeFlow::authorizeWithBrowser,
-            &QDesktopServices::openUrl);
-    // try to authenticate via oauth
-    oauth2.grant();
+    oauth2->setNetworkAccessManager(&manager);
 }
 
 void NetworkManager::getHealth() {
-    auto reply = oauth2.get(HOST.resolved(HEALTH));
+    auto reply = oauth2->get(HOST.resolved(HEALTH));
     connect(reply, &QNetworkReply::finished, this,
             [reply, this]() { gotHealth(reply); });
 }
@@ -63,7 +33,7 @@ void NetworkManager::gotHealth(QNetworkReply *reply) {
 }
 
 void NetworkManager::getGamesList() {
-    auto reply = oauth2.get(HOST.resolved(GAMES_LIST));
+    auto reply = oauth2->get(HOST.resolved(GAMES_LIST));
     connect(reply, &QNetworkReply::finished, this,
             [reply, this]() { gotGamesList(reply); });
 }
@@ -80,7 +50,7 @@ void NetworkManager::gotGamesList(QNetworkReply *reply) {
 void NetworkManager::getGamesConfig(const QString &gameId) {
     QUrl route =
         HOST.resolved(GAMES).resolved(gameId + "/").resolved(GET_CONFIG);
-    auto reply = oauth2.get(route);
+    auto reply = oauth2->get(route);
     connect(reply, &QNetworkReply::finished, this,
             [reply, this]() { gotGamesConfig(reply); });
 }
@@ -95,7 +65,7 @@ void NetworkManager::getGamesClient(const QString &gameId) {
     QUrl route =
         HOST.resolved(GAMES).resolved(gameId + "/").resolved(GET_CLIENT);
     qDebug() << route.toString();
-    auto reply = oauth2.get(route);
+    auto reply = oauth2->get(route);
     connect(reply, &QNetworkReply::finished, this,
             [reply, gameId, this]() { gotGamesClient(reply, gameId); });
 }
@@ -121,8 +91,7 @@ void NetworkManager::gotGamesClient(QNetworkReply *reply,
 
 void NetworkManager::createSession(const QString &gameId) {
     QUrl route = HOST.resolved(SESSIONS_CREATE);
-    route.setQuery({{"game_id", gameId},
-                    {"user_id", userId.toString(QUuid::WithoutBraces)}});
+    route.setQuery({{"game_id", gameId}});
     qDebug() << route.toString();
     auto request = QNetworkRequest(route);
     request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader,
@@ -134,8 +103,7 @@ void NetworkManager::createSession(const QString &gameId) {
 
 void NetworkManager::joinSession(const QString &inviteCode) {
     QUrl route = HOST.resolved(SESSIONS_JOIN);
-    route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)},
-                    {"invite_code", inviteCode}});
+    route.setQuery({{"invite_code", inviteCode}});
     qDebug() << route.toString();
     auto request = QNetworkRequest(route);
     request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader,
@@ -160,7 +128,6 @@ void NetworkManager::gotSession(QNetworkReply *reply) {
 void NetworkManager::sendMove(const QString &jsonMove) {
     QUrl route =
         HOST.resolved(PLAY).resolved(sessionId + "/").resolved(SEND_MOVE);
-    route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
     qDebug() << route.toString();
     auto request = QNetworkRequest(route);
     request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader,
@@ -180,7 +147,6 @@ void NetworkManager::gotPostResponse(QNetworkReply *reply) {
 void NetworkManager::getPlayState() {
     QUrl route =
         HOST.resolved(PLAY).resolved(sessionId + "/").resolved(GET_STATE);
-    route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
     qDebug() << route.toString();
     auto request = QNetworkRequest(route);
     auto reply = manager.get(request);
@@ -203,7 +169,6 @@ void NetworkManager::gotPlayState(QNetworkReply *reply) {
 void NetworkManager::validateSession() {
     QUrl route =
         HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(VALIDATE);
-    route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
     qDebug() << route.toString();
     auto request = QNetworkRequest(route);
     request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader,
@@ -228,7 +193,6 @@ void NetworkManager::gotValidatedSession(QNetworkReply *reply) {
 void NetworkManager::getSessionInfo() {
     QUrl route =
         HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(GET_INFO);
-    route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
     qDebug() << route.toString();
     auto request = QNetworkRequest(route);
     auto reply = manager.get(request);
@@ -239,7 +203,6 @@ void NetworkManager::getSessionInfo() {
 void NetworkManager::startSession() {
     QUrl route =
         HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(START);
-    route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
     qDebug() << route.toString();
     auto request = QNetworkRequest(route);
     request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader,

@@ -187,6 +187,17 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="verticalLayoutWidget_2">
+       <property name="geometry">
+        <rect>
+         <x>570</x>
+         <y>30</y>
+         <width>181</width>
+         <height>91</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="loginLayout"/>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -197,7 +208,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>19</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
