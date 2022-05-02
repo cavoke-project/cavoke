@@ -18,7 +18,7 @@ Rectangle {
     }
     // END cavoke section
 
-    property var idMap: ({ board:board, hintControls:hintControls, currentHint:currentHint });
+    property var idMap: ({ board:board, hintControls:hintControls, currentHint:currentHint, yourRole: yourRole });
 
     function findItemById(id) {
           return idMap[id];
@@ -57,11 +57,32 @@ Rectangle {
             }
 
     RowLayout {
+                    id: yourRoleBlock;
+
+                    anchors.top: parent.top;
+                    anchors.right: parent.right;
+                    anchors.topMargin: 25;
+                    anchors.rightMargin: 25;
+                    Text {
+                        id: yourRoleLabel;
+                        color: "black";
+                        text: "Your role is: "
+                        anchors.right: yourRole.left;
+                    }
+                    Text {
+                        id: yourRole;
+                        color: "black";
+                        anchors.right: parent.right;
+                    }
+
+                }
+
+    RowLayout {
         id: hintControls;
 
         anchors.bottom: parent.bottom;
         anchors.horizontalCenter: parent.horizontalCenter;
-        anchors.bottomMargin: 75;
+        anchors.bottomMargin: 25;
 
         Rectangle {
             color: "#faebd7";

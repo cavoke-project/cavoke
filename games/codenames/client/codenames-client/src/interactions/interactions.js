@@ -16,6 +16,18 @@ function openCard(index) {
     sendMove(index.toString());
 }
 
+function getRoleName(role) {
+    if (role === 0) {
+        return "blue captain";
+    } else if (role === 1) {
+        return "red captain";
+    } else if (role % 2 === 0) {
+        return "blue player";
+    } else {
+        return "red player";
+    }
+}
+
 
 function updateInterface(model) {
     let board = findItemById('board');
@@ -26,6 +38,7 @@ function updateInterface(model) {
     let hintControls = findItemById("hintControls");
     hintControls.visible = ((stage === 0 && player === 0) || (stage === 2 && player === 1));
     findItemById("currentHint").text = model.m_last_hint;
+    findItemById("yourRole").text = getRoleName(player);
 
     for (let i = 0; i < model.m_height; ++i) {
         for (let j = 0; j < model.m_width; ++j) {
