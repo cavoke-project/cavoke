@@ -177,3 +177,4 @@ local_server/
 
 # Drogon logs
 *.log
+/games/codenames/client/client.zip

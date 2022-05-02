@@ -70,7 +70,7 @@ Item {
 
         MouseArea {
             anchors.fill: parent
-            onClicked: Interact.openCard(card.card_index);
+            //onClicked: Interact.openCard(card.card_index);
         }
     }
 }
