@@ -70,6 +70,7 @@ struct GameSessionAccessObject {
         std::string session_id;
         std::string game_id;
         std::string invite_code;
+        std::string host_id;
         SessionStatus status;
         std::vector<PlayerInfo> players;
     };
@@ -112,6 +113,7 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSessionAccessObject::GameSessionInfo,
                                    session_id,
                                    game_id,
                                    invite_code,
+                                   host_id,
                                    status,
                                    players);
 }  // namespace cavoke::server::model

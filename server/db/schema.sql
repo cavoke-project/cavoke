@@ -12,8 +12,10 @@ create table sessions
             primary key,
     game_id       varchar not null,
     invite_code   varchar not null,
+    host_id       uuid,
     game_settings json,
-    status        integer
+    status        integer,
+    constraint fk_host foreign key (host_id) references users (id)
 );
 
 create unique index session_id_uindex
