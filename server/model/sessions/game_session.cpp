@@ -192,6 +192,7 @@ GameSessionAccessObject::make_session_info(
     std::vector<PlayerInfo> players) {
     return {session.getValueOfId(), session.getValueOfGameId(),
             session.getValueOfInviteCode(),
+            session.getValueOfHostId(),
             static_cast<SessionStatus>(session.getValueOfStatus()),
             std::move(players)};
 }

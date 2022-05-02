@@ -23,6 +23,7 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
         session.setId(drogon::utils::getUuid());
         session.setGameSettingsToNull();
         session.setGameId(game_config.id);
+        session.setHostId(host_user_id);
         session.setStatus(GameSessionAccessObject::NOT_STARTED);
         // TODO: there are only 1e6 invite codes, something has to be done about
         session.setInviteCode(generate_invite_code());
