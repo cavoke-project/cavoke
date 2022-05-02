@@ -11,7 +11,8 @@ cavoke::auth::AuthenticationManager::AuthenticationManager() {
                                                            // constants
     oauth2.setClientIdentifier(
         "yxkEiSikGF6JSaFwIikeLQlUNAUUR0ak");  // FIXME: move to constants
-    oauth2.setScope("identity sessions profile users");         // FIXME: move to constants
+    oauth2.setScope(
+        "identity sessions profile users");  // FIXME: move to constants
 
     connect(&oauth2, &QOAuth2AuthorizationCodeFlow::statusChanged,
             [=](QAbstractOAuth::Status status) {

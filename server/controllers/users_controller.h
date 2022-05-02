@@ -9,11 +9,20 @@ namespace cavoke::server::controllers {
 struct UsersController : public drogon::HttpController<UsersController, true> {
 public:
     METHOD_LIST_BEGIN
-    ADD_METHOD_TO(UsersController::get_me, "/profile/get_me", drogon::Get, "AuthFilter");
-    ADD_METHOD_TO(UsersController::change_name, "/profile/change_name", drogon::Post, "AuthFilter");
-    ADD_METHOD_TO(UsersController::get_user, "/users/get_user", drogon::Get, "AuthFilter");
+    ADD_METHOD_TO(UsersController::get_me,
+                  "/profile/get_me",
+                  drogon::Get,
+                  "AuthFilter");
+    ADD_METHOD_TO(UsersController::change_name,
+                  "/profile/change_name",
+                  drogon::Post,
+                  "AuthFilter");
+    ADD_METHOD_TO(UsersController::get_user,
+                  "/users/get_user",
+                  drogon::Get,
+                  "AuthFilter");
     METHOD_LIST_END
-    
+
 protected:
     void get_me(
         const drogon::HttpRequestPtr &req,
@@ -24,10 +33,12 @@ protected:
     void get_user(
         const drogon::HttpRequestPtr &req,
         std::function<void(const drogon::HttpResponsePtr &)> &&callback);
+
 private:
-    MAPPER_TYPE(drogon_model::cavoke_orm::Users) mp_users = MAPPER_FOR(drogon_model::cavoke_orm::Users);
+    MAPPER_TYPE(drogon_model::cavoke_orm::Users)
+    mp_users = MAPPER_FOR(drogon_model::cavoke_orm::Users);
 };
 
-}
+}  // namespace cavoke::server::controllers
 
 #endif  // CAVOKE_USERS_CONTROLLER_H
