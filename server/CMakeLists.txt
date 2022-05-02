@@ -46,7 +46,7 @@ add_executable(${PROJECT_NAME}
         controllers/state_controller.cpp
         controllers/sessions_controller.cpp
         model/sessions/game_session.cpp
-        )
+        controllers/users_controller.cpp)
 target_link_libraries(cavoke_server Drogon::Drogon)
 target_link_libraries(cavoke_server ${Boost_LIBRARIES} ${CMAKE_DL_LIBS})
 target_link_libraries(cavoke_server nlohmann_json::nlohmann_json)

@@ -1,8 +1,9 @@
 create table users
 (
-    id varchar not null
+    id           varchar not null
         constraint user_pk
-            primary key
+            primary key,
+    display_name varchar default 'Guest':: character varying
 );
 
 create table sessions
