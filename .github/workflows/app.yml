@@ -25,6 +25,8 @@ jobs:
     container: ghcr.io/cavoke-project/cavoke-ci:client-qt5-suse
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Cmake
         run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=5
       - name: Make
@@ -34,6 +36,8 @@ jobs:
     container: ghcr.io/cavoke-project/cavoke-ci:client-qt6-suse
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Cmake
         run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=6  # QT_MAJOR_VERSION=6 by default, so not necessary
       - name: Make
