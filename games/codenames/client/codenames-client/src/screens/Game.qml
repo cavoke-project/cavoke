@@ -41,7 +41,7 @@ Rectangle {
 
                 anchors.top: parent.top;
                 anchors.horizontalCenter: parent.horizontalCenter;
-                anchors.topMargin: 50;
+                anchors.topMargin: 25;
                 Text {
                     id: currentHintLabel;
                     color: "black";

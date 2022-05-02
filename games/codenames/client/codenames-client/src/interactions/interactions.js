@@ -16,15 +16,9 @@ function openCard(index) {
     sendMove(index.toString());
 }
 
-function clearChildren(element) {
-    while (element.children.length > 0) {
-        element.children[element.children.length - 1].destroy()
-    }
-}
 
 function updateInterface(model) {
     let board = findItemById('board');
-    clearChildren(board);
     board.rows = model.m_height;
     board.columns = model.m_width;
     let stage = model.m_stage;
@@ -35,12 +29,15 @@ function updateInterface(model) {
 
     for (let i = 0; i < model.m_height; ++i) {
         for (let j = 0; j < model.m_width; ++j) {
-            // let component = Qt.createComponent("../components/Card.qml");
-            // let card = component.createObject(board);
-            // card.word = card_words[(i * model.m_width + j)];
-            // card.state = card_states[(i * model.m_width + j)];
-            // card.player = player;
-            // card.card_index = (i * w + j);
+            if (board.children.length < (i * model.m_width + j) + 1) {
+                let component = Qt.createComponent("../components/Card.qml");
+                component.createObject(board);
+            }
+            let card = board.children[(i * model.m_width + j)];
+            card.word = model.m_words[(i * model.m_width + j)];
+            card.state = model.m_card_states[(i * model.m_width + j)];
+            card.player = player;
+            card.card_index = (i * model.m_width + j);
         }
     }
 }
