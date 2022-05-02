@@ -43,6 +43,8 @@ private:
     std::vector<bool> m_opened;
     int m_height;
     int m_width;
+    int m_blue_closed;
+    int m_red_closed;
     GAME_RESULT m_result;
 
 public:
@@ -66,7 +68,9 @@ public:
                                    m_opened,
                                    m_height,
                                    m_width,
-                                   m_result)
+                                   m_result,
+                                   m_blue_closed,
+                                   m_red_closed)
 
     CodenamesModel(int height_, int width_, const WordList &wordlist_);
     CodenamesModel() = default;

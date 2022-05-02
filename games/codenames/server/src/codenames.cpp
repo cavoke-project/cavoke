@@ -115,8 +115,10 @@ cavoke::GameState cavoke::apply_move(cavoke::GameMove &new_move) {
                        BLUE_TEAM) {  // NOLINT(bugprone-branch-clone)
                                      // blue team
         model.open_card(std::stoi(new_move.move));
-    } else if (model.stage() ==
-               codenames::CodenamesModel::GAME_STAGE::RED_TEAM) {  // red team
+    } else if ((new_move.player_id == 3 || new_move.player_id == 5) &&
+               model.stage() ==
+                   codenames::CodenamesModel::GAME_STAGE::RED_TEAM) {  // red
+                                                                       // team
         model.open_card(std::stoi(new_move.move));
     }
 

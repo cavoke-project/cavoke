@@ -43,6 +43,9 @@ void CodenamesModel::generate_cards() {
     int blue_cnt = red_cnt + 1;
     int black_cnt = m_height * m_width / 15;
 
+    m_blue_closed = blue_cnt;
+    m_red_closed = red_cnt;
+
     m_card_states =
         std::vector<CARD_STATE>(m_height * m_width, CARD_STATE::NEUTRAL);
 
@@ -109,17 +112,20 @@ void CodenamesModel::open_card(int pos) {
     if (m_opened[pos]) {
         return;
     }
-    m_last_hint = "";
 
     m_opened[pos] = true;
 
     if (m_card_states[pos] == CARD_STATE::BLACK) {
+        m_last_hint = "";
+
         if (m_stage == GAME_STAGE::BLUE_TEAM) {
             m_result = GAME_RESULT::RED_WINS;
         } else {
             m_result = GAME_RESULT::BLUE_WINS;
         }
     } else if (m_card_states[pos] == CARD_STATE::NEUTRAL) {
+        m_last_hint = "";
+
         if (m_stage == GAME_STAGE::BLUE_TEAM) {
             m_stage = GAME_STAGE::RED_CAPTAIN;
         } else {
@@ -128,29 +134,26 @@ void CodenamesModel::open_card(int pos) {
     } else {
         if ((m_card_states[pos] == CARD_STATE::BLUE &&
              m_stage == GAME_STAGE::RED_TEAM)) {
+            m_last_hint = "";
+
             m_stage = GAME_STAGE::BLUE_CAPTAIN;
         } else if (m_card_states[pos] == CARD_STATE::RED &&
                    m_stage == GAME_STAGE::BLUE_TEAM) {
+            m_last_hint = "";
+
             m_stage = GAME_STAGE::RED_CAPTAIN;
         }
 
-        int blue_closed = 0;
-        int red_closed = 0;
-
-        for (int i = 0; i < m_height * m_width; ++i) {
-            if (!m_opened[i]) {
-                if (m_card_states[i] == CARD_STATE::BLUE) {
-                    blue_closed++;
-                } else {
-                    red_closed++;
-                }
-            }
+        if (m_card_states[pos] == CARD_STATE::BLUE) {
+            m_blue_closed--;
+        } else if (m_card_states[pos] == CARD_STATE::RED) {
+            m_red_closed--;
         }
 
-        if (red_closed == 0) {
+        if (m_red_closed == 0) {
             m_result = GAME_RESULT::RED_WINS;
             m_stage = GAME_STAGE::FINISHED;
-        } else if (blue_closed == 0) {
+        } else if (m_blue_closed == 0) {
             m_result = GAME_RESULT::BLUE_WINS;
             m_stage = GAME_STAGE::FINISHED;
         }
@@ -166,9 +169,9 @@ void CodenamesModel::make_hint(std::string hint) {
     m_last_hint = std::move(hint);
 
     if (m_stage == GAME_STAGE::BLUE_CAPTAIN) {
-        m_stage = GAME_STAGE::RED_TEAM;
-    } else {
         m_stage = GAME_STAGE::BLUE_TEAM;
+    } else {
+        m_stage = GAME_STAGE::RED_TEAM;
     }
 }
 
