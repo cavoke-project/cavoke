@@ -62,7 +62,7 @@ jobs:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_DB: postgres_db
+          POSTGRES_DB: cavoke
           POSTGRES_PASSWORD: postgres_password
           POSTGRES_PORT: 5432
           POSTGRES_USER: postgres_user
@@ -82,7 +82,7 @@ jobs:
           apt-get update
           apt-get install --yes postgresql-client
       - name: Populate the database
-        run: psql -h postgres -d postgres_db -U postgres_user -f server/db/schema.sql
+        run: psql -h postgres -d cavoke -U postgres_user -f server/db/schema.sql
         env:
           PGPASSWORD: postgres_password
       - name: Cmake
