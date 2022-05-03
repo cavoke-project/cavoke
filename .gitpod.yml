@@ -4,14 +4,16 @@ image:
 tasks:
   - name: Cmake
     init: mkdir -p build-cmake && cmake . -B build-cmake -DQT_MAJOR_VERSION=5
-#  - name: Database
-#    init:
+  - name: Database
+    before: docker build . -f db.Dockerfile -t cavoke_db
+    command: docker run -t -p 5432:5432 -e POSTGRES_DB=postgres_db -e POSTGRES_USER=postgres_user -e POSTGRES_PASSWORD=postgres_password cavoke_db
 
 vscode:
   extensions:
     - ms-azuretools.vscode-docker
     - timonwong.shellcheck
-    - ms-vscode.cpptools
+#    - ms-vscode.cmake-tools
+    - vscode.cpp
 
 github:
   prebuilds:
