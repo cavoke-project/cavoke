@@ -42,14 +42,14 @@ find_package(Boost 1.71 REQUIRED filesystem program_options)
 include_directories(${Boost_INCLUDE_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})
 
-find_package(Drogon 1.7.3)
-if ((NOT Drogon_FOUND) AND EXISTS extern/drogon)
+find_package(Drogon 1.7.3 QUIET)
+if ((NOT Drogon_FOUND) AND EXISTS extern/drogon/CMakeLists.txt)
     add_subdirectory(extern/drogon)
 endif()
 
 # https://github.com/nlohmann/json/releases/tag/v3.9.0 for convenience macros
-find_package(nlohmann_json 3.9.0)
-if ((NOT nlohmann_json_FOUND) AND EXISTS extern/json)
+find_package(nlohmann_json 3.9.0 QUIET)
+if ((NOT nlohmann_json_FOUND) AND EXISTS extern/json/CMakeLists.txt)
     add_subdirectory(extern/json)
 endif()
 
