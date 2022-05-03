@@ -1,0 +1,23 @@
+image:
+  file: .gitpod.Dockerfile
+
+tasks:
+  - name: Cmake
+    init: mkdir -p build && cmake . -B build -DQT_MAJOR_VERSION=5
+#  - name: Database
+#    init:
+
+vscode:
+  extensions:
+    - ms-azuretools.vscode-docker
+    - timonwong.shellcheck
+    - ms-vscode.cpptools
+
+github:
+  prebuilds:
+    master: true
+    branches: true
+    pullRequests: true
+    pullRequestsFromForks: true
+    addCheck: true
+    addComment: true
