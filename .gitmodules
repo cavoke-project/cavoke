@@ -1,0 +1,6 @@
+[submodule "server/extern/drogon"]
+	path = server/extern/drogon
+	url = https://github.com/drogonframework/drogon.git
+[submodule "server/extern/json"]
+	path = server/extern/json
+	url = https://github.com/nlohmann/json.git

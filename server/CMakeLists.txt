@@ -5,15 +5,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-find_package(Drogon 1.7.3 REQUIRED)
-
-find_package(Boost 1.71 REQUIRED filesystem program_options)
-include_directories(${Boost_INCLUDE_DIRS})
-link_directories(${Boost_LIBRARY_DIRS})
-
-# https://github.com/nlohmann/json/releases/tag/v3.9.0 for convenience macros
-find_package(nlohmann_json 3.9.0 REQUIRED)
-
 set(CAVOKE_H_DIR ../cavoke-dev-lib CACHE PATH "Directory with cavoke.h library")
 include_directories(${CAVOKE_H_DIR})
 
@@ -45,11 +36,28 @@ add_executable(${PROJECT_NAME}
         model/auth/authentication_manager.cpp
         model/sessions/game_session.cpp
         )
-target_link_libraries(cavoke_server Drogon::Drogon)
-target_link_libraries(cavoke_server ${Boost_LIBRARIES} ${CMAKE_DL_LIBS})
-target_link_libraries(cavoke_server nlohmann_json::nlohmann_json)
-
 install(TARGETS ${PROJECT_NAME})
+
+find_package(Boost 1.71 REQUIRED filesystem program_options)
+include_directories(${Boost_INCLUDE_DIRS})
+link_directories(${Boost_LIBRARY_DIRS})
+
+find_package(Drogon 1.7.3)
+if ((NOT Drogon_FOUND) AND EXISTS extern/drogon)
+    add_subdirectory(extern/drogon)
+endif()
+
+# https://github.com/nlohmann/json/releases/tag/v3.9.0 for convenience macros
+find_package(nlohmann_json 3.9.0)
+if ((NOT nlohmann_json_FOUND) AND EXISTS extern/json)
+    add_subdirectory(extern/json)
+endif()
+
+target_link_libraries(cavoke_server ${Boost_LIBRARIES} ${CMAKE_DL_LIBS})
+target_link_libraries(cavoke_server drogon)
+target_link_libraries(cavoke_server nlohmann_json)
+
+add_subdirectory(test)
 
 drogon_create_views(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/views
         ${CMAKE_CURRENT_BINARY_DIR})
@@ -64,5 +72,3 @@ target_include_directories(${PROJECT_NAME}
 # set_property(TARGET ${PROJECT_NAME} PROPERTY ENABLE_EXPORTS ON)
 
 # ##############################################################################
-
-add_subdirectory(test)
