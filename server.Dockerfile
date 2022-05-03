@@ -12,7 +12,7 @@ ADD server/ $CAVOKE_ROOT
 ADD cavoke-dev-lib/ $CAVOKE_ROOT
 WORKDIR $CAVOKE_ROOT
 # Install server
-RUN chmod +x ./install.sh && ./install.sh -DCAVOKE_H_DIR=.
+RUN chmod +x ./install.sh && ./install.sh -DCAVOKE_H_DIR=. -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON
 WORKDIR /
 RUN rm -rf $CAVOKE_ROOT
 
