@@ -42,22 +42,20 @@ find_package(Boost 1.71 REQUIRED filesystem program_options)
 include_directories(${Boost_INCLUDE_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})
 
-find_package(Drogon 1.7.3 QUIET)
-if ((NOT Drogon_FOUND) AND EXISTS extern/drogon/CMakeLists.txt)
+find_package(Drogon 1.7.3)
+if (NOT Drogon_FOUND)
     add_subdirectory(extern/drogon)
 endif()
 
 # https://github.com/nlohmann/json/releases/tag/v3.9.0 for convenience macros
-find_package(nlohmann_json 3.9.0 QUIET)
-if ((NOT nlohmann_json_FOUND) AND EXISTS extern/json/CMakeLists.txt)
+find_package(nlohmann_json 3.9.0)
+if (NOT nlohmann_json_FOUND)
     add_subdirectory(extern/json)
 endif()
 
 target_link_libraries(cavoke_server ${Boost_LIBRARIES} ${CMAKE_DL_LIBS})
 target_link_libraries(cavoke_server drogon)
 target_link_libraries(cavoke_server nlohmann_json)
-
-add_subdirectory(test)
 
 drogon_create_views(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/views
         ${CMAKE_CURRENT_BINARY_DIR})
@@ -72,3 +70,5 @@ target_include_directories(${PROJECT_NAME}
 # set_property(TARGET ${PROJECT_NAME} PROPERTY ENABLE_EXPORTS ON)
 
 # ##############################################################################
+
+add_subdirectory(test)
