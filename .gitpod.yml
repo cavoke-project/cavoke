@@ -3,7 +3,7 @@ image:
 
 tasks:
   - name: Cmake
-    init: mkdir -p build && cmake . -B build -DQT_MAJOR_VERSION=5
+    init: mkdir -p build-cmake && cmake . -B build-cmake -DQT_MAJOR_VERSION=5
 #  - name: Database
 #    init:
 
