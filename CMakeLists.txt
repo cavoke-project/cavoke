@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(cavoke)
 
-include(cmake/GitSubmodules.cmake)
+#include(cmake/GitSubmodules.cmake)
 
 option(BUILD_ALL "Build all subprojects (usually disabled for ci)" ON)
 

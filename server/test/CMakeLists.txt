@@ -9,6 +9,9 @@ add_executable(${PROJECT_NAME} test_main.cc)
 # target_link_libraries(${PROJECT_NAME}_test PRIVATE drogon)
 #
 # and comment out the following lines
+if ((NOT Drogon_FOUND) AND EXISTS ../extern/drogon/CMakeLists.txt)
+    add_subdirectory(../extern/drogon)
+endif()
 target_link_libraries(${PROJECT_NAME} PRIVATE drogon)
 
 ParseAndAddDrogonTests(${PROJECT_NAME})
