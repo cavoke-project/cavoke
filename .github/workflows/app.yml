@@ -38,6 +38,17 @@ jobs:
         run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=6  # QT_MAJOR_VERSION=6 by default, so not necessary
       - name: Make
         run: cd build && make cavoke_client
+  server-compiles-with-submodules:
+    runs-on: ubuntu-latest
+    steps:
+      - run: sudo apt-get install -y openssl libssl-dev libjsoncpp-dev uuid-dev zlib1g-dev libc-ares-dev postgresql-server-dev-all slibboost-all-dev
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Cmake
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
+      - name: Make
+        run: cd build && make cavoke_server
   server-healthcheck:
     runs-on: ubuntu-latest
     container: ghcr.io/cavoke-project/cavoke-ci:server
