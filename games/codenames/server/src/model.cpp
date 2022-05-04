@@ -7,18 +7,6 @@ CodenamesModel::GAME_STAGE CodenamesModel::stage() const {
     return m_stage;
 }
 
-const std::string &CodenamesModel::last_hint() const {
-    return m_last_hint;
-}
-
-int CodenamesModel::height() const {
-    return m_height;
-}
-
-int CodenamesModel::width() const {
-    return m_width;
-}
-
 CodenamesModel::GAME_RESULT CodenamesModel::result() const {
     return m_result;
 }
@@ -114,6 +102,7 @@ void CodenamesModel::open_card(int pos) {
     }
 
     m_opened[pos] = true;
+    m_attempts_left--;
 
     if (m_card_states[pos] == CARD_STATE::BLACK) {
         m_last_hint = "";
@@ -123,55 +112,67 @@ void CodenamesModel::open_card(int pos) {
         } else {
             m_result = GAME_RESULT::BLUE_WINS;
         }
-    } else if (m_card_states[pos] == CARD_STATE::NEUTRAL) {
+        m_stage = GAME_STAGE::FINISHED;
+        return;
+
+    } else if (m_card_states[pos] == CARD_STATE::NEUTRAL ||
+               m_attempts_left == 0 ||
+               (m_card_states[pos] == CARD_STATE::BLUE &&
+                m_stage == GAME_STAGE::RED_TEAM) ||
+               (m_card_states[pos] == CARD_STATE::RED &&
+                m_stage == GAME_STAGE::BLUE_TEAM)) {
         m_last_hint = "";
+        next_stage();
+    }
 
-        if (m_stage == GAME_STAGE::BLUE_TEAM) {
-            m_stage = GAME_STAGE::RED_CAPTAIN;
-        } else {
-            m_stage = GAME_STAGE::BLUE_CAPTAIN;
-        }
-    } else {
-        if ((m_card_states[pos] == CARD_STATE::BLUE &&
-             m_stage == GAME_STAGE::RED_TEAM)) {
-            m_last_hint = "";
+    if (m_card_states[pos] == CARD_STATE::BLUE) {
+        m_blue_closed--;
+    } else if (m_card_states[pos] == CARD_STATE::RED) {
+        m_red_closed--;
+    }
 
-            m_stage = GAME_STAGE::BLUE_CAPTAIN;
-        } else if (m_card_states[pos] == CARD_STATE::RED &&
-                   m_stage == GAME_STAGE::BLUE_TEAM) {
-            m_last_hint = "";
-
-            m_stage = GAME_STAGE::RED_CAPTAIN;
-        }
-
-        if (m_card_states[pos] == CARD_STATE::BLUE) {
-            m_blue_closed--;
-        } else if (m_card_states[pos] == CARD_STATE::RED) {
-            m_red_closed--;
-        }
-
-        if (m_red_closed == 0) {
-            m_result = GAME_RESULT::RED_WINS;
-            m_stage = GAME_STAGE::FINISHED;
-        } else if (m_blue_closed == 0) {
-            m_result = GAME_RESULT::BLUE_WINS;
-            m_stage = GAME_STAGE::FINISHED;
-        }
+    if (m_red_closed == 0) {
+        m_result = GAME_RESULT::RED_WINS;
+        m_stage = GAME_STAGE::FINISHED;
+    } else if (m_blue_closed == 0) {
+        m_result = GAME_RESULT::BLUE_WINS;
+        m_stage = GAME_STAGE::FINISHED;
     }
 }
 
-void CodenamesModel::make_hint(std::string hint) {
+void CodenamesModel::make_hint(std::string hint, int attempts) {
     if (m_stage != GAME_STAGE::BLUE_CAPTAIN &&
         m_stage != GAME_STAGE::RED_CAPTAIN) {
         throw invalid_move();
     }
 
     m_last_hint = std::move(hint);
+    m_attempts_left = attempts + 1;
 
+    next_stage();
+}
+
+void CodenamesModel::skip() {
+    if (m_stage == GAME_STAGE::BLUE_CAPTAIN ||
+        m_stage == GAME_STAGE::RED_CAPTAIN) {
+        throw invalid_move();
+    }
+
+    m_attempts_left = 0;
+    m_last_hint = "";
+
+    next_stage();
+}
+
+void CodenamesModel::next_stage() {
     if (m_stage == GAME_STAGE::BLUE_CAPTAIN) {
         m_stage = GAME_STAGE::BLUE_TEAM;
-    } else {
+    } else if (m_stage == GAME_STAGE::BLUE_TEAM) {
+        m_stage = GAME_STAGE::RED_CAPTAIN;
+    } else if (m_stage == GAME_STAGE::RED_CAPTAIN) {
         m_stage = GAME_STAGE::RED_TEAM;
+    } else if (m_stage == GAME_STAGE::RED_TEAM) {
+        m_stage = GAME_STAGE::BLUE_CAPTAIN;
     }
 }
 

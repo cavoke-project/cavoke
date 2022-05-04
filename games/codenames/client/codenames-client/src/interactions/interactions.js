@@ -2,18 +2,26 @@ let previousState = "";
 
 function sendMove(move) {
     let moveObj = {}
-    moveObj.move = move;
+    moveObj.move = JSON.stringify(move);
     cavoke.getMoveFromQml(JSON.stringify(moveObj));
 }
 
-function makeHint(hint) {
+function makeHint(hint, attempts = 1) {
+    if (!hint || !attempts || attempts <= 0) {
+        return;
+    }
     console.log("Make hint", hint);
-    sendMove(hint);
+    sendMove({type: "hint", hint: hint, attempts: attempts});
 }
 
 function openCard(index) {
     console.log("Open card", index);
-    sendMove(index.toString());
+    sendMove({type: "open", position: index});
+}
+
+function skip() {
+    console.log("Skip move");
+    sendMove({type: "skip"});
 }
 
 function getRoleName(role) {
@@ -49,10 +57,16 @@ function updateInterface(model) {
     let stage = model.m_stage;
     let player = model.role;
     hintControls.visible = ((stage === 0 && player === 0) || (stage === 2 && player === 1));
-    currentHint.text = model.m_last_hint;
+    if (model.m_last_hint) {
+        currentHint.text = "\"" + model.m_last_hint + "\"";
+    } else {
+        currentHint.text = "none";
+    }
+    currentAttempts.text = model.m_attempts_left.toString();
     yourRole.text = getRoleName(player);
 
     yourTurnLabel.visible = isYourTurn(player, model.m_stage);
+    skipControls.visible = yourTurnLabel.visible && (player >= 2);
 
     blueCardsLeft.text = model.m_blue_closed.toString();
     redCardsLeft.text = model.m_red_closed.toString();
@@ -67,6 +81,9 @@ function updateInterface(model) {
             card.word = model.m_words[(i * model.m_width + j)];
             card.state = model.m_card_states[(i * model.m_width + j)];
             card.player = player;
+            if (player <= 1) {
+                card.opened = model.m_opened[(i * model.m_width + j)];
+            }
             card.card_index = (i * model.m_width + j);
         }
     }

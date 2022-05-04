@@ -87,6 +87,18 @@ Rectangle {
             color: "black";
             anchors.left: currentHintLabel.right;
         }
+        Text {
+            id: currentAttemptsLabel;
+            color: "black";
+            text: "attempts left: "
+            anchors.left: currentHint.right;
+            anchors.leftMargin: 50;
+        }
+        Text {
+            id: currentAttempts;
+            color: "black";
+            anchors.left: currentAttemptsLabel.right;
+        }
 
     }
 
@@ -130,28 +142,75 @@ Rectangle {
         anchors.bottomMargin: 25;
 
         Rectangle {
-            color: "#faebd7";
-            width: 300;
+            color: "white";
+            border.width: 1;
+            border.color: "black";
+
+            width: 600;
             height: 30;
             TextInput {
                 anchors.fill: parent;
+                anchors.leftMargin: 3;
                 id: hintInput;
                 visible: true;
+                verticalAlignment: Qt.AlignVCenter;
+                font.capitalization: Font.AllLowercase
+                font.pointSize: 15;
+                maximumLength: 37;
             }
         }
+
+        Rectangle {
+            color: "white";
+            border.width: 1;
+            border.color: "black";
+
+            width: 75;
+            height: 30;
+            anchors.leftMargin: 5
+            TextInput {
+                anchors.fill: parent;
+                anchors.leftMargin: 3;
+                id: attemptsInput;
+                visible: true;
+                verticalAlignment: Qt.AlignVCenter;
+                font.pointSize: 15;
+                validator: IntValidator {bottom: 1; top: 200}
+            }
+        }
+
         Button {
             id: hintSubmit;
             text: "Submit";
             onClicked: {
                 let hint = hintInput.text
+                let attempts = attemptsInput.text;
                 hintInput.text = "";
-                Interact.makeHint(hint);
+                attemptsInput.text = "";
+                Interact.makeHint(hint, parseInt(attempts));
+            }
+            width: 100;
+            height: 30;
+            anchors.leftMargin: 5
+        }
+    }
+
+    RowLayout {
+        id: skipControls;
+
+        anchors.bottom: parent.bottom;
+        anchors.horizontalCenter: parent.horizontalCenter;
+        anchors.bottomMargin: 25;
+        Button {
+            id: skipButton;
+            text: "Skip";
+            onClicked: {
+                Interact.skip();
             }
             width: 100;
             height: 30;
 
         }
-
     }
 
 //    Component.onCompleted: drawBoard(5, 5, [], [])

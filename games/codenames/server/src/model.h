@@ -38,6 +38,7 @@ private:
 
     GAME_STAGE m_stage;
     std::string m_last_hint;
+    int m_attempts_left;
     std::vector<std::string> m_words;
     std::vector<CARD_STATE> m_card_states;
     std::vector<bool> m_opened;
@@ -47,15 +48,15 @@ private:
     int m_red_closed;
     GAME_RESULT m_result;
 
+    void next_stage();
+
 public:
     [[nodiscard]] GAME_STAGE stage() const;
     [[nodiscard]] GAME_RESULT result() const;
-    [[nodiscard]] const std::string &last_hint() const;
-    [[nodiscard]] int height() const;
-    [[nodiscard]] int width() const;
 
     void open_card(int pos);
-    void make_hint(std::string hint);
+    void make_hint(std::string hint, int attempts);
+    void skip();
 
     [[nodiscard]] std::string get_player_state(int player) const;
     [[nodiscard]] std::string get_global_state() const;
@@ -63,6 +64,7 @@ public:
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(CodenamesModel,
                                    m_stage,
                                    m_last_hint,
+                                   m_attempts_left,
                                    m_words,
                                    m_card_states,
                                    m_opened,

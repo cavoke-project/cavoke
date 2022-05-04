@@ -6,6 +6,7 @@ import "src/screens"
 Rectangle {
     width: 1280
     height: 768
+    //anchors.fill: parent
     visible: true
 
     Game {

@@ -1,43 +1,44 @@
 import QtQuick 2.0
 
 import "../interactions/interactions.js" as Interact
+import "../style/colors.js" as Colors
 
 Item {
     id: card;
 
     property string word: ""
     property int state: 0
+    property bool opened: false
     property int player: 0
     property int card_index: 0
     width: 180
     height: 100
 
-    function getColor(state) {
+    function getColor(state, opened, player) {
         if (state === 0) {
-            return "blue";
+            if (player >= 2 || !opened) {
+                return Colors.BLUE_AGENT;
+            }
+            return Colors.BLUE_AGENT_OPENED;
         } else if (state === 1) {
-            return "red";
+            if (player >= 2 || !opened) {
+                return Colors.RED_AGENT;
+            }
+            return Colors.RED_AGENT_OPENED;
         } else if (state === 2) {
-            return "black";
+            return Colors.BLACK_CARD;
         } else if (state === 3) {
-            return "lime";
+            if (player >= 2 || !opened) {
+                return Colors.NEUTRAL;
+            }
+            return Colors.NEUTRAL_OPENED;
         } else {
-            return "cyan";
+            return Colors.CLOSED;
         }
     }
 
     function getTextColor(state) {
-        if (state === 0) {
-            return "white";
-        } else if (state === 1) {
-            return "white";
-        } else if (state === 2) {
-            return "white";
-        } else if (state === 3) {
-            return "black";
-        } else {
-            return "black";
-        }
+        return "white";
     }
 
     function getText(state, player, word) {
@@ -53,7 +54,7 @@ Item {
         anchors.fill: parent
 //        radius: 10
 
-        color: getColor(card.state);
+        color: getColor(card.state, card.opened, card.player);
 
         Text {
             id: card_hint;

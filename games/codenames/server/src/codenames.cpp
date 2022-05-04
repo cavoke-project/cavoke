@@ -95,31 +95,45 @@ cavoke::GameState cavoke::init_state(
     return model_to_game_state(model);
 }
 
+bool is_right_player(const codenames::CodenamesModel &model, int player_id) {
+    return ((player_id == 2 || player_id == 4) &&
+            model.stage() ==
+                codenames::CodenamesModel::GAME_STAGE::BLUE_TEAM) ||
+           ((player_id == 3 || player_id == 5) &&
+            model.stage() == codenames::CodenamesModel::GAME_STAGE::RED_TEAM);
+}
+
+bool is_right_captain(const codenames::CodenamesModel &model, int player_id) {
+    return (player_id == 0 &&
+            model.stage() ==
+                codenames::CodenamesModel::GAME_STAGE::BLUE_CAPTAIN) ||
+           (player_id == 1 &&
+            model.stage() ==
+                codenames::CodenamesModel::GAME_STAGE::RED_CAPTAIN);
+}
+
 cavoke::GameState cavoke::apply_move(cavoke::GameMove &new_move) {
     codenames::CodenamesModel model =
         nlohmann::json::parse(new_move.global_state);
+    auto command = nlohmann::json::parse(new_move.move);
+    auto type = command["type"].get<std::string>();
 
-    if (new_move.player_id == 0 &&
-        model.stage() ==
-            codenames::CodenamesModel::GAME_STAGE::
-                BLUE_CAPTAIN) {  // blue cap NOLINT(bugprone-branch-clone)
-        model.make_hint(new_move.move);
-    } else if (new_move.player_id == 1 &&
-               model.stage() ==
-                   codenames::CodenamesModel::GAME_STAGE::RED_CAPTAIN) {  // red
-                                                                          // cap
-        model.make_hint(new_move.move);
-    } else if ((new_move.player_id == 2 || new_move.player_id == 4) &&
-               model.stage() ==
-                   codenames::CodenamesModel::GAME_STAGE::
-                       BLUE_TEAM) {  // NOLINT(bugprone-branch-clone)
-                                     // blue team
-        model.open_card(std::stoi(new_move.move));
-    } else if ((new_move.player_id == 3 || new_move.player_id == 5) &&
-               model.stage() ==
-                   codenames::CodenamesModel::GAME_STAGE::RED_TEAM) {  // red
-                                                                       // team
-        model.open_card(std::stoi(new_move.move));
+    if (type == "hint") {
+        auto hint = command["hint"].get<std::string>();
+        auto attempts = command["attempts"].get<int>();
+
+        if (is_right_captain(model, new_move.player_id)) {
+            model.make_hint(hint, attempts);
+        }
+    } else if (type == "open") {
+        auto pos = command["position"].get<int>();
+        if (is_right_player(model, new_move.player_id)) {
+            model.open_card(pos);
+        }
+    } else if (type == "skip") {
+        if (is_right_player(model, new_move.player_id)) {
+            model.skip();
+        }
     }
 
     return model_to_game_state(model);
