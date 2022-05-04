@@ -263,4 +263,10 @@ void GameSessionAccessObject::set_role(const std::string &user_id,
     }
 }
 
+void GameSessionAccessObject::delete_session() {
+    default_mp_sessions.deleteBy(
+        Criteria(drogon_model::cavoke_orm::Sessions::Cols::_id,
+                 CompareOperator::EQ, id));
+}
+
 }  // namespace cavoke::server::model
