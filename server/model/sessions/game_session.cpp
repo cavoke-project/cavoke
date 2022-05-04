@@ -165,6 +165,11 @@ bool GameSessionAccessObject::is_player(const std::string &user_id) const {
     }
 }
 
+bool GameSessionAccessObject::is_host(const std::string &user_id) const {
+    auto session_snapshot = get_snapshot();
+    return session_snapshot.getValueOfHostId() == user_id;
+}
+
 void GameSessionAccessObject::finish() {
     auto session = default_mp_sessions.findOne(
         Criteria(drogon_model::cavoke_orm::Sessions::Cols::_id,
@@ -206,6 +211,22 @@ void GameSessionAccessObject::remove_user(const std::string &user_id) {
     default_mp_players.deleteBy(
         Criteria(drogon_model::cavoke_orm::Players::Cols::_user_id,
                  CompareOperator::EQ, user_id));
+}
+
+void GameSessionAccessObject::transfer_host_to(const std::string &user_id) {
+    auto session = default_mp_sessions.findOne(
+        Criteria(drogon_model::cavoke_orm::Sessions::Cols::_id,
+                 CompareOperator::EQ, id));
+    // FIXME: not atomic, transactions perhaps or some other blocking, copied
+    // sql-mechanism?
+    if (session.getValueOfStatus() != NOT_STARTED) {
+        throw game_session_error("session has already started");
+    }
+    if (!is_player(user_id)) {
+        throw game_session_error("user " + user_id + " is not in session");
+    }
+    session.setHostId(user_id);
+    default_mp_sessions.update(session);
 }
 
 void GameSessionAccessObject::set_role(const std::string &user_id,
