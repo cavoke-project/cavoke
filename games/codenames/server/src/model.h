@@ -61,6 +61,7 @@ public:
     [[nodiscard]] std::string get_player_state(int player) const;
     [[nodiscard]] std::string get_global_state() const;
 
+    // cppcheck-suppress unknownMacro
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(CodenamesModel,
                                    m_stage,
                                    m_last_hint,
