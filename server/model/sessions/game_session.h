@@ -59,6 +59,8 @@ struct GameSessionAccessObject {
 
     [[nodiscard]] bool is_host(const std::string &user_id) const;
 
+    [[nodiscard]] std::optional<std::string> get_first_not_host() const;
+
     [[nodiscard]] std::string get_user_id(int player_id) const;
 
     // TODO: useless?
