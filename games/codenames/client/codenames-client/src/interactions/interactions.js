@@ -52,6 +52,25 @@ function isYourTurn(role, stage) {
 
 
 function updateInterface(model) {
+    let result = model.m_result;
+
+    if (result === 1) {
+        resultsScreen.visible = true;
+        gameBoard.opacity = 0.33;
+
+        blueWins.visible = true;
+        redWins.visible = false;
+    } else if (result === 2) {
+        resultsScreen.visible = true;
+        gameBoard.opacity = 0.33;
+
+        blueWins.visible = false;
+        redWins.visible = true;
+    } else {
+        resultsScreen.visible = false;
+        gameBoard.opacity = 1;
+    }
+
     board.rows = model.m_height;
     board.columns = model.m_width;
     let stage = model.m_stage;
