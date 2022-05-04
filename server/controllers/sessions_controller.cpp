@@ -145,6 +145,11 @@ void SessionsController::start(
         return CALLBACK_STATUS_CODE(k403Forbidden);
     }
 
+    // verify whether the request was from host
+    if (!session.is_host(user_id.value())) {
+        return CALLBACK_STATUS_CODE(k403Forbidden);
+    }
+
     try {
         // TODO: get settings from body
         m_participation_storage->start_session(session_id, {});
@@ -231,7 +236,22 @@ void SessionsController::leave(
         return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
     }
 
+    //    bool deleteSessionAfter = false;
+    if (session.is_host(user_id.value())) {
+        auto new_host_id = session.get_first_not_host();
+        if (new_host_id.has_value()) {
+            session.transfer_host_to(new_host_id.value());
+        }
+        //        if (!new_host_id.has_value()) {
+        //            deleteSessionAfter = true;
+        //        } else {
+        //            session.transfer_host_to(new_host_id.value());
+        //        }
+    }
+
     session.remove_user(user_id.value());
+
+    // TODO: delete session if empty
 
     return CALLBACK_STATUS_CODE(k200OK);
 }
