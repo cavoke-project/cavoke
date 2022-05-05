@@ -12,7 +12,7 @@ add_executable(${PROJECT_NAME} test_main.cc)
 if (USE_EXTERNAL_DROGON)
     target_link_libraries(${PROJECT_NAME} PRIVATE Drogon::Drogon)
 else()
-    target_link_libraries(${PROJECT_NAME} drogon)
+    target_link_libraries(${PROJECT_NAME} PRIVATE drogon)
 endif()
 
 ParseAndAddDrogonTests(${PROJECT_NAME})

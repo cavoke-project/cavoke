@@ -1,6 +1,6 @@
-[submodule "server/third_party/drogon"]
-	path = server/third_party/drogon
+[submodule "third_party/drogon"]
+	path = third_party/drogon
 	url = https://github.com/drogonframework/drogon.git
-[submodule "server/third_party/json"]
-	path = server/third_party/json
+[submodule "third_party/json"]
+	path = third_party/json
 	url = https://github.com/nlohmann/json.git

@@ -7,13 +7,13 @@ EXPOSE $SERVER_PORT
 
 # Cavoke server
 ENV CAVOKE_ROOT="$IROOT/cavoke/"
-ADD server/ $CAVOKE_ROOT
+ADD ./ $CAVOKE_ROOT
 # add cavoke-dev-lib dependency
 ADD cavoke-dev-lib/ $CAVOKE_ROOT
 WORKDIR $CAVOKE_ROOT
 # Install server
 RUN mkdir -p build && \
-    cmake . -B build -DCAVOKE_H_DIR=. -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON && \
+    cmake . -B build -DBUILD_ALL=OFF -DBUILD_SERVER=ON -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON && \
     make -C build install
 WORKDIR /
 RUN rm -rf $CAVOKE_ROOT
