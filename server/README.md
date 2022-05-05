@@ -37,6 +37,7 @@ cavoke@ubuntu:~$ curl -s localhost:8080/games/list
 Подробное описание всех опций запуска см. в `docker run -t ghcr.io/cavoke-project/cavoke-server --help`
 
 ### Собрать самому
+#### На своей машине
 
 Для сборки необходимо установить [boost](https://www.boost.org/) не старее 1.71, а также несколько пакетов для серверного фреймворка.
 
@@ -53,6 +54,8 @@ cavoke@ubuntu:~$ apt install libboost-all-dev \
 ```console
 cavoke@ubuntu:~$ mkdir -p build-cmake && cmake . -B build-cmake
 ```
+
+> :information_source: Для сборки, используя локальные библиотеки, может понадобиться прописать `git submodule update --init --recursive` для загрузки подмодулей.
 
 #### Установка библиотек извне
 
@@ -72,6 +75,12 @@ cavoke@ubuntu:~$ mkdir -p build-cmake && cmake . -B build-cmake -DUSE_EXTERNAL_D
 ```
 
 Более подробно смотрите в [CMakeLists.txt](./CMakeLists.txt)
+
+#### Gitpod
+Альтернативно, можно попробовать разрабатывать в удаленной среде. Для этого подключён сервис Gitpod, с помощью которого
+можно в браузере запустить VS Code, в котором уже будут добавлены все зависимости, а работать он будет в облаке.
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/cavoke-project/cavoke)
 
 ### SQL
 
