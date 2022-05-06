@@ -17,8 +17,7 @@ CodenamesModel::CodenamesModel(int height_,
     : m_height(height_),
       m_width(width_),
       m_stage(GAME_STAGE::BLUE_CAPTAIN),
-      m_result(GAME_RESULT::IN_PROGRESS),
-      m_attempts_left(0) {
+      m_result(GAME_RESULT::IN_PROGRESS) {
     int cards_cnt = height_ * width_;
     m_opened = std::vector<bool>(cards_cnt, false);
     m_words = wordlist_.sample(cards_cnt);
