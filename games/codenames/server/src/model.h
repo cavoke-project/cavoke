@@ -38,14 +38,14 @@ private:
 
     GAME_STAGE m_stage;
     std::string m_last_hint;
-    int m_attempts_left;
+    int m_attempts_left{};
     std::vector<std::string> m_words;
     std::vector<CARD_STATE> m_card_states;
     std::vector<bool> m_opened;
     int m_height;
     int m_width;
-    int m_blue_closed;
-    int m_red_closed;
+    int m_blue_closed{};
+    int m_red_closed{};
     GAME_RESULT m_result;
 
     void next_stage();
