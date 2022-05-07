@@ -42,7 +42,7 @@ struct GameSessionAccessObject {
     void remove_user(const std::string &user_id);
 
     /// Transfer host to given user
-    void transfer_host_to(const std::string &user_id);
+    void transfer_host_to(const std::string &new_host);
 
     /// Changes game role for given user
     void set_role(const std::string &user_id, int new_role);
@@ -57,6 +57,8 @@ struct GameSessionAccessObject {
     void finish();
 
     [[nodiscard]] int get_player_id(const std::string &user_id) const;
+
+    [[nodiscard]] std::string get_host() const;
 
     [[nodiscard]] bool is_player(const std::string &user_id) const;
 

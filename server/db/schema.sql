@@ -12,7 +12,7 @@ create table sessions
             primary key,
     game_id       varchar not null,
     invite_code   varchar not null,
-    host_id       uuid,
+    host_id       uuid null,
     game_settings json,
     status        integer,
     constraint fk_host foreign key (host_id) references users (id)
@@ -42,6 +42,10 @@ create table players
     constraint uq_playerid_sessionid
         unique (session_id, player_id)
 );
+
+alter table sessions
+    add constraint sessions_players_session_id_user_id_fk
+        foreign key (id, host_id) references players (session_id, user_id);
 
 create table globalstates
 (
