@@ -229,28 +229,9 @@ void SessionsController::leave(
         return CALLBACK_STATUS_CODE(k401Unauthorized);
     }
 
-    model::GameSessionAccessObject session;
-    try {
-        session = m_participation_storage->get_sessionAO(session_id);
-    } catch (const model::game_session_error &err) {
-        return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
-    }
-
-    bool deleteSessionAfter = false;
-    if (session.is_host(user_id.value())) {
-        auto new_host_id = session.get_first_not_host();
-        if (!new_host_id.has_value()) {
-            deleteSessionAfter = true;
-        } else {
-            session.transfer_host_to(new_host_id.value());
-        }
-    }
-
-    session.remove_user(user_id.value());
-
-    if (deleteSessionAfter) {
-        session.delete_session();
-    }
+    drogon::app().getDbClient()->execSqlSync(
+        "select transfer_to_available($1::uuid, $2::uuid);", session_id,
+        user_id.value());  // what could possibly go wrong?
 
     return CALLBACK_STATUS_CODE(k200OK);
 }
@@ -290,7 +271,6 @@ void SessionsController::transfer_host(
         session.transfer_host_to(new_host_user_id.value());
     } catch (const drogon::orm::DrogonDbException &) {
         return CALLBACK_STATUS_CODE(k400BadRequest);
-//        throw model::game_session_error("user " + new_host_user_id.value() + " is not in session");
     }
 
     return CALLBACK_STATUS_CODE(k200OK);
