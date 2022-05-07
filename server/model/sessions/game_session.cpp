@@ -165,9 +165,12 @@ bool GameSessionAccessObject::is_player(const std::string &user_id) const {
     }
 }
 
+std::string GameSessionAccessObject::get_host() const {
+    return get_snapshot().getValueOfHostId();
+}
+
 bool GameSessionAccessObject::is_host(const std::string &user_id) const {
-    auto session_snapshot = get_snapshot();
-    return session_snapshot.getValueOfHostId() == user_id;
+    return get_host() == user_id;
 }
 
 std::optional<std::string> GameSessionAccessObject::get_first_not_host() const {
@@ -228,7 +231,7 @@ void GameSessionAccessObject::remove_user(const std::string &user_id) {
                  CompareOperator::EQ, user_id));
 }
 
-void GameSessionAccessObject::transfer_host_to(const std::string &user_id) {
+void GameSessionAccessObject::transfer_host_to(const std::string &new_host) {
     auto session = default_mp_sessions.findOne(
         Criteria(drogon_model::cavoke_orm::Sessions::Cols::_id,
                  CompareOperator::EQ, id));
@@ -237,11 +240,15 @@ void GameSessionAccessObject::transfer_host_to(const std::string &user_id) {
     if (session.getValueOfStatus() != NOT_STARTED) {
         throw game_session_error("session has already started");
     }
-    if (!is_player(user_id)) {
-        throw game_session_error("user " + user_id + " is not in session");
-    }
-    session.setHostId(user_id);
-    default_mp_sessions.update(session);
+    //    if (!is_player(new_host)) {
+    //        throw game_session_error("user " + new_host + " is not in
+    //        session");
+    //    }
+        session.setHostId(new_host);
+        default_mp_sessions.update(session);
+//    } catch (const drogon::orm::DrogonDbException &) {
+//        throw game_session_error("user " + new_host + " is not in session");
+//    }
 }
 
 void GameSessionAccessObject::set_role(const std::string &user_id,

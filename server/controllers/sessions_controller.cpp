@@ -286,7 +286,12 @@ void SessionsController::transfer_host(
         return CALLBACK_STATUS_CODE(k403Forbidden);
     }
 
-    session.transfer_host_to(new_host_user_id.value());
+    try {
+        session.transfer_host_to(new_host_user_id.value());
+    } catch (const drogon::orm::DrogonDbException &) {
+        return CALLBACK_STATUS_CODE(k400BadRequest);
+//        throw model::game_session_error("user " + new_host_user_id.value() + " is not in session");
+    }
 
     return CALLBACK_STATUS_CODE(k200OK);
 }

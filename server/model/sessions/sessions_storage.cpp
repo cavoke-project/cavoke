@@ -23,7 +23,6 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
         session.setId(drogon::utils::getUuid());
         session.setGameSettingsToNull();
         session.setGameId(game_config.id);
-        session.setHostId(host_user_id);
         session.setStatus(GameSessionAccessObject::NOT_STARTED);
         // TODO: there are only 1e6 invite codes, something has to be done about
         session.setInviteCode(generate_invite_code());
@@ -55,6 +54,13 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
         auto mp_globalstates = MAPPER_WITH_CLIENT_FOR(
             drogon_model::cavoke_orm::Globalstates, transaction);
         mp_globalstates.insert(global_state);
+    }
+    {
+        session.setHostId(host_user_id);
+        auto transaction = drogon::app().getDbClient()->newTransaction();
+        auto mp_sessions = MAPPER_WITH_CLIENT_FOR(
+            drogon_model::cavoke_orm::Sessions, transaction);
+        mp_sessions.update(session);
     }
     LOG_DEBUG << "Session created: " << session.getValueOfId();
     // TODO: cleanup and use GameSessionAccessObject's non-static methods
