@@ -240,15 +240,8 @@ void GameSessionAccessObject::transfer_host_to(const std::string &new_host) {
     if (session.getValueOfStatus() != NOT_STARTED) {
         throw game_session_error("session has already started");
     }
-    //    if (!is_player(new_host)) {
-    //        throw game_session_error("user " + new_host + " is not in
-    //        session");
-    //    }
-        session.setHostId(new_host);
-        default_mp_sessions.update(session);
-//    } catch (const drogon::orm::DrogonDbException &) {
-//        throw game_session_error("user " + new_host + " is not in session");
-//    }
+    session.setHostId(new_host);
+    default_mp_sessions.update(session);
 }
 
 void GameSessionAccessObject::set_role(const std::string &user_id,
