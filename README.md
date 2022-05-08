@@ -10,6 +10,7 @@
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/cavoke-project/cavoke/app?style=flat-square)](https://github.com/cavoke-project/cavoke/actions/workflows/app.yml)
 [![GitHub top language](https://img.shields.io/github/languages/top/cavoke-project/cavoke?logo=github&style=flat-square)](https://github.com/cavoke-project/cavoke)
 [![license](https://img.shields.io/github/license/cavoke-project/cavoke?style=flat-square)](./LICENSE)
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-orange?logo=gitpod&style=flat-square)](https://gitpod.io/#https://github.com/cavoke-project/cavoke)
 
 <!-- TODO: add video -->
 

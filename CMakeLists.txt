@@ -1,11 +1,46 @@
 cmake_minimum_required(VERSION 3.10)
 project(cavoke)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 option(BUILD_ALL "Build all subprojects (usually disabled for ci)" ON)
 
 option(BUILD_SERVER "Enable building server" OFF)
 option(BUILD_CLIENT "Enable building client" OFF)
 option(BUILD_GAMES "Enable building games" OFF)
+
+# Add local drogon
+if (BUILD_ALL OR BUILD_SERVER)
+    option(USE_EXTERNAL_DROGON "Whether to use external drogon" OFF)
+    if (USE_EXTERNAL_DROGON)
+        message("Using external Drogon...")
+        find_package(Drogon 1.7.3 REQUIRED)
+    else()
+        message("Using Drogon from submodules...")
+        if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/drogon/CMakeLists.txt)
+            message(SEND_ERROR "Unable to add a dependency locally!\nHave you tried running:  git submodule update --init --recursive")
+        endif()
+        add_subdirectory(third_party/drogon)
+    endif()
+endif()
+
+# Add local nlohmann
+if (BUILD_ALL OR BUILD_SERVER OR BUILD_GAMES)
+    option(USE_EXTERNAL_NLOHMANN "Whether to use external nlohmann_json" OFF)
+    if (USE_EXTERNAL_NLOHMANN)
+        message("Using external Nlohmann...")
+        # https://github.com/nlohmann/json/releases/tag/v3.9.0 for convenience macros
+        find_package(nlohmann_json 3.9.0 REQUIRED)
+    else()
+        message("Using Nlohmann from submodules...")
+        if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/json/CMakeLists.txt)
+            message(SEND_ERROR "Unable to add a dependency locally!\nHave you tried running:  git submodule update --init --recursive")
+        endif()
+        add_subdirectory(third_party/json)
+    endif()
+endif()
 
 if (BUILD_ALL OR BUILD_SERVER)
     add_subdirectory(server)

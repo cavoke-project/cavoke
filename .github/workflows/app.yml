@@ -9,6 +9,7 @@ jobs:
     timeout-minutes: 1
     steps:
       - uses: actions/checkout@v2
+        # do not check submodules
       - run: clang-format-12 --version
       - run: chmod +x .github/scripts/diff-clangformat-12.sh && find . \( -iname '*.cpp' -or -iname '*.c' -or -iname '*.h' \) -and -not -path './server/models/*' | xargs -n1 .github/scripts/diff-clangformat-12.sh
   cppcheck:
@@ -18,6 +19,7 @@ jobs:
     timeout-minutes: 1
     steps:
       - uses: actions/checkout@v2
+        # do not check submodules
       - run: cppcheck --version
       - run: cppcheck --language=c++ -DSOME_DEFINE_TO_FIX_CONFIG --enable=all --suppress=*:doctest.h --suppress=unusedFunction --error-exitcode=1 --inline-suppr $(find . -iname '*.cpp' -and -not -path './server/models/*')
   client-notests-qt5-suse:
@@ -25,6 +27,8 @@ jobs:
     container: ghcr.io/cavoke-project/cavoke-ci:client-qt5-suse
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Cmake
         run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=5
       - name: Make
@@ -34,10 +38,23 @@ jobs:
     container: ghcr.io/cavoke-project/cavoke-ci:client-qt6-suse
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Cmake
         run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=6  # QT_MAJOR_VERSION=6 by default, so not necessary
       - name: Make
         run: cd build && make cavoke_client
+  server-compiles-with-submodules:
+    runs-on: ubuntu-latest
+    steps:
+      - run: sudo apt-get install -y openssl libssl-dev libjsoncpp-dev uuid-dev zlib1g-dev libc-ares-dev postgresql-server-dev-all libboost-all-dev
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Cmake
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
+      - name: Make
+        run: cd build && make cavoke_server
   server-healthcheck:
     runs-on: ubuntu-latest
     container: ghcr.io/cavoke-project/cavoke-ci:server
@@ -45,7 +62,7 @@ jobs:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_DB: postgres_db
+          POSTGRES_DB: cavoke
           POSTGRES_PASSWORD: postgres_password
           POSTGRES_PORT: 5432
           POSTGRES_USER: postgres_user
@@ -58,16 +75,18 @@ jobs:
           --health-retries 5
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Install PostgreSQL client
         run: |
           apt-get update
           apt-get install --yes postgresql-client
       - name: Populate the database
-        run: psql -h postgres -d postgres_db -U postgres_user -f server/db/schema.sql
+        run: psql -h postgres -d cavoke -U postgres_user -f server/db/schema.sql
         env:
           PGPASSWORD: postgres_password
       - name: Cmake
-        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON
       - name: Make
         run: cd build && make cavoke_server
       - name: Healthcheck
@@ -77,8 +96,10 @@ jobs:
     container: ghcr.io/cavoke-project/cavoke-ci:server
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Cmake
-        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON
       - name: Make
         run: cd build && make cavoke_server_test
       - name: Run Tests
@@ -88,8 +109,10 @@ jobs:
     container: ghcr.io/cavoke-project/cavoke-ci:server
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Cmake
-        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_GAMES=ON
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_GAMES=ON -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON
       - name: Make
         run: cd build && make all
   server-docker-healthcheck:
@@ -97,6 +120,8 @@ jobs:
     steps:
       - run: pip3 install requests
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Build docker image
         uses: docker/build-push-action@v2
         with:
@@ -112,6 +137,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Start up the server with Docker Compose
         run: docker-compose up -d
       - name: Healthcheck
@@ -127,6 +154,8 @@ jobs:
       - server-docker-healthcheck
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
@@ -150,6 +179,8 @@ jobs:
       - server-publish-image-develop
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Setup Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
         with:

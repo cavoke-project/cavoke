@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: db.Dockerfile
     environment:
-      - POSTGRES_DB=postgres_db
+      - POSTGRES_DB=cavoke
       - POSTGRES_USER=postgres_user
       - POSTGRES_PASSWORD=postgres_password
   cavoke_server:
