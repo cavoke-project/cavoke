@@ -35,13 +35,12 @@ class Game {
     const std::string CLIENT_FILE;
     const std::string LOGIC_FILE;
 
-    boost::filesystem::path directory;
-
 public:
     explicit Game(const boost::filesystem::path &directory,
                   const GamesStorageConfig &game_storage_config);
     Game() = default;
 
+    boost::filesystem::path directory;
     boost::filesystem::path client_file;
     GameConfig config;
     boost::filesystem::path logic_file;

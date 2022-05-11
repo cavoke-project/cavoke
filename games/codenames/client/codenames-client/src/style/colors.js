@@ -1,0 +1,12 @@
+const RED_AGENT = "#FF6B6B";
+const RED_AGENT_OPENED = "#A20000";
+
+const BLUE_AGENT = "#4D96FF";
+const BLUE_AGENT_OPENED = "#003D95";
+
+const NEUTRAL = "#6BCB77";
+const NEUTRAL_OPENED = "#24672C";
+
+const BLACK_CARD = "#272838";
+
+const CLOSED = "#5D536B";

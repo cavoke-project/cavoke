@@ -22,6 +22,9 @@ class GameLogicManager {
 public:
     explicit GameLogicManager(std::shared_ptr<GamesStorage> games_storage);
 
+    const int LOGIC_TIMEOUT_MS = 500;
+    const int MAX_GAME_RESPONSE_B = 8 * 1024;
+
     ValidationResult validate_settings(
         const std::string &game_id,
         const json &settings,

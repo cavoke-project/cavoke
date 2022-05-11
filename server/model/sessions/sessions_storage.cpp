@@ -84,8 +84,7 @@ void SessionsStorage::start_session(const std::string &session_id,
     // Initialize state
     m_game_state_storage->save_state(
         session_id,
-        m_game_logic_manager->init_state(session.get_session_info().game_id,
-                                         game_settings.value(),
+        m_game_logic_manager->init_state(game_id, game_settings.value(),
                                          session.get_occupied_positions()));
 }
 
