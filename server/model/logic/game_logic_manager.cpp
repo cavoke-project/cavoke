@@ -24,7 +24,7 @@ std::string GameLogicManager::invoke_logic(const Game &game,
     std::vector<char> output_buffer(MAX_GAME_RESPONSE_B);
 
     bp::child c(
-        game.LOGIC_FILE, bp::start_dir(game.directory),
+        system_complete(game.logic_file), bp::start_dir(game.directory),
         bp::std_in<input_pipe, bp::std_out> boost::asio::buffer(output_buffer),
         ios);
 

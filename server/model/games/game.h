@@ -31,11 +31,11 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameConfig,
                                    default_settings)
 
 class Game {
-public:
     const std::string CONFIG_FILE;
     const std::string CLIENT_FILE;
     const std::string LOGIC_FILE;
 
+public:
     explicit Game(const boost::filesystem::path &directory,
                   const GamesStorageConfig &game_storage_config);
     Game() = default;
