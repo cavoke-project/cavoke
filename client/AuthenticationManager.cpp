@@ -37,3 +37,7 @@ bool cavoke::auth::AuthenticationManager::checkAuthStatus() {
     return oauth2.status() !=
            QOAuth2AuthorizationCodeFlow::Status::NotAuthenticated;
 }
+void cavoke::auth::AuthenticationManager::requestNameChange(
+    const QString &new_name) {
+    oauth2.post("", )
+}

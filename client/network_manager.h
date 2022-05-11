@@ -40,6 +40,9 @@ public slots:
     void startSession();
     // TODO: Not implemented
     //    void getSessionInfoByInviteCode(const QString &inviteCode);
+    void getMe();
+    void changeName(const QString &newName);
+    void getUser(const QString &userId);
 
     void startGamePolling();
     void stopGamePolling();
@@ -64,6 +67,8 @@ private slots:
     void gotPostResponse(QNetworkReply *reply);
     void gotPlayState(QNetworkReply *reply);
     void gotGamesClient(QNetworkReply *reply, const QString &gameId);
+    void gotMe(QNetworkReply *reply);
+    void gotUser(QNetworkReply *reply);
 
 private:
     QOAuth2AuthorizationCodeFlow *oauth2;
@@ -102,6 +107,9 @@ private:
     // TODO: Not implemented
     const static inline QUrl SESSIONS_GET_INFO_BY_INVITE_CODE{
         "sessions/get_info_by_invite_code"};
+    const static inline QUrl GET_ME{"profile/get_me"};
+    const static inline QUrl CHANGE_NAME{"profile/change_name"};
+    const static inline QUrl GET_USER{"users/get_user"};
 };
 
 #endif  // CAVOKE_CLIENT_NETWORK_MANAGER_H

@@ -237,3 +237,13 @@ void NetworkManager::changeHost(const QUrl &newHost) {
     HOST = newHost;
     getGamesList();
 }
+void NetworkManager::getMe() {
+    QUrl route =
+        HOST.resolved(GET_ME);
+    qDebug() << route.toString();
+    auto reply = oauth2->get(route);
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() {
+                cavoke::auth::AuthenticationManager::getInstance().authenticated();
+            });
+}

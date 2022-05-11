@@ -17,8 +17,14 @@ public:
         return obj;
     }
     bool checkAuthStatus();
+public slots:
+    void requestNameChange(const QString &new_name);
+    void fetchName();
 signals:
     void authenticated();
+    QString nameUpdated();
+private:
+    QString name;
 };
 }  // namespace cavoke::auth
 
