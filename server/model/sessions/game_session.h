@@ -44,6 +44,12 @@ struct GameSessionAccessObject {
     /// Changes game role for given user
     void set_role(const std::string &user_id, int new_role);
 
+    /// Delete current session
+    void delete_session();
+
+    /// Leave current session (and transfer host/delete session)
+    void leave_session(const std::string &user_id);
+
     /// Marks session as starts
     void start(const json &game_settings);
 
@@ -52,7 +58,11 @@ struct GameSessionAccessObject {
 
     [[nodiscard]] int get_player_id(const std::string &user_id) const;
 
+    [[nodiscard]] std::string get_host() const;
+
     [[nodiscard]] bool is_player(const std::string &user_id) const;
+
+    [[nodiscard]] bool is_host(const std::string &user_id) const;
 
     [[nodiscard]] std::string get_user_id(int player_id) const;
 
@@ -70,6 +80,7 @@ struct GameSessionAccessObject {
         std::string session_id;
         std::string game_id;
         std::string invite_code;
+        std::string host_id;
         SessionStatus status;
         std::vector<PlayerInfo> players;
     };
@@ -112,6 +123,7 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSessionAccessObject::GameSessionInfo,
                                    session_id,
                                    game_id,
                                    invite_code,
+                                   host_id,
                                    status,
                                    players);
 }  // namespace cavoke::server::model

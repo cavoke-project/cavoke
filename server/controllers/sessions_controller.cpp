@@ -175,7 +175,7 @@ void SessionsController::leave(
         return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
     }
 
-    session.remove_user(user_id);
+    session.leave_session(user_id);
 
     return CALLBACK_STATUS_CODE(k200OK);
 }

@@ -1,19 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(cavoke_server)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-find_package(Drogon 1.7.3 REQUIRED)
-
-find_package(Boost 1.71 REQUIRED filesystem program_options)
-include_directories(${Boost_INCLUDE_DIRS})
-link_directories(${Boost_LIBRARY_DIRS})
-
-# https://github.com/nlohmann/json/releases/tag/v3.9.0 for convenience macros
-find_package(nlohmann_json 3.9.0 REQUIRED)
-
 # https://github.com/Thalhammer/jwt-cpp JWT authentication
 find_package(jwt-cpp REQUIRED)
 
@@ -45,14 +32,32 @@ add_executable(${PROJECT_NAME}
         model/logic/game_logic_manager.cpp
         controllers/state_controller.cpp
         controllers/sessions_controller.cpp
+        model/auth/authentication_manager.cpp
         model/sessions/game_session.cpp
-        controllers/users_controller.cpp)
-target_link_libraries(cavoke_server Drogon::Drogon)
-target_link_libraries(cavoke_server ${Boost_LIBRARIES} ${CMAKE_DL_LIBS})
-target_link_libraries(cavoke_server nlohmann_json::nlohmann_json)
+        )
+install(TARGETS ${PROJECT_NAME})
+
 target_link_libraries(cavoke_server jwt-cpp::jwt-cpp)
 
-install(TARGETS ${PROJECT_NAME})
+find_package(Boost 1.71 REQUIRED filesystem program_options)
+include_directories(${Boost_INCLUDE_DIRS})
+link_directories(${Boost_LIBRARY_DIRS})
+
+# Link Drogon
+if (USE_EXTERNAL_DROGON)
+    target_link_libraries(${PROJECT_NAME} PRIVATE Drogon::Drogon)
+else()
+    target_link_libraries(${PROJECT_NAME} PRIVATE drogon)
+endif()
+
+# Link nlohmann
+if (USE_EXTERNAL_NLOHMANN)
+    target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
+else()
+    target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json)
+endif()
+
+target_link_libraries(cavoke_server PRIVATE ${Boost_LIBRARIES} ${CMAKE_DL_LIBS})
 
 drogon_create_views(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/views
         ${CMAKE_CURRENT_BINARY_DIR})

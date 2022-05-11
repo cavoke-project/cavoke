@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  db:
+    build:
+      context: .
+      dockerfile: db.Dockerfile
+    environment:
+      - POSTGRES_DB=cavoke
+      - POSTGRES_USER=postgres_user
+      - POSTGRES_PASSWORD=postgres_password
+  cavoke_server:
+    build:
+      context: .
+      dockerfile: server.Dockerfile
+    command: -p 8080 -c /mnt/data/drogon_config.json
+    depends_on:
+      - db
+    volumes:
+      - ./example/server_data:/mnt/data
+    ports:
+      - "8080:8080"

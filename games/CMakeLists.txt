@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(tictactoe)
 
-find_package(nlohmann_json 3.9.0 REQUIRED)
-
 set(CAVOKE_H_DIR ../cavoke-dev-lib CACHE PATH "Directory with cavoke.h library")
 include_directories(${CAVOKE_H_DIR})
 
@@ -10,4 +8,8 @@ add_executable(tictactoe
         tictactoe/tictactoe.cpp
         ${CAVOKE_H_DIR}/cavoke.cpp)
 
-target_link_libraries(tictactoe nlohmann_json::nlohmann_json)
+if (USE_EXTERNAL_NLOHMANN)
+    target_link_libraries(tictactoe PRIVATE nlohmann_json::nlohmann_json)
+else()
+    target_link_libraries(tictactoe PRIVATE nlohmann_json)
+endif()

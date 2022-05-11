@@ -13,8 +13,10 @@ create table sessions
             primary key,
     game_id       varchar not null,
     invite_code   varchar not null,
+    host_id       uuid    null,
     game_settings json,
-    status        integer
+    status        integer,
+    constraint fk_host foreign key (host_id) references users (id)
 );
 
 create unique index session_id_uindex
@@ -42,6 +44,10 @@ create table players
         unique (session_id, player_id)
 );
 
+alter table sessions
+    add constraint sessions_players_session_id_user_id_fk
+        foreign key (id, host_id) references players (session_id, user_id);
+
 create table globalstates
 (
     session_id  uuid                  not null
@@ -53,3 +59,23 @@ create table globalstates
     globalstate text,
     is_terminal boolean default false not null
 );
+
+create or replace function leave_session(m_session_id uuid, m_user_id uuid) returns void as
+$$
+declare
+begin
+    if (select host_id from sessions where id = m_session_id) = m_user_id then
+        if (select user_id
+            from players
+            where session_id = m_session_id and user_id != m_user_id
+            limit 1) IS NOT NULL then
+            update sessions
+            set host_id = (select user_id from players where session_id = m_session_id and user_id != m_user_id limit 1)
+            where id = m_session_id;
+        else
+            delete from sessions where id = m_session_id;
+        end if;
+    end if;
+    delete from players where user_id = m_user_id and session_id = m_session_id;
+end
+$$ language plpgsql;
