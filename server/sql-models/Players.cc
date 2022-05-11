@@ -27,7 +27,7 @@ const std::string Players::tableName = "players";
 
 const std::vector<typename Players::MetaData> Players::metaData_ = {
     {"session_id", "std::string", "uuid", 0, 0, 1, 1},
-    {"user_id", "std::string", "uuid", 0, 0, 1, 1},
+    {"user_id", "std::string", "character varying", 0, 0, 1, 1},
     {"player_id", "int32_t", "integer", 4, 0, 0, 1},
     {"score", "int32_t", "integer", 4, 0, 0, 0},
     {"playerstate", "std::string", "text", 0, 0, 0, 1}};

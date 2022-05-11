@@ -1,8 +1,9 @@
 create table users
 (
-    id uuid not null
+    id           varchar not null
         constraint user_pk
-            primary key
+            primary key,
+    display_name varchar default 'Guest':: character varying
 );
 
 create table sessions
@@ -39,7 +40,7 @@ create table players
         constraint player_session_id_fk
             references sessions
             on delete cascade,
-    user_id     uuid    not null
+    user_id     varchar not null
         constraint player_user_id_fk
             references users
             on delete restrict,

@@ -24,6 +24,19 @@ if (BUILD_ALL OR BUILD_SERVER)
         endif()
         add_subdirectory(third_party/drogon)
     endif()
+
+    option(USE_EXTERNAL_JWT "Whether to use external jwt-cpp" OFF)
+    if (USE_EXTERNAL_JWT)
+        message("Using external jwt-cpp...")
+        # https://github.com/Thalhammer/jwt-cpp JWT authentication
+        find_package(jwt-cpp REQUIRED)
+    else()
+        message("Using JWT from submodules...")
+        if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/jwt/CMakeLists.txt)
+            message(SEND_ERROR "Unable to add a dependency locally!\nHave you tried running:  git submodule update --init --recursive")
+        endif()
+        add_subdirectory(third_party/jwt)
+    endif()
 endif()
 
 # Add local nlohmann

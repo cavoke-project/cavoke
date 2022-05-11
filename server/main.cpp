@@ -24,8 +24,6 @@ void run(const model::GamesStorageConfig &games_storage_config) {
     auto game_state_storage = std::make_shared<model::GameStateStorage>();
     auto sessions_storage = std::make_shared<model::SessionsStorage>(
         game_logic_manager, games_storage, game_state_storage);
-    auto authentication_manager =
-        std::make_shared<model::AuthenticationManager>();
     auto statistics_manager = std::make_shared<model::StatisticsManager>(
         sessions_storage, games_storage);
 
@@ -39,7 +37,7 @@ void run(const model::GamesStorageConfig &games_storage_config) {
     auto sessions_controller =
         std::make_shared<controllers::SessionsController>(
             games_storage, game_logic_manager, game_state_storage,
-            sessions_storage, authentication_manager);
+            sessions_storage);
     auto statistics_controller =
         std::make_shared<controllers::StatisticsController>(games_storage,
                                                             statistics_manager);
@@ -108,6 +106,7 @@ int main(int argc, char *argv[]) {
             drogon::app().loadConfigFile(file);
             games_storage_config =
                 nlohmann::to_nlohmann(drogon::app().getCustomConfig())
+                    .at("storage")
                     .get<cavoke::server::model::GamesStorageConfig>();
             std::cout << "Server configuration loaded from: '" << file << "'\n";
         } catch (const std::exception &err) {

@@ -9,15 +9,8 @@ void StateController::send_move(
     const drogon::HttpRequestPtr &req,
     std::function<void(const drogon::HttpResponsePtr &)> &&callback,
     const std::string &session_id) {
-    std::optional<std::string> user_id =
-        req->getOptionalParameter<std::string>("user_id");
-
-    if (!user_id.has_value()) {
-        auto resp = drogon::HttpResponse::newHttpResponse();
-        resp->setStatusCode(drogon::HttpStatusCode::k400BadRequest);
-        callback(resp);
-        return;
-    }
+    // get user id
+    auto user_id = AuthFilter::get_user_id(req);
 
     model::GameSessionAccessObject session;
     try {
@@ -28,7 +21,7 @@ void StateController::send_move(
 
     int player_id;
     try {
-        player_id = session.get_player_id(user_id.value());
+        player_id = session.get_player_id(user_id);
     } catch (const model::game_session_error &) {
         return CALLBACK_STATUS_CODE(k403Forbidden);
     }
@@ -79,15 +72,8 @@ void StateController::get_state(
     const drogon::HttpRequestPtr &req,
     std::function<void(const drogon::HttpResponsePtr &)> &&callback,
     const std::string &session_id) {
-    std::optional<std::string> user_id =
-        req->getOptionalParameter<std::string>("user_id");
-
-    if (!user_id.has_value()) {
-        auto resp = drogon::HttpResponse::newHttpResponse();
-        resp->setStatusCode(drogon::HttpStatusCode::k400BadRequest);
-        callback(resp);
-        return;
-    }
+    // get user id
+    auto user_id = AuthFilter::get_user_id(req);
 
     model::GameSessionAccessObject session;
     try {
@@ -98,7 +84,7 @@ void StateController::get_state(
 
     int player_id;
     try {
-        player_id = session.get_player_id(user_id.value());
+        player_id = session.get_player_id(user_id);
     } catch (const model::game_session_error &) {
         return CALLBACK_STATUS_CODE(k403Forbidden);
     }
