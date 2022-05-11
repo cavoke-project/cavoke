@@ -7,10 +7,13 @@ TODO
 ## Как запустить
 
 ### Docker
+
 Проще всего сервер запустить внутри docker контейнера.
 
 #### Docker Compose
+
 Для локальной разработки в одну команду можно запустить сервер через docker-compose.
+
 ```console
 cavoke@ubuntu:~$ docker-compose up -d
 cavoke@ubuntu:~$ curl -s localhost:8080/games/list
@@ -37,9 +40,11 @@ cavoke@ubuntu:~$ curl -s localhost:8080/games/list
 Подробное описание всех опций запуска см. в `docker run -t ghcr.io/cavoke-project/cavoke-server --help`
 
 ### Собрать самому
+
 #### На своей машине
 
-Для сборки необходимо установить [boost](https://www.boost.org/) не старее 1.71, а также несколько пакетов для серверного фреймворка.
+Для сборки необходимо установить [boost](https://www.boost.org/) не старее 1.71, а также несколько пакетов для
+серверного фреймворка.
 
 Например, на ubuntu все зависимости можно загрузить с помощью `apt`.
 
@@ -55,11 +60,12 @@ cavoke@ubuntu:~$ apt install libboost-all-dev \
 cavoke@ubuntu:~$ mkdir -p build-cmake && cmake . -B build-cmake
 ```
 
-> :information_source: Для сборки, используя локальные библиотеки, может понадобиться прописать `git submodule update --init --recursive` для загрузки подмодулей.
+> :information_source: Для сборки, используя локальные библиотеки, может понадобиться
+> прописать `git submodule update --init --recursive` для загрузки подмодулей.
 
 #### Установка библиотек извне
 
-Вообще же на сервере используются следующие библиотеки. Альтернативно можно установить каждую из них отдельно, 
+Вообще же на сервере используются следующие библиотеки. Альтернативно можно установить каждую из них отдельно,
 следуя инструкциям в их документации.
 
 - [drogon](https://github.com/drogonframework/drogon) не старее 1.7.3
@@ -77,6 +83,7 @@ cavoke@ubuntu:~$ mkdir -p build-cmake && cmake . -B build-cmake -DUSE_EXTERNAL_D
 Более подробно смотрите в [CMakeLists.txt](./CMakeLists.txt)
 
 #### Gitpod
+
 Альтернативно, можно попробовать разрабатывать в удаленной среде. Для этого подключён сервис Gitpod, с помощью которого
 можно в браузере запустить VS Code, в котором уже будут добавлены все зависимости, а работать он будет в облаке.
 

@@ -3,11 +3,16 @@
 
 using namespace drogon;
 AuthFilter::AuthFilter() {
+    // get config
     auto app_config = nlohmann::to_nlohmann(drogon::app().getCustomConfig());
+    // check if auth config is present
     if (app_config.contains(SETTINGS_KEYNAME)) {
-        AuthConfig config = app_config.at("auth").get<AuthConfig>();
+        // if yes, parse it
+        auto config = app_config.at("auth").get<AuthConfig>();
+        // check supported token type and algorithm
         assert(config.type == "JWT");
         assert(config.algorithm == "RS256");
+        // initialize JWT token verifier with public key
         verifier =
             nlohmann_verifier{jwt::default_clock()}
                 .with_audience(config.audience)
@@ -16,6 +21,9 @@ AuthFilter::AuthFilter() {
         LOG_INFO << config.type << " auth guard enabled (iss=" << config.issuer
                  << ", aud=" << config.audience << ")";
     } else {
+        // If no auth config is found, warn the server admin
+        // Any users will be allowed access to guarded methods by
+        // a `user_id` query param
         LOG_WARN << "No auth guard used...";
         verifier = {};
     }
@@ -32,6 +40,7 @@ void AuthFilter::doFilter(const HttpRequestPtr &req,
             if (!user_id.has_value()) {
                 throw std::runtime_error("no user_id query parameter");
             }
+            // add user to db
             register_user(user_id.value());
             return fccb();
         }
@@ -44,6 +53,8 @@ void AuthFilter::doFilter(const HttpRequestPtr &req,
         // Pass user id to methods
         auto subject = decoded.get_subject();
         req->setParameter(USER_ID_QUERY_NAME, subject);
+        // add user to db
+        register_user(subject);
         return fccb();
     } catch (const std::exception &) {
         // Authentication failed
@@ -62,6 +73,7 @@ std::string AuthFilter::extract_token_from_header(
 
 void AuthFilter::register_user(const std::string &user_id) const {
     drogon_model::cavoke_orm::Users user;
+    // add user to db if not present
     user.setId(user_id);
     try {
         mp_users.insert(user);

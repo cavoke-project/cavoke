@@ -70,8 +70,7 @@ create table globalstates
     saved_on    timestamp default current_timestamp
 );
 
-create
-    or replace function leave_session(m_session_id uuid, m_user_id uuid) returns void as
+create or replace function leave_session(m_session_id uuid, m_user_id varchar) returns void as
 $$
 declare
 begin

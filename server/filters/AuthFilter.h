@@ -10,6 +10,16 @@
 using namespace drogon;
 using nlohmann_verifier =
     jwt::verifier<jwt::default_clock, jwt::traits::nlohmann_json>;
+/** Provides an authentication interceptor that checks a bearer token
+ *  using a public key given in the configuration file.
+ *
+ *  If authenticated, passes `user_id` through via a query with the same name
+ *  for controllers reverse compatibility and usage without authentication.
+ *
+ *  If no configuration for `auth` is found, allows all requests and acquires
+ * `user_id` from query param with the same name. A corresponding warning will
+ * be displayed in the logs.
+ */
 class AuthFilter : public HttpFilter<AuthFilter> {
 public:
     AuthFilter();
@@ -24,7 +34,7 @@ public:
         std::string issuer;
         std::string public_key;
     };
-
+    /// Acquires `user_id` parsed during `AuthFilter`'s execution
     static std::string get_user_id(const HttpRequestPtr &);
 
 private:

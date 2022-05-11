@@ -30,6 +30,7 @@ add_executable(${PROJECT_NAME}
         model/logic/game_logic_manager.cpp
         controllers/state_controller.cpp
         controllers/sessions_controller.cpp
+        controllers/users_controller.cpp
         model/sessions/game_session.cpp
         model/statistics/statistics_manager.cpp
         controllers/statistics_controller.cpp
@@ -57,9 +58,9 @@ endif ()
 # Link jwt
 if (USE_EXTERNAL_NLOHMANN)
     target_link_libraries(${PROJECT_NAME} PRIVATE jwt-cpp::jwt-cpp)
-else()
+else ()
     target_link_libraries(${PROJECT_NAME} PRIVATE jwt-cpp)
-endif()
+endif ()
 
 
 target_link_libraries(cavoke_server PRIVATE ${Boost_LIBRARIES} ${CMAKE_DL_LIBS})

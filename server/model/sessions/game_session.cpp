@@ -245,7 +245,7 @@ void GameSessionAccessObject::delete_session() {
 
 void GameSessionAccessObject::leave_session(const std::string &user_id) {
     drogon::app().getDbClient()->execSqlSync(
-        "select leave_session($1::uuid, $2::uuid);", id, user_id);
+        "select leave_session($1::uuid, $2::varchar);", id, user_id);
 }
 
 drogon_model::cavoke_orm::Statuses GameSessionAccessObject::get_actual_status()
