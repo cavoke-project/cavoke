@@ -230,7 +230,7 @@ void SessionsController::leave(
     }
 
     drogon::app().getDbClient()->execSqlSync(
-        "select transfer_to_available($1::uuid, $2::uuid);", session_id,
+        "select leave_session($1::uuid, $2::uuid);", session_id,
         user_id.value());  // what could possibly go wrong?
 
     return CALLBACK_STATUS_CODE(k200OK);
