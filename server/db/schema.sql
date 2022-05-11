@@ -99,3 +99,17 @@ begin
 end
 $$
     language plpgsql;
+
+create or replace function get_average_session_time_sec(game_id_ varchar) returns int as
+$$
+declare
+begin
+    RETURN (SELECT EXTRACT(epoch from AVG(durations.duration))
+            FROM (SELECT MAX(saved_on) - MIN(saved_on) as duration
+                  FROM (statuses inner join sessions s on s.id = statuses.session_id)
+                  WHERE game_id = game_id_
+                    and (status = 1 or status = 2)
+                  GROUP BY session_id) as durations);
+end
+$$
+    language plpgsql;
