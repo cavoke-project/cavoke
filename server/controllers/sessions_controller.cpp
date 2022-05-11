@@ -236,46 +236,6 @@ void SessionsController::leave(
     return CALLBACK_STATUS_CODE(k200OK);
 }
 
-void SessionsController::transfer_host(
-    const drogon::HttpRequestPtr &req,
-    std::function<void(const drogon::HttpResponsePtr &)> &&callback,
-    const std::string &session_id) {
-    // get user id
-    auto user_id = req->getOptionalParameter<std::string>("user_id");
-    if (!user_id.has_value()) {
-        return CALLBACK_STATUS_CODE(k401Unauthorized);
-    }
-    // get new host user id
-    auto new_host_user_id = req->getOptionalParameter<std::string>("new_host");
-    if (!new_host_user_id.has_value()) {
-        return CALLBACK_STATUS_CODE(k400BadRequest);
-    }
-    // verify auth
-    if (!m_authentication_manager->verify_authentication(user_id.value())) {
-        return CALLBACK_STATUS_CODE(k401Unauthorized);
-    }
-
-    model::GameSessionAccessObject session;
-    try {
-        session = m_participation_storage->get_sessionAO(session_id);
-    } catch (const model::game_session_error &err) {
-        return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
-    }
-
-    // verify whether the request was from host
-    if (!session.is_host(user_id.value())) {
-        return CALLBACK_STATUS_CODE(k403Forbidden);
-    }
-
-    try {
-        session.transfer_host_to(new_host_user_id.value());
-    } catch (const drogon::orm::DrogonDbException &) {
-        return CALLBACK_STATUS_CODE(k400BadRequest);
-    }
-
-    return CALLBACK_STATUS_CODE(k200OK);
-}
-
 void SessionsController::change_role(
     const drogon::HttpRequestPtr &req,
     std::function<void(const drogon::HttpResponsePtr &)> &&callback,
