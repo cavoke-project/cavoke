@@ -42,8 +42,7 @@ signals:
     void setGameName(const QString &gameName);
     void initSettingsValues(const QString &nickname, const QString &host);
     void clearScreens();
-    void createdAvailableRolesList(
-        const std::vector<std::pair<QString, int>> &availableRoles);
+    void createdAvailableRolesList(const std::vector<Role> &availableRoles);
 
 private slots:
     void startQmlApplication(CavokeQmlGameModel *);

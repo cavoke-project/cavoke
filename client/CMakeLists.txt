@@ -38,6 +38,7 @@ add_executable(cavoke_client
         views/gameslistview.cpp
         views/protoroomview.cpp
         entities/gameinfo.cpp
+        entities/role.cpp
         entities/sessioninfo.cpp
         entities/validationresult.cpp
         cache_manager.cpp

@@ -183,7 +183,7 @@ void NetworkManager::validateSession() {
     QUrl route =
         HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(VALIDATE);
     route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
-        qDebug() << route.toString();
+    qDebug() << route.toString();
     auto request = QNetworkRequest(route);
     request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader,
                       "application/json");

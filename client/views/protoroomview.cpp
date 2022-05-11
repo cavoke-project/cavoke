@@ -83,20 +83,16 @@ void ProtoRoomView::on_backButton_clicked() {
 void ProtoRoomView::updateGameName(const QString &gameName) {
     ui->gameNameLabel->setText(gameName);
 }
-void ProtoRoomView::gotRolesListUpdate(
-    const std::vector<std::pair<QString, int>> &newRolesList) {
+void ProtoRoomView::gotRolesListUpdate(const std::vector<Role> &newRolesList) {
     // Some bad way to check whether list actually updated
     // TODO: implement it
 
-    ourRole = newRolesList.front().second;
+    ourRole = newRolesList.front().id;
     ui->roleComboBox->clear();
     for (const auto &roleIdAndName : newRolesList) {
-        ui->roleComboBox->addItem(roleIdAndName.first, roleIdAndName.second);
-        //        qDebug() << roleIdAndName.first << ' ' <<
-        //        roleIdAndName.second;
+        ui->roleComboBox->addItem(roleIdAndName.name, roleIdAndName.id);
     }
     if (ui->roleComboBox->count() > 0) {
-        //        qDebug() << "SET: " << ui->roleComboBox->count() - 1;
         ui->roleComboBox->setCurrentIndex(0);
     } else {
         ui->roleComboBox->setCurrentIndex(-1);

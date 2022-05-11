@@ -1,6 +1,7 @@
 #ifndef CAVOKE_CLIENT_MIDDLESCREENVIEW_H
 #define CAVOKE_CLIENT_MIDDLESCREENVIEW_H
 
+#include <entities/role.h>
 #include <entities/sessioninfo.h>
 #include <entities/validationresult.h>
 #include <QMainWindow>
@@ -23,7 +24,7 @@ public slots:
     void updateValidationResult(const ValidationResult &validationResult);
     void updateGameName(const QString &gameName);
     void gotRolesListUpdate(
-        const std::vector<std::pair<QString, int>>
+        const std::vector<Role>
             &newRolesList);  // Probably should use some struct...
 
 signals:
