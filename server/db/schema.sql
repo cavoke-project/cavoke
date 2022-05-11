@@ -14,8 +14,17 @@ create table sessions
     invite_code   varchar not null,
     host_id       uuid    null,
     game_settings json,
-    status        integer,
     constraint fk_host foreign key (host_id) references users (id)
+);
+
+create table statuses
+(
+    session_id uuid not null
+        constraint status_session_id_fk
+            references sessions
+            on delete cascade,
+    status     integer,
+    saved_on   timestamp default current_timestamp
 );
 
 create unique index session_id_uindex
@@ -49,32 +58,44 @@ alter table sessions
 
 create table globalstates
 (
-    session_id  uuid                  not null
+    session_id  uuid                    not null
         constraint globalstates_pk
             primary key
         constraint globalstates_sessions_id_fk
             references sessions
             on delete cascade,
     globalstate text,
-    is_terminal boolean default false not null
+    is_terminal boolean   default false not null,
+    saved_on    timestamp default current_timestamp
 );
 
-create or replace function leave_session(m_session_id uuid, m_user_id uuid) returns void as
+create
+    or replace function leave_session(m_session_id uuid, m_user_id uuid) returns void as
 $$
 declare
 begin
-    if (select host_id from sessions where id = m_session_id) = m_user_id then
+    if
+            (select host_id
+             from sessions
+             where id = m_session_id) = m_user_id then
         if (select user_id
             from players
-            where session_id = m_session_id and user_id != m_user_id
+            where session_id = m_session_id
+              and user_id != m_user_id
             limit 1) IS NOT NULL then
             update sessions
             set host_id = (select user_id from players where session_id = m_session_id and user_id != m_user_id limit 1)
             where id = m_session_id;
         else
-            delete from sessions where id = m_session_id;
+            delete
+            from sessions
+            where id = m_session_id;
         end if;
     end if;
-    delete from players where user_id = m_user_id and session_id = m_session_id;
+    delete
+    from players
+    where user_id = m_user_id
+      and session_id = m_session_id;
 end
-$$ language plpgsql;
+$$
+    language plpgsql;

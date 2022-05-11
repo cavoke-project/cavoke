@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(cavoke_server)
+set(CMAKE_CXX_STANDARD 17)
 
 set(CAVOKE_H_DIR ../cavoke-dev-lib CACHE PATH "Directory with cavoke.h library")
 include_directories(${CAVOKE_H_DIR})
