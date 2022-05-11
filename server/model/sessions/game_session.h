@@ -47,6 +47,9 @@ struct GameSessionAccessObject {
     /// Delete current session
     void delete_session();
 
+    /// Leave current session (and transfer host/delete session)
+    void leave_session(const std::string &user_id);
+
     /// Marks session as starts
     void start(const json &game_settings);
 

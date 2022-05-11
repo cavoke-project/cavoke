@@ -242,4 +242,9 @@ void GameSessionAccessObject::delete_session() {
                  CompareOperator::EQ, id));
 }
 
+void GameSessionAccessObject::leave_session(const std::string &user_id) {
+    drogon::app().getDbClient()->execSqlSync(
+        "select leave_session($1::uuid, $2::uuid);", id, user_id);
+}
+
 }  // namespace cavoke::server::model

@@ -229,9 +229,14 @@ void SessionsController::leave(
         return CALLBACK_STATUS_CODE(k401Unauthorized);
     }
 
-    drogon::app().getDbClient()->execSqlSync(
-        "select leave_session($1::uuid, $2::uuid);", session_id,
-        user_id.value());  // what could possibly go wrong?
+    model::GameSessionAccessObject session;
+    try {
+        session = m_participation_storage->get_sessionAO(session_id);
+    } catch (const model::game_session_error &err) {
+        return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
+    }
+
+    session.leave_session(user_id.value());
 
     return CALLBACK_STATUS_CODE(k200OK);
 }
