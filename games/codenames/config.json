@@ -7,9 +7,9 @@
     "blue captain",
     "red captain",
     "blue player",
-    "red_player",
-    "blue_player",
-    "red_player"
+    "red player",
+    "blue player",
+    "red player"
   ],
   "default_settings": {
     "board_h": 5,
