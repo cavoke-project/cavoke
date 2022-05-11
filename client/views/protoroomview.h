@@ -19,7 +19,7 @@ public:
 public slots:
     void updateStatus(CreatingGameStatus newStatus);
     void updateSessionInfo(const SessionInfo &sessionInfo);
-    void prepareJoinCreate(bool _isJoining);
+    void clear();
     void updateValidationResult(const ValidationResult &validationResult);
     void updateGameName(const QString &gameName);
     void gotRolesListUpdate(
@@ -40,13 +40,14 @@ private slots:
 
 private:
     Ui::ProtoRoomView *ui;
+    void show_as_host();
+    void show_as_guest();
     const std::map<CreatingGameStatus, QString> STATUS = {
         {CreatingGameStatus::UNKNOWN, "Unknown"},
         {CreatingGameStatus::DOWNLOAD, "Downloading"},
         {CreatingGameStatus::REQUESTED, "Sending request"},
         {CreatingGameStatus::DONE, "Done"},
     };
-    bool isJoining = false;
     int ourRole = -1;
 };
 

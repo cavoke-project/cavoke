@@ -130,6 +130,9 @@ void NetworkManager::gotSession(QNetworkReply *reply) {
     SessionInfo sessionInfo;
     sessionInfo.read(QJsonDocument::fromJson(answer).object());
     sessionId = sessionInfo.session_id;
+    sessionInfo.isHost =
+        sessionInfo.host_id == userId.toString(QUuid::WithoutBraces);
+
     emit gotSessionInfo(sessionInfo);
 }
 
@@ -180,7 +183,7 @@ void NetworkManager::validateSession() {
     QUrl route =
         HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(VALIDATE);
     route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
-    //    qDebug() << route.toString();
+        qDebug() << route.toString();
     auto request = QNetworkRequest(route);
     request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader,
                       "application/json");

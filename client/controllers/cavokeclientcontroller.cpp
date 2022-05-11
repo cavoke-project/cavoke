@@ -58,8 +58,6 @@ CavokeClientController::CavokeClientController(QObject *parent)
 
     connect(&createGameView, SIGNAL(startedCreateGameRoutine(int)), this,
             SLOT(createGameStart(int)));
-    connect(this, SIGNAL(createGameDownloaded()), this,
-            SLOT(createGameSendRequest()));
     connect(this, SIGNAL(clearScreens()), &gamesListView, SLOT(displayEmpty()));
 
     // both Join and Create gameView actions
@@ -71,10 +69,6 @@ CavokeClientController::CavokeClientController(QObject *parent)
     // joinGameView workflow
     connect(&joinGameView, SIGNAL(joinedGame(QString)), this,
             SLOT(joinGameStart(QString)));
-    connect(this, SIGNAL(joinGameDownloaded()), this,
-            SLOT(creatingJoiningGameDone()));
-    connect(this, SIGNAL(gettingGameInfo(QString)), &networkManager,
-            SLOT(getGamesConfig(QString)));
     connect(&networkManager, SIGNAL(gotGameInfo(GameInfo)), this,
             SLOT(gotCurrentGameInfo(GameInfo)));
 
@@ -157,7 +151,10 @@ void CavokeClientController::showTestWindowView() {
 
 void CavokeClientController::showStartView() {
     startView.show();
-    status = CreateJoinControllerStatus::NOTHING;
+    qmlDownloadStatus = QMLDownloadStatus::NOT_STARTED;
+    hostGuestStatus = HostGuestStatus::NOT_IN;
+    currentGameInfo = GameInfo();
+    currentSessionInfo = SessionInfo();
 }
 
 void CavokeClientController::showJoinGameView() {
@@ -234,68 +231,62 @@ void CavokeClientController::unpackDownloadedQml(QFile *file,
     cache_manager::save_zip_to_cache(file, gameId);
     qDebug() << "UnpackDownloadedQml Finished";
     file->deleteLater();
-    if (status == CreateJoinControllerStatus::CREATING) {
-        emit createGameDownloaded();
-    } else if (status == CreateJoinControllerStatus::JOINING) {
-        emit joinGameDownloaded();
-    }
+
+    qmlDownloadStatus = QMLDownloadStatus::DOWNLOADED;
 }
 
 void CavokeClientController::createGameStart(int gameIndex) {
     qDebug() << "Now we are creating game with index: " << gameIndex;
 
-    status = CreateJoinControllerStatus::CREATING;
-    protoRoomView.prepareJoinCreate(false);
-
     currentGameInfo = model.getGameByIndex(gameIndex);
 
+    protoRoomView.clear();
+    protoRoomView.updateStatus(ProtoRoomView::CreatingGameStatus::REQUESTED);
     createGameView.close();
     protoRoomView.show();
 
-    downloadCurrentGame();
+    networkManager.createSession(currentGameInfo.id);
 }
 
 void CavokeClientController::joinGameStart(const QString &inviteCode) {
     qDebug() << "Now we are joinGameStart with inviteCode: " << inviteCode;
 
-    status = CreateJoinControllerStatus::JOINING;
-    protoRoomView.prepareJoinCreate(true);
-
+    protoRoomView.clear();
     protoRoomView.updateStatus(ProtoRoomView::CreatingGameStatus::REQUESTED);
-
     joinGameView.close();
     protoRoomView.show();
 
     networkManager.joinSession(inviteCode);
 }
 
-void CavokeClientController::downloadCurrentGame() {
-    qDebug() << "Now we are downloading game: " << currentGameInfo.id;
-
-    protoRoomView.updateStatus(ProtoRoomView::CreatingGameStatus::DOWNLOAD);
-    model.gotGameIdToDownload(currentGameInfo.id);
-}
-
-void CavokeClientController::createGameSendRequest() {
-    qDebug() << "Now we are createGameSendRequest with id: "
-             << currentGameInfo.id;
-
-    networkManager.createSession(currentGameInfo.id);
-    protoRoomView.updateStatus(ProtoRoomView::CreatingGameStatus::REQUESTED);
-}
-
 void CavokeClientController::gotSessionInfo(const SessionInfo &sessionInfo) {
     qDebug() << "Now we got session info";
 
-    protoRoomView.updateSessionInfo(sessionInfo);
     currentSessionInfo = sessionInfo;
 
-    if (status == CreateJoinControllerStatus::CREATING) {
-        creatingJoiningGameDone();
-    } else if (status == CreateJoinControllerStatus::JOINING) {
-        emit gettingGameInfo(currentSessionInfo.game_id);
-    } else if (status == CreateJoinControllerStatus::POLLING_CREATE ||
-               status == CreateJoinControllerStatus::POLLING_JOIN) {
+    if (hostGuestStatus == HostGuestStatus::NOT_IN) {
+        networkManager.startSessionPolling();
+    }
+
+    if (currentSessionInfo.isHost && hostGuestStatus != HostGuestStatus::HOST) {
+        becomeHost();
+    } else if (!currentSessionInfo.isHost &&
+               hostGuestStatus != HostGuestStatus::GUEST) {
+        becomeGuest();
+    }
+
+    if (qmlDownloadStatus == QMLDownloadStatus::NOT_STARTED) {
+        networkManager.getGamesClient(currentSessionInfo.game_id);
+        qmlDownloadStatus = QMLDownloadStatus::DOWNLOADING;
+        protoRoomView.updateStatus(ProtoRoomView::CreatingGameStatus::DOWNLOAD);
+    }
+
+    protoRoomView.updateSessionInfo(currentSessionInfo);
+
+    if (currentGameInfo.players_num == 0) {
+        networkManager.getGamesConfig(currentSessionInfo.game_id);
+    } else if (qmlDownloadStatus == QMLDownloadStatus::DOWNLOADED) {
+        protoRoomView.updateStatus(ProtoRoomView::CreatingGameStatus::DONE);
         collectListOfAvailableRoles();
     }
 }
@@ -303,21 +294,8 @@ void CavokeClientController::gotSessionInfo(const SessionInfo &sessionInfo) {
 void CavokeClientController::gotCurrentGameInfo(const GameInfo &gameInfo) {
     currentGameInfo = gameInfo;
     emit setGameName(currentGameInfo.display_name);
-    downloadCurrentGame();
 }
 
-void CavokeClientController::creatingJoiningGameDone() {
-    qDebug() << "Now creating/joining game preparations are done";
-
-    protoRoomView.updateStatus(ProtoRoomView::CreatingGameStatus::DONE);
-    networkManager.startSessionPolling();
-    if (status == CreateJoinControllerStatus::CREATING) {
-        networkManager.startValidationPolling();
-        status = CreateJoinControllerStatus::POLLING_CREATE;
-    } else if (status == CreateJoinControllerStatus::JOINING) {
-        status = CreateJoinControllerStatus::POLLING_JOIN;
-    }
-}
 void CavokeClientController::updateSettings(const QString &nickname,
                                             const QString &host) {
     settings.setValue(PLAYER_NICKNAME, nickname);
@@ -344,4 +322,14 @@ void CavokeClientController::collectListOfAvailableRoles() {
         }
     }
     emit createdAvailableRolesList(availableRoles);
+}
+
+void CavokeClientController::becomeHost() {
+    hostGuestStatus = HostGuestStatus::HOST;
+    networkManager.startValidationPolling();
+}
+
+void CavokeClientController::becomeGuest() {
+    hostGuestStatus = HostGuestStatus::GUEST;
+    networkManager.stopValidationPolling();
 }
