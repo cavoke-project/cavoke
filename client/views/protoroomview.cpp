@@ -45,6 +45,11 @@ void ProtoRoomView::updateSessionInfo(const SessionInfo &sessionInfo) {
         }
         cnt++;
     }
+    if (sessionInfo.isHost) {
+        show_as_host();
+    } else {
+        show_as_guest();
+    }
     if (sessionInfo.status == 1) {
         this->close();
         emit joinedCreatedGame();
@@ -61,34 +66,16 @@ void ProtoRoomView::on_joinGameButton_clicked() {
     emit createdGame();
 }
 
-void ProtoRoomView::prepareJoinCreate(bool _isJoining) {
+void ProtoRoomView::clear() {
     ui->currentPlayersHLabel->hide();
     ui->playersListWidget->hide();
 
     ui->inviteCodeLabel->setText("Unknown");
     ui->gameNameLabel->setText("Unknown");
-
-    isJoining = _isJoining;
-    if (isJoining) {
-        //        ui->headerLabel->setText("Joining game session");
-        ui->gameNameHLabel->show();
-        ui->gameNameLabel->show();
-        ui->inviteCodeHLabel->hide();
-        ui->inviteCodeLabel->hide();
-        ui->waitForHostLabel->show();
-        ui->joinGameButton->hide();
-    } else {
-        //        ui->headerLabel->setText("Creating game session");
-        ui->gameNameHLabel->hide();
-        ui->gameNameLabel->hide();
-        ui->inviteCodeHLabel->show();
-        ui->inviteCodeLabel->show();
-        ui->waitForHostLabel->hide();
-        ui->joinGameButton->show();
-    }
 }
 
 void ProtoRoomView::on_backButton_clicked() {
+    this->clear();
     this->close();
     emit leftRoom();
     emit shownStartView();
@@ -114,4 +101,22 @@ void ProtoRoomView::gotRolesListUpdate(
     } else {
         ui->roleComboBox->setCurrentIndex(-1);
     }
+}
+void ProtoRoomView::show_as_host() {
+    ui->gameNameHLabel->hide();
+    ui->gameNameLabel->hide();
+    ui->inviteCodeHLabel->show();
+    ui->inviteCodeLabel->show();
+    ui->waitForHostLabel->hide();
+    ui->joinErrorLabel->show();
+    ui->joinGameButton->show();
+}
+void ProtoRoomView::show_as_guest() {
+    ui->gameNameHLabel->show();
+    ui->gameNameLabel->show();
+    ui->inviteCodeHLabel->hide();
+    ui->inviteCodeLabel->hide();
+    ui->waitForHostLabel->show();
+    ui->joinErrorLabel->hide();
+    ui->joinGameButton->hide();
 }

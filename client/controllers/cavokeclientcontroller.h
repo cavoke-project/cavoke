@@ -15,13 +15,15 @@
 #include "testwindowview.h"
 
 class CavokeClientController : public QObject {
-    enum class CreateJoinControllerStatus {
-        NOTHING,
-        CREATING,
-        JOINING,
-        POLLING_CREATE,
-        POLLING_JOIN
-    };
+    //    enum class CreateJoinControllerStatus {
+    //        NOTHING,
+    //        CREATING,
+    //        JOINING,
+    //        POLLING_CREATE,
+    //        POLLING_JOIN
+    //    };
+    enum class QMLDownloadStatus { NOT_STARTED, DOWNLOADING, DOWNLOADED };
+    enum class HostGuestStatus { NOT_IN, HOST, GUEST };
     Q_OBJECT
 public:
     explicit CavokeClientController(QObject *parent = nullptr);
@@ -37,9 +39,6 @@ public slots:
 
 signals:
     void loadGamesList();
-    void createGameDownloaded();
-    void joinGameDownloaded();
-    void gettingGameInfo(const QString &gameId);
     void setGameName(const QString &gameName);
     void initSettingsValues(const QString &nickname, const QString &host);
     void clearScreens();
@@ -55,12 +54,11 @@ private slots:
     void unpackDownloadedQml(QFile *file, const QString &gameId);
     void createGameStart(int gameIndex);
     void joinGameStart(const QString &inviteCode);
-    void downloadCurrentGame();
     void gotCurrentGameInfo(const GameInfo &gameInfo);
-    void creatingJoiningGameDone();
-    void createGameSendRequest();
     void gotSessionInfo(const SessionInfo &sessionInfo);
     void collectListOfAvailableRoles();
+    void becomeHost();
+    void becomeGuest();
 
 private:
     void defaultSettingsInitialization();
@@ -79,7 +77,8 @@ private:
     CavokeQmlGameModel *currentQmlGameModel = nullptr;
     SessionInfo currentSessionInfo;
     GameInfo currentGameInfo;
-    CreateJoinControllerStatus status = CreateJoinControllerStatus::NOTHING;
+    QMLDownloadStatus qmlDownloadStatus = QMLDownloadStatus::NOT_STARTED;
+    HostGuestStatus hostGuestStatus = HostGuestStatus::NOT_IN;
     QSettings settings;
 };
 
