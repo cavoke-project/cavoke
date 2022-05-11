@@ -3,10 +3,12 @@
 {
   //custom_config: custom configuration for users. This object can be acquired by the app().getCustomConfig() method.
   "custom_config": {
-    "games_directory": "/mnt/data/games",
-    "logic_name": "logic",
-    "zip_name": "client.zip",
-    "config_name": "config.json"
+    "storage": {
+      "games_directory": "/mnt/data/games",
+      "logic_name": "logic",
+      "zip_name": "client.zip",
+      "config_name": "config.json"
+    }
   },
   "db_clients": [
     {
