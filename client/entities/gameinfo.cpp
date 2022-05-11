@@ -27,7 +27,9 @@ void GameInfo::read(const QJsonObject &json) {
 
     if (json.contains(ROLE_NAMES) && json[ROLE_NAMES].isArray()) {
         auto objects = json[ROLE_NAMES].toArray();
-        std::transform(objects.begin(), objects.end(), std::back_inserter(role_names), [](const QJsonValueRef &obj){return obj.toString();});
+        std::transform(objects.begin(), objects.end(),
+                       std::back_inserter(role_names),
+                       [](const QJsonValueRef &obj) { return obj.toString(); });
     }
 }
 void GameInfo::write(QJsonObject &json) const {
