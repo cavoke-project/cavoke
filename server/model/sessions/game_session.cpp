@@ -173,20 +173,6 @@ bool GameSessionAccessObject::is_host(const std::string &user_id) const {
     return get_host() == user_id;
 }
 
-std::optional<std::string> GameSessionAccessObject::get_first_not_host() const {
-    auto session_snapshot = get_snapshot();
-    auto candidates = default_mp_players.findBy(
-        Criteria(drogon_model::cavoke_orm::Players::Cols::_session_id,
-                 CompareOperator::EQ, id) &&
-        Criteria(drogon_model::cavoke_orm::Players::Cols::_user_id,
-                 CompareOperator::NE, session_snapshot.getValueOfHostId()));
-    if (candidates.empty()) {
-        return {};
-    } else {
-        return candidates[0].getValueOfUserId();
-    }
-}
-
 void GameSessionAccessObject::finish() {
     auto session = default_mp_sessions.findOne(
         Criteria(drogon_model::cavoke_orm::Sessions::Cols::_id,

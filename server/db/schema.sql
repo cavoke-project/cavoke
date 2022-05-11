@@ -63,7 +63,11 @@ create or replace function transfer_to_available(m_session_id uuid, m_user_id uu
 declare
 begin
     if (select host_id from sessions where id = m_session_id) = m_user_id then
-        update sessions set host_id = (select user_id from players where session_id = m_session_id and user_id != m_user_id limit 1) where id = m_session_id;
+        if (select user_id from players where session_id = m_session_id and user_id != m_user_id limit 1) IS NOT NULL then
+            update sessions set host_id = (select user_id from players where session_id = m_session_id and user_id != m_user_id limit 1) where id = m_session_id;
+        else
+            delete from sessions where id = m_session_id;
+        end if;
     end if;
     delete from players where user_id = m_user_id and session_id = m_session_id;
 end $$ language plpgsql;
