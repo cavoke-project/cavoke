@@ -112,11 +112,8 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(stopValidationPolling()));
     connect(&protoRoomView, SIGNAL(leftRoom()), &networkManager,
             SLOT(leaveSession()));
-    connect(
-        this,
-        SIGNAL(createdAvailableRolesList(std::vector<std::pair<QString, int>>)),
-        &protoRoomView,
-        SLOT(gotRolesListUpdate(std::vector<std::pair<QString, int>>)));
+    connect(this, SIGNAL(createdAvailableRolesList(std::vector<Role>)),
+            &protoRoomView, SLOT(gotRolesListUpdate(std::vector<Role>)));
     connect(&protoRoomView, SIGNAL(newRoleChosen(int)), &networkManager,
             SLOT(changeRoleInSession(int)));
 
@@ -313,7 +310,7 @@ void CavokeClientController::collectListOfAvailableRoles() {
             ourRole = player.player_id;
         }
     }
-    std::vector<std::pair<QString, int>> availableRoles;
+    std::vector<Role> availableRoles;
     availableRoles.emplace_back(currentGameInfo.role_names[ourRole],
                                 ourRole);  // Now first.
     for (int i = 0; i < currentGameInfo.players_num; ++i) {
