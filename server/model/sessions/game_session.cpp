@@ -231,19 +231,6 @@ void GameSessionAccessObject::remove_user(const std::string &user_id) {
                  CompareOperator::EQ, user_id));
 }
 
-void GameSessionAccessObject::transfer_host_to(const std::string &new_host) {
-    auto session = default_mp_sessions.findOne(
-        Criteria(drogon_model::cavoke_orm::Sessions::Cols::_id,
-                 CompareOperator::EQ, id));
-    // FIXME: not atomic, transactions perhaps or some other blocking, copied
-    // sql-mechanism?
-    if (session.getValueOfStatus() != NOT_STARTED) {
-        throw game_session_error("session has already started");
-    }
-    session.setHostId(new_host);
-    default_mp_sessions.update(session);
-}
-
 void GameSessionAccessObject::set_role(const std::string &user_id,
                                        int new_role) {
     // check role's validity
