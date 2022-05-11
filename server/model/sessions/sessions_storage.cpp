@@ -54,6 +54,9 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
         auto mp_globalstates = MAPPER_WITH_CLIENT_FOR(
             drogon_model::cavoke_orm::Globalstates, transaction);
         mp_globalstates.insert(global_state);
+
+        session.setHostId(host_user_id);
+        mp_sessions.update(session);
     }
     LOG_DEBUG << "Session created: " << session.getValueOfId();
     // TODO: cleanup and use GameSessionAccessObject's non-static methods

@@ -165,6 +165,14 @@ bool GameSessionAccessObject::is_player(const std::string &user_id) const {
     }
 }
 
+std::string GameSessionAccessObject::get_host() const {
+    return get_snapshot().getValueOfHostId();
+}
+
+bool GameSessionAccessObject::is_host(const std::string &user_id) const {
+    return get_host() == user_id;
+}
+
 void GameSessionAccessObject::finish() {
     auto session = default_mp_sessions.findOne(
         Criteria(drogon_model::cavoke_orm::Sessions::Cols::_id,
@@ -190,8 +198,10 @@ GameSessionAccessObject::GameSessionInfo
 GameSessionAccessObject::make_session_info(
     const drogon_model::cavoke_orm::Sessions &session,
     std::vector<PlayerInfo> players) {
-    return {session.getValueOfId(), session.getValueOfGameId(),
+    return {session.getValueOfId(),
+            session.getValueOfGameId(),
             session.getValueOfInviteCode(),
+            session.getValueOfHostId(),
             static_cast<SessionStatus>(session.getValueOfStatus()),
             std::move(players)};
 }
@@ -224,6 +234,17 @@ void GameSessionAccessObject::set_role(const std::string &user_id,
     } catch (const std::exception &err) {
         throw game_session_error("could not update role for player");
     }
+}
+
+void GameSessionAccessObject::delete_session() {
+    default_mp_sessions.deleteBy(
+        Criteria(drogon_model::cavoke_orm::Sessions::Cols::_id,
+                 CompareOperator::EQ, id));
+}
+
+void GameSessionAccessObject::leave_session(const std::string &user_id) {
+    drogon::app().getDbClient()->execSqlSync(
+        "select leave_session($1::uuid, $2::uuid);", id, user_id);
 }
 
 }  // namespace cavoke::server::model

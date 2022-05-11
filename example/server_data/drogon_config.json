@@ -21,7 +21,7 @@
       //port: Server port, 5432 by default
       "port": 5432,
       //dbname: Database name
-      "dbname": "postgres_db",
+      "dbname": "cavoke",
       //user: 'postgres' by default
       "user": "postgres_user",
       //passwd: '' by default

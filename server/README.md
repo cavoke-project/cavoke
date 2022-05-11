@@ -37,17 +37,50 @@ cavoke@ubuntu:~$ curl -s localhost:8080/games/list
 Подробное описание всех опций запуска см. в `docker run -t ghcr.io/cavoke-project/cavoke-server --help`
 
 ### Собрать самому
+#### На своей машине
 
-#### Установка библиотек
+Для сборки необходимо установить [boost](https://www.boost.org/) не старее 1.71, а также несколько пакетов для серверного фреймворка.
 
-Для работы сервера нужно установить несколько библиотек:
+Например, на ubuntu все зависимости можно загрузить с помощью `apt`.
+
+```console
+cavoke@ubuntu:~$ apt install libboost-all-dev \
+    openssl libssl-dev libjsoncpp-dev uuid-dev zlib1g-dev libc-ares-dev \
+    postgresql-server-dev-all
+```
+
+После этого можно будет собрать проект с помощью `cmake`.
+
+```console
+cavoke@ubuntu:~$ mkdir -p build-cmake && cmake . -B build-cmake
+```
+
+> :information_source: Для сборки, используя локальные библиотеки, может понадобиться прописать `git submodule update --init --recursive` для загрузки подмодулей.
+
+#### Установка библиотек извне
+
+Вообще же на сервере используются следующие библиотеки. Альтернативно можно установить каждую из них отдельно, 
+следуя инструкциям в их документации.
 
 - [drogon](https://github.com/drogonframework/drogon) не старее 1.7.3
 - [nlohmann/json](https://github.com/nlohmann/json) не старее 3.9.0
 - [boost](https://www.boost.org/) не старее 1.71
 
-На своей машине первые две библиотеки проще собрать самому. В nlohmann вообще отсутствуют внешние зависимости. В drogon
-же их много, поэтому сборка не на linux может быть увлекательным процессом.
+После этого, чтобы указать установку библиотеки cmake, стоит использовать флаг. Например, `-DUSE_EXTERNAL_DROGON=ON`.
+
+Итого команда для запуска `cmake` может выглядеть так:
+
+```console
+cavoke@ubuntu:~$ mkdir -p build-cmake && cmake . -B build-cmake -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON
+```
+
+Более подробно смотрите в [CMakeLists.txt](./CMakeLists.txt)
+
+#### Gitpod
+Альтернативно, можно попробовать разрабатывать в удаленной среде. Для этого подключён сервис Gitpod, с помощью которого
+можно в браузере запустить VS Code, в котором уже будут добавлены все зависимости, а работать он будет в облаке.
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/cavoke-project/cavoke)
 
 ### SQL
 
@@ -58,7 +91,7 @@ cavoke@ubuntu:~$ curl -s localhost:8080/games/list
 
 ```bash
 PGPASSWORD="postgres_password"
-psql -h postgres -d postgres_db -U postgres_user -f server/db/schema.sql
+psql -h postgres -d cavoke -U postgres_user -f server/db/schema.sql
 ```
 
 После этого нужно обновить ваш конфигурационный файл Drogon ([шаблон конфигурационного файла](./example_config.json)),
@@ -72,7 +105,7 @@ Booting server... at /home/cavoke/build/server/cavoke_server
 Server configuration loaded from: 'my_config.json'
 Initialize models...
 Initialize controllers...
-Database connection: host=127.0.0.1 port=5432 dbname=postgres_db user=postgres_user <pass hidden>
+Database connection: host=127.0.0.1 port=5432 dbname=cavoke user=postgres_user <pass hidden>
 Listening at 0.0.0.0:8080... 
 ```
 
