@@ -54,12 +54,8 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
         auto mp_globalstates = MAPPER_WITH_CLIENT_FOR(
             drogon_model::cavoke_orm::Globalstates, transaction);
         mp_globalstates.insert(global_state);
-    }
-    {
+
         session.setHostId(host_user_id);
-        auto transaction = drogon::app().getDbClient()->newTransaction();
-        auto mp_sessions = MAPPER_WITH_CLIENT_FOR(
-            drogon_model::cavoke_orm::Sessions, transaction);
         mp_sessions.update(session);
     }
     LOG_DEBUG << "Session created: " << session.getValueOfId();
