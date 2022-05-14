@@ -100,16 +100,70 @@ end
 $$
     language plpgsql;
 
+-- STAISTICS
+
+create or replace function get_session_durations(game_id_ varchar)
+    returns table
+            (
+                session_id uuid,
+                duration   numeric
+            )
+as
+$$
+declare
+begin
+    -- noinspection SqlAggregates
+
+    RETURN QUERY SELECT statuses.session_id,
+                        EXTRACT(epoch from (MAX(statuses.saved_on) - MIN(statuses.saved_on))) as duration
+                 FROM (statuses inner join sessions s on s.id = statuses.session_id)
+                 WHERE s.game_id = game_id_
+                   and (statuses.status = 1 or statuses.status = 2)
+                 GROUP BY statuses.session_id
+                 HAVING MAX(statuses.status) >= 2;
+end;
+$$
+    language plpgsql;
+
 create or replace function get_average_session_time_sec(game_id_ varchar) returns int as
 $$
 declare
 begin
-    RETURN (SELECT EXTRACT(epoch from AVG(durations.duration))
-            FROM (SELECT MAX(saved_on) - MIN(saved_on) as duration
-                  FROM (statuses inner join sessions s on s.id = statuses.session_id)
-                  WHERE game_id = game_id_
-                    and (status = 1 or status = 2)
-                  GROUP BY session_id) as durations);
-end
+    RETURN (SELECT AVG(durations.duration)
+            FROM get_session_durations(game_id_) as durations);
+end;
 $$
     language plpgsql;
+
+create or replace function get_total_time_sec(game_id_ varchar) returns int as
+$$
+declare
+begin
+    RETURN (SELECT SUM(durations.duration)
+            FROM get_session_durations(game_id_) as durations);
+end;
+$$
+    language plpgsql;
+
+create or replace function get_sessions_num(game_id_ varchar) returns int as
+$$
+declare
+begin
+    RETURN (SELECT COUNT(durations.duration)
+            FROM get_session_durations(game_id_) as durations);
+end;
+$$
+    language plpgsql;
+
+create or replace function get_average_players_num(game_id_ varchar) returns int as
+$$
+declare
+begin
+    RETURN (SELECT AVG(players_nums.players_num)
+            FROM (SELECT COUNT(*) AS players_num
+                  FROM (players inner join sessions s on s.id = players.session_id)
+                  WHERE game_id = game_id_
+                  GROUP BY session_id) as players_nums);
+end;
+$$
+    language plpgsql
