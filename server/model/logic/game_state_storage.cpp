@@ -35,7 +35,7 @@ void GameStateStorage::save_state(const std::string &session_id,
     for (auto &player : players) {
         player.setPlayerstate(
             new_state.players_state[player.getValueOfPlayerId()]);
-        if (!new_state.is_terminal) {
+        if (new_state.is_terminal) {
             // FIXME: move to a new winner system
             bool is_winner =
                 std::any_of(new_state.winners.begin(), new_state.winners.end(),
