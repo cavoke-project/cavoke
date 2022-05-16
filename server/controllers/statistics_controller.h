@@ -22,6 +22,9 @@ public:
     ADD_METHOD_TO(StatisticsController::game_statistics,
                   "/statistics/game/{game_id}",
                   drogon::Get);
+    ADD_METHOD_TO(StatisticsController::user_statistics,
+                  "/statistics/user/{user_id}",
+                  drogon::Get);
     METHOD_LIST_END
 
 protected:
@@ -29,6 +32,11 @@ protected:
         const drogon::HttpRequestPtr &req,
         std::function<void(const drogon::HttpResponsePtr &)> &&callback,
         const std::string &game_id);
+
+    void user_statistics(
+        const drogon::HttpRequestPtr &req,
+        std::function<void(const drogon::HttpResponsePtr &)> &&callback,
+        const std::string &user_id);
 };
 
 }  // namespace cavoke::server::controllers

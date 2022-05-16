@@ -205,7 +205,7 @@ create or replace function get_sessions_num_for_user(game_id_ varchar, user_id_ 
 $$
 declare
 begin
-    RETURN (SELECT COUNT(user_sessions.duration)
+    RETURN (SELECT (COUNT(*) FILTER ( WHERE user_sessions.score is not null))
             FROM (get_participations(game_id_, user_id_) p left join get_sessions_info(game_id_) s
                   on p.session_id = s.session_id) as user_sessions);
 end;

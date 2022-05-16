@@ -22,6 +22,7 @@ public:
     };
 
     struct UserGameStatistics {
+        std::string game_id;
         int time_played_sec;
         int games_played;
         double win_rate;

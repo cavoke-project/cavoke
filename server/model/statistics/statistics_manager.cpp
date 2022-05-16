@@ -19,17 +19,15 @@ StatisticsManager::GameStatistics StatisticsManager::get_game_statistics(
 StatisticsManager::UserGameStatistics
 StatisticsManager::get_user_game_statistics(const std::string &user_id,
                                             const std::string &game_id) {
-    return {get_user_time_played(user_id, game_id),
+    return {game_id, get_user_time_played(user_id, game_id),
             get_user_games_played(user_id, game_id),
             get_user_win_rate(user_id, game_id)};
 }
 
 StatisticsManager::UserStatistics StatisticsManager::get_user_statistics(
     const std::string &user_id) {
-    return {
-        get_user_total_time_played(user_id),
-            get_user_total_games_played(user_id)
-    }
+    return {get_user_total_time_played(user_id),
+            get_user_total_games_played(user_id)};
 }
 
 int StatisticsManager::get_avg_duration(const std::string &game_id) {
