@@ -51,7 +51,7 @@ private:
     static const std::string AUTHORIZATION_HEADER;
     static const std::string TOKEN_PREFIX;
     static const std::string SETTINGS_KEYNAME;
-    static const std::string USER_ID_COOKIE_NAME;
+    static const std::string USER_ID_NAME;
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(AuthFilter::AuthConfig,
