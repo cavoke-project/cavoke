@@ -36,10 +36,11 @@ void AuthFilter::doFilter(const HttpRequestPtr &req,
         // if no authentication configured, just get user id parameter
         if (!verifier.has_value()) {
             auto user_id =
-                req->getOptionalParameter<std::string>(USER_ID_QUERY_NAME);
+                req->getOptionalParameter<std::string>(USER_ID_COOKIE_NAME);
             if (!user_id.has_value()) {
                 throw std::runtime_error("no user_id query parameter");
             }
+            req->addCookie(USER_ID_COOKIE_NAME, user_id.value());
             // add user to db
             register_user(user_id.value());
             return fccb();
@@ -52,7 +53,7 @@ void AuthFilter::doFilter(const HttpRequestPtr &req,
         verifier->verify(decoded);
         // Pass user id to methods
         auto subject = decoded.get_subject();
-        req->setParameter(USER_ID_QUERY_NAME, subject);
+        req->addCookie(USER_ID_COOKIE_NAME, subject);
         // add user to db
         register_user(subject);
         return fccb();
@@ -82,15 +83,10 @@ void AuthFilter::register_user(const std::string &user_id) const {
 }
 
 std::string AuthFilter::get_user_id(const HttpRequestPtr &req) {
-    auto user_id = req->getOptionalParameter<std::string>(USER_ID_QUERY_NAME);
-    if (!user_id.has_value()) {
-        throw std::logic_error(
-            "no user_id query in request, but passed auth?!");
-    }
-    return user_id.value();
+    return req->getCookie(USER_ID_COOKIE_NAME);
 }
 
 const std::string AuthFilter::AUTHORIZATION_HEADER = "Authorization";
 const std::string AuthFilter::TOKEN_PREFIX = "Bearer ";
 const std::string AuthFilter::SETTINGS_KEYNAME = "auth";
-const std::string AuthFilter::USER_ID_QUERY_NAME = "user_id";
+const std::string AuthFilter::USER_ID_COOKIE_NAME = "user_id";

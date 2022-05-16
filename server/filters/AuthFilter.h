@@ -13,12 +13,12 @@ using nlohmann_verifier =
 /** Provides an authentication interceptor that checks a bearer token
  *  using a public key given in the configuration file.
  *
- *  If authenticated, passes `user_id` through via a query with the same name
- *  for controllers reverse compatibility and usage without authentication.
+ *  If authenticated, makes user_id available to controllers through
+ * `AuthFilter::get_user_id(req)`.
  *
  *  If no configuration for `auth` is found, allows all requests and acquires
- * `user_id` from query param with the same name. A corresponding warning will
- * be displayed in the logs.
+ * `user_id` from query param with the same name. A corresponding warning about
+ * running in the insecure mode will be displayed in the logs.
  */
 class AuthFilter : public HttpFilter<AuthFilter> {
 public:
@@ -51,7 +51,7 @@ private:
     static const std::string AUTHORIZATION_HEADER;
     static const std::string TOKEN_PREFIX;
     static const std::string SETTINGS_KEYNAME;
-    static const std::string USER_ID_QUERY_NAME;
+    static const std::string USER_ID_COOKIE_NAME;
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(AuthFilter::AuthConfig,
