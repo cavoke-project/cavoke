@@ -27,8 +27,9 @@ const std::vector<typename Sessions::MetaData> Sessions::metaData_ = {
     {"id", "std::string", "uuid", 0, 0, 1, 1},
     {"game_id", "std::string", "character varying", 0, 0, 0, 1},
     {"invite_code", "std::string", "character varying", 0, 0, 0, 1},
-    {"host_id", "std::string", "uuid", 0, 0, 0, 0},
-    {"game_settings", "std::string", "json", 0, 0, 0, 0}};
+    {"host_id", "std::string", "character varying", 0, 0, 0, 0},
+    {"game_settings", "std::string", "json", 0, 0, 0, 0},
+    {"status", "int32_t", "integer", 4, 0, 0, 0}};
 const std::string &Sessions::getColumnName(size_t index) noexcept(false) {
     assert(index < metaData_.size());
     return metaData_[index].colName_;

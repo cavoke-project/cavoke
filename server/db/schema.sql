@@ -13,7 +13,7 @@ create table sessions
             primary key,
     game_id       varchar not null,
     invite_code   varchar not null,
-    host_id       uuid    null,
+    host_id       varchar    null,
     game_settings json,
     constraint fk_host foreign key (host_id) references users (id)
 );
