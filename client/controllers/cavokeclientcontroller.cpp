@@ -104,12 +104,7 @@ CavokeClientController::CavokeClientController(QObject *parent)
             &protoRoomView, SLOT(updateValidationResult(ValidationResult)));
     connect(&protoRoomView, SIGNAL(createdGame()), &networkManager,
             SLOT(startSession()));
-    connect(&protoRoomView, SIGNAL(leftRoom()), &networkManager,
-            SLOT(stopGamePolling()));
-    connect(&protoRoomView, SIGNAL(leftRoom()), &networkManager,
-            SLOT(stopSessionPolling()));
-    connect(&protoRoomView, SIGNAL(leftRoom()), &networkManager,
-            SLOT(stopValidationPolling()));
+    connect(&protoRoomView, SIGNAL(leftRoom()), this, SLOT(leftSession()));
     connect(&protoRoomView, SIGNAL(leftRoom()), &networkManager,
             SLOT(leaveSession()));
     connect(this, SIGNAL(createdAvailableRolesList(std::vector<Role>)),
@@ -146,12 +141,18 @@ void CavokeClientController::showTestWindowView() {
     testWindowView.show();
 }
 
-void CavokeClientController::showStartView() {
-    startView.show();
+void CavokeClientController::leftSession() {
+    networkManager.stopGamePolling();
+    networkManager.stopSessionPolling();
+    networkManager.stopValidationPolling();
     qmlDownloadStatus = QMLDownloadStatus::NOT_STARTED;
     hostGuestStatus = HostGuestStatus::NOT_IN;
     currentGameInfo = GameInfo();
     currentSessionInfo = SessionInfo();
+}
+
+void CavokeClientController::showStartView() {
+    startView.show();
 }
 
 void CavokeClientController::showJoinGameView() {
@@ -218,9 +219,10 @@ void CavokeClientController::startLoadedQml() {
 }
 
 void CavokeClientController::stopQml() {
+    networkManager.stopGamePolling();
+    leftSession();
     startView.show();
     currentQmlGameModel->deleteLater();
-    networkManager.stopGamePolling();
 }
 
 void CavokeClientController::unpackDownloadedQml(QFile *file,

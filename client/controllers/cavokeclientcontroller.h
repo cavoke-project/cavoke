@@ -58,6 +58,7 @@ private slots:
     void collectListOfAvailableRoles();
     void becomeHost();
     void becomeGuest();
+    void leftSession();
 
 private:
     void defaultSettingsInitialization();
