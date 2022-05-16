@@ -102,11 +102,12 @@ $$
 
 -- STAISTICS
 
-create or replace function get_session_durations(game_id_ varchar)
+create or replace function get_sessions_info(game_id_ varchar)
     returns table
             (
                 session_id uuid,
-                duration   numeric
+                duration   numeric,
+                max_status integer
             )
 as
 $$
@@ -115,7 +116,8 @@ begin
     -- noinspection SqlAggregates
 
     RETURN QUERY SELECT statuses.session_id,
-                        EXTRACT(epoch from (MAX(statuses.saved_on) - MIN(statuses.saved_on))) as duration
+                        EXTRACT(epoch from (MAX(statuses.saved_on) - MIN(statuses.saved_on))) as duration,
+                        MAX(statuses.status)                                                  as max_status
                  FROM (statuses inner join sessions s on s.id = statuses.session_id)
                  WHERE s.game_id = game_id_
                    and (statuses.status = 1 or statuses.status = 2)
@@ -130,7 +132,7 @@ $$
 declare
 begin
     RETURN (SELECT AVG(durations.duration)
-            FROM get_session_durations(game_id_) as durations);
+            FROM get_sessions_info(game_id_) as durations);
 end;
 $$
     language plpgsql;
@@ -139,8 +141,8 @@ create or replace function get_total_time_sec(game_id_ varchar) returns int as
 $$
 declare
 begin
-    RETURN (SELECT SUM(durations.duration)
-            FROM get_session_durations(game_id_) as durations);
+    RETURN (SELECT COALESCE(SUM(durations.duration), 0)
+            FROM get_sessions_info(game_id_) as durations);
 end;
 $$
     language plpgsql;
@@ -150,7 +152,7 @@ $$
 declare
 begin
     RETURN (SELECT COUNT(durations.duration)
-            FROM get_session_durations(game_id_) as durations);
+            FROM get_sessions_info(game_id_) as durations);
 end;
 $$
     language plpgsql;
@@ -166,4 +168,93 @@ begin
                   GROUP BY session_id) as players_nums);
 end;
 $$
-    language plpgsql
+    language plpgsql;
+
+
+create or replace function get_participations(game_id_ varchar, user_id_ uuid)
+    returns table
+            (
+                session_id uuid,
+                player_id  integer,
+                score      integer
+            )
+as
+$$
+declare
+begin
+    RETURN QUERY SELECT players.session_id, players.player_id, players.score
+                 FROM (players inner join sessions s on s.id = players.session_id)
+                 WHERE players.user_id = user_id_
+                   AND s.game_id = game_id_;
+end;
+$$
+    language plpgsql;
+
+create or replace function get_total_time_sec_for_user(game_id_ varchar, user_id_ uuid) returns int as
+$$
+declare
+begin
+    RETURN (SELECT COALESCE(SUM(user_sessions.duration), 0)
+            FROM (get_participations(game_id_, user_id_) p left join get_sessions_info(game_id_) s
+                  on p.session_id = s.session_id) as user_sessions);
+end;
+$$
+    language plpgsql;
+
+create or replace function get_sessions_num_for_user(game_id_ varchar, user_id_ uuid) returns int as
+$$
+declare
+begin
+    RETURN (SELECT COUNT(user_sessions.duration)
+            FROM (get_participations(game_id_, user_id_) p left join get_sessions_info(game_id_) s
+                  on p.session_id = s.session_id) as user_sessions);
+end;
+$$
+    language plpgsql;
+
+create or replace function get_win_rate(game_id_ varchar, user_id_ uuid) returns float as
+$$
+declare
+begin
+    RETURN (SELECT CAST((COUNT(*) FILTER ( WHERE p.score > 0)) AS FLOAT) /
+                   NULLIF((COUNT(*) FILTER ( WHERE p.score is not null)), 0)
+            FROM get_participations(game_id_, user_id_) as p);
+end;
+$$
+    language plpgsql;
+
+create or replace function all_games()
+    returns table
+            (
+                game_id varchar
+            )
+as
+$$
+declare
+begin
+    RETURN QUERY (SELECT DISTINCT sessions.game_id FROM sessions);
+end;
+$$
+    language plpgsql;
+
+
+create or replace function get_cavoke_time_sec_for_user(user_id_ uuid) returns int as
+$$
+declare
+begin
+    RETURN (SELECT COALESCE(SUM(get_total_time_sec_for_user(g.game_id, user_id_)), 0)
+            FROM all_games() as g);
+end;
+$$
+    language plpgsql;
+
+
+create or replace function get_cavoke_sessions_num_for_user(user_id_ uuid) returns int as
+$$
+declare
+begin
+    RETURN (SELECT SUM(get_sessions_num_for_user(g.game_id, user_id_))
+            FROM all_games() as g);
+end;
+$$
+    language plpgsql;
