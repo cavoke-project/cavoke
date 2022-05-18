@@ -72,7 +72,9 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
     }
     LOG_DEBUG << "Session created: " << session.getValueOfId();
     // TODO: cleanup and use GameSessionAccessObject's non-static methods
-    return GameSessionAccessObject::make_session_info(session, session_status, {{GameSessionAccessObject::UserInfo::from_user(user), 0}});
+    return GameSessionAccessObject::make_session_info(
+        session, session_status,
+        {{GameSessionAccessObject::UserInfo::from_user(user), 0}});
 }
 
 void SessionsStorage::start_session(const std::string &session_id,
