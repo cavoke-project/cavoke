@@ -35,8 +35,7 @@ void AuthFilter::doFilter(const HttpRequestPtr &req,
     try {
         // if no authentication configured, just get user id parameter
         if (!verifier.has_value()) {
-            auto user_id =
-                req->getOptionalParameter<std::string>(USER_ID_NAME);
+            auto user_id = req->getOptionalParameter<std::string>(USER_ID_NAME);
             if (!user_id.has_value()) {
                 throw std::runtime_error("no user_id query parameter");
             }
@@ -75,11 +74,8 @@ std::string AuthFilter::extract_token_from_header(
 void AuthFilter::register_user(const std::string &user_id) const {
     drogon_model::cavoke_orm::Users user;
     // add user to db if not present
-    user.setId(user_id);
-    try {
-        mp_users.insert(user);
-    } catch (...) {
-    }
+    drogon::app().getDbClient()->execSqlSync(
+        "insert into users (id) values ($1) on conflict do nothing", user_id);
 }
 
 std::string AuthFilter::get_user_id(const HttpRequestPtr &req) {

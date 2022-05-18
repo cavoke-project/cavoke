@@ -18,6 +18,9 @@ using namespace drogon::orm;
 GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
     const GameConfig &game_config,
     const std::string &host_user_id) {
+    drogon_model::cavoke_orm::Users user =
+        MAPPER_FOR(drogon_model::cavoke_orm::Users)
+            .findByPrimaryKey(host_user_id);
     // create session
     auto session = drogon_model::cavoke_orm::Sessions();
     {
@@ -69,8 +72,7 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
     }
     LOG_DEBUG << "Session created: " << session.getValueOfId();
     // TODO: cleanup and use GameSessionAccessObject's non-static methods
-    return GameSessionAccessObject::make_session_info(session, session_status,
-                                                      {{host_user_id, 0}});
+    return GameSessionAccessObject::make_session_info(session, session_status, {{GameSessionAccessObject::UserInfo::from_user(user), 0}});
 }
 
 void SessionsStorage::start_session(const std::string &session_id,
