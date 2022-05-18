@@ -123,8 +123,9 @@ CavokeClientController::CavokeClientController(QObject *parent)
 
     // oauth reply handler
     auto replyHandler = new QOAuthHttpServerReplyHandler(1337, this);
-    cavoke::auth::AuthenticationManager::getInstance().oauth2.setReplyHandler(
-        replyHandler);
+    auto &auth = cavoke::auth::AuthenticationManager::getInstance();
+    auth.oauth2.setReplyHandler(replyHandler);
+    auth.init();
 
     startView.show();
 }

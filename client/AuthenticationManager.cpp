@@ -9,8 +9,7 @@
 //#include <qt5keychain/keychain.h>
 //#endif
 
-cavoke::auth::AuthenticationManager::AuthenticationManager() {
-    // setup oauth settings
+void cavoke::auth::AuthenticationManager::init() {
     oauth2.setAuthorizationUrl(QUrl(authorizationUrl));
     oauth2.setAccessTokenUrl(QUrl(accessTokenUrl));
     oauth2.setClientIdentifier(clientId);
@@ -19,11 +18,17 @@ cavoke::auth::AuthenticationManager::AuthenticationManager() {
     connect(&oauth2, &QOAuth2AuthorizationCodeFlow::statusChanged,
             [=](QAbstractOAuth::Status status) {
                 if (status == QAbstractOAuth::Status::Granted) {
-                    qDebug() << "Authenticated!!";
-                    writeSecurePassword(oauth2.refreshToken());
+                    qDebug() << "Now authenticated!!";
+                    writeSecurePassword(refresh_token_profile,
+                                        oauth2.refreshToken());
+                    if (oauth2.token().isEmpty()) {
+                        qWarning() << "Authentication completed successfully, "
+                                      "but token is empty!! Forcing a relogin";
+                        relogin();
+                    }
                     emit authenticated();
                 } else if (status == QAbstractOAuth::Status::NotAuthenticated) {
-                    qWarning() << "Failed authentication";
+                    qWarning() << "Unauthenticated";
                 }
             });
     oauth2.setModifyParametersFunction(
@@ -33,18 +38,19 @@ cavoke::auth::AuthenticationManager::AuthenticationManager() {
         });
     connect(&oauth2, &QOAuth2AuthorizationCodeFlow::authorizeWithBrowser,
             &QDesktopServices::openUrl);
-
-    readSecurePassword([&](const QString &refresh_token) {
-        qDebug() << "Loaded refresh token from Keychain!";
-        oauth2.setRefreshToken(refresh_token);
-        oauth2.refreshAccessToken();
-    });
+    readSecurePassword(refresh_token_profile,
+                       [&](const QString &refresh_token) {
+                           qDebug() << "Loaded refresh token from Keychain!";
+                           oauth2.setRefreshToken(refresh_token);
+                           oauth2.refreshAccessToken();
+                       });
 }
 bool cavoke::auth::AuthenticationManager::checkAuthStatus() {
     return oauth2.status() !=
            QOAuth2AuthorizationCodeFlow::Status::NotAuthenticated;
 }
 void cavoke::auth::AuthenticationManager::writeSecurePassword(
+    const QString &profile,
     const QString &pass) {
     // FIXME: move to qkeychain
     settings.setValue(profile, pass);
@@ -63,7 +69,9 @@ void cavoke::auth::AuthenticationManager::writeSecurePassword(
     //    job->start();
 }
 template <typename L>
-void cavoke::auth::AuthenticationManager::readSecurePassword(L callback) {
+void cavoke::auth::AuthenticationManager::readSecurePassword(
+    const QString &profile,
+    L callback) {
     // FIXME: move to qkeychain
     callback(settings.value(profile).toString());
     //    auto *job = new QKeychain::ReadPasswordJob("cavoke_keychain");
@@ -81,7 +89,8 @@ void cavoke::auth::AuthenticationManager::readSecurePassword(L callback) {
     //            });
     //    job->start();
 }
-void cavoke::auth::AuthenticationManager::deleteSecurePassword() {
+void cavoke::auth::AuthenticationManager::deleteSecurePassword(
+    const QString &profile) {
     // FIXME: move to qkeychain
     settings.setValue(profile, "");
     //    auto *job = new QKeychain::DeletePasswordJob("cavoke_keychain");
@@ -99,8 +108,8 @@ void cavoke::auth::AuthenticationManager::deleteSecurePassword() {
     //    job->start();
 }
 
-void cavoke::auth::AuthenticationManager::logout() {
-    deleteSecurePassword();
+void cavoke::auth::AuthenticationManager::relogin() {
+    deleteSecurePassword(refresh_token_profile);
     oauth2.setRefreshToken("");
     // Immediately asks user to relogin
     // Terrible solution, couldn't find anything better
@@ -108,7 +117,6 @@ void cavoke::auth::AuthenticationManager::logout() {
     oauth2.grant();
 }
 
-const QString cavoke::auth::AuthenticationManager::profile = "cavoke_user";
 const QString cavoke::auth::AuthenticationManager::authorizationUrl =
     "https://cavoke.eu.auth0.com/authorize";
 const QString cavoke::auth::AuthenticationManager::accessTokenUrl =
@@ -122,3 +130,5 @@ const QString cavoke::auth::AuthenticationManager::audience =
                                            // this must be registered as API
                                            // endpoint. Basically don't change
                                            // this.
+const QString cavoke::auth::AuthenticationManager::refresh_token_profile =
+    "cavoke_profiles_refresh";

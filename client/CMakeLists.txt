@@ -19,7 +19,7 @@ include_directories(${CMAKE_BINARY_DIR}
         controllers
         models
         views
-#        ../third_party/qtkeychain
+        #        ../third_party/qtkeychain
         )
 
 # https://api.kde.org/frameworks-api/frameworks-apidocs/frameworks/karchive/html/index.html
@@ -29,6 +29,7 @@ find_package(KF5Archive REQUIRED)
 add_compile_definitions(REAL)
 
 aux_source_directory(views VIEWS_DIR)
+aux_source_directory(entities ENTITIES_DIR)
 
 add_executable(cavoke_client
         main.cpp
@@ -36,13 +37,9 @@ add_executable(cavoke_client
         models/cavokeclientmodel.cpp
         models/cavokeqmlgamemodel.cpp
         ${VIEWS_DIR}
-        entities/gameinfo.cpp
-        entities/role.cpp
-        entities/sessioninfo.cpp
-        entities/validationresult.cpp
+        ${ENTITIES_DIR}
         cache_manager.cpp
         network_manager.cpp
-        entities/player.cpp
         resources/resources.qrc
         AuthenticationManager.cpp)
 
@@ -52,10 +49,6 @@ target_link_libraries(cavoke_client PRIVATE Qt${QT_MAJOR_VERSION}::Network)
 target_link_libraries(cavoke_client PRIVATE Qt${QT_MAJOR_VERSION}::NetworkAuth)
 target_link_libraries(cavoke_client PRIVATE KF5::Archive)
 
-# Cavoke OpenAPI
-
 # QtKeychain
-#find_package(qt5keychain REQUIRED)
-#target_link_libraries(cavoke_client PRIVATE Qt5Keychain::Qt5Keychain)
 #target_link_libraries(cavoke_client PRIVATE qt${QT_MAJOR_VERSION}keychain)
 #target_compile_definitions(cavoke_client PRIVATE INCLUDE_OWN_QT_KEYCHAIN QTKEYCHAIN_NO_EXPORT)

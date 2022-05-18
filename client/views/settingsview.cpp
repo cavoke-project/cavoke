@@ -1,4 +1,5 @@
 #include "settingsview.h"
+#include "AuthenticationManager.h"
 #include "ui_settingsview.h"
 
 SettingsView::SettingsView(QWidget *parent)
@@ -25,4 +26,7 @@ void SettingsView::on_updateSettingsButton_clicked() {
                          ui->serverAddressInput->text());
     this->close();
     emit shownStartView();
+}
+void SettingsView::on_reloginButton_clicked() {
+    cavoke::auth::AuthenticationManager::getInstance().relogin();
 }

@@ -23,6 +23,7 @@ signals:
 private slots:
     void on_backButton_clicked();
     void on_updateSettingsButton_clicked();
+    void on_reloginButton_clicked();
 
 private:
     Ui::SettingsView *ui;

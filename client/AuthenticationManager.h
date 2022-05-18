@@ -10,7 +10,7 @@ namespace cavoke::auth {
 struct AuthenticationManager : public QObject {
     Q_OBJECT
 public:
-    AuthenticationManager();
+    AuthenticationManager() = default;
     QOAuth2AuthorizationCodeFlow oauth2;
     /// Singleton wrapper
     static AuthenticationManager &getInstance() {
@@ -18,24 +18,26 @@ public:
         return obj;
     }
     bool checkAuthStatus();
-    void logout();
+    void init();
+    void relogin();
 signals:
     void authenticated();
 
 private:
-    void writeSecurePassword(const QString &pass);
+    void writeSecurePassword(const QString &profile, const QString &pass);
     template <typename L>
-    void readSecurePassword(L callback);
-    void deleteSecurePassword();
+    void readSecurePassword(const QString &profile, L callback);
+    void deleteSecurePassword(const QString &profile);
 
     QSettings settings{this};  // FIXME: move to qtkeychain
 
-    const static QString profile;
     const static QString authorizationUrl;
     const static QString accessTokenUrl;
     const static QString clientId;
     const static QString scope;
     const static QString audience;
+
+    const static QString refresh_token_profile;
 };
 }  // namespace cavoke::auth
 
