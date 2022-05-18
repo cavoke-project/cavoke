@@ -1,6 +1,4 @@
 #include "network_manager.h"
-#include <utility>
-#include "entities/gameinfo.h"
 
 NetworkManager::NetworkManager(QObject *parent)
     : manager{this},
@@ -217,11 +215,7 @@ void NetworkManager::leaveSession() {
     QUrl route =
         HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(LEAVE);
     route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)}});
-    qDebug() << route.toString();
-    auto request = QNetworkRequest(route);
-    request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader,
-                      "application/json");
-    auto reply = manager.post(request, "{}");
+    auto reply = oauth2->post(route, "{}");
     connect(reply, &QNetworkReply::finished, this,
             [reply, this]() { gotPostResponse(reply); });
 }
@@ -229,13 +223,8 @@ void NetworkManager::leaveSession() {
 void NetworkManager::changeRoleInSession(int newRole) {
     QUrl route =
         HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(CHANGE_ROLE);
-    route.setQuery({{"user_id", userId.toString(QUuid::WithoutBraces)},
-                    {"new_role", QString::number(newRole)}});
     qDebug() << route.toString();
-    auto request = QNetworkRequest(route);
-    request.setHeader(QNetworkRequest::KnownHeaders::ContentTypeHeader,
-                      "application/json");
-    auto reply = manager.post(request, "{}");
+    auto reply = oauth2->post(route, "{}");
     connect(reply, &QNetworkReply::finished, this,
             [reply, this]() { gotPostResponse(reply); });
 }
