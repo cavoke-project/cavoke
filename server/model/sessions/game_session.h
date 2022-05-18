@@ -14,6 +14,7 @@
 #include "model/games/game.h"
 #include "sql-models/Players.h"
 #include "sql-models/Sessions.h"
+#include "sql-models/Statuses.h"
 
 namespace cavoke::server::model {
 
@@ -101,6 +102,7 @@ struct GameSessionAccessObject {
     /// Builds a session info from a session
     static GameSessionInfo make_session_info(
         const drogon_model::cavoke_orm::Sessions &session,
+        const drogon_model::cavoke_orm::Statuses &status,
         std::vector<PlayerInfo> players);
 
 private:
@@ -109,10 +111,14 @@ private:
 
     mutable drogon::orm::Mapper<drogon_model::cavoke_orm::Sessions>
         default_mp_sessions{drogon::app().getDbClient()};
+    mutable drogon::orm::Mapper<drogon_model::cavoke_orm::Statuses>
+        default_mp_statuses{drogon::app().getDbClient()};
     mutable drogon::orm::Mapper<drogon_model::cavoke_orm::Players>
         default_mp_players{drogon::app().getDbClient()};
 
     drogon_model::cavoke_orm::Sessions get_snapshot() const;
+    drogon_model::cavoke_orm::Statuses get_actual_status() const;
+    void set_status(SessionStatus status);
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSessionAccessObject::PlayerInfo,

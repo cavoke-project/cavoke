@@ -17,7 +17,7 @@ game_session_error::game_session_error(std::string message)
 void GameSessionAccessObject::add_user(const std::string &user_id,
                                        std::optional<int> player_id) {
     auto session_snapshot = get_snapshot();
-    if (session_snapshot.getValueOfStatus() != NOT_STARTED) {
+    if (get_actual_status().getValueOfStatus() != NOT_STARTED) {
         throw game_session_error("session has already started");
     }
 
@@ -108,7 +108,8 @@ bool GameSessionAccessObject::verify_invite_code(
 GameSessionAccessObject::GameSessionInfo
 GameSessionAccessObject::get_session_info() const {
     auto session_snapshot = get_snapshot();
-    return make_session_info(session_snapshot, get_players());
+    return make_session_info(session_snapshot, get_actual_status(),
+                             get_players());
 }
 
 std::vector<int> GameSessionAccessObject::get_occupied_positions() const {
@@ -148,11 +149,11 @@ void GameSessionAccessObject::start(const json &game_settings) {
                  CompareOperator::EQ, id));
     // FIXME: not atomic, transactions perhaps or some other blocking
     // sql-mechanism?
-    if (session.getValueOfStatus() != NOT_STARTED) {
+    if (get_actual_status().getValueOfStatus() != NOT_STARTED) {
         throw game_session_error("session has already started");
     }
     session.setGameSettings(game_settings.dump());
-    session.setStatus(RUNNING);
+    set_status(RUNNING);
     default_mp_sessions.update(session);
 }
 
@@ -177,7 +178,7 @@ void GameSessionAccessObject::finish() {
     auto session = default_mp_sessions.findOne(
         Criteria(drogon_model::cavoke_orm::Sessions::Cols::_id,
                  CompareOperator::EQ, id));
-    session.setStatus(FINISHED);
+    set_status(FINISHED);
     default_mp_sessions.update(session);
 }
 drogon_model::cavoke_orm::Sessions GameSessionAccessObject::get_snapshot()
@@ -197,18 +198,18 @@ drogon_model::cavoke_orm::Sessions GameSessionAccessObject::get_snapshot(
 GameSessionAccessObject::GameSessionInfo
 GameSessionAccessObject::make_session_info(
     const drogon_model::cavoke_orm::Sessions &session,
+    const drogon_model::cavoke_orm::Statuses &status,
     std::vector<PlayerInfo> players) {
     return {session.getValueOfId(),
             session.getValueOfGameId(),
             session.getValueOfInviteCode(),
             session.getValueOfHostId(),
-            static_cast<SessionStatus>(session.getValueOfStatus()),
+            static_cast<SessionStatus>(status.getValueOfStatus()),
             std::move(players)};
 }
 
 void GameSessionAccessObject::remove_user(const std::string &user_id) {
-    auto session_snapshot = get_snapshot();
-    if (session_snapshot.getValueOfStatus() != NOT_STARTED) {
+    if (get_actual_status().getValueOfStatus() != NOT_STARTED) {
         throw game_session_error("session has already started");
     }
 
@@ -245,6 +246,23 @@ void GameSessionAccessObject::delete_session() {
 void GameSessionAccessObject::leave_session(const std::string &user_id) {
     drogon::app().getDbClient()->execSqlSync(
         "select leave_session($1::uuid, $2::uuid);", id, user_id);
+}
+
+drogon_model::cavoke_orm::Statuses GameSessionAccessObject::get_actual_status()
+    const {
+    return default_mp_statuses
+        .orderBy(drogon_model::cavoke::Statuses::Cols::_saved_on,
+                 SortOrder::DESC)
+        .findBy(Criteria(drogon_model::cavoke_orm::Statuses::Cols::_session_id,
+                         CompareOperator::EQ, id))[0];
+}
+
+void GameSessionAccessObject::set_status(SessionStatus status) {
+    drogon_model::cavoke::Statuses status_record;
+    auto session = get_snapshot();
+    status_record.setSessionId(session.getValueOfId());
+    status_record.setStatus(status);
+    default_mp_statuses.insert(status_record);
 }
 
 }  // namespace cavoke::server::model

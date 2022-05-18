@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(cavoke_server)
+set(CMAKE_CXX_STANDARD 17)
 
 set(CAVOKE_H_DIR ../cavoke-dev-lib CACHE PATH "Directory with cavoke.h library")
 include_directories(${CAVOKE_H_DIR})
@@ -31,6 +32,8 @@ add_executable(${PROJECT_NAME}
         controllers/sessions_controller.cpp
         model/auth/authentication_manager.cpp
         model/sessions/game_session.cpp
+        model/statistics/statistics_manager.cpp
+        controllers/statistics_controller.cpp
         )
 install(TARGETS ${PROJECT_NAME})
 
@@ -41,16 +44,16 @@ link_directories(${Boost_LIBRARY_DIRS})
 # Link Drogon
 if (USE_EXTERNAL_DROGON)
     target_link_libraries(${PROJECT_NAME} PRIVATE Drogon::Drogon)
-else()
+else ()
     target_link_libraries(${PROJECT_NAME} PRIVATE drogon)
-endif()
+endif ()
 
 # Link nlohmann
 if (USE_EXTERNAL_NLOHMANN)
     target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
-else()
+else ()
     target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json)
-endif()
+endif ()
 
 target_link_libraries(cavoke_server PRIVATE ${Boost_LIBRARIES} ${CMAKE_DL_LIBS})
 
