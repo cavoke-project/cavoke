@@ -3,6 +3,7 @@
 
 #include <QOAuth2AuthorizationCodeFlow>
 #include <QUrlQuery>
+#include <QUuid>
 #include <QtCore/QFile>
 #include <QtCore/QJsonArray>
 #include <QtCore/QJsonDocument>
@@ -10,7 +11,6 @@
 #include <QtCore/QTemporaryFile>
 #include <QtCore/QTimer>
 #include <QtNetwork/QNetworkReply>
-#include <QUuid>
 #include "AuthenticationManager.h"
 #include "entities/gameinfo.h"
 #include "entities/sessioninfo.h"

@@ -48,55 +48,55 @@ void cavoke::auth::AuthenticationManager::writeSecurePassword(
     const QString &pass) {
     // FIXME: move to qkeychain
     settings.setValue(profile, pass);
-//    auto *job = new QKeychain::WritePasswordJob("cavoke_keychain");
-//    job->setAutoDelete(false);
-//    job->setInsecureFallback(false);
-//    job->setKey(profile);
-//    job->setTextData(pass);
-//    connect(job, &QKeychain::WritePasswordJob::finished, this,
-//            [](QKeychain::Job *job) {
-//                if (job->error()) {
-//                    qWarning() << job->errorString();
-//                }
-//                job->deleteLater();
-//            });
-//    job->start();
+    //    auto *job = new QKeychain::WritePasswordJob("cavoke_keychain");
+    //    job->setAutoDelete(false);
+    //    job->setInsecureFallback(false);
+    //    job->setKey(profile);
+    //    job->setTextData(pass);
+    //    connect(job, &QKeychain::WritePasswordJob::finished, this,
+    //            [](QKeychain::Job *job) {
+    //                if (job->error()) {
+    //                    qWarning() << job->errorString();
+    //                }
+    //                job->deleteLater();
+    //            });
+    //    job->start();
 }
 template <typename L>
 void cavoke::auth::AuthenticationManager::readSecurePassword(L callback) {
     // FIXME: move to qkeychain
     callback(settings.value(profile).toString());
-//    auto *job = new QKeychain::ReadPasswordJob("cavoke_keychain");
-//    job->setAutoDelete(false);
-//    job->setInsecureFallback(false);
-//    job->setKey(profile);
-//    connect(job, &QKeychain::ReadPasswordJob::finished, this,
-//            [=](QKeychain::Job *job) {
-//                if (job->error()) {
-//                    qWarning() << job->errorString();
-//                }
-//                auto readJob = dynamic_cast<QKeychain::ReadPasswordJob *>(job);
-//                callback(readJob->textData());
-//                job->deleteLater();
-//            });
-//    job->start();
+    //    auto *job = new QKeychain::ReadPasswordJob("cavoke_keychain");
+    //    job->setAutoDelete(false);
+    //    job->setInsecureFallback(false);
+    //    job->setKey(profile);
+    //    connect(job, &QKeychain::ReadPasswordJob::finished, this,
+    //            [=](QKeychain::Job *job) {
+    //                if (job->error()) {
+    //                    qWarning() << job->errorString();
+    //                }
+    //                auto readJob = dynamic_cast<QKeychain::ReadPasswordJob
+    //                *>(job); callback(readJob->textData());
+    //                job->deleteLater();
+    //            });
+    //    job->start();
 }
 void cavoke::auth::AuthenticationManager::deleteSecurePassword() {
     // FIXME: move to qkeychain
     settings.setValue(profile, "");
-//    auto *job = new QKeychain::DeletePasswordJob("cavoke_keychain");
-//    job->setAutoDelete(false);
-//    job->setInsecureFallback(false);
-//    job->setKey(profile);
-//    job->setProperty("profile", profile);
-//    connect(job, &QKeychain::WritePasswordJob::finished, this,
-//            [](QKeychain::Job *job) {
-//                if (job->error()) {
-//                    qWarning() << job->errorString();
-//                }
-//                job->deleteLater();
-//            });
-//    job->start();
+    //    auto *job = new QKeychain::DeletePasswordJob("cavoke_keychain");
+    //    job->setAutoDelete(false);
+    //    job->setInsecureFallback(false);
+    //    job->setKey(profile);
+    //    job->setProperty("profile", profile);
+    //    connect(job, &QKeychain::WritePasswordJob::finished, this,
+    //            [](QKeychain::Job *job) {
+    //                if (job->error()) {
+    //                    qWarning() << job->errorString();
+    //                }
+    //                job->deleteLater();
+    //            });
+    //    job->start();
 }
 
 void cavoke::auth::AuthenticationManager::logout() {

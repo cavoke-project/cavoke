@@ -27,8 +27,8 @@ private:
     template <typename L>
     void readSecurePassword(L callback);
     void deleteSecurePassword();
-    
-    QSettings settings{this}; // FIXME: move to qtkeychain
+
+    QSettings settings{this};  // FIXME: move to qtkeychain
 
     const static QString profile;
     const static QString authorizationUrl;
