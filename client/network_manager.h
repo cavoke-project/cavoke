@@ -1,6 +1,7 @@
 #ifndef CAVOKE_CLIENT_NETWORK_MANAGER_H
 #define CAVOKE_CLIENT_NETWORK_MANAGER_H
 
+#include <QOAuth2AuthorizationCodeFlow>
 #include <QUrlQuery>
 #include <QtCore/QFile>
 #include <QtCore/QJsonArray>
@@ -8,11 +9,13 @@
 #include <QtCore/QJsonObject>
 #include <QtCore/QTemporaryFile>
 #include <QtCore/QTimer>
-#include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
+#include <QUuid>
+#include "AuthenticationManager.h"
 #include "entities/gameinfo.h"
 #include "entities/sessioninfo.h"
 #include "entities/validationresult.h"
+
 struct NetworkManager : public QObject {
     Q_OBJECT
 public:
@@ -66,6 +69,7 @@ private slots:
     void gotGamesClient(QNetworkReply *reply, const QString &gameId);
 
 private:
+    QOAuth2AuthorizationCodeFlow *oauth2;
     QNetworkAccessManager manager;
     QTimer *gamePollingTimer = nullptr;
     QTimer *sessionPollingTimer = nullptr;

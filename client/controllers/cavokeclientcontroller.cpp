@@ -1,4 +1,5 @@
 #include "cavokeclientcontroller.h"
+#include <QOAuthHttpServerReplyHandler>
 
 CavokeClientController::CavokeClientController(QObject *parent)
     : QObject{parent},
@@ -119,6 +120,11 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(updateSettings(QString, QString)));
 
     defaultSettingsInitialization();
+
+    // oauth reply handler
+    auto replyHandler = new QOAuthHttpServerReplyHandler(1337, this);
+    cavoke::auth::AuthenticationManager::getInstance().oauth2.setReplyHandler(
+        replyHandler);
 
     startView.show();
 }
