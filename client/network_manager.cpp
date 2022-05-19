@@ -257,11 +257,11 @@ void NetworkManager::changeRoleInSession(int newRole) {
 
 void NetworkManager::getMe() {
     QUrl route = HOST.resolved(PROFILE).resolved(GET_ME);
-    // TODO: WIP HERE
+    // TODO: WILL BE DONE IN ANOTHER BRANCH
 }
 
 void NetworkManager::changeName(const QString &new_name) {
-
+    // TODO: WILL BE DONE IN ANOTHER BRANCH
 }
 
 void NetworkManager::startGamePolling() {
