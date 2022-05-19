@@ -9,7 +9,7 @@ public:
     User(QString _display_name, QString _user_id);
 
     void read(const QJsonObject &json);
-    static void write(QJsonObject &json) ;
+    static void write(QJsonObject &json);
 
     QString display_name;
     QString user_id;

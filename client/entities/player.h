@@ -10,7 +10,7 @@ public:
     Player(int _player_id, User _user);
 
     void read(const QJsonObject &json);
-    static void write(QJsonObject &json) ;
+    static void write(QJsonObject &json);
 
     int player_id{};
     User user;
