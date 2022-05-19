@@ -118,6 +118,8 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(initStartValues(QString, QString)));
     connect(&settingsView, SIGNAL(updatedSettings(QString, QString)), this,
             SLOT(updateSettings(QString, QString)));
+    connect(&networkManager, SIGNAL(gotDisplayName(QString)), &settingsView,
+            SLOT(updateDisplayName(QString)));
 
     defaultSettingsInitialization();
 
@@ -139,6 +141,10 @@ void CavokeClientController::defaultSettingsInitialization() {
 
     networkManager.changeHost(
         QUrl::fromUserInput(settings.value(NETWORK_HOST).toString()));
+
+    if (cavoke::auth::AuthenticationManager::getInstance().checkAuthStatus()) {
+        networkManager.getMe();
+    }
 
     emit initSettingsValues(settings.value(PLAYER_NICKNAME).toString(),
                             settings.value(NETWORK_HOST).toString());
@@ -302,12 +308,13 @@ void CavokeClientController::gotCurrentGameInfo(const GameInfo &gameInfo) {
     emit setGameName(currentGameInfo.display_name);
 }
 
-void CavokeClientController::updateSettings(const QString &nickname,
+void CavokeClientController::updateSettings(const QString &displayName,
                                             const QString &host) {
-    settings.setValue(PLAYER_NICKNAME, nickname);
+    settings.setValue(PLAYER_NICKNAME, displayName);
     settings.setValue(NETWORK_HOST, host);
     emit clearScreens();
     networkManager.changeHost(QUrl::fromUserInput(host));
+    networkManager.changeName(displayName);
 }
 void CavokeClientController::collectListOfAvailableRoles() {
     std::vector<bool> isFree(currentGameInfo.players_num, true);

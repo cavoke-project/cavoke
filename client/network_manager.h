@@ -59,6 +59,7 @@ signals:
     void gotGameInfo(const GameInfo &gameInfo);
     void gotSessionInfo(const SessionInfo &sessionInfo);
     void gotValidationResult(const ValidationResult &validationResult);
+    void gotDisplayName(const QString &displayName);
 
 private slots:
     void gotHealth(QNetworkReply *reply);
@@ -69,6 +70,7 @@ private slots:
     void gotPostResponse(QNetworkReply *reply);
     void gotPlayState(QNetworkReply *reply);
     void gotGamesClient(QNetworkReply *reply, const QString &gameId);
+    void gotMyself(QNetworkReply *reply);
 
 private:
     QOAuth2AuthorizationCodeFlow *oauth2;

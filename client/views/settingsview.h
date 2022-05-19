@@ -2,6 +2,7 @@
 #define CAVOKE_CLIENT_SETTINGSVIEW_H
 
 #include <QMainWindow>
+#include "authdialog.h"
 
 namespace Ui {
 class SettingsView;
@@ -14,11 +15,12 @@ public:
     ~SettingsView();
 
 public slots:
-    void initStartValues(const QString &nickname, const QString &host);
+    void initStartValues(const QString &displayName, const QString &host);
+    void updateDisplayName(const QString &displayName);
 
 signals:
     void shownStartView();
-    void updatedSettings(const QString &nickname, const QString &host);
+    void updatedSettings(const QString &displayName, const QString &host);
 
 private slots:
     void on_backButton_clicked();
@@ -27,6 +29,7 @@ private slots:
 
 private:
     Ui::SettingsView *ui;
+    QString oldDisplayName{};
 };
 
 #endif  // CAVOKE_CLIENT_SETTINGSVIEW_H

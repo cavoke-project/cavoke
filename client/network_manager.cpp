@@ -231,11 +231,30 @@ void NetworkManager::changeRoleInSession(int newRole) {
 
 void NetworkManager::getMe() {
     QUrl route = HOST.resolved(PROFILE).resolved(GET_ME);
-    // TODO: WILL BE DONE IN ANOTHER BRANCH
+    qDebug() << route.toString();
+    auto reply = oauth2->get(route);
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotMyself(reply); });
+}
+
+void NetworkManager::gotMyself(QNetworkReply *reply) {
+    QByteArray answer = reply->readAll();
+    reply->close();
+    reply->deleteLater();
+    qDebug() << "Got session: " << answer;
+
+    User userInfo;
+    userInfo.read(QJsonDocument::fromJson(answer).object());
+    emit gotDisplayName(userInfo.display_name);
 }
 
 void NetworkManager::changeName(const QString &new_name) {
-    // TODO: WILL BE DONE IN ANOTHER BRANCH
+    QUrl route = HOST.resolved(PROFILE).resolved(CHANGE_NAME);
+    route.setQuery({{"new_name", new_name}});
+    qDebug() << route.toString();
+    auto reply = oauth2->post(route);
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotPostResponse(reply); });
 }
 
 void NetworkManager::startGamePolling() {
