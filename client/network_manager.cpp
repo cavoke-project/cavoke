@@ -125,7 +125,7 @@ void NetworkManager::gotSession(QNetworkReply *reply) {
     QByteArray answer = reply->readAll();
     reply->close();
     reply->deleteLater();
-    //    qDebug() << answer;
+    qDebug() << "Got session: " << answer;
 
     SessionInfo sessionInfo;
     sessionInfo.read(QJsonDocument::fromJson(answer).object());
