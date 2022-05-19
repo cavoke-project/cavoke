@@ -86,7 +86,7 @@ jobs:
         env:
           PGPASSWORD: postgres_password
       - name: Cmake
-        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON -DUSE_EXTERNAL_JWT=ON
       - name: Make
         run: cd build && make cavoke_server
       - name: Healthcheck
@@ -99,7 +99,7 @@ jobs:
         with:
           submodules: recursive
       - name: Cmake
-        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON -DUSE_EXTERNAL_JWT=ON
       - name: Make
         run: cd build && make cavoke_server_test
       - name: Run Tests
@@ -112,7 +112,7 @@ jobs:
         with:
           submodules: recursive
       - name: Cmake
-        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_GAMES=ON -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_GAMES=ON -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON -DUSE_EXTERNAL_JWT=ON
       - name: Make
         run: cd build && make all
   server-docker-healthcheck:

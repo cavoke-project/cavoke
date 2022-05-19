@@ -42,6 +42,8 @@ public slots:
     void startSession();
     void leaveSession();
     void changeRoleInSession(int newRole);
+    void getMe();
+    void changeName(const QString &new_name);
 
     void startGamePolling();
     void stopGamePolling();
@@ -105,6 +107,10 @@ private:
     const static inline QUrl START{"start"};
     const static inline QUrl LEAVE{"leave"};
     const static inline QUrl CHANGE_ROLE{"change_role"};
+
+    const static inline QUrl PROFILE{"profile/"};
+    const static inline QUrl GET_ME{"get_me"};
+    const static inline QUrl CHANGE_NAME{"change_name"};
 };
 
 #endif  // CAVOKE_CLIENT_NETWORK_MANAGER_H

@@ -5,9 +5,11 @@
 #include "controllers/games_controller.h"
 #include "controllers/sessions_controller.h"
 #include "controllers/state_controller.h"
+#include "controllers/statistics_controller.h"
 #include "model/games/games_storage.h"
 #include "model/logic/game_logic_manager.h"
 #include "model/sessions/sessions_storage.h"
+#include "model/statistics/statistics_manager.h"
 
 namespace cavoke::server {
 void run(const model::GamesStorageConfig &games_storage_config) {
@@ -20,10 +22,10 @@ void run(const model::GamesStorageConfig &games_storage_config) {
     auto game_logic_manager =
         std::make_shared<model::GameLogicManager>(games_storage);
     auto game_state_storage = std::make_shared<model::GameStateStorage>();
-    auto participation_storage = std::make_shared<model::SessionsStorage>(
+    auto sessions_storage = std::make_shared<model::SessionsStorage>(
         game_logic_manager, games_storage, game_state_storage);
-    auto authentication_manager =
-        std::make_shared<model::AuthenticationManager>();
+    auto statistics_manager = std::make_shared<model::StatisticsManager>(
+        sessions_storage, games_storage);
 
     // init controllers
     std::cout << "Initialize controllers..." << std::endl;
@@ -31,11 +33,14 @@ void run(const model::GamesStorageConfig &games_storage_config) {
         std::make_shared<controllers::GamesController>(games_storage);
     auto state_controller = std::make_shared<controllers::StateController>(
         games_storage, game_logic_manager, game_state_storage,
-        participation_storage);
+        sessions_storage);
     auto sessions_controller =
         std::make_shared<controllers::SessionsController>(
             games_storage, game_logic_manager, game_state_storage,
-            participation_storage, authentication_manager);
+            sessions_storage);
+    auto statistics_controller =
+        std::make_shared<controllers::StatisticsController>(games_storage,
+                                                            statistics_manager);
 
     auto &app = drogon::app();
 
@@ -43,6 +48,7 @@ void run(const model::GamesStorageConfig &games_storage_config) {
     app.registerController(games_controller);
     app.registerController(state_controller);
     app.registerController(sessions_controller);
+    app.registerController(statistics_controller);
 
     // print db and listeners on start
     app.registerBeginningAdvice([]() {
@@ -100,6 +106,7 @@ int main(int argc, char *argv[]) {
             drogon::app().loadConfigFile(file);
             games_storage_config =
                 nlohmann::to_nlohmann(drogon::app().getCustomConfig())
+                    .at("storage")
                     .get<cavoke::server::model::GamesStorageConfig>();
             std::cout << "Server configuration loaded from: '" << file << "'\n";
         } catch (const std::exception &err) {

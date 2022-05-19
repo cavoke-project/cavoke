@@ -14,6 +14,8 @@
 #include "model/games/game.h"
 #include "sql-models/Players.h"
 #include "sql-models/Sessions.h"
+#include "sql-models/Statuses.h"
+#include "sql-models/Users.h"
 
 namespace cavoke::server::model {
 
@@ -69,9 +71,18 @@ struct GameSessionAccessObject {
     // TODO: useless?
     [[nodiscard]] bool verify_invite_code(const std::string &invite_code) const;
 
+    struct UserInfo {
+        std::string user_id;
+        std::string display_name;
+
+        static UserInfo from_user(const drogon_model::cavoke_orm::Users &user) {
+            return {user.getValueOfId(), user.getValueOfDisplayName()};
+        }
+    };
+
     /// Serializable representation of participant for client
     struct PlayerInfo {
-        std::string user_id;
+        UserInfo user;
         int player_id;
     };
 
@@ -101,6 +112,7 @@ struct GameSessionAccessObject {
     /// Builds a session info from a session
     static GameSessionInfo make_session_info(
         const drogon_model::cavoke_orm::Sessions &session,
+        const drogon_model::cavoke_orm::Statuses &status,
         std::vector<PlayerInfo> players);
 
 private:
@@ -109,14 +121,22 @@ private:
 
     mutable drogon::orm::Mapper<drogon_model::cavoke_orm::Sessions>
         default_mp_sessions{drogon::app().getDbClient()};
+    mutable drogon::orm::Mapper<drogon_model::cavoke_orm::Statuses>
+        default_mp_statuses{drogon::app().getDbClient()};
     mutable drogon::orm::Mapper<drogon_model::cavoke_orm::Players>
         default_mp_players{drogon::app().getDbClient()};
 
     drogon_model::cavoke_orm::Sessions get_snapshot() const;
+    drogon_model::cavoke_orm::Statuses get_actual_status() const;
+    void set_status(SessionStatus status);
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSessionAccessObject::PlayerInfo,
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSessionAccessObject::UserInfo,
                                    user_id,
+                                   display_name);
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSessionAccessObject::PlayerInfo,
+                                   user,
                                    player_id);
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSessionAccessObject::GameSessionInfo,

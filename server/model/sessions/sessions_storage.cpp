@@ -2,6 +2,7 @@
 #include <utility>
 #include "sql-models/Globalstates.h"
 #include "sql-models/Sessions.h"
+#include "sql-models/Statuses.h"
 
 namespace cavoke::server::model {
 
@@ -17,15 +18,23 @@ using namespace drogon::orm;
 GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
     const GameConfig &game_config,
     const std::string &host_user_id) {
+    drogon_model::cavoke_orm::Users user =
+        MAPPER_FOR(drogon_model::cavoke_orm::Users)
+            .findByPrimaryKey(host_user_id);
     // create session
     auto session = drogon_model::cavoke_orm::Sessions();
     {
         session.setId(drogon::utils::getUuid());
         session.setGameSettingsToNull();
         session.setGameId(game_config.id);
-        session.setStatus(GameSessionAccessObject::NOT_STARTED);
         // TODO: there are only 1e6 invite codes, something has to be done about
         session.setInviteCode(generate_invite_code());
+    }
+    auto session_status = drogon_model::cavoke_orm::Statuses();
+    {
+        session_status.setStatus(
+            GameSessionAccessObject::SessionStatus::NOT_STARTED);
+        session_status.setSessionId(session.getValueOfId());
     }
     auto host_player = drogon_model::cavoke_orm::Players();
     {
@@ -48,6 +57,9 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
         auto mp_sessions = MAPPER_WITH_CLIENT_FOR(
             drogon_model::cavoke_orm::Sessions, transaction);
         mp_sessions.insert(session);
+        auto mp_statuses = MAPPER_WITH_CLIENT_FOR(
+            drogon_model::cavoke_orm::Statuses, transaction);
+        mp_statuses.insert(session_status);
         auto mp_players = MAPPER_WITH_CLIENT_FOR(
             drogon_model::cavoke_orm::Players, transaction);
         mp_players.insert(host_player);
@@ -60,8 +72,9 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
     }
     LOG_DEBUG << "Session created: " << session.getValueOfId();
     // TODO: cleanup and use GameSessionAccessObject's non-static methods
-    return GameSessionAccessObject::make_session_info(session,
-                                                      {{host_user_id, 0}});
+    return GameSessionAccessObject::make_session_info(
+        session, session_status,
+        {{GameSessionAccessObject::UserInfo::from_user(user), 0}});
 }
 
 void SessionsStorage::start_session(const std::string &session_id,

@@ -39,6 +39,7 @@ public:
         static const std::string _session_id;
         static const std::string _globalstate;
         static const std::string _is_terminal;
+        static const std::string _saved_on;
     };
 
     const static int primaryKeyNumber;
@@ -131,8 +132,19 @@ public:
     /// Set the value of the column is_terminal
     void setIsTerminal(const bool &pIsTerminal) noexcept;
 
+    /**  For column saved_on  */
+    /// Get the value of the column saved_on, returns the default value if the
+    /// column is null
+    const ::trantor::Date &getValueOfSavedOn() const noexcept;
+    /// Return a shared_ptr object pointing to the column const value, or an
+    /// empty shared_ptr object if the column is null
+    const std::shared_ptr<::trantor::Date> &getSavedOn() const noexcept;
+    /// Set the value of the column saved_on
+    void setSavedOn(const ::trantor::Date &pSavedOn) noexcept;
+    void setSavedOnToNull() noexcept;
+
     static size_t getColumnNumber() noexcept {
-        return 3;
+        return 4;
     }
     static const std::string &getColumnName(size_t index) noexcept(false);
 
@@ -154,6 +166,7 @@ private:
     std::shared_ptr<std::string> sessionId_;
     std::shared_ptr<std::string> globalstate_;
     std::shared_ptr<bool> isTerminal_;
+    std::shared_ptr<::trantor::Date> savedOn_;
     struct MetaData {
         const std::string colName_;
         const std::string colType_;
@@ -164,7 +177,7 @@ private:
         const bool notNull_;
     };
     static const std::vector<MetaData> metaData_;
-    bool dirtyFlag_[3] = {false};
+    bool dirtyFlag_[4] = {false};
 
 public:
     static const std::string &sqlForFindingByPrimaryKey() {
@@ -195,6 +208,11 @@ public:
         if (!dirtyFlag_[2]) {
             needSelection = true;
         }
+        sql += "saved_on,";
+        ++parametersCount;
+        if (!dirtyFlag_[3]) {
+            needSelection = true;
+        }
         if (parametersCount > 0) {
             sql[sql.length() - 1] = ')';
             sql += " values (";
@@ -213,6 +231,12 @@ public:
             sql.append(placeholderStr, n);
         }
         if (dirtyFlag_[2]) {
+            n = sprintf(placeholderStr, "$%d,", placeholder++);
+            sql.append(placeholderStr, n);
+        } else {
+            sql += "default,";
+        }
+        if (dirtyFlag_[3]) {
             n = sprintf(placeholderStr, "$%d,", placeholder++);
             sql.append(placeholderStr, n);
         } else {

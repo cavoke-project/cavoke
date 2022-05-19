@@ -34,16 +34,8 @@ void ProtoRoomView::updateSessionInfo(const SessionInfo &sessionInfo) {
     //    ui->gameNameLabel->setText(sessionInfo.game_id);
 
     ui->playersListWidget->clear();
-    int cnt = 0;
     for (const auto &player : sessionInfo.players) {
-        if (cnt == 0) {
-            ui->playersListWidget->addItem("Саша");
-        } else if (cnt == 1) {
-            ui->playersListWidget->addItem("Марк");
-        } else {
-            ui->playersListWidget->addItem(player.user_id);
-        }
-        cnt++;
+        ui->playersListWidget->addItem(player.user.display_name);
     }
     if (sessionInfo.isHost) {
         show_as_host();
