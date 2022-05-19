@@ -41,6 +41,7 @@ add_executable(cavoke_client
         entities/role.cpp
         entities/sessioninfo.cpp
         entities/validationresult.cpp
+        entities/user.cpp
         cache_manager.cpp
         network_manager.cpp
         entities/player.cpp
