@@ -255,6 +255,15 @@ void NetworkManager::changeRoleInSession(int newRole) {
             [reply, this]() { gotPostResponse(reply); });
 }
 
+void NetworkManager::getMe() {
+    QUrl route = HOST.resolved(PROFILE).resolved(GET_ME);
+    // TODO: WIP HERE
+}
+
+void NetworkManager::changeName(const QString &new_name) {
+
+}
+
 void NetworkManager::startGamePolling() {
     gamePollingTimer->start();
 }
