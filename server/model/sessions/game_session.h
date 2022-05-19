@@ -15,6 +15,7 @@
 #include "sql-models/Players.h"
 #include "sql-models/Sessions.h"
 #include "sql-models/Statuses.h"
+#include "sql-models/Users.h"
 
 namespace cavoke::server::model {
 
@@ -70,9 +71,18 @@ struct GameSessionAccessObject {
     // TODO: useless?
     [[nodiscard]] bool verify_invite_code(const std::string &invite_code) const;
 
+    struct UserInfo {
+        std::string user_id;
+        std::string display_name;
+
+        static UserInfo from_user(const drogon_model::cavoke_orm::Users &user) {
+            return {user.getValueOfId(), user.getValueOfDisplayName()};
+        }
+    };
+
     /// Serializable representation of participant for client
     struct PlayerInfo {
-        std::string user_id;
+        UserInfo user;
         int player_id;
     };
 
@@ -121,8 +131,12 @@ private:
     void set_status(SessionStatus status);
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSessionAccessObject::PlayerInfo,
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSessionAccessObject::UserInfo,
                                    user_id,
+                                   display_name);
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSessionAccessObject::PlayerInfo,
+                                   user,
                                    player_id);
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSessionAccessObject::GameSessionInfo,

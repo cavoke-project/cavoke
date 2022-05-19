@@ -38,6 +38,7 @@ class Users {
 public:
     struct Cols {
         static const std::string _id;
+        static const std::string _display_name;
     };
 
     const static int primaryKeyNumber;
@@ -107,8 +108,20 @@ public:
     void setId(const std::string &pId) noexcept;
     void setId(std::string &&pId) noexcept;
 
+    /**  For column display_name  */
+    /// Get the value of the column display_name, returns the default value if
+    /// the column is null
+    const std::string &getValueOfDisplayName() const noexcept;
+    /// Return a shared_ptr object pointing to the column const value, or an
+    /// empty shared_ptr object if the column is null
+    const std::shared_ptr<std::string> &getDisplayName() const noexcept;
+    /// Set the value of the column display_name
+    void setDisplayName(const std::string &pDisplayName) noexcept;
+    void setDisplayName(std::string &&pDisplayName) noexcept;
+    void setDisplayNameToNull() noexcept;
+
     static size_t getColumnNumber() noexcept {
-        return 1;
+        return 2;
     }
     static const std::string &getColumnName(size_t index) noexcept(false);
 
@@ -132,6 +145,7 @@ private:
     /// For mysql or sqlite3
     void updateId(const uint64_t id);
     std::shared_ptr<std::string> id_;
+    std::shared_ptr<std::string> displayName_;
     struct MetaData {
         const std::string colName_;
         const std::string colType_;
@@ -142,7 +156,7 @@ private:
         const bool notNull_;
     };
     static const std::vector<MetaData> metaData_;
-    bool dirtyFlag_[1] = {false};
+    bool dirtyFlag_[2] = {false};
 
 public:
     static const std::string &sqlForFindingByPrimaryKey() {
@@ -164,6 +178,11 @@ public:
             sql += "id,";
             ++parametersCount;
         }
+        sql += "display_name,";
+        ++parametersCount;
+        if (!dirtyFlag_[1]) {
+            needSelection = true;
+        }
         if (parametersCount > 0) {
             sql[sql.length() - 1] = ')';
             sql += " values (";
@@ -176,6 +195,12 @@ public:
         if (dirtyFlag_[0]) {
             n = sprintf(placeholderStr, "$%d,", placeholder++);
             sql.append(placeholderStr, n);
+        }
+        if (dirtyFlag_[1]) {
+            n = sprintf(placeholderStr, "$%d,", placeholder++);
+            sql.append(placeholderStr, n);
+        } else {
+            sql += "default,";
         }
         if (parametersCount > 0) {
             sql.resize(sql.length() - 1);

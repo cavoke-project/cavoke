@@ -1,8 +1,9 @@
 create table users
 (
-    id uuid not null
+    id           varchar not null
         constraint user_pk
-            primary key
+            primary key,
+    display_name varchar default 'Guest':: character varying
 );
 
 create table sessions
@@ -12,7 +13,7 @@ create table sessions
             primary key,
     game_id       varchar not null,
     invite_code   varchar not null,
-    host_id       uuid    null,
+    host_id       varchar    null,
     game_settings json,
     constraint fk_host foreign key (host_id) references users (id)
 );
@@ -39,7 +40,7 @@ create table players
         constraint player_session_id_fk
             references sessions
             on delete cascade,
-    user_id     uuid    not null
+    user_id     varchar not null
         constraint player_user_id_fk
             references users
             on delete restrict,
@@ -69,8 +70,7 @@ create table globalstates
     saved_on    timestamp default current_timestamp
 );
 
-create
-    or replace function leave_session(m_session_id uuid, m_user_id uuid) returns void as
+create or replace function leave_session(m_session_id uuid, m_user_id varchar) returns void as
 $$
 declare
 begin

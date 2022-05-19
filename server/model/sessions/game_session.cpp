@@ -134,12 +134,22 @@ GameSessionAccessObject::get_players() const {
     auto players = default_mp_players.findBy(
         Criteria(drogon_model::cavoke_orm::Players::Cols::_session_id,
                  CompareOperator::EQ, id));
+    auto users_in_session_result = drogon::app().getDbClient()->execSqlSync(
+        "select u.*, player_id from players join users u on players.user_id = "
+        "u.id and players.session_id = $1",
+        id);
+    std::map<int, drogon_model::cavoke_orm::Users> users;
+    for (auto &r : users_in_session_result) {
+        int player_id = r["player_id"].as<int>();
+        users[player_id] = drogon_model::cavoke_orm::Users(r);
+    }
     std::vector<PlayerInfo> result;
-    std::transform(players.begin(), players.end(), std::back_inserter(result),
-                   [](const drogon_model::cavoke_orm::Players &player) {
-                       return PlayerInfo{player.getValueOfUserId(),
-                                         player.getValueOfPlayerId()};
-                   });
+    std::transform(
+        players.begin(), players.end(), std::back_inserter(result),
+        [&users](const drogon_model::cavoke_orm::Players &player) {
+            int player_id = player.getValueOfPlayerId();
+            return PlayerInfo{UserInfo::from_user(users[player_id]), player_id};
+        });
     return result;
 }
 
@@ -245,7 +255,7 @@ void GameSessionAccessObject::delete_session() {
 
 void GameSessionAccessObject::leave_session(const std::string &user_id) {
     drogon::app().getDbClient()->execSqlSync(
-        "select leave_session($1::uuid, $2::uuid);", id, user_id);
+        "select leave_session($1::uuid, $2::varchar);", id, user_id);
 }
 
 drogon_model::cavoke_orm::Statuses GameSessionAccessObject::get_actual_status()

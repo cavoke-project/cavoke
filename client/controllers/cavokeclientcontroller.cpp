@@ -308,9 +308,14 @@ void CavokeClientController::collectListOfAvailableRoles() {
     QString userId = networkManager.getUserId();
     for (const auto &player : currentSessionInfo.players) {
         isFree[player.player_id] = false;
-        if (player.user_id == userId) {
+        if (player.user.user_id == userId) {
             ourRole = player.player_id;
         }
+    }
+    if (ourRole == -1) {
+        return;
+        // I guess it is the bug when we have already left the session but still
+        // somehow made a request to get info about session
     }
     std::vector<Role> availableRoles;
     availableRoles.emplace_back(currentGameInfo.role_names[ourRole],

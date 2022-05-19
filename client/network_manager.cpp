@@ -125,7 +125,7 @@ void NetworkManager::gotSession(QNetworkReply *reply) {
     QByteArray answer = reply->readAll();
     reply->close();
     reply->deleteLater();
-    //    qDebug() << answer;
+    qDebug() << "Got session: " << answer;
 
     SessionInfo sessionInfo;
     sessionInfo.read(QJsonDocument::fromJson(answer).object());
@@ -253,6 +253,15 @@ void NetworkManager::changeRoleInSession(int newRole) {
     auto reply = manager.post(request, "{}");
     connect(reply, &QNetworkReply::finished, this,
             [reply, this]() { gotPostResponse(reply); });
+}
+
+void NetworkManager::getMe() {
+    QUrl route = HOST.resolved(PROFILE).resolved(GET_ME);
+    // TODO: WILL BE DONE IN ANOTHER BRANCH
+}
+
+void NetworkManager::changeName(const QString &new_name) {
+    // TODO: WILL BE DONE IN ANOTHER BRANCH
 }
 
 void NetworkManager::startGamePolling() {
