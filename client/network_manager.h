@@ -79,7 +79,11 @@ private:
     QTimer *sessionPollingTimer = nullptr;
     QTimer *validationPollingTimer = nullptr;
     QString sessionId;
-    QUuid userId;
+    /// `user_id` query param.
+    /// For local servers (without jwt) is generated randomly through QUuid.
+    /// For prod servers (with jwt) is acquired from the server (through
+    /// `get_me`).
+    QString queryUserId;
     QUrl HOST{DEFAULT_HOST};
     const static inline QUrl HEALTH{"health"};  // FIXME: move to routes module
     const static inline QUrl GAMES_LIST{"games/list"};

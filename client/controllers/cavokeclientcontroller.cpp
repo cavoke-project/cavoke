@@ -127,7 +127,11 @@ CavokeClientController::CavokeClientController(QObject *parent)
     auto replyHandler = new QOAuthHttpServerReplyHandler(1337, this);
     auto &auth = cavoke::auth::AuthenticationManager::getInstance();
     auth.oauth2.setReplyHandler(replyHandler);
-    auth.init();
+
+    // on new authentication update my user id and display name
+    connect(&auth, SIGNAL(authenticated()), &networkManager, SLOT(getMe()));
+    // initialize auth in a separate thread
+    QTimer::singleShot(0, [&]() { auth.init(); });
 
     startView.show();
 }
