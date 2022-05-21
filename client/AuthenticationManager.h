@@ -33,6 +33,7 @@ private:
 
     const static QString authorizationUrl;
     const static QString accessTokenUrl;
+    const static QString logoutUrl;
     const static QString clientId;
     const static QString scope;
     const static QString audience;

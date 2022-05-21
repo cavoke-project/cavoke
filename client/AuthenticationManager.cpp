@@ -1,6 +1,7 @@
 #include "AuthenticationManager.h"
 #include <QDesktopServices>
 #include <QOAuthHttpServerReplyHandler>
+#include <QUrlQuery>
 #include <QtDebug>
 
 //#if defined(INCLUDE_OWN_QT_KEYCHAIN)
@@ -36,8 +37,14 @@ void cavoke::auth::AuthenticationManager::init() {
             if (stage == QAbstractOAuth::Stage::RequestingAuthorization)
                 parameters->insert("audience", audience);
         });
-    connect(&oauth2, &QOAuth2AuthorizationCodeFlow::authorizeWithBrowser,
-            &QDesktopServices::openUrl);
+    connect(&oauth2, &QOAuth2AuthorizationCodeFlow::authorizeWithBrowser, this,
+            [&](const QUrl &url) {
+                // logout link with redirect to authorization
+                QUrl route{logoutUrl};
+                route.setQuery(QUrlQuery{
+                    {"returnTo", QUrl::toPercentEncoding(url.toEncoded())}});
+                QDesktopServices::openUrl(route);
+            });
     readSecurePassword(refresh_token_profile,
                        [&](const QString &refresh_token) {
                            qDebug() << "Loaded refresh token from Keychain!";
@@ -121,6 +128,8 @@ const QString cavoke::auth::AuthenticationManager::authorizationUrl =
     "https://cavoke.eu.auth0.com/authorize";
 const QString cavoke::auth::AuthenticationManager::accessTokenUrl =
     "https://cavoke.eu.auth0.com/oauth/token";
+const QString cavoke::auth::AuthenticationManager::logoutUrl =
+    "https://cavoke.eu.auth0.com/v2/logout";
 const QString cavoke::auth::AuthenticationManager::clientId =
     "yxkEiSikGF6JSaFwIikeLQlUNAUUR0ak";
 const QString cavoke::auth::AuthenticationManager::scope =
