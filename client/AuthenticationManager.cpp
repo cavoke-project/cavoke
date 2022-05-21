@@ -53,8 +53,7 @@ void cavoke::auth::AuthenticationManager::init() {
                        });
 }
 bool cavoke::auth::AuthenticationManager::checkAuthStatus() {
-    return oauth2.status() !=
-           QOAuth2AuthorizationCodeFlow::Status::NotAuthenticated;
+    return !oauth2.token().isEmpty();
 }
 void cavoke::auth::AuthenticationManager::writeSecurePassword(
     const QString &profile,
