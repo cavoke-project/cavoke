@@ -56,7 +56,8 @@ void AuthFilter::doFilter(const HttpRequestPtr &req,
         // add user to db
         register_user(subject);
         return fccb();
-    } catch (const std::exception &) {
+    } catch (const std::exception &err) {
+        LOG_WARN << "Auth check failed: " << err.what();
         // Authentication failed
         return fcb(cavoke::server::controllers::newStatusCodeResponse(
             k401Unauthorized));
