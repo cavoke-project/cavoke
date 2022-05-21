@@ -35,7 +35,7 @@ public slots:
     void showGamesListView();
     void showCreateGameView();
     void showSettingsView();
-    void updateSettings(const QString &nickname, const QString &host);
+    void updateSettings(const QString &displayName, const QString &host);
 
 signals:
     void loadGamesList();

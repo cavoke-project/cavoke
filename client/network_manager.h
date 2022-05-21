@@ -1,18 +1,21 @@
 #ifndef CAVOKE_CLIENT_NETWORK_MANAGER_H
 #define CAVOKE_CLIENT_NETWORK_MANAGER_H
 
+#include <QOAuth2AuthorizationCodeFlow>
 #include <QUrlQuery>
+#include <QUuid>
 #include <QtCore/QFile>
 #include <QtCore/QJsonArray>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 #include <QtCore/QTemporaryFile>
 #include <QtCore/QTimer>
-#include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
+#include "AuthenticationManager.h"
 #include "entities/gameinfo.h"
 #include "entities/sessioninfo.h"
 #include "entities/validationresult.h"
+
 struct NetworkManager : public QObject {
     Q_OBJECT
 public:
@@ -56,6 +59,7 @@ signals:
     void gotGameInfo(const GameInfo &gameInfo);
     void gotSessionInfo(const SessionInfo &sessionInfo);
     void gotValidationResult(const ValidationResult &validationResult);
+    void gotDisplayName(const QString &displayName);
 
 private slots:
     void gotHealth(QNetworkReply *reply);
@@ -66,14 +70,20 @@ private slots:
     void gotPostResponse(QNetworkReply *reply);
     void gotPlayState(QNetworkReply *reply);
     void gotGamesClient(QNetworkReply *reply, const QString &gameId);
+    void gotMyself(QNetworkReply *reply);
 
 private:
+    QOAuth2AuthorizationCodeFlow *oauth2;
     QNetworkAccessManager manager;
     QTimer *gamePollingTimer = nullptr;
     QTimer *sessionPollingTimer = nullptr;
     QTimer *validationPollingTimer = nullptr;
     QString sessionId;
-    QUuid userId;
+    /// `user_id` query param.
+    /// For local servers (without jwt) is generated randomly through QUuid.
+    /// For prod servers (with jwt) is acquired from the server (through
+    /// `get_me`).
+    QString queryUserId;
     QUrl HOST{DEFAULT_HOST};
     const static inline QUrl HEALTH{"health"};  // FIXME: move to routes module
     const static inline QUrl GAMES_LIST{"games/list"};

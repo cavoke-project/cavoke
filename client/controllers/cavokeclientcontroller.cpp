@@ -1,4 +1,5 @@
 #include "cavokeclientcontroller.h"
+#include <QOAuthHttpServerReplyHandler>
 
 CavokeClientController::CavokeClientController(QObject *parent)
     : QObject{parent},
@@ -117,8 +118,20 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(initStartValues(QString, QString)));
     connect(&settingsView, SIGNAL(updatedSettings(QString, QString)), this,
             SLOT(updateSettings(QString, QString)));
+    connect(&networkManager, SIGNAL(gotDisplayName(QString)), &settingsView,
+            SLOT(updateDisplayName(QString)));
 
     defaultSettingsInitialization();
+
+    // oauth reply handler
+    auto replyHandler = new QOAuthHttpServerReplyHandler(1337, this);
+    auto &auth = cavoke::auth::AuthenticationManager::getInstance();
+    auth.oauth2.setReplyHandler(replyHandler);
+
+    // on new authentication update my user id and display name
+    connect(&auth, SIGNAL(authenticated()), &networkManager, SLOT(getMe()));
+    // initialize auth in a separate thread
+    QTimer::singleShot(0, [&]() { auth.init(); });
 
     startView.show();
 }
@@ -132,6 +145,10 @@ void CavokeClientController::defaultSettingsInitialization() {
 
     networkManager.changeHost(
         QUrl::fromUserInput(settings.value(NETWORK_HOST).toString()));
+
+    if (cavoke::auth::AuthenticationManager::getInstance().checkAuthStatus()) {
+        networkManager.getMe();
+    }
 
     emit initSettingsValues(settings.value(PLAYER_NICKNAME).toString(),
                             settings.value(NETWORK_HOST).toString());
@@ -295,12 +312,13 @@ void CavokeClientController::gotCurrentGameInfo(const GameInfo &gameInfo) {
     emit setGameName(currentGameInfo.display_name);
 }
 
-void CavokeClientController::updateSettings(const QString &nickname,
+void CavokeClientController::updateSettings(const QString &displayName,
                                             const QString &host) {
-    settings.setValue(PLAYER_NICKNAME, nickname);
+    settings.setValue(PLAYER_NICKNAME, displayName);
     settings.setValue(NETWORK_HOST, host);
     emit clearScreens();
     networkManager.changeHost(QUrl::fromUserInput(host));
+    networkManager.changeName(displayName);
 }
 void CavokeClientController::collectListOfAvailableRoles() {
     std::vector<bool> isFree(currentGameInfo.players_num, true);
