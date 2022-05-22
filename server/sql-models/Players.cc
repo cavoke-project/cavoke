@@ -13,7 +13,7 @@
 
 using namespace drogon;
 using namespace drogon::orm;
-using namespace drogon_model::cavoke;
+using namespace drogon_model::postgres_db;
 
 const std::string Players::Cols::_session_id = "session_id";
 const std::string Players::Cols::_user_id = "user_id";

@@ -31,8 +31,9 @@ using DbClientPtr = std::shared_ptr<DbClient>;
 }  // namespace orm
 }  // namespace drogon
 namespace drogon_model {
-namespace cavoke {
+namespace postgres_db {
 class Players;
+class RoomJoins;
 
 class Users {
 public:
@@ -132,6 +133,9 @@ public:
     void getPlayers(const drogon::orm::DbClientPtr &clientPtr,
                     const std::function<void(std::vector<Players>)> &rcb,
                     const drogon::orm::ExceptionCallback &ecb) const;
+    void getRoomJoins(const drogon::orm::DbClientPtr &clientPtr,
+                      const std::function<void(std::vector<RoomJoins>)> &rcb,
+                      const drogon::orm::ExceptionCallback &ecb) const;
 
 private:
     friend drogon::orm::Mapper<Users>;
@@ -214,5 +218,5 @@ public:
         return sql;
     }
 };
-}  // namespace cavoke
+}  // namespace postgres_db
 }  // namespace drogon_model

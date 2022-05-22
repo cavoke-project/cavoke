@@ -42,6 +42,26 @@
         "target_table_alias": "",
         "target_key": "user_id",
         "enable_reverse": true
+      },
+      {
+        "type": "has many",
+        "original_table_name": "rooms",
+        "original_table_alias": "Room",
+        "original_key": "id",
+        "target_table_name": "room_joins",
+        "target_table_alias": "",
+        "target_key": "room_id",
+        "enable_reverse": true
+      },
+      {
+        "type": "has many",
+        "original_table_name": "users",
+        "original_table_alias": "User",
+        "original_key": "id",
+        "target_table_name": "room_joins",
+        "target_table_alias": "",
+        "target_key": "user_id",
+        "enable_reverse": true
       }
     ]
   }

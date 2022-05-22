@@ -31,7 +31,7 @@ using DbClientPtr = std::shared_ptr<DbClient>;
 }  // namespace orm
 }  // namespace drogon
 namespace drogon_model {
-namespace cavoke {
+namespace postgres_db {
 
 class Statuses {
 public:
@@ -231,5 +231,5 @@ public:
         return sql;
     }
 };
-}  // namespace cavoke
+}  // namespace postgres_db
 }  // namespace drogon_model
