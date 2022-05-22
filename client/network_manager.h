@@ -130,7 +130,8 @@ private:
     const static inline QUrl GET_ME{"get_me"};
     const static inline QUrl CHANGE_NAME{"change_name"};
     const static inline QUrl MY_USER_STATISTICS{"my_user_statistics"};
-    const static inline QUrl MY_USER_GAME_STATISTICS{"my_user_game_statistics/"};
+    const static inline QUrl MY_USER_GAME_STATISTICS{
+        "my_user_game_statistics/"};
 
     const static inline QUrl STATISTICS_GAME{"statistics/game/"};
 };

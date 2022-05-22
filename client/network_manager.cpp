@@ -309,8 +309,7 @@ void NetworkManager::gotUserGameStatistics(QNetworkReply *reply) {
 }
 
 void NetworkManager::getGameStatistics(const QString &gameId) {
-    QUrl route = HOST.resolved(STATISTICS_GAME)
-                     .resolved(gameId);
+    QUrl route = HOST.resolved(STATISTICS_GAME).resolved(gameId);
     route.setQuery({{"user_id", getUserId()}});
     qDebug() << route.toString();
     auto reply = oauth2->get(route);
