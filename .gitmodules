@@ -4,6 +4,9 @@
 [submodule "third_party/json"]
 	path = third_party/json
 	url = https://github.com/nlohmann/json.git
+[submodule "third_party/qtkeychain"]
+	path = third_party/qtkeychain
+	url = https://github.com/frankosterfeld/qtkeychain.git
 [submodule "third_party/jwt"]
     path = third_party/jwt
     url = https://github.com/Thalhammer/jwt-cpp.git

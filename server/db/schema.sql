@@ -204,7 +204,7 @@ $$
     language plpgsql;
 
 
-create or replace function get_participations(game_id_ varchar, user_id_ uuid)
+create or replace function get_participations(game_id_ varchar, user_id_ varchar)
     returns table
             (
                 session_id uuid,
@@ -223,7 +223,7 @@ end;
 $$
     language plpgsql;
 
-create or replace function get_total_time_sec_for_user(game_id_ varchar, user_id_ uuid) returns int as
+create or replace function get_total_time_sec_for_user(game_id_ varchar, user_id_ varchar) returns int as
 $$
 declare
 begin
@@ -234,7 +234,7 @@ end;
 $$
     language plpgsql;
 
-create or replace function get_sessions_num_for_user(game_id_ varchar, user_id_ uuid) returns int as
+create or replace function get_sessions_num_for_user(game_id_ varchar, user_id_ varchar) returns int as
 $$
 declare
 begin
@@ -245,7 +245,7 @@ end;
 $$
     language plpgsql;
 
-create or replace function get_win_rate(game_id_ varchar, user_id_ uuid) returns float as
+create or replace function get_win_rate(game_id_ varchar, user_id_ varchar) returns float as
 $$
 declare
 begin
@@ -271,7 +271,7 @@ $$
     language plpgsql;
 
 
-create or replace function get_cavoke_time_sec_for_user(user_id_ uuid) returns int as
+create or replace function get_cavoke_time_sec_for_user(user_id_ varchar) returns int as
 $$
 declare
 begin
@@ -282,7 +282,7 @@ $$
     language plpgsql;
 
 
-create or replace function get_cavoke_sessions_num_for_user(user_id_ uuid) returns int as
+create or replace function get_cavoke_sessions_num_for_user(user_id_ varchar) returns int as
 $$
 declare
 begin

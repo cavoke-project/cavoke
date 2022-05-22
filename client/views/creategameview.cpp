@@ -1,4 +1,5 @@
 #include "creategameview.h"
+#include "authdialog.h"
 #include "ui_creategameview.h"
 
 CreateGameView::CreateGameView(QWidget *parent)
@@ -45,6 +46,10 @@ void CreateGameView::gotNewSelectedGame(const GameInfo &gameInfo) {
 }
 void CreateGameView::on_createGameButton_clicked() {
     //    this->close();
+    // verify user is authenticated
+    if (!AuthDialog::verifyAuth(this)) {
+        return;
+    }
     emit startedCreateGameRoutine(ui->gamesListComboBox->currentIndex());
 }
 void CreateGameView::displayEmpty() {
