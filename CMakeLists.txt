@@ -71,8 +71,8 @@ endif ()
 #endif()
 if (BUILD_CLIENT)
     # TODO: add option
+#    add_subdirectory(third_party/extra-cmake-modules)
     add_subdirectory(third_party/zlib)
-    add_subdirectory(third_party/extra-cmake-modules)
     add_subdirectory(third_party/karchive)
 endif()
 

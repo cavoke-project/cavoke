@@ -28,14 +28,14 @@ jobs:
           sudo install linuxdeploy-x86_64.AppImage /usr/local/bin/
           sudo install linuxdeploy-plugin-qt-x86_64.AppImage /usr/local/bin/
           sudo install linuxdeploy-plugin-appimage-x86_64.AppImage /usr/local/bin/
-#      - name: Install KArchive (Unix)
-#        run: |
+      - name: Install KArchive (Unix)
+        run: |
 #          mkdir build-zlib
 #          cmake -B build-zlib ./third_party/zlib
 #          sudo cmake --build build-zlib --target install
-#          mkdir build-ECM
-#          cmake -B build-ECM ./third_party/extra-cmake-modules
-#          sudo cmake --build build-ECM --target install
+          mkdir build-ECM
+          cmake -B build-ECM ./third_party/extra-cmake-modules
+          sudo cmake --build build-ECM --target install
 #          mkdir build-karchive
 #          cmake -B build-karchive ./third_party/karchive
 #          sudo cmake --build build-karchive --target install
@@ -69,14 +69,14 @@ jobs:
           cached: ${{ steps.cache-qt-windows.outputs.cache-hit }}
           tools: 'tools_ifw,4.3.0-0-202202240617,qt.tools.ifw.43'  # todo don't specify raw version...
           modules: 'qtnetworkauth'
-#      - name: Install KArchive (Windows)
-#        run: |
+      - name: Install KArchive (Windows)
+        run: |
 #          mkdir build-zlib
 #          cmake -B build-zlib ./third_party/zlib
 #          cmake --build build-zlib --target install
-#          mkdir build-ECM
-#          cmake -B build-ECM ./third_party/extra-cmake-modules
-#          cmake --build build-ECM --target install
+          mkdir build-ECM
+          cmake -B build-ECM ./third_party/extra-cmake-modules
+          cmake --build build-ECM --target install
 #          mkdir build-karchive
 #          cmake -B build-karchive ./third_party/karchive
 #          cmake --build build-karchive --target install
