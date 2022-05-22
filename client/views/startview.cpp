@@ -32,6 +32,9 @@ void StartView::on_cavokeTestWindowButton_clicked() {
 }
 
 void StartView::on_statisticsButton_clicked() {
+    if (!AuthDialog::verifyAuth(this)) {
+        return;
+    }
     this->close();
     emit shownStatisticsView();
 }
