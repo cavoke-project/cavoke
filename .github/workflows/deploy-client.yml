@@ -42,7 +42,12 @@ jobs:
       - name: Cmake
         run: |
           mkdir build && cmake -B build . -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=5 -DCPACK_IFW_ROOT="${IQTA_TOOLS}/QtInstallerFramework/4.3"
-          cmake --build build --target bundle
+          cmake --build build --config Release
+          cmake --build build --target bundle --config Release -DCPACK_IFW_ROOT="${IQTA_TOOLS}/QtInstallerFramework/4.3"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: cavoke_client-installer-${{ runner.os }}
+          path: build/cavoke_client-*
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest]
@@ -78,6 +83,11 @@ jobs:
           cmake --build build-karchive --target install
           mkdir build
           cmake -B build . -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=5 -DKF5Archive_DIR="C:/Program Files (x86)/ECM/lib/cmake/KF5Archive" -DCPACK_IFW_ROOT="${IQTA_TOOLS}/QtInstallerFramework/4.3"
-          cmake --build build --target bundle
+          cmake --build build --config Release
+          cmake --build build --target bundle --config Release
+      - uses: actions/upload-artifact@v3
+        with:
+          name: cavoke_client-installer-${{ runner.os }}
+          path: build/cavoke_client-*
 env:
   QT_CACHE_ITERATION: 1
