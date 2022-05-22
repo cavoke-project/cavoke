@@ -6,6 +6,18 @@ create table users
     display_name varchar default 'Guest':: character varying
 );
 
+
+create table sessions
+(
+    id            uuid    not null
+        constraint session_pk
+            primary key,
+    game_id       varchar not null,
+    host_id       varchar not null,
+    game_settings json,
+    constraint fk_host foreign key (host_id) references users (id)
+);
+
 create table rooms
 (
     id           uuid    not null
@@ -37,22 +49,12 @@ alter table rooms
     add constraint rooms_joins_room_id_user_id_fk
         foreign key (id, host_id) references room_joins (room_id, user_id);
 
-create table sessions
-(
-    id            uuid    not null
-        constraint session_pk
-            primary key,
-    game_id       varchar not null,
-    invite_code   varchar not null,
-    room_id       uuid    not null,
-    game_settings json,
-    constraint fk_room foreign key (room_id) references rooms (id)
-);
 
 alter table rooms
     add column session_id uuid null;
 alter table rooms
     add constraint fk_session foreign key (session_id) references sessions (id);
+
 
 create table statuses
 (
@@ -67,8 +69,8 @@ create table statuses
 create unique index session_id_uindex
     on sessions (id);
 
-create unique index session_invite_code_uindex
-    on sessions (invite_code);
+create unique index room_invite_code_uindex
+    on rooms (invite_code);
 
 create table players
 (
@@ -102,6 +104,36 @@ create table globalstates
     is_terminal boolean   default false not null,
     saved_on    timestamp default current_timestamp
 );
+
+create or replace function leave_session(m_session_id uuid, m_user_id varchar) returns void as
+$$
+declare
+begin
+    if
+            (select host_id
+             from sessions
+             where id = m_session_id) = m_user_id then
+        if (select user_id
+            from players
+            where session_id = m_session_id
+              and user_id != m_user_id
+            limit 1) IS NOT NULL then
+            update sessions
+            set host_id = (select user_id from players where session_id = m_session_id and user_id != m_user_id limit 1)
+            where id = m_session_id;
+        else
+            delete
+            from sessions
+            where id = m_session_id;
+        end if;
+    end if;
+    delete
+    from players
+    where user_id = m_user_id
+      and session_id = m_session_id;
+end
+$$
+    language plpgsql;
 
 create or replace function leave_room(m_room_id uuid, m_user_id varchar) returns void as
 $$

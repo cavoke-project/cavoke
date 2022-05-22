@@ -27,8 +27,6 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
         session.setId(drogon::utils::getUuid());
         session.setGameSettingsToNull();
         session.setGameId(game_config.id);
-        // TODO: there are only 1e6 invite codes, something has to be done about
-        session.setInviteCode(generate_invite_code());
     }
     auto session_status = drogon_model::cavoke_orm::Statuses();
     {
@@ -102,17 +100,17 @@ void SessionsStorage::start_session(const std::string &session_id,
 }
 
 /**
- * Joins a session by invite code
+ * Joins a session by id
  *
  * Throws `game_session_error` if errors arise
  *
  * @return session info
  */
 GameSessionAccessObject::GameSessionInfo SessionsStorage::join_session(
-    const std::string &invite_code,
+    const std::string &session_id,
     const std::string &user_id,
     std::optional<int> player_id) {
-    auto sessionAO = get_sessionAO_by_invite(invite_code);
+    auto sessionAO = get_sessionAO(session_id);
     // add the user
     sessionAO.add_user(user_id, player_id);
     // generate representation for client
@@ -179,24 +177,6 @@ GameSessionAccessObject SessionsStorage::get_sessionAO(
                 ->config);
     } catch (const std::out_of_range &) {
         throw game_session_error("session does not exist: '" + session_id +
-                                 "'");
-    }
-}
-GameSessionAccessObject SessionsStorage::get_sessionAO_by_invite(
-    const std::string &invite_code) {
-    try {
-        auto mp_sessions = MAPPER_FOR(
-            drogon_model::cavoke_orm::Sessions);  // TODO: use shared mappers
-        // find session by invite
-        auto session = mp_sessions.findOne(
-            Criteria(drogon_model::cavoke_orm::Sessions::Cols::_invite_code,
-                     CompareOperator::EQ, invite_code));
-        return GameSessionAccessObject(
-            session.getValueOfId(),
-            m_games_storage->get_game_by_id(session.getValueOfGameId())
-                ->config);
-    } catch (const std::out_of_range &) {
-        throw game_session_error("invite code does not exist: '" + invite_code +
                                  "'");
     }
 }

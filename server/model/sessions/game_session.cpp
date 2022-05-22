@@ -97,12 +97,6 @@ std::string GameSessionAccessObject::get_user_id(int player_id) const {
     }
 }
 
-/// Validates the invite code for this session
-bool GameSessionAccessObject::verify_invite_code(
-    const std::string &invite_code) const {
-    auto session = get_snapshot();
-    return invite_code == session.getValueOfInviteCode();
-}
 
 /// Generates an info object (representation for client)
 GameSessionAccessObject::GameSessionInfo
@@ -212,7 +206,6 @@ GameSessionAccessObject::make_session_info(
     std::vector<PlayerInfo> players) {
     return {session.getValueOfId(),
             session.getValueOfGameId(),
-            session.getValueOfInviteCode(),
             session.getValueOfHostId(),
             static_cast<SessionStatus>(status.getValueOfStatus()),
             std::move(players)};

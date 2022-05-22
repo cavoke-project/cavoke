@@ -40,9 +40,6 @@ public:
 
     /// Gets an access object for given session
     GameSessionAccessObject get_sessionAO(const std::string &session_id);
-    /// Gets an access object for given session by an invite code
-    GameSessionAccessObject get_sessionAO_by_invite(
-        const std::string &invite_code);
 
     friend class GameSessionAccessObject;
 
