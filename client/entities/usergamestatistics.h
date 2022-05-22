@@ -6,7 +6,10 @@
 struct UserGameStatistics {
 public:
     UserGameStatistics();
-    UserGameStatistics(QString _game_id, int _time_played_sec, int _games_played, double _win_rate);
+    UserGameStatistics(QString _game_id,
+                       int _time_played_sec,
+                       int _games_played,
+                       double _win_rate);
 
     void read(const QJsonObject &json);
     static void write(QJsonObject &json);
