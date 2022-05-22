@@ -9,10 +9,12 @@ UserStatistics::UserStatistics(int _total_time_played_sec,
 }
 
 void UserStatistics::read(const QJsonObject &json) {
-    if (json.contains(TOTAL_TIME_PLAYED_SEC) && json[TOTAL_TIME_PLAYED_SEC].isDouble()) {
+    if (json.contains(TOTAL_TIME_PLAYED_SEC) &&
+        json[TOTAL_TIME_PLAYED_SEC].isDouble()) {
         total_time_played_sec = json[TOTAL_TIME_PLAYED_SEC].toInt();
     }
-    if (json.contains(TOTAL_GAMES_PLAYED) && json[TOTAL_GAMES_PLAYED].isDouble()) {
+    if (json.contains(TOTAL_GAMES_PLAYED) &&
+        json[TOTAL_GAMES_PLAYED].isDouble()) {
         total_games_played = json[TOTAL_GAMES_PLAYED].toInt();
     }
 }
