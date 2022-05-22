@@ -11,7 +11,7 @@ jobs:
         id: cache-qt-unix
         uses: actions/cache@v1
         with:
-          path: ../Qt
+          path: ./Qt
           key: ${{ runner.os }}-QtCache-${{ env.QT_CACHE_ITERATION }}
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
@@ -48,7 +48,7 @@ jobs:
         id: cache-qt-windows
         uses: actions/cache@v1
         with:
-          path: ../Qt
+          path: ./Qt
           key: ${{ runner.os }}-QtCache-${{ env.QT_CACHE_ITERATION }}
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
