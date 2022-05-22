@@ -4,12 +4,12 @@ jobs:
   bundle-client-unix:
     runs-on: ${{ matrix.os }}
     steps:
-#      - name: Cache Qt
-#        id: cache-qt
-#        uses: actions/cache@v1
-#        with:
-#          path: ../Qt
-#          key: ${{ runner.os }}-QtCache
+      - name: Cache Qt
+        id: cache-qt
+        uses: actions/cache@v1
+        with:
+          path: ../Qt
+          key: ${{ runner.os }}-QtCache-${{ env.QT_CACHE_ITERATION }}
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
         with:
@@ -42,22 +42,22 @@ jobs:
   bundle-client-windows:
     runs-on: windows-latest
     steps:
-    #      - name: Cache Qt
-    #        id: cache-qt
-    #        uses: actions/cache@v1
-    #        with:
-    #          path: ../Qt
-    #          key: ${{ runner.os }}-QtCache
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v2
-      with:
-        cached: ${{ steps.cache-qt.outputs.cache-hit }}
-        tools: 'tools_ifw,4.3.0-0-202202240617,qt.tools.ifw.43'  # todo don't specify raw version...
-        modules: 'qtnetworkauth'
-    - uses: actions/checkout@v2
-      with:
-        submodules: recursive
-    - name: Install KArchive (Windows)
+      - name: Cache Qt
+        id: cache-qt
+        uses: actions/cache@v1
+        with:
+          path: ../Qt
+          key: ${{ runner.os }}-QtCache-${{ env.QT_CACHE_ITERATION }}
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          cached: ${{ steps.cache-qt.outputs.cache-hit }}
+          tools: 'tools_ifw,4.3.0-0-202202240617,qt.tools.ifw.43'  # todo don't specify raw version...
+          modules: 'qtnetworkauth'
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Install KArchive (Windows)
       run: |
         mkdir build-zlib
         cmake -B build-zlib ./third_party/zlib
@@ -71,3 +71,5 @@ jobs:
         mkdir build && cmake . -B build -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=5 -DKF5Archive_DIR="C:/Program Files (x86)/ECM/lib/cmake/KF5Archive" -DCPACK_IFW_ROOT="${IQTA_TOOLS}/Tools/QtInstallerFramework/4.3"
     - name: Cpack With QtIFW
       run: cd build && cpack -G IFW
+env:
+  QT_CACHE_ITERATION: 1
