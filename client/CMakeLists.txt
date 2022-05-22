@@ -55,8 +55,6 @@ set_target_properties(${target} PROPERTIES AUTORCC_OPTIONS "--compress;9")
 #target_link_libraries(cavoke_client PRIVATE qt${QT_MAJOR_VERSION}keychain)
 #target_compile_definitions(cavoke_client PRIVATE INCLUDE_OWN_QT_KEYCHAIN QTKEYCHAIN_NO_EXPORT)
 
-install(TARGETS cavoke_client RUNTIME DESTINATION bin)
-include(CPack)
 if(UNIX AND NOT APPLE)
     install(TARGETS ${target} RUNTIME DESTINATION bin)
 elseif(WIN32)
@@ -81,11 +79,11 @@ elseif(APPLE)
 endif()
 
 set(desktop.path applications)
-set(desktop.files resources/example.desktop)
+set(desktop.files resources/packaging/cavoke.desktop)
 set(icon.path icons/hicolor/64x64/apps)
-set(icon.files resources/icon64.png)
+set(icon.files resources/packaging/icon64.png)
 set(iconsvg.path icons/hicolor/scalable/apps)
-set(iconsvg.files resources/icon.svg)
+set(iconsvg.files resources/packaging/icon.svg)
 foreach(items IN ITEMS desktop icon iconsvg)
     install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${${items}.files}
             DESTINATION share/${${items}.path}

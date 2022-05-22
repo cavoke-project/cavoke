@@ -27,7 +27,7 @@ endfunction()
 function(windeployqt target)
 
     # Bundle Library Files
-    if(CMAKE_BUILD_TYPE_UPPER STREQUAL "DEBUG")
+    if(CMAKE_BUILD_TYPE_UPPER STREQUAL "DEBUG" OR MINGW) # FIXME: mingw bug https://bugreports.qt.io/browse/QTBUG-80806
         set(WINDEPLOYQT_ARGS --debug)
     else()
         set(WINDEPLOYQT_ARGS --release)
