@@ -8,6 +8,7 @@ CavokeClientController::CavokeClientController(QObject *parent)
       testWindowView{},
       startView{},
       joinGameView{},
+      statisticsView{},
       settingsView{},
       protoRoomView{},
       settings{} {
@@ -28,6 +29,8 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(showStartView()));
     connect(&protoRoomView, SIGNAL(shownStartView()), this,
             SLOT(showStartView()));
+    connect(&statisticsView, SIGNAL(shownStartView()), this,
+            SLOT(showStartView()));
 
     // Main navigation buttons from startView
     connect(&startView, SIGNAL(shownTestWindowView()), this,
@@ -40,6 +43,8 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(showGamesListView()));
     connect(&startView, SIGNAL(shownSettingsView()), this,
             SLOT(showSettingsView()));
+    connect(&startView, SIGNAL(shownStatisticsView()), this,
+            SLOT(showStatisticsView()));
 
     // startView Exit button
     connect(&startView, SIGNAL(clickedExitButton()), this,
@@ -182,6 +187,10 @@ void CavokeClientController::showGamesListView() {
 
 void CavokeClientController::showCreateGameView() {
     createGameView.show();
+}
+
+void CavokeClientController::showStatisticsView() {
+    statisticsView.show();
 }
 
 void CavokeClientController::showSettingsView() {
