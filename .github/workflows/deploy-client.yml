@@ -5,7 +5,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Cache Qt
-        id: cache-qt
+        id: cache-qt-unix
         uses: actions/cache@v1
         with:
           path: ../Qt
@@ -13,7 +13,7 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
         with:
-          cached: ${{ steps.cache-qt.outputs.cache-hit }}
+          cached: ${{ steps.cache-qt-unix.outputs.cache-hit }}
           tools: 'tools_ifw,4.3.0-0-202202240617,qt.tools.ifw.43'  # todo don't specify raw version...
           modules: 'qtnetworkauth'
       - uses: actions/checkout@v2
@@ -43,7 +43,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Cache Qt
-        id: cache-qt
+        id: cache-qt-windows
         uses: actions/cache@v1
         with:
           path: ../Qt
@@ -51,7 +51,7 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
         with:
-          cached: ${{ steps.cache-qt.outputs.cache-hit }}
+          cached: ${{ steps.cache-qt-windows.outputs.cache-hit }}
           tools: 'tools_ifw,4.3.0-0-202202240617,qt.tools.ifw.43'  # todo don't specify raw version...
           modules: 'qtnetworkauth'
       - uses: actions/checkout@v2
