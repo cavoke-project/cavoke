@@ -81,8 +81,12 @@ CavokeClientController::CavokeClientController(QObject *parent)
     // gamesListView actions
     connect(&gamesListView, SIGNAL(currentIndexChanged(int)), &model,
             SLOT(receivedGameIndexChangeInList(int)));
+    connect(&gamesListView, SIGNAL(requestGameStatistics(QString)),
+            &networkManager, SLOT(getGameStatistics(QString)));
     connect(&model, SIGNAL(updateSelectedGameInList(GameInfo)), &gamesListView,
             SLOT(gotNewSelectedGame(GameInfo)));
+    connect(&networkManager, SIGNAL(gotGameStatistics(GameStatistics)),
+            &gamesListView, SLOT(gotNewGameStatistics(GameStatistics)));
     connect(&gamesListView, SIGNAL(requestedDownloadGame(int)), &model,
             SLOT(gotIndexToDownload(int)));
     connect(this, SIGNAL(clearScreens()), &gamesListView, SLOT(displayEmpty()));
@@ -148,7 +152,8 @@ CavokeClientController::CavokeClientController(QObject *parent)
 
     // on new authentication update my user id and display name
     connect(&auth, SIGNAL(authenticated()), &networkManager, SLOT(getMe()));
-    connect(&auth, SIGNAL(authenticated()), &networkManager, SLOT(getMyUserStatistics()));
+    connect(&auth, SIGNAL(authenticated()), &networkManager,
+            SLOT(getMyUserStatistics()));
     // initialize auth in a separate thread
     QTimer::singleShot(0, [&]() { auth.init(); });
 

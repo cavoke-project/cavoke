@@ -308,6 +308,27 @@ void NetworkManager::gotUserGameStatistics(QNetworkReply *reply) {
     emit gotUserGameStatistics(userGameStatistics);
 }
 
+void NetworkManager::getGameStatistics(const QString &gameId) {
+    QUrl route = HOST.resolved(STATISTICS_GAME)
+                     .resolved(gameId);
+    route.setQuery({{"user_id", getUserId()}});
+    qDebug() << route.toString();
+    auto reply = oauth2->get(route);
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotGameStatistics(reply); });
+}
+
+void NetworkManager::gotGameStatistics(QNetworkReply *reply) {
+    QByteArray answer = reply->readAll();
+    reply->close();
+    reply->deleteLater();
+    qDebug() << "Got game statistics: " << answer;
+
+    GameStatistics gameStatistics;
+    gameStatistics.read(QJsonDocument::fromJson(answer).object());
+    emit gotGameStatistics(gameStatistics);
+}
+
 void NetworkManager::startGamePolling() {
     gamePollingTimer->start();
 }
