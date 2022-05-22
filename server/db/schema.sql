@@ -52,7 +52,7 @@ create table sessions
 alter table rooms
     add column session_id uuid null;
 alter table rooms
-    add constraint fk_session foreign key (session_id) references sessions (id)
+    add constraint fk_session foreign key (session_id) references sessions (id);
 
 create table statuses
 (
