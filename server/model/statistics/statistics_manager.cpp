@@ -56,27 +56,29 @@ int StatisticsManager::get_avg_players_cnt(const std::string &game_id) {
 
 int StatisticsManager::get_user_total_time_played(const std::string &user_id) {
     auto db_result = drogon::app().getDbClient()->execSqlSync(
-        "select get_cavoke_time_sec_for_user($1::uuid) as res;", user_id);
+        "select get_cavoke_time_sec_for_user($1::varchar) as res;", user_id);
     return db_result[0]["res"].as<int>();
 }
 
 int StatisticsManager::get_user_total_games_played(const std::string &user_id) {
     auto db_result = drogon::app().getDbClient()->execSqlSync(
-        "select get_cavoke_sessions_num_for_user($1::uuid) as res;", user_id);
+        "select get_cavoke_sessions_num_for_user($1::varchar) as res;",
+        user_id);
     return db_result[0]["res"].as<int>();
 }
 
 double StatisticsManager::get_user_win_rate(const std::string &user_id,
                                             const std::string &game_id) {
     auto db_result = drogon::app().getDbClient()->execSqlSync(
-        "select get_win_rate($1::varchar, $2::uuid) as res;", game_id, user_id);
+        "select get_win_rate($1::varchar, $2::varchar) as res;", game_id,
+        user_id);
     return db_result[0]["res"].as<double>();
 }
 
 int StatisticsManager::get_user_games_played(const std::string &user_id,
                                              const std::string &game_id) {
     auto db_result = drogon::app().getDbClient()->execSqlSync(
-        "select get_sessions_num_for_user($1::varchar, $2::uuid) as res;",
+        "select get_sessions_num_for_user($1::varchar, $2::varchar) as res;",
         game_id, user_id);
     return db_result[0]["res"].as<int>();
 }
@@ -84,7 +86,7 @@ int StatisticsManager::get_user_games_played(const std::string &user_id,
 int StatisticsManager::get_user_time_played(const std::string &user_id,
                                             const std::string &game_id) {
     auto db_result = drogon::app().getDbClient()->execSqlSync(
-        "select get_total_time_sec_for_user($1::varchar, $2::uuid) as res;",
+        "select get_total_time_sec_for_user($1::varchar, $2::varchar) as res;",
         game_id, user_id);
     return db_result[0]["res"].as<int>();
 }
