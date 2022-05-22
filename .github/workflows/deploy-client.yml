@@ -1,0 +1,53 @@
+name: Deploy and Bundle Client
+on: workflow_call
+jobs:
+  bundle-client:
+    runs-on: ${{ matrix.os }}
+    steps:
+#      - name: Cache Qt
+#        id: cache-qt
+#        uses: actions/cache@v1
+#        with:
+#          path: ../Qt
+#          key: ${{ runner.os }}-QtCache
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          cached: ${{ steps.cache-qt.outputs.cache-hit }}
+          tools: 'tools_ifw,4.3.0-0-202202240617,qt.tools.ifw.43'  # todo don't specify raw version...
+          modules: 'qtnetworkauth'
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Install KArchive (Unix)
+        if: runner.os != 'Windows' # fixme duplicate
+        run: |
+          mkdir build-zlib
+          cmake -B build-zlib ./third_party/zlib
+          sudo cmake --build build-zlib --target install
+          mkdir build-ECM
+          cmake -B build-ECM ./third_party/extra-cmake-modules
+          sudo cmake --build build-ECM --target install
+          mkdir build-karchive
+          cmake -B build-karchive ./third_party/karchive
+          sudo cmake --build build-karchive --target install
+      - name: Install KArchive (Windows)
+        if: runner.os == 'Windows' # fixme duplicate
+        run: |
+          mkdir build-zlib
+          cmake -B build-zlib ./third_party/zlib
+          cmake --build build-zlib --target install
+          mkdir build-ECM
+          cmake -B build-ECM ./third_party/extra-cmake-modules
+          cmake --build build-ECM --target install
+          mkdir build-karchive
+          cmake -B build-karchive ./third_party/karchive
+          cmake --build build-karchive --target install
+      - name: Cmake
+        run: mkdir build && cmake . -B build -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=5
+      - name: Cpack With QtIFW
+        run: cd build && cpack -G IFW
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+      fail-fast: false

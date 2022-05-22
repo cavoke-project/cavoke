@@ -48,7 +48,54 @@ target_link_libraries(cavoke_client PRIVATE Qt${QT_MAJOR_VERSION}::Quick)
 target_link_libraries(cavoke_client PRIVATE Qt${QT_MAJOR_VERSION}::Network)
 target_link_libraries(cavoke_client PRIVATE Qt${QT_MAJOR_VERSION}::NetworkAuth)
 target_link_libraries(cavoke_client PRIVATE KF5::Archive)
+set(target ${PROJECT_NAME})
+set_target_properties(${target} PROPERTIES AUTORCC_OPTIONS "--compress;9")
 
 # QtKeychain
 #target_link_libraries(cavoke_client PRIVATE qt${QT_MAJOR_VERSION}keychain)
 #target_compile_definitions(cavoke_client PRIVATE INCLUDE_OWN_QT_KEYCHAIN QTKEYCHAIN_NO_EXPORT)
+
+install(TARGETS cavoke_client RUNTIME DESTINATION bin)
+include(CPack)
+if(UNIX AND NOT APPLE)
+    install(TARGETS ${target} RUNTIME DESTINATION bin)
+elseif(WIN32)
+    install(TARGETS ${target} RUNTIME DESTINATION bin)
+elseif(APPLE)
+    set(CMAKE_MACOSX_BUNDLE ON)
+    set(CMAKE_MACOSX_RPATH ON)
+    install(TARGETS ${target} BUNDLE DESTINATION .
+            RUNTIME DESTINATION .)
+    set_source_files_properties(resources/icon.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+    set_target_properties(${target}
+            PROPERTIES
+            MACOSX_BUNDLE_BUNDLE_NAME "${PROJECT_NAME}"
+            MACOSX_BUNDLE_INFO_STRING "${PROJECT_NAME} Copyright (c) 2019 Example@Example.com"
+            MACOSX_BUNDLE_ICON_FILE Icon.icns
+            MACOSX_BUNDLE_GUI_IDENTIFIER "${PROJECT_NAME}"
+            MACOSX_BUNDLE_LONG_VERSION_STRING "${PROJECT_VERSION}"
+            MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+            MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}"
+            MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2019 Example@Example.com"
+            )
+endif()
+
+set(desktop.path applications)
+set(desktop.files resources/example.desktop)
+set(icon.path icons/hicolor/64x64/apps)
+set(icon.files resources/icon64.png)
+set(iconsvg.path icons/hicolor/scalable/apps)
+set(iconsvg.files resources/icon.svg)
+foreach(items IN ITEMS desktop icon iconsvg)
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${${items}.files}
+            DESTINATION share/${${items}.path}
+            PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
+endforeach()
+# Components:
+if(CMAKE_BUILD_TYPE_UPPER MATCHES "^(DEBUG|RELWITHDEBINFO)$")
+    set(CPACK_STRIP_FILES FALSE)
+else()
+    set(CPACK_STRIP_FILES TRUE)
+endif()
+
+include(${CMAKE_CURRENT_LIST_DIR}/Packaging.cmake)

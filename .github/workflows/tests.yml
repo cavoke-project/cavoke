@@ -1,0 +1,147 @@
+name: Run Tests
+on:
+  workflow_call
+jobs:
+  clang-format:
+    name: ClangFormat 12
+    runs-on: ubuntu-latest
+    container: ghcr.io/cavoke-project/cavoke-ci:codeql
+    timeout-minutes: 1
+    steps:
+      - uses: actions/checkout@v2
+        # do not check submodules
+      - run: clang-format-12 --version
+      - run: chmod +x .github/scripts/diff-clangformat-12.sh && find . \( -iname '*.cpp' -or -iname '*.c' -or -iname '*.h' \) -and -not -path './server/models/*' | xargs -n1 .github/scripts/diff-clangformat-12.sh
+  cppcheck:
+    name: Cppcheck
+    runs-on: ubuntu-latest
+    container: ghcr.io/cavoke-project/cavoke-ci:codeql
+    timeout-minutes: 1
+    steps:
+      - uses: actions/checkout@v2
+        # do not check submodules
+      - run: cppcheck --version
+      - run: cppcheck --language=c++ -DSOME_DEFINE_TO_FIX_CONFIG --enable=all --suppress=*:doctest.h --suppress=unusedFunction --error-exitcode=1 --inline-suppr $(find . -iname '*.cpp' -and -not -path './server/models/*')
+  client-notests-qt5-suse:
+    runs-on: ubuntu-latest
+    container: ghcr.io/cavoke-project/cavoke-ci:client-qt5-suse
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Cmake
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=5
+      - name: Make
+        run: cd build && make cavoke_client
+  client-notests-qt6-suse:
+    runs-on: ubuntu-latest
+    container: ghcr.io/cavoke-project/cavoke-ci:client-qt6-suse
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Cmake
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_CLIENT=ON -DQT_MAJOR_VERSION=6  # QT_MAJOR_VERSION=6 by default, so not necessary
+      - name: Make
+        run: cd build && make cavoke_client
+  server-compiles-with-submodules:
+    runs-on: ubuntu-latest
+    steps:
+      - run: sudo apt-get install -y openssl libssl-dev libjsoncpp-dev uuid-dev zlib1g-dev libc-ares-dev postgresql-server-dev-all libboost-all-dev
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Cmake
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
+      - name: Make
+        run: cd build && make cavoke_server
+  server-healthcheck:
+    runs-on: ubuntu-latest
+    container: ghcr.io/cavoke-project/cavoke-ci:server
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: cavoke
+          POSTGRES_PASSWORD: postgres_password
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: postgres_user
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Install PostgreSQL client
+        run: |
+          apt-get update
+          apt-get install --yes postgresql-client
+      - name: Populate the database
+        run: psql -h postgres -d cavoke -U postgres_user -f server/db/schema.sql
+        env:
+          PGPASSWORD: postgres_password
+      - name: Cmake
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON
+      - name: Make
+        run: cd build && make cavoke_server
+      - name: Healthcheck
+        run: chmod +x .github/scripts/server-test-health.py && .github/scripts/server-test-health.py ./build/server/cavoke_server -c .github/files/ci_server_config.json
+  server-tests:
+    runs-on: ubuntu-latest
+    container: ghcr.io/cavoke-project/cavoke-ci:server
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Cmake
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON
+      - name: Make
+        run: cd build && make cavoke_server_test
+      - name: Run Tests
+        run: ./build/server/test/cavoke_server_test
+  games-notests:
+    runs-on: ubuntu-latest
+    container: ghcr.io/cavoke-project/cavoke-ci:server
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Cmake
+        run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_GAMES=ON -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON
+      - name: Make
+        run: cd build && make all
+  server-docker-healthcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - run: pip3 install requests
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Build docker image
+        uses: docker/build-push-action@v2
+        with:
+          file: server.Dockerfile
+          push: false
+          tags: cavoke_server
+      - name: Healthcheck
+        run: |
+          cd .github/scripts
+          chmod +x server-test-health.py
+          ./server-test-health.py docker run -t -p 8080:8080 cavoke_server
+  server-docker-compose-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Start up the server with Docker Compose
+        run: docker-compose up -d
+      - name: Healthcheck
+        run: test $(curl -s localhost:8080/health) = "OK"
+      - name: Check that some games are available
+        run: curl -s localhost:8080/games/list | jq -e 'length >= 1'
