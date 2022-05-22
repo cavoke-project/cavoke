@@ -6,6 +6,28 @@
 StatisticsView::StatisticsView(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::StatisticsView) {
     ui->setupUi(this);
+    connect(ui->games_combobox, SIGNAL(currentIndexChanged(int)), this,
+            SLOT(repeaterCurrentIndexChanged(int)));
+}
+
+void StatisticsView::repeaterCurrentIndexChanged(int index) {
+    if (index == -1) {
+        displayEmpty();
+        return;
+    }
+    emit statisticsGameChanged(ui->games_combobox->itemData(index).toString());
+}
+
+void StatisticsView::displayEmpty() {
+    ui->time_played_label->setText("0");
+    ui->games_played_label->setText("0");
+    ui->win_rate_label->setText("0");
+}
+
+void StatisticsView::gotUserGameStatisticsUpdate(const UserGameStatistics &userGameStatistics) {
+    ui->time_played_label->setText(QString::number(userGameStatistics.time_played_sec));
+    ui->games_played_label->setText(QString::number(userGameStatistics.games_played));
+    ui->win_rate_label->setText(QString::number(userGameStatistics.win_rate));
 }
 
 StatisticsView::~StatisticsView() {
@@ -21,18 +43,17 @@ void StatisticsView::gotGamesListUpdate(
     const std::vector<GameInfo> &newGamesList) {
     ui->games_combobox->clear();
     for (const auto &gameInfo : newGamesList) {
-        ui->games_combobox->addItem(gameInfo.display_name);
+        ui->games_combobox->addItem(gameInfo.display_name, gameInfo.id);
     }
-    //    ui->gamesListWidget->setCurrentIndex(-1); // Is needed? Tests required
+}
+void StatisticsView::gotUserStatisticsUpdate(
+    const UserStatistics &userStatistics) {
+    ui->total_time_played_label->setText(
+        QString::number(userStatistics.total_time_played_sec));
+    ui->total_games_played_label->setText(
+        QString::number(userStatistics.total_games_played));
 }
 
-//void StatisticsView::on_StatisticsButton_clicked() {
-//    QString inviteCode = ui->inviteCodeInput->text();
-//    // verify user is authenticated
-//    if (!AuthDialog::verifyAuth(this)) {
-//        return;
-//    }
-//    if (!inviteCode.isEmpty()) {
-//        emit joinedGame(inviteCode);
-//    }
-//}
+void StatisticsView::on_refreshButton_clicked() {
+    emit requestedRefresh();
+}

@@ -128,6 +128,17 @@ CavokeClientController::CavokeClientController(QObject *parent)
     connect(&networkManager, SIGNAL(gotDisplayName(QString)), &settingsView,
             SLOT(updateDisplayName(QString)));
 
+    // statisticsView actions
+    connect(&networkManager, SIGNAL(gotUserStatistics(UserStatistics)),
+            &statisticsView, SLOT(gotUserStatisticsUpdate(UserStatistics)));
+    connect(&statisticsView, SIGNAL(requestedRefresh()), &networkManager,
+            SLOT(getMyUserStatistics()));
+    connect(&networkManager, SIGNAL(gotUserGameStatistics(UserGameStatistics)),
+            &statisticsView,
+            SLOT(gotUserGameStatisticsUpdate(UserGameStatistics)));
+    connect(&statisticsView, SIGNAL(statisticsGameChanged(QString)),
+            &networkManager, SLOT(getMyUserGameStatistics(QString)));
+
     defaultSettingsInitialization();
 
     // oauth reply handler
@@ -177,6 +188,9 @@ void CavokeClientController::leftSession() {
 
 void CavokeClientController::showStartView() {
     startView.show();
+    if (cavoke::auth::AuthenticationManager::getInstance().checkAuthStatus()) {
+        networkManager.getMyUserStatistics();
+    }
 }
 
 void CavokeClientController::showJoinGameView() {
