@@ -65,6 +65,7 @@ target_link_libraries(cavoke_client PRIVATE KF5::Archive)
 install(TARGETS ${PROJECT_NAME} ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 configure_file(${CMAKE_SOURCE_DIR}/client/cavoke.desktop
         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.desktop)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.desktop DESTINATION ${DATA_INSTALL_DIR}/applications )
 #set(target ${PROJECT_NAME})
 #set_target_properties(${target} PROPERTIES AUTORCC_OPTIONS "--compress;9")
 
