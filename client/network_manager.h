@@ -14,6 +14,8 @@
 #include "AuthenticationManager.h"
 #include "entities/gameinfo.h"
 #include "entities/sessioninfo.h"
+#include "entities/usergamestatistics.h"
+#include "entities/userstatistics.h"
 #include "entities/validationresult.h"
 
 struct NetworkManager : public QObject {
@@ -44,6 +46,8 @@ public slots:
     void changeRoleInSession(int newRole);
     void getMe();
     void changeName(const QString &new_name);
+    void getMyUserStatistics();
+    void getMyUserGameStatistics(const QString &gameId);
 
     void startGamePolling();
     void stopGamePolling();
@@ -60,6 +64,8 @@ signals:
     void gotSessionInfo(const SessionInfo &sessionInfo);
     void gotValidationResult(const ValidationResult &validationResult);
     void gotDisplayName(const QString &displayName);
+    void gotUserStatistics(const UserStatistics &userStatistics);
+    void gotUserGameStatistics(const UserGameStatistics &userGameStatistics);
 
 private slots:
     void gotHealth(QNetworkReply *reply);
@@ -71,6 +77,8 @@ private slots:
     void gotPlayState(QNetworkReply *reply);
     void gotGamesClient(QNetworkReply *reply, const QString &gameId);
     void gotMyself(QNetworkReply *reply);
+    void gotUserStatistics(QNetworkReply *reply);
+    void gotUserGameStatistics(QNetworkReply *reply);
 
 private:
     QOAuth2AuthorizationCodeFlow *oauth2;
@@ -117,6 +125,8 @@ private:
     const static inline QUrl PROFILE{"profile/"};
     const static inline QUrl GET_ME{"get_me"};
     const static inline QUrl CHANGE_NAME{"change_name"};
+    const static inline QUrl MY_USER_STATISTICS{"my_user_statistics"};
+    const static inline QUrl MY_USER_GAME_STATISTICS{"my_user_game_statistics/"};
 };
 
 #endif  // CAVOKE_CLIENT_NETWORK_MANAGER_H
