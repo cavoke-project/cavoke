@@ -21,6 +21,7 @@ public slots:
     void gotUserStatisticsUpdate(const UserStatistics &userStatistics);
     void gotUserGameStatisticsUpdate(
         const UserGameStatistics &userGameStatistics);
+    void requestUpdates();
 
 signals:
     void shownStartView();
