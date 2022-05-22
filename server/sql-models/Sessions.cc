@@ -12,7 +12,7 @@
 
 using namespace drogon;
 using namespace drogon::orm;
-using namespace drogon_model::postgres_db;
+using namespace drogon_model::cavoke_orm;
 
 const std::string Sessions::Cols::_id = "id";
 const std::string Sessions::Cols::_game_id = "game_id";

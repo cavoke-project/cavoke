@@ -31,7 +31,7 @@ using DbClientPtr = std::shared_ptr<DbClient>;
 }  // namespace orm
 }  // namespace drogon
 namespace drogon_model {
-namespace postgres_db {
+namespace cavoke_orm {
 class RoomJoins;
 
 class Rooms {
@@ -275,5 +275,5 @@ public:
         return sql;
     }
 };
-}  // namespace postgres_db
+}  // namespace cavoke_orm
 }  // namespace drogon_model

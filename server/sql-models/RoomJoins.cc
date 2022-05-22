@@ -13,7 +13,7 @@
 
 using namespace drogon;
 using namespace drogon::orm;
-using namespace drogon_model::postgres_db;
+using namespace drogon_model::cavoke_orm;
 
 const std::string RoomJoins::Cols::_room_id = "room_id";
 const std::string RoomJoins::Cols::_user_id = "user_id";

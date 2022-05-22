@@ -13,7 +13,7 @@
 
 using namespace drogon;
 using namespace drogon::orm;
-using namespace drogon_model::postgres_db;
+using namespace drogon_model::cavoke_orm;
 
 const std::string Users::Cols::_id = "id";
 const std::string Users::Cols::_display_name = "display_name";
