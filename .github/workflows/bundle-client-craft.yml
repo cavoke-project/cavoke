@@ -27,6 +27,7 @@ jobs:
             os: ubuntu-latest
             container: kdeorg/centos7-craft
             fetch-depth: 1
+      fail-fast: false
 
     name: ${{ matrix.name }}
 
