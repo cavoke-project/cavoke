@@ -2,6 +2,7 @@
 #define CAVOKE_CLIENT_STATISTICSVIEW_H
 
 #include <QMainWindow>
+#include "entities/gameinfo.h"
 
 namespace Ui {
 class StatisticsView;
@@ -12,6 +13,9 @@ class StatisticsView : public QMainWindow {
 public:
     explicit StatisticsView(QWidget *parent = nullptr);
     ~StatisticsView();
+
+public slots:
+    void gotGamesListUpdate(const std::vector<GameInfo> &newGamesList);
 
 signals:
     void shownStartView();
