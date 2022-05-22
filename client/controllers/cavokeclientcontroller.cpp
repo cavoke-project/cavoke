@@ -148,10 +148,11 @@ CavokeClientController::CavokeClientController(QObject *parent)
 
     // on new authentication update my user id and display name
     connect(&auth, SIGNAL(authenticated()), &networkManager, SLOT(getMe()));
+    connect(&auth, SIGNAL(authenticated()), &networkManager, SLOT(getMyUserStatistics()));
     // initialize auth in a separate thread
     QTimer::singleShot(0, [&]() { auth.init(); });
 
-    startView.show();
+    showStartView();
 }
 
 void CavokeClientController::defaultSettingsInitialization() {
@@ -188,9 +189,6 @@ void CavokeClientController::leftSession() {
 
 void CavokeClientController::showStartView() {
     startView.show();
-    if (cavoke::auth::AuthenticationManager::getInstance().checkAuthStatus()) {
-        networkManager.getMyUserStatistics();
-    }
 }
 
 void CavokeClientController::showJoinGameView() {
@@ -206,6 +204,7 @@ void CavokeClientController::showCreateGameView() {
 }
 
 void CavokeClientController::showStatisticsView() {
+    statisticsView.requestUpdates();
     statisticsView.show();
 }
 

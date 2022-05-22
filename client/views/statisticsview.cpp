@@ -24,9 +24,12 @@ void StatisticsView::displayEmpty() {
     ui->win_rate_label->setText("0");
 }
 
-void StatisticsView::gotUserGameStatisticsUpdate(const UserGameStatistics &userGameStatistics) {
-    ui->time_played_label->setText(QString::number(userGameStatistics.time_played_sec));
-    ui->games_played_label->setText(QString::number(userGameStatistics.games_played));
+void StatisticsView::gotUserGameStatisticsUpdate(
+    const UserGameStatistics &userGameStatistics) {
+    ui->time_played_label->setText(
+        QString::number(userGameStatistics.time_played_sec));
+    ui->games_played_label->setText(
+        QString::number(userGameStatistics.games_played));
     ui->win_rate_label->setText(QString::number(userGameStatistics.win_rate));
 }
 
@@ -54,6 +57,13 @@ void StatisticsView::gotUserStatisticsUpdate(
         QString::number(userStatistics.total_games_played));
 }
 
-void StatisticsView::on_refreshButton_clicked() {
+void StatisticsView::requestUpdates() {
     emit requestedRefresh();
+    emit statisticsGameChanged(
+        ui->games_combobox->itemData(ui->games_combobox->currentIndex())
+            .toString());
+}
+
+void StatisticsView::on_refreshButton_clicked() {
+    requestUpdates();
 }
