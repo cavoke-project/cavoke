@@ -1,4 +1,5 @@
 #include "statistics_controller.h"
+#include "filters/AuthFilter.h"
 
 namespace cavoke::server::controllers {
 
@@ -40,6 +41,19 @@ void StatisticsController::user_game_statistics(
 
     return callback(newNlohmannJsonResponse(
         m_statistics_manager->get_user_game_statistics(user_id, game_id)));
+}
+void StatisticsController::my_user_statistics(
+    const drogon::HttpRequestPtr &req,
+    std::function<void(const drogon::HttpResponsePtr &)> &&callback) {
+    return user_statistics(req, std::move(callback),
+                           AuthFilter::get_user_id(req));
+}
+void StatisticsController::my_user_game_statistics(
+    const drogon::HttpRequestPtr &req,
+    std::function<void(const drogon::HttpResponsePtr &)> &&callback,
+    const std::string &game_id) {
+    return user_game_statistics(req, std::move(callback),
+                                AuthFilter::get_user_id(req), game_id);
 }
 
 }  // namespace cavoke::server::controllers
