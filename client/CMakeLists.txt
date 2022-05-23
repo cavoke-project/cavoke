@@ -69,6 +69,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.desktop DESTINATION ${
 
 file(GLOB_RECURSE CAVOKE_ICONS "${CMAKE_CURRENT_SOURCE_DIR}/resources/packaging/*${PROJECT_NAME}-icon.png")
 ecm_add_app_icon(appIcons ICONS ${CAVOKE_ICONS})
+install(FILES ${CAVOKE_ICONS} DESTINATION ${DATA_INSTALL_DIR}/applications)
 
 #set(target ${PROJECT_NAME})
 #set_target_properties(${target} PROPERTIES AUTORCC_OPTIONS "--compress;9")
