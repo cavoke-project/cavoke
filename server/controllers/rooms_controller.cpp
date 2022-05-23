@@ -16,7 +16,6 @@ void RoomsController::create_room(
     }
 
     auto room = m_rooms_storage->create_room(user_id, display_name.value());
-
     return callback(newNlohmannJsonResponse(room));
 }
 
@@ -50,10 +49,13 @@ void RoomsController::create_session(
             drogon::k404NotFound));
     }
 
-    auto session =
-        m_rooms_storage->create_session(room_id, game.value().config);
-
-    return callback(newNlohmannJsonResponse(session));
+    try {
+        auto session =
+            m_rooms_storage->create_session(room_id, game.value().config);
+        return callback(newNlohmannJsonResponse(session));
+    } catch (const model::room_error &e) {
+        return callback(newCavokeErrorResponse(e, k403Forbidden));
+    }
 }
 
 void RoomsController::get_info(
@@ -102,6 +104,8 @@ void RoomsController::join(
 
     try {
         m_rooms_storage->add_user(room_info.value().room_id, user_id);
+        return callback(newNlohmannJsonResponse(
+            m_rooms_storage->get_by_invite_code(invite_code.value()).value()));
     } catch (const model::room_error &e) {
         return callback(newCavokeErrorResponse(e, drogon::k404NotFound));
     }
@@ -124,6 +128,8 @@ void RoomsController::leave(
     } catch (const model::room_error &e) {
         return callback(newCavokeErrorResponse(e, drogon::k404NotFound));
     }
+
+    return CALLBACK_STATUS_CODE(k200OK);
 }
 
 RoomsController::RoomsController(

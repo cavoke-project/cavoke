@@ -27,39 +27,35 @@ std::string RoomsStorage::generate_invite_code() {
 
 std::optional<RoomsStorage::RoomInfo> RoomsStorage::get_by_id(
     const std::string &room_id) {
-    auto transaction = drogon::app().getDbClient()->newTransaction();
-    auto mp_rooms_trans =
-        MAPPER_WITH_CLIENT_FOR(drogon_model::cavoke_orm::Rooms, transaction);
+    auto mp_rooms_trans = MAPPER_FOR(drogon_model::cavoke_orm::Rooms);
     try {
         const auto &room = mp_rooms_trans.findByPrimaryKey(room_id);
         const auto &members = get_members(room_id);
         return RoomInfo::from_room_and_members(room, members);
-
-    } catch (const UnexpectedRows &) {
+    } catch (const UnexpectedRows &e) {
         return std::nullopt;
     }
 }
 
 std::vector<GameSessionAccessObject::UserInfo> RoomsStorage::get_members(
     const std::string &room_id) {
-    auto transaction = drogon::app().getDbClient()->newTransaction();
-    auto mp_rooms_trans =
-        MAPPER_WITH_CLIENT_FOR(drogon_model::cavoke_orm::Rooms, transaction);
-    auto mp_joins_trans = MAPPER_WITH_CLIENT_FOR(
-        drogon_model::cavoke_orm::RoomJoins, transaction);
-    auto mp_users_trans = MAPPER_WITH_CLIENT_FOR(
-        drogon_model::cavoke_orm::Users,
-        transaction);  // !!! we need a users controller !!!
+    auto mp_rooms_trans = MAPPER_FOR(drogon_model::cavoke_orm::Rooms);
+    auto mp_joins_trans = MAPPER_FOR(drogon_model::cavoke_orm::RoomJoins);
+    auto mp_users_trans = MAPPER_FOR(
+        drogon_model::cavoke_orm::Users);  // !!! we need a users controller !!!
 
     auto joins = mp_joins_trans.findBy(
         Criteria(drogon_model::cavoke_orm::RoomJoins::Cols::_room_id,
                  CompareOperator::EQ, room_id));
 
     std::vector<GameSessionAccessObject::UserInfo> members;
-    for (const auto &join : joins) {
-        members.push_back(GameSessionAccessObject::UserInfo::from_user(
-            mp_users_trans.findByPrimaryKey(join.getValueOfUserId())));
-    }
+    members.reserve(joins.size());
+    std::transform(
+        joins.begin(), joins.end(), std::back_inserter(members),
+        [&mp_users_trans](const drogon_model::cavoke_orm::RoomJoins &join) {
+            return GameSessionAccessObject::UserInfo::from_user(
+                mp_users_trans.findByPrimaryKey(join.getValueOfUserId()));
+        });
 
     return members;
 }
@@ -67,8 +63,7 @@ std::vector<GameSessionAccessObject::UserInfo> RoomsStorage::get_members(
 std::optional<RoomsStorage::RoomInfo> RoomsStorage::get_by_invite_code(
     const std::string &invite_code) {
     auto transaction = drogon::app().getDbClient()->newTransaction();
-    auto mp_rooms_trans =
-        MAPPER_WITH_CLIENT_FOR(drogon_model::cavoke_orm::Rooms, transaction);
+    auto mp_rooms_trans = MAPPER_FOR(drogon_model::cavoke_orm::Rooms);
     try {
         const auto &room = mp_rooms_trans.findOne(
             Criteria(drogon_model::cavoke_orm::Rooms::Cols::_invite_code,
@@ -80,6 +75,7 @@ std::optional<RoomsStorage::RoomInfo> RoomsStorage::get_by_invite_code(
         return std::nullopt;
     }
 }
+
 void RoomsStorage::add_user(const std::string &room_id,
                             const std::string &user_id) {
     if (is_member(room_id, user_id)) {
@@ -95,9 +91,8 @@ void RoomsStorage::add_user(const std::string &room_id,
         join.setRoomId(room_id);
         join.setUserId(user_id);
     }
-    auto transaction = drogon::app().getDbClient()->newTransaction();
-    auto mp_joins_trans = MAPPER_WITH_CLIENT_FOR(
-        drogon_model::cavoke_orm::RoomJoins, transaction);
+
+    auto mp_joins_trans = MAPPER_FOR(drogon_model::cavoke_orm::RoomJoins);
     mp_joins_trans.insert(join);
 }
 
@@ -112,9 +107,7 @@ void RoomsStorage::remove_user(const std::string &room_id,
 
 bool RoomsStorage::is_member(const std::string &room_id,
                              const std::string &user_id) {
-    auto transaction = drogon::app().getDbClient()->newTransaction();
-    auto mp_joins_trans = MAPPER_WITH_CLIENT_FOR(
-        drogon_model::cavoke_orm::RoomJoins, transaction);
+    auto mp_joins_trans = MAPPER_FOR(drogon_model::cavoke_orm::RoomJoins);
     size_t joins_count = mp_joins_trans.count(
         Criteria(drogon_model::cavoke_orm::RoomJoins::Cols::_room_id,
                  CompareOperator::EQ, room_id) &&
@@ -126,23 +119,36 @@ bool RoomsStorage::is_member(const std::string &room_id,
 RoomsStorage::RoomInfo RoomsStorage::create_room(
     const std::string &host_id,
     const std::string &display_name) {
-    auto transaction = drogon::app().getDbClient()->newTransaction();
-    auto mp_rooms_trans =
-        MAPPER_WITH_CLIENT_FOR(drogon_model::cavoke_orm::Rooms, transaction);
     auto room = drogon_model::cavoke_orm::Rooms();
     {
+        room.setId(drogon::utils::getUuid());
         // TODO: there are only 1e6 invite codes, something has to be done about
         room.setInviteCode(generate_invite_code());
         room.setDisplayName(display_name);
-        room.setSessionId("");
+        room.setSessionIdToNull();
     }
-    mp_rooms_trans.insert(room);
-    add_user(room.getValueOfId(), host_id);
 
-    room.setHostId(host_id);
-    mp_rooms_trans.update(room);
+    auto join = drogon_model::cavoke_orm::RoomJoins();
+    {
+        join.setRoomId(room.getValueOfId());
+        join.setUserId(host_id);
+    }
 
-    return RoomsStorage::RoomInfo();
+    {
+        //        auto transaction =
+        //        drogon::app().getDbClient()->newTransaction();
+        auto mp_rooms_trans = MAPPER_FOR(drogon_model::cavoke_orm::Rooms);
+        auto mp_joins_trans = MAPPER_FOR(drogon_model::cavoke_orm::RoomJoins);
+
+        mp_rooms_trans.insert(room);
+        mp_joins_trans.insert(join);
+
+        room.setHostId(host_id);
+        mp_rooms_trans.update(room);
+    }
+
+    return RoomsStorage::RoomInfo::from_room_and_members(
+        room, get_members(room.getValueOfId()));
 }
 
 GameSessionAccessObject::GameSessionInfo RoomsStorage::create_session(
@@ -170,9 +176,7 @@ GameSessionAccessObject::GameSessionInfo RoomsStorage::create_session(
     auto new_session =
         m_sessions_storage->create_session(game_config, room_info.host_id);
 
-    auto transaction = drogon::app().getDbClient()->newTransaction();
-    auto mp_rooms_trans =
-        MAPPER_WITH_CLIENT_FOR(drogon_model::cavoke_orm::Rooms, transaction);
+    auto mp_rooms_trans = MAPPER_FOR(drogon_model::cavoke_orm::Rooms);
     auto room_orm = mp_rooms_trans.findByPrimaryKey(room_id);
     room_orm.setSessionId(new_session.session_id);
     mp_rooms_trans.update(room_orm);
