@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.16)
 project(cavoke_client)
 
 set(QT_MAJOR_VERSION 6 CACHE STRING "Qt Major Version (e.g. Qt5/Qt6)")
@@ -66,6 +66,10 @@ install(TARGETS ${PROJECT_NAME} ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 configure_file(${CMAKE_SOURCE_DIR}/client/cavoke.desktop
         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.desktop)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.desktop DESTINATION ${DATA_INSTALL_DIR}/applications )
+
+file(GLOB_RECURSE CAVOKE_ICONS "${CMAKE_CURRENT_SOURCE_DIR}/resources/packaging/*${PROJECT_NAME}-icon.png")
+ecm_add_app_icon(appIcons ICONS ${CAVOKE_ICONS})
+
 #set(target ${PROJECT_NAME})
 #set_target_properties(${target} PROPERTIES AUTORCC_OPTIONS "--compress;9")
 
