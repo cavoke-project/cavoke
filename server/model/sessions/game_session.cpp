@@ -97,7 +97,6 @@ std::string GameSessionAccessObject::get_user_id(int player_id) const {
     }
 }
 
-
 /// Generates an info object (representation for client)
 GameSessionAccessObject::GameSessionInfo
 GameSessionAccessObject::get_session_info() const {
@@ -204,8 +203,7 @@ GameSessionAccessObject::make_session_info(
     const drogon_model::cavoke_orm::Sessions &session,
     const drogon_model::cavoke_orm::Statuses &status,
     std::vector<PlayerInfo> players) {
-    return {session.getValueOfId(),
-            session.getValueOfGameId(),
+    return {session.getValueOfId(), session.getValueOfGameId(),
             session.getValueOfHostId(),
             static_cast<SessionStatus>(status.getValueOfStatus()),
             std::move(players)};
