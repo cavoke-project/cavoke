@@ -42,9 +42,6 @@ public:
     GameSessionAccessObject get_sessionAO(const std::string &session_id);
 
     friend class GameSessionAccessObject;
-
-private:
-    static std::string generate_invite_code();
 };
 
 }  // namespace cavoke::server::model

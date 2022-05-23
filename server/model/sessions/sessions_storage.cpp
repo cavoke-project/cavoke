@@ -143,19 +143,6 @@ cavoke::ValidationResult SessionsStorage::validate_session(
                                             // simultaneously
 }
 
-/// Generates an invite code for session
-std::string SessionsStorage::generate_invite_code() {
-    // prepare template
-    std::string res = "......";
-    // random digits
-    std::random_device rd;
-    std::mt19937 engine(rd());
-    std::uniform_int_distribution<char> dist('0', '9');
-    // set every character to be a random digit
-    std::generate(res.begin(), res.end(),
-                  [&dist, &engine]() { return dist(engine); });
-    return res;
-}
 /**
  * Gets a session for given session id
  *

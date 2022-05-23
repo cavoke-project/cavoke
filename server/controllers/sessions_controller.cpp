@@ -37,22 +37,16 @@ void SessionsController::create(
 
 void SessionsController::join(
     const drogon::HttpRequestPtr &req,
-    std::function<void(const drogon::HttpResponsePtr &)> &&callback) {
+    std::function<void(const drogon::HttpResponsePtr &)> &&callback,
+    const std::string &session_id) {
     // get user id
     auto user_id = AuthFilter::get_user_id(req);
-
-    // get invite code
-    auto invite_code = req->getOptionalParameter<std::string>("invite_code");
-    if (!invite_code.has_value()) {
-        return CALLBACK_STATUS_CODE(k400BadRequest);
-    }
 
     // join session and acquire session info
     model::GameSessionAccessObject::GameSessionInfo session_info;
     try {
         session_info = m_participation_storage->join_session(
-            invite_code.value(), user_id,
-            req->getOptionalParameter<int>("position"));
+            session_id, user_id, req->getOptionalParameter<int>("position"));
     } catch (const model::game_session_error &err) {
         return callback(newCavokeErrorResponse(err, drogon::k400BadRequest));
     }
@@ -134,26 +128,6 @@ void SessionsController::get_info(
     model::GameSessionAccessObject session;
     try {
         session = m_participation_storage->get_sessionAO(session_id);
-    } catch (const model::game_session_error &err) {
-        return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
-    }
-
-    return callback(newNlohmannJsonResponse(session.get_session_info()));
-}
-
-void SessionsController::get_info_by_invite_code(
-    const drogon::HttpRequestPtr &req,
-    std::function<void(const drogon::HttpResponsePtr &)> &&callback) {
-    // get invite code
-    auto invite_code = req->getOptionalParameter<std::string>("invite_code");
-    if (!invite_code.has_value()) {
-        return CALLBACK_STATUS_CODE(k400BadRequest);
-    }
-
-    model::GameSessionAccessObject session;
-    try {
-        session = m_participation_storage->get_sessionAO_by_invite(
-            invite_code.value());
     } catch (const model::game_session_error &err) {
         return callback(newCavokeErrorResponse(err, drogon::k404NotFound));
     }

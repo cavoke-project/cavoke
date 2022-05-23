@@ -3,11 +3,13 @@
 #include <boost/program_options.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include "controllers/games_controller.h"
+#include "controllers/rooms_controller.h"
 #include "controllers/sessions_controller.h"
 #include "controllers/state_controller.h"
 #include "controllers/statistics_controller.h"
 #include "model/games/games_storage.h"
 #include "model/logic/game_logic_manager.h"
+#include "model/rooms/rooms_storage.h"
 #include "model/sessions/sessions_storage.h"
 #include "model/statistics/statistics_manager.h"
 
@@ -26,6 +28,8 @@ void run(const model::GamesStorageConfig &games_storage_config) {
         game_logic_manager, games_storage, game_state_storage);
     auto statistics_manager = std::make_shared<model::StatisticsManager>(
         sessions_storage, games_storage);
+    auto rooms_storage =
+        std::make_shared<model::RoomsStorage>(sessions_storage);
 
     // init controllers
     std::cout << "Initialize controllers..." << std::endl;
@@ -41,6 +45,8 @@ void run(const model::GamesStorageConfig &games_storage_config) {
     auto statistics_controller =
         std::make_shared<controllers::StatisticsController>(games_storage,
                                                             statistics_manager);
+    auto rooms_controller = std::make_shared<controllers::RoomsController>(
+        rooms_storage, games_storage);
 
     auto &app = drogon::app();
 
@@ -49,6 +55,7 @@ void run(const model::GamesStorageConfig &games_storage_config) {
     app.registerController(state_controller);
     app.registerController(sessions_controller);
     app.registerController(statistics_controller);
+    app.registerController(rooms_controller);
 
     // print db and listeners on start
     app.registerBeginningAdvice([]() {
