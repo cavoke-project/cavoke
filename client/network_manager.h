@@ -29,22 +29,28 @@ public:
 
 public slots:
     void getHealth();
+
     void getGamesList();
     void getGamesConfig(const QString &gameId);
     void getGamesClient(const QString &gameId);
-    //    void createRoom();        TODO
-    //    void joinRoom();          TODO
-    //    void getRoomsInfo();      TODO
-    //    void roomCreateSession(); TODO
+
     void sendMove(const QString &jsonMove);
     void getPlayState();
-    void createSession(const QString &gameId);
+
+//    void createSession(const QString &gameId);    // Outdated
     void joinSession(const QString &inviteCode);
     void validateSession();
     void getSessionInfo();
     void startSession();
     void leaveSession();
     void changeRoleInSession(int newRole);
+
+    void getRoomsInfo();
+    void createRoom();
+    void joinRoom();
+    void leaveRoom();
+    void roomCreateSession();
+
     void getMe();
     void changeName(const QString &new_name);
     void getMyUserStatistics();
@@ -102,29 +108,25 @@ private:
     const static inline QUrl GAMES{"games/"};
     const static inline QUrl GET_CONFIG{"get_config"};
     const static inline QUrl GET_CLIENT{"get_client"};
-    // FIXME: the next block is already in the api, but is not implemented by
-    // either the server or the client
-    const static inline QUrl ROOMS_CREATE{"rooms/create"};      // TODO
-    const static inline QUrl ROOMS_JOIN{"rooms/join"};          // TODO
+    // Rooms activity
     const static inline QUrl ROOMS{"rooms/"};                   // TODO
     const static inline QUrl GET_INFO{"get_info"};              // TODO
+    const static inline QUrl ROOMS_CREATE{"rooms/create"};      // TODO
+    const static inline QUrl ROOMS_JOIN{"rooms/join"};          // TODO
+    const static inline QUrl LEAVE{"leave"};
     const static inline QUrl CREATE_SESSION{"create_session"};  // TODO
     // End of not implemented block
     // FIXME: the next block will be deprecated in future:
-    const static inline QUrl SESSIONS_CREATE{"sessions/create"};
+//    const static inline QUrl SESSIONS_CREATE{"sessions/create"};
     const static inline QUrl SESSIONS_JOIN{"sessions/join"};
+    const static inline QUrl SESSIONS{"sessions/"};
+    const static inline QUrl VALIDATE{"validate"};
+    const static inline QUrl START{"start"};
+    const static inline QUrl CHANGE_ROLE{"change_role"};
     // End of future deprecated block
     const static inline QUrl PLAY{"play/"};
     const static inline QUrl SEND_MOVE{"send_move"};
     const static inline QUrl GET_STATE{"get_state"};
-    // FIXME: the next block will be possibly deprecated in future:
-    const static inline QUrl SESSIONS{"sessions/"};
-    const static inline QUrl VALIDATE{"validate"};
-    //    const static inline QUrl GET_INFO{"get_info"}; // already exists in
-    //    rooms block
-    const static inline QUrl START{"start"};
-    const static inline QUrl LEAVE{"leave"};
-    const static inline QUrl CHANGE_ROLE{"change_role"};
 
     const static inline QUrl PROFILE{"profile/"};
     const static inline QUrl GET_ME{"get_me"};
