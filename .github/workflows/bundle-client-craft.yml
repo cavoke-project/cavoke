@@ -96,13 +96,18 @@ jobs:
     steps:
       - name: Download all workflow run artifacts
         uses: actions/download-artifact@v3
+      - name: Rename files
+        run: |
+          find -name '*.exe' -exec mv '{}' "./cavoke-${GITHUB_REF_NAME}-windows.exe" ';'
+          find -name '*.dmg' -exec mv '{}' "./cavoke-${GITHUB_REF_NAME}-macos.dmg" ';'
+          find -name '*.AppImage' -exec mv '{}' "./cavoke-${GITHUB_REF_NAME}-linux.AppImage" ';'
       - name: GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          name: Release ${{ github.ref }}
+          name: Release ${{ github.ref_name }}
           draft: true
           files: |
-            **/*.dmg
-            **/*.exe
-            **/*.AppImage
+            cavoke-*-windows.exe
+            cavoke-*-macos.dmg
+            cavoke-*-linux.AppImage
           fail_on_unmatched_files: true
