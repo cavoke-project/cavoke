@@ -5,7 +5,7 @@ jobs:
   tests:
     uses: ./.github/workflows/tests.yml
   bundle-client:
-#    needs: [tests]
+    needs: [tests]
     uses: ./.github/workflows/bundle-client-craft.yml
   deploy-server-develop:
     if: github.ref == 'refs/heads/develop'
