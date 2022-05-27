@@ -47,8 +47,8 @@ jobs:
       - name: Restore cache
         uses: actions/cache@v2
         with:
-          path: ~/craft
-          key: ${{ runner.os }}-${{ matrix.target }}-v2
+          path: ~/craft/cache
+          key: ${{ runner.os }}-${{ matrix.target }}-v3
 
       - name: Clone CraftMaster
         run: git clone --depth=1 https://invent.kde.org/kde/craftmaster.git "$env:HOME/craft/CraftMaster/CraftMaster"
