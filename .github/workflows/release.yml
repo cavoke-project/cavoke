@@ -1,0 +1,32 @@
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+name: Create Release
+
+jobs:
+  build-artifacts:
+    uses: ./.github/workflows/bundle-client-craft.yml
+  create-release:
+    name: Create Release
+    needs: [build-artifacts]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v3
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          files: |
+            **/*.dmg
+            **/*.exe
+            **/*.AppImage
+          draft: true
+          prerelease: false
