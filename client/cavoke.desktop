@@ -1,7 +1,7 @@
 [Desktop Entry]
 Categories=Utility;Games;
 Type=Application
-Exec=@APPLICATION_EXECUTABLE@
+Exec=cavoke_client
 Name=Cavoke
 Comment=Cavoke
 Icon=cavoke-icon

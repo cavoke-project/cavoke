@@ -47,7 +47,7 @@ jobs:
       - name: Restore cache
         uses: actions/cache@v2
         with:
-          path: ${{env.HOME}}/craft
+          path: ~/craft
           key: ${{ runner.os }}-${{ matrix.target }}-v2
 
       - name: Clone CraftMaster
