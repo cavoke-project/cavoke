@@ -69,12 +69,6 @@ endif ()
 #    endif ()
 #    add_subdirectory(third_party/qtkeychain)
 #endif()
-#if (BUILD_CLIENT)
-#    # TODO: add option
-##    add_subdirectory(third_party/extra-cmake-modules)
-#    add_subdirectory(third_party/zlib)
-#    add_subdirectory(third_party/karchive)
-#endif()
 
 if (BUILD_ALL OR BUILD_SERVER)
     add_subdirectory(server)

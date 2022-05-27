@@ -74,9 +74,6 @@ jobs:
       - name: Build
         run: |
           & "${env:GITHUB_WORKSPACE}/.github/scripts/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" cavoke
-#      - name: Run tests
-#        run: |
-#          & "${env:GITHUB_WORKSPACE}/.github/scripts/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" --test cavoke
       - name: Package
         run: |
           & "${env:GITHUB_WORKSPACE}/.github/scripts/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" --package cavoke
