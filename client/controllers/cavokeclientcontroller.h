@@ -53,7 +53,7 @@ private slots:
     void startLoadedQml();
     void stopQml();
     void unpackDownloadedQml(QFile *file, const QString &gameId);
-    void createGameStart(int gameIndex);
+    void createGameStart(const QString &roomName);
     void joinGameStart(const QString &inviteCode);
     void gotCurrentGameInfo(const GameInfo &gameInfo);
     void gotSessionInfo(const SessionInfo &sessionInfo);
