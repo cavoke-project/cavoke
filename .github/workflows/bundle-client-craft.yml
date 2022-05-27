@@ -98,9 +98,9 @@ jobs:
         uses: actions/download-artifact@v3
       - name: Rename files
         run: |
-          find -name '*.exe' -exec mv '{}' "./cavoke-${GITHUB_REF_NAME}-windows.exe" ';'
-          find -name '*.dmg' -exec mv '{}' "./cavoke-${GITHUB_REF_NAME}-macos.dmg" ';'
-          find -name '*.AppImage' -exec mv '{}' "./cavoke-${GITHUB_REF_NAME}-linux.AppImage" ';'
+          find -name '*.exe' -exec mv '{}' './cavoke-${{ github.ref_name }}-windows.exe' ';'
+          find -name '*.dmg' -exec mv '{}' './cavoke-${{ github.ref_name }}-macos.dmg' ';'
+          find -name '*.AppImage' -exec mv '{}' './cavoke-${{ github.ref_name }}-linux.AppImage' ';'
       - name: GitHub Release
         uses: softprops/action-gh-release@v1
         with:
