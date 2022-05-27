@@ -4,6 +4,7 @@ Type=Application
 Exec=@APPLICATION_EXECUTABLE@
 Name=Cavoke
 Comment=Cavoke
+Icon=cavoke
 GenericName=Cavoke Client
 Keywords=@APPLICATION_NAME@;cavoke;games;
 X-GNOME-Autostart-Delay=3

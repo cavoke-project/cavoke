@@ -65,11 +65,18 @@ target_link_libraries(cavoke_client PRIVATE KF5::Archive)
 install(TARGETS ${PROJECT_NAME} ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 configure_file(${CMAKE_SOURCE_DIR}/client/cavoke.desktop
         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.desktop)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.desktop DESTINATION ${DATA_INSTALL_DIR}/applications )
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.desktop DESTINATION ${KDE_INSTALL_APPDIR} )
+file(GLOB_RECURSE ICON_FILES "${CMAKE_CURRENT_SOURCE_DIR}/resources/packaging/*-icon.png")
 
-file(GLOB_RECURSE CAVOKE_ICONS "${CMAKE_CURRENT_SOURCE_DIR}/resources/packaging/*${PROJECT_NAME}-icon.png")
-ecm_add_app_icon(appIcons ICONS ${CAVOKE_ICONS})
-install(FILES ${CAVOKE_ICONS} DESTINATION ${DATA_INSTALL_DIR}/applications)
+# Add icon files to the application's source files to have CMake bundle them in the executable.
+ecm_add_app_icon(ICONS_SOURCES ICONS ${ICON_FILES})
+target_sources(${PROJECT_NAME} PRIVATE ${ICONS_SOURCES})
+
+ecm_install_icons(
+        ICONS ${ICON_FILES}
+        DESTINATION ${KDE_INSTALL_ICONDIR}
+        THEME hicolor
+)
 
 #set(target ${PROJECT_NAME})
 #set_target_properties(${target} PROPERTIES AUTORCC_OPTIONS "--compress;9")
