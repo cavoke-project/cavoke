@@ -70,6 +70,22 @@ create table globalstates
     saved_on    timestamp default current_timestamp
 );
 
+create table gamesubmissions
+(
+    id            uuid      default gen_random_uuid() not null
+        constraint gamesubmissions_pk
+            primary key,
+    game_id       varchar,
+    package_type  varchar,
+    git_repo      varchar,
+    review_status integer   default 0,
+    submitted_at  timestamp default CURRENT_TIMESTAMP,
+    display_name  varchar
+);
+
+create unique index gamesubmissions_id_uindex
+    on gamesubmissions (id);
+
 create or replace function leave_session(m_session_id uuid, m_user_id varchar) returns void as
 $$
 declare
