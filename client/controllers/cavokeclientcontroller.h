@@ -12,6 +12,7 @@
 #include "protoroomview.h"
 #include "settingsview.h"
 #include "startview.h"
+#include "statisticsview.h"
 #include "testwindowview.h"
 
 class CavokeClientController : public QObject {
@@ -34,6 +35,7 @@ public slots:
     void showJoinGameView();
     void showGamesListView();
     void showCreateGameView();
+    void showStatisticsView();
     void showSettingsView();
     void updateSettings(const QString &displayName, const QString &host);
 
@@ -72,6 +74,7 @@ private:
     JoinGameView joinGameView;
     CreateGameView createGameView;
     GamesListView gamesListView;
+    StatisticsView statisticsView;
     SettingsView settingsView;
     ProtoRoomView protoRoomView;
     CavokeQmlGameModel *currentQmlGameModel = nullptr;
