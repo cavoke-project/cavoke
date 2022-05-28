@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
-project(cavoke_game_container_server)
+project(cavoke_dev_server_lib)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(${PROJECT_NAME}
-        main.cpp)
+        cavoke.cpp
+        controllers/logic_controller.cpp)
 
 find_package(Boost 1.71 REQUIRED filesystem program_options)
 include_directories(${Boost_INCLUDE_DIRS})
@@ -14,4 +15,11 @@ if (USE_EXTERNAL_DROGON)
     target_link_libraries(${PROJECT_NAME} PRIVATE Drogon::Drogon)
 else ()
     target_link_libraries(${PROJECT_NAME} PRIVATE drogon)
+endif ()
+
+
+if (USE_EXTERNAL_NLOHMANN)
+    target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
+else ()
+    target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json)
 endif ()
