@@ -5,7 +5,7 @@
 
 namespace cavoke::logic_server::controllers {
 
-class LogicController : public drogon::HttpController<LogicController> {
+class LogicController : public drogon::HttpController<LogicController, false> {
 public:
     METHOD_LIST_BEGIN
     ADD_METHOD_TO(LogicController::validate, "/validate", drogon::Post);

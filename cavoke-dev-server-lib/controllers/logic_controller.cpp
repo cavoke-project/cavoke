@@ -22,6 +22,8 @@ void LogicController::validate(
         callback(newNlohmannJsonResponse(result));
     } catch (const json::parse_error &) {
         return CALLBACK_STATUS_CODE(k400BadRequest);
+    } catch (const json::out_of_range &) {
+        return CALLBACK_STATUS_CODE(k400BadRequest);
     }
 }
 
@@ -36,6 +38,8 @@ void LogicController::init_state(
         callback(newNlohmannJsonResponse(result));
     } catch (const json::parse_error &) {
         return CALLBACK_STATUS_CODE(k400BadRequest);
+    } catch (const json::out_of_range &) {
+        return CALLBACK_STATUS_CODE(k400BadRequest);
     }
 }
 
@@ -48,6 +52,8 @@ void LogicController::apply_move(
         GameState result = cavoke::apply_move(move);
         callback(newNlohmannJsonResponse(result));
     } catch (const json::parse_error &) {
+        return CALLBACK_STATUS_CODE(k400BadRequest);
+    } catch (const json::out_of_range &) {
         return CALLBACK_STATUS_CODE(k400BadRequest);
     }
 }
