@@ -73,6 +73,16 @@ void run(const model::GamesStorageConfig &games_storage_config) {
         std::cout << "Listening at " << ips << "... " << std::endl;
     });
 
+    // Add CORS handler
+    auto corsValue = nlohmann::to_nlohmann(drogon::app().getCustomConfig())
+                         .value("cors", "*");
+    app.registerPostHandlingAdvice(
+        [corsValue](const drogon::HttpRequestPtr &req,
+                    const drogon::HttpResponsePtr &resp) {
+            // cors header for every response
+            resp->addHeader("Access-Control-Allow-Origin", corsValue);
+        });
+
     // start server
     app.run();
 }

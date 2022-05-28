@@ -13,13 +13,18 @@ class GamesController : public drogon::HttpController<GamesController, false> {
 
 public:
     METHOD_LIST_BEGIN
-    ADD_METHOD_TO(GamesController::games_list, "/games/list", drogon::Get);
+    ADD_METHOD_TO(GamesController::games_list,
+                  "/games/list",
+                  drogon::Get,
+                  drogon::Options);
     ADD_METHOD_TO(GamesController::game_config,
                   "/games/{game_id}/get_config",
-                  drogon::Get);
+                  drogon::Get,
+                  drogon::Options);
     ADD_METHOD_TO(GamesController::game_client_file,
                   "/games/{game_id}/get_client",
-                  drogon::Get);
+                  drogon::Get,
+                  drogon::Options);
     METHOD_LIST_END
 
     explicit GamesController(
