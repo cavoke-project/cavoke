@@ -81,6 +81,7 @@ To make these obstacles easier to avoid, we developed a framework for developing
 that comes with built-in solutions to solve all the above-mentioned problems.
 
 ### Our solution
+#### Developers side
 
 Our platform provides an easy way for developers to create a desktop game. A developer should provide only two
 components:
@@ -226,6 +227,7 @@ GameState apply_move(GameMove &new_move) { /// <-- Handles move request
 > :information_source: You can read more about all the game logic protocol [here](./GameLogicProtocol.md)
   </details>
 
+#### Players side
 Futhermore, we provide many features in our cavoke client for the users. These include:
 - **Cross platform**: Available on Windows, macOS and Linux
 - **User Authentication** using Email-Password or SSO via Google or GitHub
