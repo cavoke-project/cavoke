@@ -230,6 +230,7 @@ void CavokeClientController::showCreateGameView() {
 
 void CavokeClientController::showRoomView() {
     displacement = UserDisplacement::ROOM;
+    qDebug() << "Joining?";
     roomView.show();
 }
 
@@ -310,27 +311,16 @@ void CavokeClientController::unpackDownloadedQml(QFile *file,
 void CavokeClientController::createGameStart(const QString &roomName) {
     qDebug() << "Now we are creating room with name: " << roomName;
 
-    //    currentGameInfo = model.getGameByIndex(gameIndex);
-
-    //    protoRoomView.clear();
-    //    protoRoomView.updateStatus(ProtoRoomView::CreatingGameStatus::REQUESTED);
     createGameView.close();
-    //    protoRoomView.show();
-
-    networkManager.createRoom(roomName);
     showRoomView();
-    //    networkManager.createSession(currentGameInfo.id); FIXME
+    networkManager.createRoom(roomName);
 }
 
 void CavokeClientController::joinGameStart(const QString &inviteCode) {
-    qDebug() << "Now we are joining room with inviteCode: " << inviteCode;
+    qDebug() << "Now we are joining room with inviteCode:" << inviteCode;
 
-    //    protoRoomView.clear();
-    //    protoRoomView.updateStatus(ProtoRoomView::CreatingGameStatus::REQUESTED);
-    showRoomView();
     joinGameView.close();
-    //    protoRoomView.show();
-
+    showRoomView();
     networkManager.joinRoom(inviteCode);
 }
 
