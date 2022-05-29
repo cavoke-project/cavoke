@@ -122,6 +122,7 @@ CavokeClientController::CavokeClientController(QObject *parent)
     connect(&roomView, SIGNAL(leftRoom()), this, SLOT(leftRoom()));
     connect(&roomView, SIGNAL(createdSession(QString)), this,
             SLOT(createSessionStart(QString)));
+    connect(&roomView, SIGNAL(joinedSession(QString)), this, SLOT(joi))
 
     // sessionView actions
     connect(&sessionView, SIGNAL(joinedCreatedGame()), this,
@@ -343,6 +344,14 @@ void CavokeClientController::createSessionStart(const QString &gameId) {
     roomView.close();
     showSessionView();
     networkManager.roomCreateSession(gameId);
+}
+
+void CavokeClientController::joinSessionStart(const QString &sessionId) {
+    qDebug() << "Now we are joining session with sessionId:" << sessionId;
+
+    roomView.close();
+    showSessionView();
+    networkManager.joinSession(sessionId);
 }
 
 void CavokeClientController::gotRoomInfo(const RoomInfo &roomInfo) {

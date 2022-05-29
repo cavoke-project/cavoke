@@ -61,6 +61,7 @@ private slots:
     void createGameStart(const QString &roomName);
     void joinGameStart(const QString &inviteCode);
     void createSessionStart(const QString &gameId);
+    void joinSessionStart(const QString &sessionId);
     void gotCurrentGameInfo(const GameInfo &gameInfo);
     void gotRoomInfo(const RoomInfo &roomInfo);
     void gotSessionInfo(const SessionInfo &sessionInfo);

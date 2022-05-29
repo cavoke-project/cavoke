@@ -39,7 +39,7 @@ public slots:
     void getPlayState();
 
     //    void createSession(const QString &gameId);    // Outdated
-    void joinSession(const QString &inviteCode);
+    void joinSession(const QString &sessionId);
     void validateSession();
     void getSessionInfo();
     void startSession();
@@ -125,7 +125,7 @@ private:
     const static inline QUrl CREATE_SESSION{"create_session"};
 
     // const static inline QUrl SESSIONS_CREATE{"sessions/create"}; DEPRECATED
-    const static inline QUrl SESSIONS_JOIN{"sessions/join"};
+    const static inline QUrl JOIN{"join"};
     const static inline QUrl SESSIONS{"sessions/"};
     const static inline QUrl VALIDATE{"validate"};
     const static inline QUrl START{"start"};

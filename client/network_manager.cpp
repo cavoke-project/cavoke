@@ -149,8 +149,8 @@ void NetworkManager::gotPlayState(QNetworkReply *reply) {
 //            [reply, this]() { gotSession(reply); });
 //}
 
-void NetworkManager::joinSession(const QString &inviteCode) {
-    QUrl route = HOST.resolved(SESSIONS_JOIN);
+void NetworkManager::joinSession(const QString &sessionId) {
+    QUrl route = HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(JOIN);
     route.setQuery({{"user_id", getUserId()}});
     qDebug() << route.toString();
     auto reply = oauth2->post(route, "{}");
