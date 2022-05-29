@@ -1,0 +1,113 @@
+# Originally from: https://raw.githubusercontent.com/owncloud/client/9ef42e4faa56367d99e31b5cc3e5f91da9b865f7/.github/workflows/main.yml
+
+name: Bundle Client
+on: workflow_call
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - name: Windows 64-bit cl
+            target: windows-msvc2019_64-cl
+            os: windows-latest
+            fetch-depth: 0
+            container:
+          - name: macOS 64-bit clang
+            target: macos-64-clang
+            os: macos-latest
+            fetch-depth: 1
+            container:
+          - name: CentOS 7 64-bit gcc
+            target: linux-64-gcc
+            os: ubuntu-latest
+            container: kdeorg/centos7-craft
+            fetch-depth: 1
+      fail-fast: false
+
+    name: ${{ matrix.name }}
+
+    runs-on: ${{ matrix.os }}
+
+    env:
+      CRAFT_TARGET: ${{ matrix.target }}
+
+    container: ${{ matrix.container }}
+
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Restore cache
+        uses: actions/cache@v2
+        with:
+          path: ~/craft/cache
+          key: ${{ runner.os }}-${{ matrix.target }}-v3
+
+      - name: Clone CraftMaster
+        run: git clone --depth=1 https://invent.kde.org/kde/craftmaster.git "$env:HOME/craft/CraftMaster/CraftMaster"
+
+      - name: Craft setup
+        run: |
+          New-Item -Path ~/cache -ItemType Directory -ErrorAction SilentlyContinue
+          & "${env:GITHUB_WORKSPACE}/.github/scripts/.craft.ps1" --setup
+      - name: Craft unshelve
+        run: |
+          & "${env:GITHUB_WORKSPACE}/.github/scripts/.craft.ps1" -c --unshelve "${env:GITHUB_WORKSPACE}/.craft.shelf"
+      - name: Prepare
+        run: |
+          if ($IsWindows) {
+              & "${env:GITHUB_WORKSPACE}/.github/scripts/.craft.ps1" -c dev-utils/nsis
+          } elseif($IsLinux) {
+              & "${env:GITHUB_WORKSPACE}/.github/scripts/.craft.ps1" -c dev-utils/linuxdeploy
+              & "${env:GITHUB_WORKSPACE}/.github/scripts/.craft.ps1" -c --set enableLibcloudproviders=true cavoke
+          }
+      - name: Install dependencies
+        run: |
+          & "${env:GITHUB_WORKSPACE}/.github/scripts/.craft.ps1" -c --install-deps cavoke
+      - name: Build
+        run: |
+          & "${env:GITHUB_WORKSPACE}/.github/scripts/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" cavoke
+      - name: Package
+        run: |
+          & "${env:GITHUB_WORKSPACE}/.github/scripts/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" --package cavoke
+      - name: Prepare artifacts
+        run: |
+          New-Item -ItemType Directory "${env:GITHUB_WORKSPACE}/binaries/" -ErrorAction SilentlyContinue
+          Copy-Item "$env:HOME/craft/binaries/*" "${env:GITHUB_WORKSPACE}/binaries/"
+          & "${env:GITHUB_WORKSPACE}/.github/scripts/.craft.ps1" -c --shelve "${env:GITHUB_WORKSPACE}/.craft.shelf"
+          Copy-Item "${env:GITHUB_WORKSPACE}/.craft.shelf" "${env:GITHUB_WORKSPACE}/binaries/"
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.name }}
+          path: ${{ github.workspace }}/binaries/*
+  create-release:
+    name: Create Release
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v3
+      - name: Rename files
+        run: |
+          find -name '*.exe' -exec mv '{}' './cavoke-${{ github.ref_name }}-windows.exe' ';'
+          find -name '*.dmg' -exec mv '{}' './cavoke-${{ github.ref_name }}-macos.dmg' ';'
+          find -name '*.AppImage' -exec mv '{}' './cavoke-${{ github.ref_name }}-linux.AppImage' ';'
+      - name: GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ github.ref_name }}
+          draft: true
+          files: |
+            cavoke-*-windows.exe
+            cavoke-*-macos.dmg
+            cavoke-*-linux.AppImage
+          fail_on_unmatched_files: true

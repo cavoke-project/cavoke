@@ -1,0 +1,11 @@
+[Desktop Entry]
+Categories=Game;
+Type=Application
+Exec=cavoke_client
+Name=Cavoke Client
+Comment=An online board games platform
+Icon=cavoke
+GenericName=Online board games platform
+Keywords=cavoke;games;
+Terminal=false
+StartupWMClass=cavoke_client
