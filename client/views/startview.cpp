@@ -31,6 +31,14 @@ void StartView::on_cavokeTestWindowButton_clicked() {
     emit shownTestWindowView();
 }
 
+void StartView::on_statisticsButton_clicked() {
+    if (!AuthDialog::verifyAuth(this)) {
+        return;
+    }
+    this->close();
+    emit shownStatisticsView();
+}
+
 void StartView::on_settingsButton_clicked() {
     this->close();
     emit shownSettingsView();

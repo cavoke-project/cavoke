@@ -8,7 +8,10 @@ namespace cavoke::server::controllers {
 class HealthController : public drogon::HttpController<HealthController, true> {
 public:
     METHOD_LIST_BEGIN
-    ADD_METHOD_TO(HealthController::health, "/health", drogon::Get);
+    ADD_METHOD_TO(HealthController::health,
+                  "/health",
+                  drogon::Get,
+                  drogon::Options);
     METHOD_LIST_END
 
 protected:

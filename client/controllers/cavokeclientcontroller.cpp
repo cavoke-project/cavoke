@@ -8,6 +8,7 @@ CavokeClientController::CavokeClientController(QObject *parent)
       testWindowView{},
       startView{},
       joinGameView{},
+      statisticsView{},
       settingsView{},
       protoRoomView{},
       settings{} {
@@ -28,6 +29,8 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(showStartView()));
     connect(&protoRoomView, SIGNAL(shownStartView()), this,
             SLOT(showStartView()));
+    connect(&statisticsView, SIGNAL(shownStartView()), this,
+            SLOT(showStartView()));
 
     // Main navigation buttons from startView
     connect(&startView, SIGNAL(shownTestWindowView()), this,
@@ -40,6 +43,8 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(showGamesListView()));
     connect(&startView, SIGNAL(shownSettingsView()), this,
             SLOT(showSettingsView()));
+    connect(&startView, SIGNAL(shownStatisticsView()), this,
+            SLOT(showStatisticsView()));
 
     // startView Exit button
     connect(&startView, SIGNAL(clickedExitButton()), this,
@@ -76,8 +81,12 @@ CavokeClientController::CavokeClientController(QObject *parent)
     // gamesListView actions
     connect(&gamesListView, SIGNAL(currentIndexChanged(int)), &model,
             SLOT(receivedGameIndexChangeInList(int)));
+    connect(&gamesListView, SIGNAL(requestGameStatistics(QString)),
+            &networkManager, SLOT(getGameStatistics(QString)));
     connect(&model, SIGNAL(updateSelectedGameInList(GameInfo)), &gamesListView,
             SLOT(gotNewSelectedGame(GameInfo)));
+    connect(&networkManager, SIGNAL(gotGameStatistics(GameStatistics)),
+            &gamesListView, SLOT(gotNewGameStatistics(GameStatistics)));
     connect(&gamesListView, SIGNAL(requestedDownloadGame(int)), &model,
             SLOT(gotIndexToDownload(int)));
     connect(this, SIGNAL(clearScreens()), &gamesListView, SLOT(displayEmpty()));
@@ -91,6 +100,8 @@ CavokeClientController::CavokeClientController(QObject *parent)
             &createGameView, SLOT(gotGamesListUpdate(std::vector<GameInfo>)));
     connect(&model, SIGNAL(gamesListUpdated(std::vector<GameInfo>)),
             &gamesListView, SLOT(gotGamesListUpdate(std::vector<GameInfo>)));
+    connect(&model, SIGNAL(gamesListUpdated(std::vector<GameInfo>)),
+            &statisticsView, SLOT(gotGamesListUpdate(std::vector<GameInfo>)));
 
     // Download and unpack game workflow
     connect(&model, SIGNAL(downloadGame(QString)), &networkManager,
@@ -121,6 +132,17 @@ CavokeClientController::CavokeClientController(QObject *parent)
     connect(&networkManager, SIGNAL(gotDisplayName(QString)), &settingsView,
             SLOT(updateDisplayName(QString)));
 
+    // statisticsView actions
+    connect(&networkManager, SIGNAL(gotUserStatistics(UserStatistics)),
+            &statisticsView, SLOT(gotUserStatisticsUpdate(UserStatistics)));
+    connect(&statisticsView, SIGNAL(requestedRefresh()), &networkManager,
+            SLOT(getMyUserStatistics()));
+    connect(&networkManager, SIGNAL(gotUserGameStatistics(UserGameStatistics)),
+            &statisticsView,
+            SLOT(gotUserGameStatisticsUpdate(UserGameStatistics)));
+    connect(&statisticsView, SIGNAL(statisticsGameChanged(QString)),
+            &networkManager, SLOT(getMyUserGameStatistics(QString)));
+
     defaultSettingsInitialization();
 
     // oauth reply handler
@@ -130,10 +152,12 @@ CavokeClientController::CavokeClientController(QObject *parent)
 
     // on new authentication update my user id and display name
     connect(&auth, SIGNAL(authenticated()), &networkManager, SLOT(getMe()));
+    connect(&auth, SIGNAL(authenticated()), &networkManager,
+            SLOT(getMyUserStatistics()));
     // initialize auth in a separate thread
     QTimer::singleShot(0, [&]() { auth.init(); });
 
-    startView.show();
+    showStartView();
 }
 
 void CavokeClientController::defaultSettingsInitialization() {
@@ -182,6 +206,11 @@ void CavokeClientController::showGamesListView() {
 
 void CavokeClientController::showCreateGameView() {
     createGameView.show();
+}
+
+void CavokeClientController::showStatisticsView() {
+    statisticsView.requestUpdates();
+    statisticsView.show();
 }
 
 void CavokeClientController::showSettingsView() {

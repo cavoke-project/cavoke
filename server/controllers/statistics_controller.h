@@ -21,7 +21,8 @@ public:
     METHOD_LIST_BEGIN
     ADD_METHOD_TO(StatisticsController::game_statistics,
                   "/statistics/game/{game_id}",
-                  drogon::Get);
+                  drogon::Get,
+                  drogon::Options);
     ADD_METHOD_TO(StatisticsController::user_statistics,
                   "/statistics/user/{user_id}",
                   drogon::Get);

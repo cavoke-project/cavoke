@@ -8,7 +8,8 @@
       "logic_name": "logic",
       "zip_name": "client.zip",
       "config_name": "config.json"
-    }
+    },
+    "cors": "*" // OPTIONAL cors header value
 //     // OPTIONAL Authentication settings. If commented out, `user_id` query will be used
 //        ,"auth": {
 //          "type": "JWT",
