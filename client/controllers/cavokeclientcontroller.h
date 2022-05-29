@@ -40,6 +40,7 @@ public slots:
     void showCreateGameView();
     void showStatisticsView();
     void showSettingsView();
+    void showRoomView();
     void updateSettings(const QString &displayName, const QString &host);
 
 signals:
