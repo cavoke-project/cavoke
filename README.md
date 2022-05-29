@@ -44,7 +44,7 @@
 </p>
 
 <p align="center">
-  <a href="#key-features">Key Features</a> •
+  <a href="#overview">Overview</a> •
   <a href="#how-to-use">How To Use</a> •
   <a href="#download">Download</a> •
   <a href="#credits">Credits</a> •
@@ -63,17 +63,17 @@ to learn something new along the way.
 However, in our opinion this journey, is often riddled with unnecessary challenges of implementing mechanisms that are
 common for many games. This includes:
 
-- Developing a client application with many UI components for game creation process
-- Networking, which in itself includes
-  - Synchronizing the game state among clients
+- Developing a **client application** with many UI components for game creation process
+- **Networking**, which in itself includes
+  - **Synchronizing the game state** among clients
   - Handling network issues on client's side
   - SSL and Security
-- Game state persistence
-- Game move validation
-- Role choosing (e.g. White/Black in Chess)
-- Managing game sessions and shareable invites for multiplayer
-- Game and User statistics (win rate, total time spent, etc.)
-- User Authentication and Authorization
+- **Game state persistence**
+- **Game move validation**
+- **Role choosing** (e.g. White/Black in Chess)
+- Managing **game sessions** and **shareable invites* for friends to play with you
+- **Game and User statistics** (win rate, total time spent, etc.)
+- User **Authentication and Authorization**
 - Game versioning
 - Hosting server logic and scalability
 
@@ -90,13 +90,8 @@ components:
   main Cavoke Client application and sends player's moves through this gateway. It also receives updates from other
   players' moves to update its user interface.
 
-[//]: # (<details>)
-
-[//]: # (<summary>Detailed structure explanation</summary>)
-
-[//]: # (</details>)
-
-## Example Usage
+<details>
+  <summary>Example Cavoke Game Development Story (Tic-Tac-Toe)</summary>
 
 Let's see how a simple Tic-Tac-Toe game using our Cavoke platform may look like. See files for this
 example [here](./games/tictactoe) and [here](./client/tictactoe-files)
@@ -229,6 +224,15 @@ GameState apply_move(GameMove &new_move) { /// <-- Handles move request
 ```
 
 > :information_source: You can read more about all the game logic protocol [here](./GameLogicProtocol.md)
+  </details>
+
+Futhermore, we provide many features in our cavoke client for the users. These include:
+- **Cross platform**: Available on Windows, macOS and Linux
+- **User Authentication** using Email-Password or SSO via Google or GitHub
+- **Catalog of available cavoke games**
+- **Rooms** with shareable invites for your friends, so you can play multiple games without the need to change the app
+- **User's statistics** for every game
+- **Developer mode** to test QML components locally
 
 ## How To Use
 
