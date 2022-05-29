@@ -115,24 +115,6 @@ jobs:
         run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_GAMES=ON -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON -DUSE_EXTERNAL_JWT=ON
       - name: Make
         run: cd build && make all
-  server-docker-healthcheck:
-    runs-on: ubuntu-latest
-    steps:
-      - run: pip3 install requests
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
-      - name: Build docker image
-        uses: docker/build-push-action@v2
-        with:
-          file: server.Dockerfile
-          push: false
-          tags: cavoke_server
-      - name: Healthcheck
-        run: |
-          cd .github/scripts
-          chmod +x server-test-health.py
-          ./server-test-health.py docker run -t -p 8080:8080 cavoke_server
   server-docker-compose-check:
     runs-on: ubuntu-latest
     steps:
