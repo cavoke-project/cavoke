@@ -11,3 +11,4 @@ jobs:
     if: github.ref == 'refs/heads/develop'
     needs: [tests]
     uses: ./.github/workflows/deploy-server-develop.yml
+    secrets: inherit
