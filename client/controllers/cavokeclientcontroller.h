@@ -25,6 +25,7 @@ class CavokeClientController : public QObject {
     //        POLLING_CREATE,
     //        POLLING_JOIN
     //    };
+    enum class UserDisplacement { NOWHERE, ROOM, SESSION };
     enum class QMLDownloadStatus { NOT_STARTED, DOWNLOADING, DOWNLOADED };
     enum class HostGuestStatus { NOT_IN, HOST, GUEST };
     Q_OBJECT
@@ -58,11 +59,15 @@ private slots:
     void createGameStart(const QString &roomName);
     void joinGameStart(const QString &inviteCode);
     void gotCurrentGameInfo(const GameInfo &gameInfo);
+    void gotRoomInfo(const RoomInfo &roomInfo);
     void gotSessionInfo(const SessionInfo &sessionInfo);
     void collectListOfAvailableRoles();
     void becomeHost();
     void becomeGuest();
+    void becomeRoomHost();
+    void becomeRoomGuest();
     void leftSession();
+    void leftRoom();
 
 private:
     void defaultSettingsInitialization();
@@ -80,12 +85,15 @@ private:
     SettingsView settingsView;
     RoomView roomView;
     SessionView sessionView;
-//    ProtoRoomView protoRoomView;
+    //    ProtoRoomView protoRoomView;
     CavokeQmlGameModel *currentQmlGameModel = nullptr;
+    RoomInfo currentRoomInfo;
     SessionInfo currentSessionInfo;
     GameInfo currentGameInfo;
+    UserDisplacement displacement = UserDisplacement::NOWHERE;
     QMLDownloadStatus qmlDownloadStatus = QMLDownloadStatus::NOT_STARTED;
     HostGuestStatus hostGuestStatus = HostGuestStatus::NOT_IN;
+    HostGuestStatus roomHostGuestStatus = HostGuestStatus::NOT_IN;
     QSettings settings;
 };
 

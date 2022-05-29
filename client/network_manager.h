@@ -65,6 +65,8 @@ public slots:
     void stopSessionPolling();
     void startValidationPolling();
     void stopValidationPolling();
+    void startRoomPolling();
+    void stopRoomPolling();
 
 signals:
     void finalizedGamesList(QJsonArray list);
@@ -100,6 +102,7 @@ private:
     QTimer *gamePollingTimer = nullptr;
     QTimer *sessionPollingTimer = nullptr;
     QTimer *validationPollingTimer = nullptr;
+    QTimer *roomPollingTimer = nullptr;
     QString sessionId;
     QString roomId;
     /// `user_id` query param.

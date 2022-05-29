@@ -112,6 +112,14 @@ CavokeClientController::CavokeClientController(QObject *parent)
     connect(&networkManager, SIGNAL(downloadedGameFile(QFile *, QString)), this,
             SLOT(unpackDownloadedQml(QFile *, QString)));
 
+    connect(&networkManager, SIGNAL(gotRoomInfo(RoomInfo)), this,
+            SLOT(gotRoomInfo(RoomInfo)));
+
+    // roomView actions
+    connect(&model, SIGNAL(gamesListUpdated(std::vector<GameInfo>)), &roomView,
+            SLOT(gotGamesListUpdate(std::vector<GameInfo>)));
+    connect(&roomView, SIGNAL(leftRoom()), this, SLOT(leftRoom()));
+
     // protoRoomView actions
     //    connect(&protoRoomView, SIGNAL(joinedCreatedGame()), this,
     //            SLOT(startLoadedQml()));
@@ -198,6 +206,12 @@ void CavokeClientController::leftSession() {
     currentSessionInfo = SessionInfo();
 }
 
+void CavokeClientController::leftRoom() {
+    networkManager.stopRoomPolling();
+    hostGuestStatus = HostGuestStatus::NOT_IN;
+    currentRoomInfo = RoomInfo();
+}
+
 void CavokeClientController::showStartView() {
     startView.show();
 }
@@ -211,6 +225,7 @@ void CavokeClientController::showGamesListView() {
 }
 
 void CavokeClientController::showCreateGameView() {
+    displacement = UserDisplacement::ROOM;
     createGameView.show();
 }
 
@@ -314,6 +329,30 @@ void CavokeClientController::joinGameStart(const QString &inviteCode) {
     networkManager.joinRoom(inviteCode);
 }
 
+void CavokeClientController::gotRoomInfo(const RoomInfo &roomInfo) {
+    qDebug() << "Got room info";
+
+    if (displacement != UserDisplacement::ROOM) {
+        return;  // We are not in a room, actually
+    }
+
+    currentRoomInfo = roomInfo;
+
+    if (roomHostGuestStatus == HostGuestStatus::NOT_IN) {
+        networkManager.startRoomPolling();
+    }
+
+    if (currentRoomInfo.isHost &&
+        roomHostGuestStatus != HostGuestStatus::HOST) {
+        becomeRoomHost();
+    } else if (!currentRoomInfo.isHost &&
+               roomHostGuestStatus != HostGuestStatus::GUEST) {
+        becomeRoomGuest();
+    }
+
+    roomView.updateRoomInfo(currentRoomInfo);
+}
+
 void CavokeClientController::gotSessionInfo(const SessionInfo &sessionInfo) {
     qDebug() << "Now we got session info";
 
@@ -394,4 +433,14 @@ void CavokeClientController::becomeHost() {
 void CavokeClientController::becomeGuest() {
     hostGuestStatus = HostGuestStatus::GUEST;
     networkManager.stopValidationPolling();
+}
+
+void CavokeClientController::becomeRoomHost() {
+    roomHostGuestStatus = HostGuestStatus::HOST;
+    //    networkManager.startValidationPolling();
+}
+
+void CavokeClientController::becomeRoomGuest() {
+    roomHostGuestStatus = HostGuestStatus::GUEST;
+    //    networkManager.stopValidationPolling();
 }

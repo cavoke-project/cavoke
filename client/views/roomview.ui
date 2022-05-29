@@ -67,31 +67,29 @@
       <property name="rightMargin">
        <number>10</number>
       </property>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Current status:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="currentMembersHLabel">
-        <property name="text">
-         <string>Current members:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLabel" name="statusLabel">
+      <item row="3" column="1">
+       <widget class="QLabel" name="inviteCodeLabel">
         <property name="font">
          <font>
           <pointsize>14</pointsize>
          </font>
         </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
+        </property>
+        <property name="acceptDrops">
+         <bool>false</bool>
+        </property>
         <property name="text">
-         <string>&lt;room_status&gt;</string>
+         <string>&lt;invite_code&gt;</string>
+        </property>
+        <property name="textInteractionFlags">
+         <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
         </property>
        </widget>
+      </item>
+      <item row="4" column="1" rowspan="2">
+       <widget class="QListWidget" name="membersListWidget"/>
       </item>
       <item row="8" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout">
@@ -129,7 +127,7 @@
         <item>
          <widget class="QPushButton" name="createSessionButton">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
@@ -147,56 +145,20 @@
         </item>
        </layout>
       </item>
-      <item row="3" column="1">
-       <widget class="QLabel" name="roomNameLabel">
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>&lt;room_name&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
+      <item row="3" column="0">
        <widget class="QLabel" name="inviteCodeHLabel">
         <property name="text">
          <string>Invite code:</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="1" rowspan="2">
-       <widget class="QListWidget" name="membersListWidget"/>
-      </item>
-      <item row="7" column="0" colspan="2">
+      <item row="6" column="0" colspan="2">
        <widget class="QLabel" name="waitForHostLabel">
         <property name="text">
          <string>Wait for the host to create a session</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QLabel" name="inviteCodeLabel">
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-         </font>
-        </property>
-        <property name="mouseTracking">
-         <bool>true</bool>
-        </property>
-        <property name="acceptDrops">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>&lt;invite_code&gt;</string>
-        </property>
-        <property name="textInteractionFlags">
-         <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
         </property>
        </widget>
       </item>
@@ -215,10 +177,39 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="4" column="0">
+       <widget class="QLabel" name="currentMembersHLabel">
+        <property name="text">
+         <string>Current members:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
        <widget class="QLabel" name="roomNameHLabel">
         <property name="text">
          <string>Room name:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QComboBox" name="sessionGameComboBox"/>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="sessionGameLabel">
+        <property name="text">
+         <string>Choose session game:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="roomNameLabel">
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>&lt;room_name&gt;</string>
         </property>
        </widget>
       </item>

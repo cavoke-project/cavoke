@@ -12,6 +12,9 @@ NetworkManager::NetworkManager(QObject *parent)
     validationPollingTimer = new QTimer(this);
     validationPollingTimer->setInterval(500);
     validationPollingTimer->callOnTimeout([this]() { validateSession(); });
+    roomPollingTimer = new QTimer(this);
+    roomPollingTimer->setInterval(500);
+    roomPollingTimer->callOnTimeout([this]() { getRoomInfo(); });
     // generate randomly for local server mode
     queryUserId = QUuid::createUuid().toString(QUuid::WithoutBraces);
 
@@ -252,7 +255,7 @@ void NetworkManager::gotRoom(QNetworkReply *reply) {
 
     RoomInfo roomInfo;
     roomInfo.read(QJsonDocument::fromJson(answer).object());
-    roomId = roomInfo.session_id;
+    roomId = roomInfo.room_id;
     roomInfo.isHost =
         roomInfo.host_id ==
         queryUserId;  // using explicitly query user_id, as in prod mode it is
@@ -410,6 +413,14 @@ void NetworkManager::startValidationPolling() {
 
 void NetworkManager::stopValidationPolling() {
     validationPollingTimer->stop();
+}
+
+void NetworkManager::startRoomPolling() {
+    roomPollingTimer->start();
+}
+
+void NetworkManager::stopRoomPolling() {
+    roomPollingTimer->stop();
 }
 void NetworkManager::changeHost(const QUrl &newHost) {
     HOST = newHost;
