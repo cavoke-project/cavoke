@@ -18,6 +18,9 @@
     </a>
 -->
     <a href="">
+        <img alt="" src="https://img.shields.io/github/v/release/cavoke-project/cavoke?style=flat-square">
+    </a>
+    <a href="">
         <img alt="GitHub deployments" src="https://img.shields.io/github/deployments/cavoke-project/cavoke/develop?label=deployment&logo=google-cloud&logoColor=white&style=flat-square">
     </a>
     <a href="https://ghcr.io/cavoke-project/cavoke-server:latest">
@@ -35,7 +38,7 @@
 </p>
 <p align="center">
 <a href="https://github.com/cavoke-project/cavoke/releases">
-  <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/v/release/cavoke-project/cavoke?label=Download&style=for-the-badge">
+  <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/badge/DOWNLOAD-windows%20%7C%20macos%20%7C%20linux-blue?style=for-the-badge">
 </a>
 <a href="https://console.cavoke.wlko.me">
 <img alt="Browse available games" src="https://img.shields.io/badge/browse-available%20games-red?style=for-the-badge">
