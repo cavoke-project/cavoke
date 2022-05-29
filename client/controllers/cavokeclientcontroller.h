@@ -9,7 +9,9 @@
 #include "creategameview.h"
 #include "joingameview.h"
 #include "network_manager.h"
-#include "protoroomview.h"
+//#include "protoroomview.h"
+#include "roomview.h"
+#include "sessionview.h"
 #include "settingsview.h"
 #include "startview.h"
 #include "statisticsview.h"
@@ -76,7 +78,9 @@ private:
     GamesListView gamesListView;
     StatisticsView statisticsView;
     SettingsView settingsView;
-    ProtoRoomView protoRoomView;
+    RoomView roomView;
+    SessionView sessionView;
+//    ProtoRoomView protoRoomView;
     CavokeQmlGameModel *currentQmlGameModel = nullptr;
     SessionInfo currentSessionInfo;
     GameInfo currentGameInfo;
