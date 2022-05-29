@@ -18,9 +18,6 @@
     </a>
 -->
     <a href="">
-        <img alt="" src="https://img.shields.io/github/v/release/cavoke-project/cavoke?style=flat-square">
-    </a>
-    <a href="">
         <img alt="GitHub deployments" src="https://img.shields.io/github/deployments/cavoke-project/cavoke/develop?label=deployment&logo=google-cloud&logoColor=white&style=flat-square">
     </a>
     <a href="https://ghcr.io/cavoke-project/cavoke-server:latest">
