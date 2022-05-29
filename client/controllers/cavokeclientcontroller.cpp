@@ -122,7 +122,8 @@ CavokeClientController::CavokeClientController(QObject *parent)
     connect(&roomView, SIGNAL(leftRoom()), this, SLOT(leftRoom()));
     connect(&roomView, SIGNAL(createdSession(QString)), this,
             SLOT(createSessionStart(QString)));
-    connect(&roomView, SIGNAL(joinedSession(QString)), this, SLOT(joi))
+    connect(&roomView, SIGNAL(joinedSession(QString)), this,
+            SLOT(joinSessionStart(QString)));
 
     // sessionView actions
     connect(&sessionView, SIGNAL(joinedCreatedGame()), this,
