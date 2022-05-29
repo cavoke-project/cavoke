@@ -160,6 +160,7 @@ void NetworkManager::joinSession(const QString &inviteCode) {
 
 void NetworkManager::gotSession(QNetworkReply *reply) {
     QByteArray answer = reply->readAll();
+    qDebug() << "Session ERROR:" << reply->errorString();
     reply->close();
     reply->deleteLater();
     qDebug() << "Got session: " << answer;
@@ -295,7 +296,7 @@ void NetworkManager::leaveRoom() {
 void NetworkManager::roomCreateSession(const QString &game_id) {
     QUrl route =
         HOST.resolved(ROOMS).resolved(roomId + "/").resolved(CREATE_SESSION);
-    route.setQuery({{"user_id", getUserId()}});
+    route.setQuery({{"user_id", getUserId()}, {"game_id", game_id}});
     auto reply = oauth2->post(route, "{}");
     connect(reply, &QNetworkReply::finished, this,
             [reply, this]() { gotSession(reply); });

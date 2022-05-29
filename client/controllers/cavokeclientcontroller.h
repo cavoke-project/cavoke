@@ -41,6 +41,7 @@ public slots:
     void showStatisticsView();
     void showSettingsView();
     void showRoomView();
+    void showSessionView();
     void updateSettings(const QString &displayName, const QString &host);
 
 signals:
@@ -59,6 +60,7 @@ private slots:
     void unpackDownloadedQml(QFile *file, const QString &gameId);
     void createGameStart(const QString &roomName);
     void joinGameStart(const QString &inviteCode);
+    void createSessionStart(const QString &gameId);
     void gotCurrentGameInfo(const GameInfo &gameInfo);
     void gotRoomInfo(const RoomInfo &roomInfo);
     void gotSessionInfo(const SessionInfo &sessionInfo);

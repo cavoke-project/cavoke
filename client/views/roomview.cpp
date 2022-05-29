@@ -88,5 +88,8 @@ void RoomView::on_joinSessionButton_clicked() {
 }
 
 void RoomView::on_createSessionButton_clicked() {
-    emit createdSession(sessionId);
+    if (ui->sessionGameComboBox->currentData().toString().isEmpty()) {
+        return; // Probably no games at all
+    }
+    emit createdSession(ui->sessionGameComboBox->currentData().toString());
 }
