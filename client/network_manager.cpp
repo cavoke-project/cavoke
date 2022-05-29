@@ -286,6 +286,7 @@ void NetworkManager::leaveRoom() {
     QUrl route =
         HOST.resolved(ROOMS).resolved(roomId + "/").resolved(LEAVE);
     route.setQuery({{"user_id", getUserId()}});
+    qDebug() << route.toString();
     auto reply = oauth2->post(route, "{}");
     connect(reply, &QNetworkReply::finished, this,
             [reply, this]() { gotPostResponse(reply); });

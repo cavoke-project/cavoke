@@ -208,6 +208,7 @@ void CavokeClientController::leftSession() {
 
 void CavokeClientController::leftRoom() {
     networkManager.stopRoomPolling();
+    networkManager.leaveRoom();
     hostGuestStatus = HostGuestStatus::NOT_IN;
     currentRoomInfo = RoomInfo();
 }
