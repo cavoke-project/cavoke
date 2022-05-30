@@ -188,8 +188,12 @@ room_error::room_error(std::string message)
 RoomsStorage::RoomInfo RoomsStorage::RoomInfo::from_room_and_members(
     const drogon_model::cavoke::Rooms &room_orm,
     const std::vector<GameSessionAccessObject::UserInfo> &members) {
-    return {room_orm.getValueOfId(),          room_orm.getValueOfInviteCode(),
-            room_orm.getValueOfDisplayName(), room_orm.getValueOfSessionId(),
-            room_orm.getValueOfHostId(),      members};
+    return {room_orm.getValueOfId(),
+            room_orm.getValueOfInviteCode(),
+            room_orm.getValueOfDisplayName(),
+            room_orm.getValueOfSessionId(),
+            {},
+            room_orm.getValueOfHostId(),
+            members};
 }
 }  // namespace cavoke::server::model

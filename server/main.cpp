@@ -46,7 +46,7 @@ void run(const model::GamesStorageConfig &games_storage_config) {
         std::make_shared<controllers::StatisticsController>(games_storage,
                                                             statistics_manager);
     auto rooms_controller = std::make_shared<controllers::RoomsController>(
-        rooms_storage, games_storage);
+        rooms_storage, games_storage, sessions_storage);
 
     auto &app = drogon::app();
 

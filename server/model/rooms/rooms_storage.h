@@ -2,6 +2,7 @@
 #define CAVOKE_ROOMS_STORAGE_H
 
 #include <memory>
+#include "model/sessions/game_session.h"
 #include "model/sessions/sessions_storage.h"
 #include "sql-models/Rooms.h"
 
@@ -25,6 +26,7 @@ public:
         std::string invite_code;
         std::string display_name;
         std::string session_id;  // let "" mean null
+        GameSessionAccessObject::GameSessionInfo session;
         std::string host_id;
         std::vector<GameSessionAccessObject::UserInfo> members;
 
@@ -59,6 +61,7 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(RoomsStorage::RoomInfo,
                                    invite_code,
                                    display_name,
                                    session_id,
+                                   session,
                                    host_id,
                                    members)
 

@@ -9,10 +9,12 @@ namespace cavoke::server::controllers {
 class RoomsController : public drogon::HttpController<RoomsController, false> {
     std::shared_ptr<model::RoomsStorage> m_rooms_storage;
     std::shared_ptr<model::GamesStorage> m_games_storage;
+    std::shared_ptr<model::SessionsStorage> m_sessions_storage;
 
 public:
     RoomsController(std::shared_ptr<model::RoomsStorage> mRoomsStorage,
-                    std::shared_ptr<model::GamesStorage> mGamesStorage);
+                    std::shared_ptr<model::GamesStorage> mGamesStorage,
+                    std::shared_ptr<model::SessionsStorage> mSessionsStorage);
 
     METHOD_LIST_BEGIN
     ADD_METHOD_TO(RoomsController::create_room,

@@ -67,7 +67,17 @@ void RoomsController::get_info(
         return CALLBACK_STATUS_CODE(k404NotFound);
     }
 
-    return callback(newNlohmannJsonResponse(room_info.value()));
+    if (!room_info->session_id.empty()) {
+        room_info->session =
+            m_sessions_storage->get_sessionAO(room_info->session_id)
+                .get_session_info();
+    }
+    json json_res = room_info.value();
+    if (room_info->session_id.empty()) {
+        json_res.erase("session");
+    }
+
+    return callback(newNlohmannJsonResponse(json_res));
 }
 
 void RoomsController::get_info_by_invite_code(
@@ -83,7 +93,17 @@ void RoomsController::get_info_by_invite_code(
         return CALLBACK_STATUS_CODE(k404NotFound);
     }
 
-    return callback(newNlohmannJsonResponse(room_info.value()));
+    if (!room_info->session_id.empty()) {
+        room_info->session =
+            m_sessions_storage->get_sessionAO(room_info->session_id)
+                .get_session_info();
+    }
+    json json_res = room_info.value();
+    if (room_info->session_id.empty()) {
+        json_res.erase("session");
+    }
+
+    return callback(newNlohmannJsonResponse(json_res));
 }
 
 void RoomsController::join(
@@ -104,8 +124,19 @@ void RoomsController::join(
 
     try {
         m_rooms_storage->add_user(room_info.value().room_id, user_id);
-        return callback(newNlohmannJsonResponse(
-            m_rooms_storage->get_by_invite_code(invite_code.value()).value()));
+        auto result =
+            m_rooms_storage->get_by_invite_code(invite_code.value()).value();
+        if (!result.session_id.empty()) {
+            result.session =
+                m_sessions_storage->get_sessionAO(result.session_id)
+                    .get_session_info();
+        }
+        json json_res = result;
+        if (result.session_id.empty()) {
+            json_res.erase("session");
+        }
+
+        return callback(newNlohmannJsonResponse(json_res));
     } catch (const model::room_error &e) {
         return callback(newCavokeErrorResponse(e, drogon::k404NotFound));
     }
@@ -134,9 +165,11 @@ void RoomsController::leave(
 
 RoomsController::RoomsController(
     std::shared_ptr<model::RoomsStorage> mRoomsStorage,
-    std::shared_ptr<model::GamesStorage> mGamesStorage)
+    std::shared_ptr<model::GamesStorage> mGamesStorage,
+    std::shared_ptr<model::SessionsStorage> mSessionsStorage)
     : m_rooms_storage(std::move(mRoomsStorage)),
-      m_games_storage(std::move(mGamesStorage)) {
+      m_games_storage(std::move(mGamesStorage)),
+      m_sessions_storage(std::move(mSessionsStorage)) {
 }
 
 }  // namespace cavoke::server::controllers
