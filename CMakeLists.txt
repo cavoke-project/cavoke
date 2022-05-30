@@ -13,7 +13,7 @@ option(BUILD_GAMES "Enable building games" OFF)
 option(BUILD_DEV_SERVER_LIB "Enable building server library for developers" OFF)
 
 # Add local drogon
-if (BUILD_ALL OR BUILD_SERVER)
+if (BUILD_ALL OR BUILD_SERVER OR BUILD_GAMES)
     option(USE_EXTERNAL_DROGON "Whether to use external drogon" OFF)
     if (USE_EXTERNAL_DROGON)
         message("Using external Drogon...")
