@@ -1,6 +1,7 @@
 #include "sessions_storage.h"
 #include <utility>
 #include "sql-models/Globalstates.h"
+#include "sql-models/Rooms.h"
 #include "sql-models/Sessions.h"
 #include "sql-models/Statuses.h"
 
@@ -17,7 +18,8 @@ using namespace drogon::orm;
  */
 GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
     const GameConfig &game_config,
-    const std::string &host_user_id) {
+    const std::string &host_user_id,
+    const std::string &room_id) {
     drogon_model::cavoke_orm::Users user =
         MAPPER_FOR(drogon_model::cavoke_orm::Users)
             .findByPrimaryKey(host_user_id);
@@ -67,6 +69,17 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
 
         session.setHostId(host_user_id);
         mp_sessions.update(session);
+
+        if (!room_id.empty()) {
+            auto mp_rooms = MAPPER_WITH_CLIENT_FOR(
+                drogon_model::cavoke_orm::Rooms, transaction);
+            try {
+                auto parent_room = mp_rooms.findByPrimaryKey(room_id);
+                parent_room.setSessionId(session.getValueOfId());
+                mp_rooms.update(parent_room);
+            } catch (const UnexpectedRows &) {
+            }
+        }
     }
     LOG_DEBUG << "Session created: " << session.getValueOfId();
     // TODO: cleanup and use GameSessionAccessObject's non-static methods

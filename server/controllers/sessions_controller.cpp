@@ -28,7 +28,7 @@ void SessionsController::create(
     model::GameSessionAccessObject::GameSessionInfo session_info;
     try {
         session_info = m_participation_storage->create_session(
-            game.value().config, user_id);
+            game.value().config, user_id, "");
     } catch (const model::game_session_error &err) {
         return callback(newCavokeErrorResponse(err, drogon::k400BadRequest));
     }

@@ -173,13 +173,8 @@ GameSessionAccessObject::GameSessionInfo RoomsStorage::create_session(
         }
     }
 
-    auto new_session =
-        m_sessions_storage->create_session(game_config, room_info.host_id);
-
-    auto mp_rooms_trans = MAPPER_FOR(drogon_model::cavoke_orm::Rooms);
-    auto room_orm = mp_rooms_trans.findByPrimaryKey(room_id);
-    room_orm.setSessionId(new_session.session_id);
-    mp_rooms_trans.update(room_orm);
+    auto new_session = m_sessions_storage->create_session(
+        game_config, room_info.host_id, room_id);
 
     return new_session;
 }

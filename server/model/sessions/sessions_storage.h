@@ -21,7 +21,8 @@ public:
     /// Creates session for given user with given game_config
     GameSessionAccessObject::GameSessionInfo create_session(
         const GameConfig &game_config,
-        const std::string &host_user_id);
+        const std::string &host_user_id,
+        const std::string &room_id = "");
 
     /// Starts session with given settings
     void start_session(const std::string &session_id,
