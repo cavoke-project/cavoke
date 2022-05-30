@@ -14,8 +14,8 @@ GameLogicManager::GameLogicManager(std::shared_ptr<GamesStorage> games_storage)
     : m_games_storage(std::move(games_storage)) {
 }
 
-std::string GameLogicManager::invoke_logic(const Game &game,
-                                           const std::string &input) {
+std::string GameLogicManager::invoke_logic_local(const Game &game,
+                                                 const std::string &input) {
     namespace bp = boost::process;
     boost::asio::io_service ios;
 
@@ -54,14 +54,23 @@ cavoke::ValidationResult GameLogicManager::validate_settings(
         throw validation_error("no game with id '" + game_id + "'");
     }
 
-    std::ostringstream request;
-    request << "VALIDATE ";
-    json request_data = InitSettings{settings, occupied_positions};
-    request << request_data;
+    std::string response;
 
-    json response_json =
-        json::parse(invoke_logic(game_info.value(), request.str()));
+    if (game_info->config.app_type == "LOCAL") {
+        std::ostringstream request;
+        request << "VALIDATE ";
+        json request_data = InitSettings{settings, occupied_positions};
+        request << request_data;
+        response = invoke_logic_local(game_info.value(), request.str());
+    } else if (game_info->config.app_type == "EXTERNAL") {
+        response = invoke_logic_external(
+            game_info.value(), "validate",
+            json(InitSettings{settings, occupied_positions}).dump());
+    }
+
+    json response_json = json::parse(response);
     auto result = response_json.get<ValidationResult>();
+
     return result;
 }
 
@@ -74,13 +83,21 @@ GameStateStorage::GameState GameLogicManager::init_state(
         return {};
     }
 
-    std::ostringstream request;
-    request << "INIT ";
-    json request_data = InitSettings{settings, occupied_positions};
-    request << request_data;
+    std::string response;
 
-    json response_json =
-        json::parse(invoke_logic(game_info.value(), request.str()));
+    if (game_info->config.app_type == "LOCAL") {
+        std::ostringstream request;
+        request << "INIT ";
+        json request_data = InitSettings{settings, occupied_positions};
+        request << request_data;
+        response = invoke_logic_local(game_info.value(), request.str());
+    } else if (game_info->config.app_type == "EXTERNAL") {
+        response = invoke_logic_external(
+            game_info.value(), "init_state",
+            json(InitSettings{settings, occupied_positions}).dump());
+    }
+
+    json response_json = json::parse(response);
     auto result = response_json.get<GameStateStorage::GameState>();
 
     return result;
@@ -94,16 +111,44 @@ GameStateStorage::GameState GameLogicManager::send_move(
         return {};
     }
 
-    std::ostringstream request;
-    request << "MOVE ";
-    json request_data = move;
-    request << request_data;
+    std::string response;
 
-    json response_json =
-        json::parse(invoke_logic(game_info.value(), request.str()));
+    if (game_info->config.app_type == "LOCAL") {
+        std::ostringstream request;
+        request << "MOVE ";
+        json request_data = move;
+        request << request_data;
+        response = invoke_logic_local(game_info.value(), request.str());
+    } else if (game_info->config.app_type == "EXTERNAL") {
+        response = invoke_logic_external(game_info.value(), "apply_move",
+                                         json(move).dump());
+    }
+
+    json response_json = json::parse(response);
     auto result = response_json.get<GameStateStorage::GameState>();
 
     return result;
+}
+
+std::string GameLogicManager::invoke_logic_external(const Game &game,
+                                                    const std::string &method,
+                                                    const std::string &input) {
+    auto client = drogon::HttpClient::newHttpClient(game.config.url,
+                                                    drogon::app().getLoop());
+    auto request = drogon::HttpRequest::newHttpRequest();
+    request->setPath("/" + method);
+    request->setMethod(drogon::Post);
+    request->setBody(input);
+    auto result = client->sendRequest(request, 1.0);
+
+    if (result.first != drogon::ReqResult::Ok) {
+        LOG_ERROR << "Failed to connect with game logic on address "
+                  << game.config.url << " " << request->getPath() << ": "
+                  << to_string(result.first);
+        return "";
+    }
+
+    return std::string(result.second->getBody());
 }
 
 validation_error::validation_error(std::string message)
