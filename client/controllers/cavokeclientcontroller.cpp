@@ -72,8 +72,8 @@ CavokeClientController::CavokeClientController(QObject *parent)
     // both Join and Create gameView actions
     connect(&networkManager, SIGNAL(gotSessionInfo(SessionInfo)), this,
             SLOT(gotSessionInfo(SessionInfo)));
-    //    connect(this, SIGNAL(setGameName(QString)), &protoRoomView,
-    //            SLOT(updateGameName(QString)));
+    connect(this, SIGNAL(setGameName(QString)), &sessionView,
+            SLOT(updateGameName(QString)));
 
     // joinGameView workflow
     connect(&joinGameView, SIGNAL(joinedGame(QString)), this,
@@ -300,6 +300,7 @@ void CavokeClientController::startQmlByGameId(const QString &gameId) {
 }
 
 void CavokeClientController::startLoadedQml() {
+    displacement = UserDisplacement::GAME;
     networkManager.stopSessionPolling();
     networkManager.stopValidationPolling();
     networkManager.stopRoomPolling();

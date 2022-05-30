@@ -88,15 +88,11 @@ void SessionView::gotRolesListUpdate(const std::vector<Role> &newRolesList) {
     }
 }
 void SessionView::show_as_host() {
-    ui->gameNameHLabel->hide();
-    ui->gameNameLabel->hide();
     ui->waitForHostLabel->hide();
     ui->joinErrorLabel->show();
     ui->startGameButton->show();
 }
 void SessionView::show_as_guest() {
-    ui->gameNameHLabel->show();
-    ui->gameNameLabel->show();
     ui->waitForHostLabel->show();
     ui->joinErrorLabel->hide();
     ui->startGameButton->hide();

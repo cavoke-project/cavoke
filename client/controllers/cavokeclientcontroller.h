@@ -25,7 +25,7 @@ class CavokeClientController : public QObject {
     //        POLLING_CREATE,
     //        POLLING_JOIN
     //    };
-    enum class UserDisplacement { NOWHERE, ROOM, SESSION };
+    enum class UserDisplacement { NOWHERE, ROOM, SESSION, GAME };
     enum class QMLDownloadStatus { NOT_STARTED, DOWNLOADING, DOWNLOADED };
     enum class HostGuestStatus { NOT_IN, HOST, GUEST };
     Q_OBJECT
