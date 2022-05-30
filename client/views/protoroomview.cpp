@@ -42,7 +42,7 @@ void ProtoRoomView::updateSessionInfo(const SessionInfo &sessionInfo) {
     } else {
         show_as_guest();
     }
-    if (sessionInfo.status == 1) {
+    if (sessionInfo.status == SessionInfo::Status::RUNNING) {
         this->close();
         emit joinedCreatedGame();
     }

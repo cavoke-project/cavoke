@@ -42,6 +42,7 @@ public slots:
     void joinSession(const QString &sessionId);
     void validateSession();
     void getSessionInfo();
+    void getSessionInfo(const QString &sessionId);
     void startSession();
     void leaveSession();
     void changeRoleInSession(int newRole);

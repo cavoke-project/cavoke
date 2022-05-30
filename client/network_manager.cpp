@@ -208,6 +208,16 @@ void NetworkManager::getSessionInfo() {
             [reply, this]() { gotSession(reply); });
 }
 
+void NetworkManager::getSessionInfo(const QString &other_sessionId) {
+    QUrl route =
+        HOST.resolved(SESSIONS).resolved(other_sessionId + "/").resolved(GET_INFO);
+    route.setQuery({{"user_id", getUserId()}});
+    qDebug() << route.toString();
+    auto reply = oauth2->get(route);
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotSession(reply); });
+}
+
 void NetworkManager::startSession() {
     QUrl route =
         HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(START);

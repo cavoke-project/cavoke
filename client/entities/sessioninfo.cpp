@@ -3,7 +3,7 @@
 SessionInfo::SessionInfo() = default;
 SessionInfo::SessionInfo(QString _session_id,
                          QString _game_id,
-                         int _status,
+                         SessionInfo::Status _status,
                          QString _host_id,
                          QVector<Player> _players)
     : session_id(std::move(_session_id)),
@@ -22,7 +22,17 @@ void SessionInfo::read(const QJsonObject &json) {
     }
 
     if (json.contains(STATUS) && json[STATUS].isDouble()) {
-        status = json[STATUS].toInt();
+        switch (json[STATUS].toInt()) {
+            case 0:
+                status = Status::NOT_STARTED;
+                break;
+            case 1:
+                status = Status::RUNNING;
+                break;
+            case 2:
+                status = Status::FINISHED;
+                break;
+        }
     }
 
     if (json.contains(HOST_ID) && json[HOST_ID].isString()) {

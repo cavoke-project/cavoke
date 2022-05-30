@@ -124,6 +124,8 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(createSessionStart(QString)));
     connect(&roomView, SIGNAL(joinedSession(QString)), this,
             SLOT(joinSessionStart(QString)));
+    connect(&roomView, SIGNAL(requestedSessionUpdate(QString)),
+            &networkManager, SLOT(getSessionInfo(QString)));
 
     // sessionView actions
     connect(&sessionView, SIGNAL(joinedCreatedGame()), this,
@@ -382,6 +384,11 @@ void CavokeClientController::gotRoomInfo(const RoomInfo &roomInfo) {
 
 void CavokeClientController::gotSessionInfo(const SessionInfo &sessionInfo) {
     qDebug() << "Now we got session info";
+
+    if (displacement == UserDisplacement::ROOM) {
+        roomView.updateSessionInfo(sessionInfo);
+        return;
+    }
 
     if (displacement != UserDisplacement::SESSION) {
         return;  // We are not in a session, actually

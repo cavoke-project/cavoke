@@ -7,11 +7,13 @@
 #include <QtCore/QVector>
 #include "player.h"
 struct SessionInfo {
+    enum class Status { NOT_STARTED, RUNNING, FINISHED };
+
 public:
     SessionInfo();
     SessionInfo(QString _session_id,
                 QString _game_id,
-                int _status,
+                SessionInfo::Status _status,
                 QString _host_id,
                 QVector<Player> _players);
 
@@ -20,7 +22,7 @@ public:
 
     QString session_id;
     QString game_id;
-    int status = 0;  // 0 -- NOT STARTED, 1 -- RUNNING, 2 -- FINISHED
+    SessionInfo::Status status = Status::FINISHED;
     QString host_id;
     QVector<Player> players;
     bool isHost = false;
