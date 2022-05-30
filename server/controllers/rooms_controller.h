@@ -32,7 +32,7 @@ public:
                   drogon::Post,
                   "AuthFilter");
     ADD_METHOD_TO(RoomsController::leave,
-                  "/rooms/{room_id}/",
+                  "/rooms/{room_id}/leave",
                   drogon::Post,
                   "AuthFilter");
     ADD_METHOD_TO(RoomsController::create_session,
