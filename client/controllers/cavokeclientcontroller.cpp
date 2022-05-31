@@ -477,10 +477,8 @@ void CavokeClientController::becomeGuest() {
 
 void CavokeClientController::becomeRoomHost() {
     roomHostGuestStatus = HostGuestStatus::HOST;
-    //    networkManager.startValidationPolling();
 }
 
 void CavokeClientController::becomeRoomGuest() {
     roomHostGuestStatus = HostGuestStatus::GUEST;
-    //    networkManager.stopValidationPolling();
 }

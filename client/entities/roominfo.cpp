@@ -6,13 +6,15 @@ RoomInfo::RoomInfo(QString _room_id,
                    QString _invite_code,
                    QString _session_id,
                    QString _host_id,
-                   QVector<User> _members)
+                   QVector<User> _members,
+                   SessionInfo _session)
     : room_id(std::move(_room_id)),
       display_name(std::move(_display_name)),
       invite_code(std::move(_invite_code)),
       session_id(std::move(_session_id)),
       host_id(std::move(_host_id)),
-      members(std::move(_members)) {
+      members(std::move(_members)),
+      session(std::move(_session)) {
 }
 void RoomInfo::read(const QJsonObject &json) {
     if (json.contains(ROOM_ID) && json[ROOM_ID].isString()) {
@@ -40,6 +42,11 @@ void RoomInfo::read(const QJsonObject &json) {
             members.push_back(User());
             members.back().read(obj.toObject());
         }
+    }
+
+    if (json.contains(SESSION) && json[SESSION].isObject()) {
+        session.read(json[SESSION].toObject());
+        isSessionAlive = true;
     }
 }
 void RoomInfo::write(QJsonObject &json) const {

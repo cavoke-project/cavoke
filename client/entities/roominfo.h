@@ -5,6 +5,7 @@
 #include <QtCore/QJsonObject>
 #include <QtCore/QString>
 #include <QtCore/QVector>
+#include "sessioninfo.h"
 #include "user.h"
 struct RoomInfo {
 public:
@@ -14,7 +15,8 @@ public:
              QString _invite_code,
              QString _session_id,
              QString _host_id,
-             QVector<User> _members);
+             QVector<User> _members,
+             SessionInfo _session);
 
     void read(const QJsonObject &json);
     void write(QJsonObject &json) const;
@@ -25,6 +27,8 @@ public:
     QString session_id;
     QString host_id;
     QVector<User> members;
+    SessionInfo session{};
+    bool isSessionAlive = false;
     bool isHost = false;
 
 private:
@@ -34,6 +38,7 @@ private:
     static inline const QString SESSION_ID = "session_id";
     static inline const QString HOST_ID = "host_id";
     static inline const QString MEMBERS = "members";
+    static inline const QString SESSION = "session";
 };
 
 #endif  // CAVOKE_ROOMINFO_H
