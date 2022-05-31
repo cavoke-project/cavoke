@@ -122,6 +122,9 @@ begin
             set host_id = (select user_id from players where session_id = m_session_id and user_id != m_user_id limit 1)
             where id = m_session_id;
         else
+            update rooms
+            set session_id = NULL
+            where rooms.session_id = m_session_id;
             delete
             from sessions
             where id = m_session_id;
