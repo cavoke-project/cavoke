@@ -30,7 +30,6 @@ void SessionView::updateStatus(CreatingGameStatus newStatus) {
 }
 
 void SessionView::updateSessionInfo(const SessionInfo &sessionInfo) {
-
     ui->playersListWidget->clear();
     for (const auto &player : sessionInfo.players) {
         ui->playersListWidget->addItem(player.user.display_name);

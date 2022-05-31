@@ -43,5 +43,5 @@ void RoomInfo::read(const QJsonObject &json) {
     }
 }
 void RoomInfo::write(QJsonObject &json) const {
-    assert(false); // Should not be used
+    assert(false);  // Should not be used
 }

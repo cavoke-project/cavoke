@@ -26,7 +26,7 @@ public:
 
 public slots:
     void updateRoomInfo(const RoomInfo &roomInfo);
-    void updateSessionInfo(const SessionInfo &sessionInfo); // Temporary
+    void updateSessionInfo(const SessionInfo &sessionInfo);  // Temporary
     void clear();
     void gotGamesListUpdate(const std::vector<GameInfo> &newGamesList);
 
@@ -57,7 +57,7 @@ private:
     };
     QString sessionId;
     CreatingSessionStatus status = CreatingSessionStatus::UNKNOWN;
-    bool is_host = false;   // Wow, this is very cool
+    bool is_host = false;  // Wow, this is very cool
     //    int ourRole = -1;
 };
 

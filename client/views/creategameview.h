@@ -15,19 +15,19 @@ public:
     ~CreateGameView();
 
 public slots:
-//    void gotGamesListUpdate(const std::vector<GameInfo> &newGamesList);
-//    void gotNewSelectedGame(const GameInfo &gameInfo);
-//    void displayEmpty();
+    //    void gotGamesListUpdate(const std::vector<GameInfo> &newGamesList);
+    //    void gotNewSelectedGame(const GameInfo &gameInfo);
+    //    void displayEmpty();
 
 signals:
     void shownStartView();
-//    void currentIndexChanged(int index);
+    //    void currentIndexChanged(int index);
     void startedCreateGameRoutine(const QString &roomName);
 
 private slots:
     void on_backButton_clicked();
     void on_createGameButton_clicked();
-//    void repeaterCurrentIndexChanged(int index);
+    //    void repeaterCurrentIndexChanged(int index);
 
 private:
     Ui::CreateGameView *ui;

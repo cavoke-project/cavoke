@@ -23,9 +23,7 @@ public slots:
     void clear();
     void updateValidationResult(const ValidationResult &validationResult);
     void updateGameName(const QString &gameName);
-    void gotRolesListUpdate(
-        const std::vector<Role>
-            &newRolesList);
+    void gotRolesListUpdate(const std::vector<Role> &newRolesList);
 
 signals:
     void createdGame();

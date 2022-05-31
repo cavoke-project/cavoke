@@ -47,5 +47,5 @@ void SessionInfo::read(const QJsonObject &json) {
     }
 }
 void SessionInfo::write(QJsonObject &json) const {
-    assert(false); // Should not be used
+    assert(false);  // Should not be used
 }
