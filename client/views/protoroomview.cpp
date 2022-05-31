@@ -30,7 +30,7 @@ void ProtoRoomView::updateStatus(CreatingGameStatus newStatus) {
 }
 
 void ProtoRoomView::updateSessionInfo(const SessionInfo &sessionInfo) {
-//    ui->inviteCodeLabel->setText(sessionInfo.invite_code); FIXME
+    //    ui->inviteCodeLabel->setText(sessionInfo.invite_code); FIXME
     //    ui->gameNameLabel->setText(sessionInfo.game_id);
 
     ui->playersListWidget->clear();
