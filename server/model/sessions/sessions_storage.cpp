@@ -74,9 +74,11 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
             auto mp_rooms = MAPPER_WITH_CLIENT_FOR(
                 drogon_model::cavoke_orm::Rooms, transaction);
             try {
-                auto parent_room = mp_rooms.findByPrimaryKey(room_id);
-                parent_room.setSessionId(session.getValueOfId());
-                mp_rooms.update(parent_room);
+                mp_rooms.updateBy(
+                    {drogon_model::cavoke_orm::Rooms::Cols::_session_id},
+                    Criteria(drogon_model::cavoke_orm::Rooms::Cols::_id,
+                             CompareOperator::EQ, room_id),
+                    session.getValueOfId());
             } catch (const UnexpectedRows &) {
             }
         }
