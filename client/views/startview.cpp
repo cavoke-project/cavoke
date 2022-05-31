@@ -5,6 +5,7 @@
 StartView::StartView(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::StartView) {
     ui->setupUi(this);
+    ui->cavokeTestWindowButton->hide();
 }
 
 StartView::~StartView() {
