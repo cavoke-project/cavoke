@@ -10,7 +10,8 @@ CavokeClientController::CavokeClientController(QObject *parent)
       joinGameView{},
       statisticsView{},
       settingsView{},
-      protoRoomView{},
+      roomView{},
+      sessionView{},
       settings{} {
     // startQml connection
     connect(&model, SIGNAL(startQmlApplication(CavokeQmlGameModel *)), this,
@@ -27,14 +28,13 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(showStartView()));
     connect(&settingsView, SIGNAL(shownStartView()), this,
             SLOT(showStartView()));
-    connect(&protoRoomView, SIGNAL(shownStartView()), this,
-            SLOT(showStartView()));
     connect(&statisticsView, SIGNAL(shownStartView()), this,
             SLOT(showStartView()));
+    connect(&roomView, SIGNAL(shownStartView()), this, SLOT(showStartView()));
 
     // Main navigation buttons from startView
     connect(&startView, SIGNAL(shownTestWindowView()), this,
-            SLOT(showTestWindowView()));
+            SLOT(showTestWindowView()));  // Not displayed
     connect(&startView, SIGNAL(shownJoinGameView()), this,
             SLOT(showJoinGameView()));
     connect(&startView, SIGNAL(shownCreateGameView()), this,
@@ -57,26 +57,12 @@ CavokeClientController::CavokeClientController(QObject *parent)
             &networkManager, SLOT(getHealth()));
 
     // createGameView actions
-    connect(&createGameView, SIGNAL(currentIndexChanged(int)), &model,
-            SLOT(receivedGameIndexChange(int)));
-    connect(&model, SIGNAL(updateSelectedGame(GameInfo)), &createGameView,
-            SLOT(gotNewSelectedGame(GameInfo)));
+    connect(&createGameView, SIGNAL(startedCreateGameRoutine(QString)), this,
+            SLOT(createGameStart(QString)));
 
-    connect(&createGameView, SIGNAL(startedCreateGameRoutine(int)), this,
-            SLOT(createGameStart(int)));
-    connect(this, SIGNAL(clearScreens()), &gamesListView, SLOT(displayEmpty()));
-
-    // both Join and Create gameView actions
-    connect(&networkManager, SIGNAL(gotSessionInfo(SessionInfo)), this,
-            SLOT(gotSessionInfo(SessionInfo)));
-    connect(this, SIGNAL(setGameName(QString)), &protoRoomView,
-            SLOT(updateGameName(QString)));
-
-    // joinGameView workflow
+    // joinGameView actions
     connect(&joinGameView, SIGNAL(joinedGame(QString)), this,
             SLOT(joinGameStart(QString)));
-    connect(&networkManager, SIGNAL(gotGameInfo(GameInfo)), this,
-            SLOT(gotCurrentGameInfo(GameInfo)));
 
     // gamesListView actions
     connect(&gamesListView, SIGNAL(currentIndexChanged(int)), &model,
@@ -91,17 +77,27 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(gotIndexToDownload(int)));
     connect(this, SIGNAL(clearScreens()), &gamesListView, SLOT(displayEmpty()));
 
+    // session/room/game-Info processing actions
+    connect(&networkManager, SIGNAL(gotSessionInfo(SessionInfo)), this,
+            SLOT(gotSessionInfo(SessionInfo)));
+    connect(&networkManager, SIGNAL(gotGameInfo(GameInfo)), this,
+            SLOT(gotCurrentGameInfo(GameInfo)));
+    connect(this, SIGNAL(setGameName(QString)), &sessionView,
+            SLOT(updateGameName(QString)));
+    connect(&networkManager, SIGNAL(gotRoomInfo(RoomInfo)), this,
+            SLOT(gotRoomInfo(RoomInfo)));
+
     // Download games list from server workflow
     connect(this, SIGNAL(loadGamesList()), &networkManager,
             SLOT(getGamesList()));
     connect(&networkManager, SIGNAL(finalizedGamesList(QJsonArray)), &model,
             SLOT(updateGamesList(QJsonArray)));
     connect(&model, SIGNAL(gamesListUpdated(std::vector<GameInfo>)),
-            &createGameView, SLOT(gotGamesListUpdate(std::vector<GameInfo>)));
-    connect(&model, SIGNAL(gamesListUpdated(std::vector<GameInfo>)),
             &gamesListView, SLOT(gotGamesListUpdate(std::vector<GameInfo>)));
     connect(&model, SIGNAL(gamesListUpdated(std::vector<GameInfo>)),
             &statisticsView, SLOT(gotGamesListUpdate(std::vector<GameInfo>)));
+    connect(&model, SIGNAL(gamesListUpdated(std::vector<GameInfo>)), &roomView,
+            SLOT(gotGamesListUpdate(std::vector<GameInfo>)));
 
     // Download and unpack game workflow
     connect(&model, SIGNAL(downloadGame(QString)), &networkManager,
@@ -109,20 +105,28 @@ CavokeClientController::CavokeClientController(QObject *parent)
     connect(&networkManager, SIGNAL(downloadedGameFile(QFile *, QString)), this,
             SLOT(unpackDownloadedQml(QFile *, QString)));
 
-    // protoRoomView actions
-    connect(&protoRoomView, SIGNAL(joinedCreatedGame()), this,
+    // roomView actions
+    connect(&roomView, SIGNAL(leftRoom()), this, SLOT(leftRoom()));
+    connect(&roomView, SIGNAL(createdSession(QString)), this,
+            SLOT(createSessionStart(QString)));
+    connect(&roomView, SIGNAL(joinedSession(QString)), this,
+            SLOT(joinSessionStart(QString)));
+    connect(&roomView, SIGNAL(requestedSessionUpdate(QString)), &networkManager,
+            SLOT(getSessionInfo(QString)));
+
+    // sessionView actions
+    connect(&sessionView, SIGNAL(joinedCreatedGame()), this,
             SLOT(startLoadedQml()));
     connect(&networkManager, SIGNAL(gotValidationResult(ValidationResult)),
-            &protoRoomView, SLOT(updateValidationResult(ValidationResult)));
-    connect(&protoRoomView, SIGNAL(createdGame()), &networkManager,
+            &sessionView, SLOT(updateValidationResult(ValidationResult)));
+    connect(&sessionView, SIGNAL(createdGame()), &networkManager,
             SLOT(startSession()));
-    connect(&protoRoomView, SIGNAL(leftRoom()), this, SLOT(leftSession()));
-    connect(&protoRoomView, SIGNAL(leftRoom()), &networkManager,
-            SLOT(leaveSession()));
     connect(this, SIGNAL(createdAvailableRolesList(std::vector<Role>)),
-            &protoRoomView, SLOT(gotRolesListUpdate(std::vector<Role>)));
-    connect(&protoRoomView, SIGNAL(newRoleChosen(int)), &networkManager,
+            &sessionView, SLOT(gotRolesListUpdate(std::vector<Role>)));
+    connect(&sessionView, SIGNAL(newRoleChosen(int)), &networkManager,
             SLOT(changeRoleInSession(int)));
+    connect(&sessionView, SIGNAL(leftSession()), this, SLOT(leftSession()));
+    connect(&sessionView, SIGNAL(shownRoomView()), this, SLOT(showRoomView()));
 
     // settingsView actions
     connect(this, SIGNAL(initSettingsValues(QString, QString)), &settingsView,
@@ -182,7 +186,10 @@ void CavokeClientController::showTestWindowView() {
     testWindowView.show();
 }
 
-void CavokeClientController::leftSession() {
+void CavokeClientController::leftSession(bool real_leave) {
+    if (real_leave) {
+        networkManager.leaveSession();
+    }
     networkManager.stopGamePolling();
     networkManager.stopSessionPolling();
     networkManager.stopValidationPolling();
@@ -190,6 +197,13 @@ void CavokeClientController::leftSession() {
     hostGuestStatus = HostGuestStatus::NOT_IN;
     currentGameInfo = GameInfo();
     currentSessionInfo = SessionInfo();
+}
+
+void CavokeClientController::leftRoom() {
+    networkManager.stopRoomPolling();
+    networkManager.leaveRoom();
+    roomHostGuestStatus = HostGuestStatus::NOT_IN;
+    currentRoomInfo = RoomInfo();
 }
 
 void CavokeClientController::showStartView() {
@@ -206,6 +220,16 @@ void CavokeClientController::showGamesListView() {
 
 void CavokeClientController::showCreateGameView() {
     createGameView.show();
+}
+
+void CavokeClientController::showRoomView() {
+    displacement = UserDisplacement::ROOM;
+    roomView.show();
+}
+
+void CavokeClientController::showSessionView() {
+    displacement = UserDisplacement::SESSION;
+    sessionView.show();
 }
 
 void CavokeClientController::showStatisticsView() {
@@ -242,6 +266,8 @@ void CavokeClientController::exitApplication() {
     joinGameView.close();
     gamesListView.close();
     createGameView.close();
+    roomView.close();
+    sessionView.close();
     settingsView.close();
     startView.close();
 }
@@ -259,15 +285,18 @@ void CavokeClientController::startQmlByGameId(const QString &gameId) {
 }
 
 void CavokeClientController::startLoadedQml() {
+    displacement = UserDisplacement::GAME;
     networkManager.stopSessionPolling();
     networkManager.stopValidationPolling();
+    networkManager.stopRoomPolling();
     startQmlByGameId(currentGameInfo.id);
 }
 
 void CavokeClientController::stopQml() {
     networkManager.stopGamePolling();
-    leftSession();
-    startView.show();
+    networkManager.startRoomPolling();
+    leftSession(false);  // Without actual `leave` request, due to issue #171
+    showRoomView();
     currentQmlGameModel->deleteLater();
 }
 
@@ -280,32 +309,73 @@ void CavokeClientController::unpackDownloadedQml(QFile *file,
     qmlDownloadStatus = QMLDownloadStatus::DOWNLOADED;
 }
 
-void CavokeClientController::createGameStart(int gameIndex) {
-    qDebug() << "Now we are creating game with index: " << gameIndex;
+void CavokeClientController::createGameStart(const QString &roomName) {
+    qDebug() << "Now we are creating room with name:" << roomName;
 
-    currentGameInfo = model.getGameByIndex(gameIndex);
-
-    protoRoomView.clear();
-    protoRoomView.updateStatus(ProtoRoomView::CreatingGameStatus::REQUESTED);
     createGameView.close();
-    protoRoomView.show();
-
-    networkManager.createSession(currentGameInfo.id);
+    showRoomView();
+    networkManager.createRoom(roomName);
 }
 
 void CavokeClientController::joinGameStart(const QString &inviteCode) {
-    qDebug() << "Now we are joinGameStart with inviteCode: " << inviteCode;
+    qDebug() << "Now we are joining room with inviteCode:" << inviteCode;
 
-    protoRoomView.clear();
-    protoRoomView.updateStatus(ProtoRoomView::CreatingGameStatus::REQUESTED);
     joinGameView.close();
-    protoRoomView.show();
+    showRoomView();
+    networkManager.joinRoom(inviteCode);
+}
 
-    networkManager.joinSession(inviteCode);
+void CavokeClientController::createSessionStart(const QString &gameId) {
+    qDebug() << "Now we are creating session with gameId:" << gameId;
+
+    roomView.close();
+    showSessionView();
+    networkManager.roomCreateSession(gameId);
+}
+
+void CavokeClientController::joinSessionStart(const QString &sessionId) {
+    qDebug() << "Now we are joining session with sessionId:" << sessionId;
+
+    roomView.close();
+    showSessionView();
+    networkManager.joinSession(sessionId);
+}
+
+void CavokeClientController::gotRoomInfo(const RoomInfo &roomInfo) {
+    qDebug() << "Got room info";
+
+    if (displacement != UserDisplacement::ROOM) {
+        return;  // We are not in a room, actually
+    }
+
+    currentRoomInfo = roomInfo;
+
+    if (roomHostGuestStatus == HostGuestStatus::NOT_IN) {
+        networkManager.startRoomPolling();
+    }
+
+    if (currentRoomInfo.isHost &&
+        roomHostGuestStatus != HostGuestStatus::HOST) {
+        becomeRoomHost();
+    } else if (!currentRoomInfo.isHost &&
+               roomHostGuestStatus != HostGuestStatus::GUEST) {
+        becomeRoomGuest();
+    }
+
+    roomView.updateRoomInfo(currentRoomInfo);
 }
 
 void CavokeClientController::gotSessionInfo(const SessionInfo &sessionInfo) {
     qDebug() << "Now we got session info";
+
+    if (displacement == UserDisplacement::ROOM) {
+        roomView.updateSessionInfo(sessionInfo);
+        return;
+    }
+
+    if (displacement != UserDisplacement::SESSION) {
+        return;  // We are not in a session, actually
+    }
 
     currentSessionInfo = sessionInfo;
 
@@ -323,15 +393,15 @@ void CavokeClientController::gotSessionInfo(const SessionInfo &sessionInfo) {
     if (qmlDownloadStatus == QMLDownloadStatus::NOT_STARTED) {
         networkManager.getGamesClient(currentSessionInfo.game_id);
         qmlDownloadStatus = QMLDownloadStatus::DOWNLOADING;
-        protoRoomView.updateStatus(ProtoRoomView::CreatingGameStatus::DOWNLOAD);
+        sessionView.updateStatus(SessionView::CreatingGameStatus::DOWNLOAD);
     }
 
-    protoRoomView.updateSessionInfo(currentSessionInfo);
+    sessionView.updateSessionInfo(currentSessionInfo);
 
     if (currentGameInfo.players_num == 0) {
         networkManager.getGamesConfig(currentSessionInfo.game_id);
     } else if (qmlDownloadStatus == QMLDownloadStatus::DOWNLOADED) {
-        protoRoomView.updateStatus(ProtoRoomView::CreatingGameStatus::DONE);
+        sessionView.updateStatus(SessionView::CreatingGameStatus::DONE);
         collectListOfAvailableRoles();
     }
 }
@@ -361,7 +431,8 @@ void CavokeClientController::collectListOfAvailableRoles() {
     }
     if (ourRole == -1) {
         return;
-        // I guess it is the bug when we have already left the session but still
+        // I guess it is the bug when we have already left the session but
+        //            still
         // somehow made a request to get info about session
     }
     std::vector<Role> availableRoles;
@@ -383,4 +454,12 @@ void CavokeClientController::becomeHost() {
 void CavokeClientController::becomeGuest() {
     hostGuestStatus = HostGuestStatus::GUEST;
     networkManager.stopValidationPolling();
+}
+
+void CavokeClientController::becomeRoomHost() {
+    roomHostGuestStatus = HostGuestStatus::HOST;
+}
+
+void CavokeClientController::becomeRoomGuest() {
+    roomHostGuestStatus = HostGuestStatus::GUEST;
 }

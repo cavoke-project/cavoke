@@ -12,6 +12,9 @@ NetworkManager::NetworkManager(QObject *parent)
     validationPollingTimer = new QTimer(this);
     validationPollingTimer->setInterval(500);
     validationPollingTimer->callOnTimeout([this]() { validateSession(); });
+    roomPollingTimer = new QTimer(this);
+    roomPollingTimer->setInterval(500);
+    roomPollingTimer->callOnTimeout([this]() { getRoomInfo(); });
     // generate randomly for local server mode
     queryUserId = QUuid::createUuid().toString(QUuid::WithoutBraces);
 
@@ -98,42 +101,6 @@ void NetworkManager::gotGamesClient(QNetworkReply *reply,
     reply->deleteLater();
 }
 
-void NetworkManager::createSession(const QString &gameId) {
-    QUrl route = HOST.resolved(SESSIONS_CREATE);
-    route.setQuery({{"game_id", gameId}, {"user_id", getUserId()}});
-    qDebug() << route.toString();
-    auto reply = oauth2->post(route, "{}");
-    connect(reply, &QNetworkReply::finished, this,
-            [reply, this]() { gotSession(reply); });
-}
-
-void NetworkManager::joinSession(const QString &inviteCode) {
-    QUrl route = HOST.resolved(SESSIONS_JOIN);
-    route.setQuery({{"user_id", getUserId()}, {"invite_code", inviteCode}});
-    qDebug() << route.toString();
-    auto reply = oauth2->post(route, "{}");
-    connect(reply, &QNetworkReply::finished, this,
-            [reply, this]() { gotSession(reply); });
-}
-
-void NetworkManager::gotSession(QNetworkReply *reply) {
-    QByteArray answer = reply->readAll();
-    reply->close();
-    reply->deleteLater();
-    qDebug() << "Got session: " << answer;
-
-    SessionInfo sessionInfo;
-    sessionInfo.read(QJsonDocument::fromJson(answer).object());
-    sessionId = sessionInfo.session_id;
-    qDebug() << "My user_id is: " << queryUserId;
-    sessionInfo.isHost =
-        sessionInfo.host_id ==
-        queryUserId;  // using explicitly query user_id, as in prod mode it is
-                      // returned from the server
-
-    emit gotSessionInfo(sessionInfo);
-}
-
 void NetworkManager::sendMove(const QString &jsonMove) {
     QUrl route =
         HOST.resolved(PLAY).resolved(sessionId + "/").resolved(SEND_MOVE);
@@ -173,6 +140,36 @@ void NetworkManager::gotPlayState(QNetworkReply *reply) {
     emit gotGameUpdate(answer);
 }
 
+void NetworkManager::joinSession(const QString &sessionId) {
+    QUrl route =
+        HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(JOIN);
+    route.setQuery({{"user_id", getUserId()}});
+    qDebug() << route.toString();
+    auto reply = oauth2->post(route, "{}");
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotSession(reply); });
+}
+
+void NetworkManager::gotSession(QNetworkReply *reply) {
+    QByteArray answer = reply->readAll();
+    if (reply->error()) {
+        qDebug() << "Session ERROR:" << reply->errorString();
+    }
+    reply->close();
+    reply->deleteLater();
+    qDebug() << "Got session: " << answer;
+
+    SessionInfo sessionInfo;
+    sessionInfo.read(QJsonDocument::fromJson(answer).object());
+    sessionId = sessionInfo.session_id;
+    sessionInfo.isHost =
+        sessionInfo.host_id ==
+        queryUserId;  // using explicitly query user_id, as in prod mode it is
+                      // returned from the server
+
+    emit gotSessionInfo(sessionInfo);
+}
+
 void NetworkManager::validateSession() {
     QUrl route =
         HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(VALIDATE);
@@ -205,6 +202,17 @@ void NetworkManager::getSessionInfo() {
             [reply, this]() { gotSession(reply); });
 }
 
+void NetworkManager::getSessionInfo(const QString &other_sessionId) {
+    QUrl route = HOST.resolved(SESSIONS)
+                     .resolved(other_sessionId + "/")
+                     .resolved(GET_INFO);
+    route.setQuery({{"user_id", getUserId()}});
+    qDebug() << route.toString();
+    auto reply = oauth2->get(route);
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotSession(reply); });
+}
+
 void NetworkManager::startSession() {
     QUrl route =
         HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(START);
@@ -219,6 +227,7 @@ void NetworkManager::leaveSession() {
     QUrl route =
         HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(LEAVE);
     route.setQuery({{"user_id", getUserId()}});
+    qDebug() << route.toString();
     auto reply = oauth2->post(route, "{}");
     connect(reply, &QNetworkReply::finished, this,
             [reply, this]() { gotPostResponse(reply); });
@@ -233,6 +242,65 @@ void NetworkManager::changeRoleInSession(int newRole) {
     auto reply = oauth2->post(route, "{}");
     connect(reply, &QNetworkReply::finished, this,
             [reply, this]() { gotPostResponse(reply); });
+}
+
+void NetworkManager::getRoomInfo() {
+    QUrl route = HOST.resolved(ROOMS).resolved(roomId + "/").resolved(GET_INFO);
+    route.setQuery({{"user_id", getUserId()}});
+    qDebug() << route.toString();
+    auto reply = oauth2->get(route);
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotRoom(reply); });
+}
+
+void NetworkManager::gotRoom(QNetworkReply *reply) {
+    QByteArray answer = reply->readAll();
+    reply->close();
+    reply->deleteLater();
+    qDebug() << "Got room: " << answer;
+
+    RoomInfo roomInfo;
+    roomInfo.read(QJsonDocument::fromJson(answer).object());
+    roomId = roomInfo.room_id;
+    roomInfo.isHost = roomInfo.host_id == queryUserId;
+
+    emit gotRoomInfo(roomInfo);
+}
+
+void NetworkManager::createRoom(const QString &display_name) {
+    QUrl route = HOST.resolved(ROOMS_CREATE);
+    route.setQuery({{"display_name", display_name}, {"user_id", getUserId()}});
+    qDebug() << route.toString();
+    auto reply = oauth2->post(route, "{}");
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotRoom(reply); });
+}
+
+void NetworkManager::joinRoom(const QString &inviteCode) {
+    QUrl route = HOST.resolved(ROOMS_JOIN);
+    route.setQuery({{"user_id", getUserId()}, {"invite_code", inviteCode}});
+    qDebug() << route.toString();
+    auto reply = oauth2->post(route, "{}");
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotRoom(reply); });
+}
+
+void NetworkManager::leaveRoom() {
+    QUrl route = HOST.resolved(ROOMS).resolved(roomId + "/").resolved(LEAVE);
+    route.setQuery({{"user_id", getUserId()}});
+    qDebug() << route.toString();
+    auto reply = oauth2->post(route, "{}");
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotPostResponse(reply); });
+}
+
+void NetworkManager::roomCreateSession(const QString &game_id) {
+    QUrl route =
+        HOST.resolved(ROOMS).resolved(roomId + "/").resolved(CREATE_SESSION);
+    route.setQuery({{"user_id", getUserId()}, {"game_id", game_id}});
+    auto reply = oauth2->post(route, "{}");
+    connect(reply, &QNetworkReply::finished, this,
+            [reply, this]() { gotSession(reply); });
 }
 
 void NetworkManager::getMe() {
@@ -348,6 +416,14 @@ void NetworkManager::startValidationPolling() {
 
 void NetworkManager::stopValidationPolling() {
     validationPollingTimer->stop();
+}
+
+void NetworkManager::startRoomPolling() {
+    roomPollingTimer->start();
+}
+
+void NetworkManager::stopRoomPolling() {
+    roomPollingTimer->stop();
 }
 void NetworkManager::changeHost(const QUrl &newHost) {
     HOST = newHost;

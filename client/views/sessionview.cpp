@@ -1,18 +1,18 @@
-#include "protoroomview.h"
-#include "ui_protoroomview.h"
+#include "sessionview.h"
+#include "ui_sessionview.h"
 
-ProtoRoomView::ProtoRoomView(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::ProtoRoomView) {
+SessionView::SessionView(QWidget *parent)
+    : QMainWindow(parent), ui(new Ui::SessionView) {
     ui->setupUi(this);
     connect(ui->roleComboBox, SIGNAL(currentIndexChanged(int)), this,
             SLOT(repeaterCurrentIndexChanged(int)));
 }
 
-ProtoRoomView::~ProtoRoomView() {
+SessionView::~SessionView() {
     delete ui;
 }
 
-void ProtoRoomView::repeaterCurrentIndexChanged(int index) {
+void SessionView::repeaterCurrentIndexChanged(int index) {
     if (index == -1 || ui->roleComboBox->itemData(index).toInt() == ourRole) {
         //        displayEmpty();
         return;
@@ -23,16 +23,13 @@ void ProtoRoomView::repeaterCurrentIndexChanged(int index) {
     emit newRoleChosen(ui->roleComboBox->itemData(index).toInt());
 }
 
-void ProtoRoomView::updateStatus(CreatingGameStatus newStatus) {
+void SessionView::updateStatus(CreatingGameStatus newStatus) {
     ui->statusLabel->setText(STATUS.at(newStatus));
     ui->currentPlayersHLabel->setHidden(newStatus != CreatingGameStatus::DONE);
     ui->playersListWidget->setHidden(newStatus != CreatingGameStatus::DONE);
 }
 
-void ProtoRoomView::updateSessionInfo(const SessionInfo &sessionInfo) {
-    ui->inviteCodeLabel->setText(sessionInfo.invite_code);
-    //    ui->gameNameLabel->setText(sessionInfo.game_id);
-
+void SessionView::updateSessionInfo(const SessionInfo &sessionInfo) {
     ui->playersListWidget->clear();
     for (const auto &player : sessionInfo.players) {
         ui->playersListWidget->addItem(player.user.display_name);
@@ -42,40 +39,40 @@ void ProtoRoomView::updateSessionInfo(const SessionInfo &sessionInfo) {
     } else {
         show_as_guest();
     }
-    if (sessionInfo.status == 1) {
+    if (sessionInfo.status == SessionInfo::Status::RUNNING) {
         this->close();
         emit joinedCreatedGame();
     }
 }
 
-void ProtoRoomView::updateValidationResult(
+void SessionView::updateValidationResult(
     const ValidationResult &validationResult) {
-    ui->joinGameButton->setEnabled(validationResult.success);
+    ui->startGameButton->setEnabled(validationResult.success);
     ui->joinErrorLabel->setText(validationResult.message);
 }
 
-void ProtoRoomView::on_joinGameButton_clicked() {
+void SessionView::on_startGameButton_clicked() {
     emit createdGame();
 }
 
-void ProtoRoomView::clear() {
+void SessionView::clear() {
     ui->currentPlayersHLabel->hide();
     ui->playersListWidget->hide();
 
-    ui->inviteCodeLabel->setText("Unknown");
     ui->gameNameLabel->setText("Unknown");
 }
 
-void ProtoRoomView::on_backButton_clicked() {
+void SessionView::on_backButton_clicked() {
     this->clear();
     this->close();
-    emit leftRoom();
-    emit shownStartView();
+    qDebug() << "Pressed Back From Session";
+    emit leftSession();
+    emit shownRoomView();
 }
-void ProtoRoomView::updateGameName(const QString &gameName) {
+void SessionView::updateGameName(const QString &gameName) {
     ui->gameNameLabel->setText(gameName);
 }
-void ProtoRoomView::gotRolesListUpdate(const std::vector<Role> &newRolesList) {
+void SessionView::gotRolesListUpdate(const std::vector<Role> &newRolesList) {
     // Some bad way to check whether list actually updated
     // TODO: implement it
 
@@ -90,21 +87,13 @@ void ProtoRoomView::gotRolesListUpdate(const std::vector<Role> &newRolesList) {
         ui->roleComboBox->setCurrentIndex(-1);
     }
 }
-void ProtoRoomView::show_as_host() {
-    ui->gameNameHLabel->hide();
-    ui->gameNameLabel->hide();
-    ui->inviteCodeHLabel->show();
-    ui->inviteCodeLabel->show();
+void SessionView::show_as_host() {
     ui->waitForHostLabel->hide();
     ui->joinErrorLabel->show();
-    ui->joinGameButton->show();
+    ui->startGameButton->show();
 }
-void ProtoRoomView::show_as_guest() {
-    ui->gameNameHLabel->show();
-    ui->gameNameLabel->show();
-    ui->inviteCodeHLabel->hide();
-    ui->inviteCodeLabel->hide();
+void SessionView::show_as_guest() {
     ui->waitForHostLabel->show();
     ui->joinErrorLabel->hide();
-    ui->joinGameButton->hide();
+    ui->startGameButton->hide();
 }

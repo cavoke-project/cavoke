@@ -36,13 +36,11 @@ void GamesListView::gotGamesListUpdate(
     for (const auto &gameInfo : newGamesList) {
         ui->gameNameComboBox->addItem(gameInfo.display_name, gameInfo.id);
     }
-    //    ui->gamesListWidget->setCurrentIndex(-1); // Is needed? Tests required
 }
 
 void GamesListView::gotNewSelectedGame(const GameInfo &gameInfo) {
     ui->gameDescriptionTextBrowser->setText(gameInfo.description);
     ui->playersAllowedLabel->setText(QString::number(gameInfo.players_num));
-    //    ui->createGameButton->setEnabled(true);
 }
 
 void GamesListView::gotNewGameStatistics(const GameStatistics &gameStatistics) {

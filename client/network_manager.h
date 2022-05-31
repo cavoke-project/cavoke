@@ -14,6 +14,7 @@
 #include "AuthenticationManager.h"
 #include "entities/gameinfo.h"
 #include "entities/gamestatistics.h"
+#include "entities/roominfo.h"
 #include "entities/sessioninfo.h"
 #include "entities/usergamestatistics.h"
 #include "entities/userstatistics.h"
@@ -29,24 +30,31 @@ public:
 
 public slots:
     void getHealth();
+
     void getGamesList();
     void getGamesConfig(const QString &gameId);
     void getGamesClient(const QString &gameId);
-    //    void createRoom();        TODO
-    //    void joinRoom();          TODO
-    //    void getRoomsInfo();      TODO
-    //    void roomCreateSession(); TODO
+
     void sendMove(const QString &jsonMove);
     void getPlayState();
-    void createSession(const QString &gameId);
-    void joinSession(const QString &inviteCode);
+
+    void joinSession(const QString &sessionId);
     void validateSession();
     void getSessionInfo();
+    void getSessionInfo(const QString &sessionId);
     void startSession();
     void leaveSession();
     void changeRoleInSession(int newRole);
+
+    void getRoomInfo();
+    void createRoom(const QString &display_name);
+    void joinRoom(const QString &invite_code);
+    void leaveRoom();
+    void roomCreateSession(const QString &game_id);
+
     void getMe();
     void changeName(const QString &new_name);
+
     void getMyUserStatistics();
     void getMyUserGameStatistics(const QString &gameId);
     void getGameStatistics(const QString &gameId);
@@ -57,6 +65,8 @@ public slots:
     void stopSessionPolling();
     void startValidationPolling();
     void stopValidationPolling();
+    void startRoomPolling();
+    void stopRoomPolling();
 
 signals:
     void finalizedGamesList(QJsonArray list);
@@ -69,6 +79,7 @@ signals:
     void gotUserStatistics(const UserStatistics &userStatistics);
     void gotUserGameStatistics(const UserGameStatistics &userGameStatistics);
     void gotGameStatistics(const GameStatistics &gameStatistics);
+    void gotRoomInfo(const RoomInfo &roomInfo);
 
 private slots:
     void gotHealth(QNetworkReply *reply);
@@ -83,6 +94,7 @@ private slots:
     void gotUserStatistics(QNetworkReply *reply);
     void gotUserGameStatistics(QNetworkReply *reply);
     void gotGameStatistics(QNetworkReply *reply);
+    void gotRoom(QNetworkReply *reply);
 
 private:
     QOAuth2AuthorizationCodeFlow *oauth2;
@@ -90,41 +102,37 @@ private:
     QTimer *gamePollingTimer = nullptr;
     QTimer *sessionPollingTimer = nullptr;
     QTimer *validationPollingTimer = nullptr;
+    QTimer *roomPollingTimer = nullptr;
     QString sessionId;
+    QString roomId;
     /// `user_id` query param.
     /// For local servers (without jwt) is generated randomly through QUuid.
     /// For prod servers (with jwt) is acquired from the server (through
     /// `get_me`).
     QString queryUserId;
     QUrl HOST{DEFAULT_HOST};
-    const static inline QUrl HEALTH{"health"};  // FIXME: move to routes module
+    const static inline QUrl HEALTH{"health"};
     const static inline QUrl GAMES_LIST{"games/list"};
     const static inline QUrl GAMES{"games/"};
     const static inline QUrl GET_CONFIG{"get_config"};
     const static inline QUrl GET_CLIENT{"get_client"};
-    // FIXME: the next block is already in the api, but is not implemented by
-    // either the server or the client
-    const static inline QUrl ROOMS_CREATE{"rooms/create"};      // TODO
-    const static inline QUrl ROOMS_JOIN{"rooms/join"};          // TODO
-    const static inline QUrl ROOMS{"rooms/"};                   // TODO
-    const static inline QUrl GET_INFO{"get_info"};              // TODO
-    const static inline QUrl CREATE_SESSION{"create_session"};  // TODO
-    // End of not implemented block
-    // FIXME: the next block will be deprecated in future:
-    const static inline QUrl SESSIONS_CREATE{"sessions/create"};
-    const static inline QUrl SESSIONS_JOIN{"sessions/join"};
-    // End of future deprecated block
+    // Rooms activity
+    const static inline QUrl ROOMS{"rooms/"};
+    const static inline QUrl GET_INFO{"get_info"};
+    const static inline QUrl ROOMS_CREATE{"rooms/create"};
+    const static inline QUrl ROOMS_JOIN{"rooms/join"};
+    const static inline QUrl LEAVE{"leave"};
+    const static inline QUrl CREATE_SESSION{"create_session"};
+
+    const static inline QUrl JOIN{"join"};
+    const static inline QUrl SESSIONS{"sessions/"};
+    const static inline QUrl VALIDATE{"validate"};
+    const static inline QUrl START{"start"};
+    const static inline QUrl CHANGE_ROLE{"change_role"};
+
     const static inline QUrl PLAY{"play/"};
     const static inline QUrl SEND_MOVE{"send_move"};
     const static inline QUrl GET_STATE{"get_state"};
-    // FIXME: the next block will be possibly deprecated in future:
-    const static inline QUrl SESSIONS{"sessions/"};
-    const static inline QUrl VALIDATE{"validate"};
-    //    const static inline QUrl GET_INFO{"get_info"}; // already exists in
-    //    rooms block
-    const static inline QUrl START{"start"};
-    const static inline QUrl LEAVE{"leave"};
-    const static inline QUrl CHANGE_ROLE{"change_role"};
 
     const static inline QUrl PROFILE{"profile/"};
     const static inline QUrl GET_ME{"get_me"};

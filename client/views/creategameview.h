@@ -2,7 +2,6 @@
 #define CAVOKE_CLIENT_CREATEGAMEVIEW_H
 
 #include <QMainWindow>
-#include "entities/gameinfo.h"
 
 namespace Ui {
 class CreateGameView;
@@ -15,19 +14,13 @@ public:
     ~CreateGameView();
 
 public slots:
-    void gotGamesListUpdate(const std::vector<GameInfo> &newGamesList);
-    void gotNewSelectedGame(const GameInfo &gameInfo);
-    void displayEmpty();
-
 signals:
     void shownStartView();
-    void currentIndexChanged(int index);
-    void startedCreateGameRoutine(int gameIndex);
+    void startedCreateGameRoutine(const QString &roomName);
 
 private slots:
     void on_backButton_clicked();
     void on_createGameButton_clicked();
-    void repeaterCurrentIndexChanged(int index);
 
 private:
     Ui::CreateGameView *ui;
