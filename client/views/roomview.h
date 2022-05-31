@@ -1,12 +1,12 @@
 #ifndef CAVOKE_CLIENT_ROOMVIEW_H
 #define CAVOKE_CLIENT_ROOMVIEW_H
 
-#include <entities/role.h>
-#include <entities/sessioninfo.h>
-#include <entities/validationresult.h>
 #include <QMainWindow>
 #include "entities/gameinfo.h"
+#include "entities/role.h"
 #include "entities/roominfo.h"
+#include "entities/sessioninfo.h"
+#include "entities/validationresult.h"
 
 namespace Ui {
 class RoomView;
@@ -45,8 +45,6 @@ private slots:
 
 private:
     Ui::RoomView *ui;
-    void show_as_host();
-    void show_as_guest();
     const std::map<CreatingSessionStatus, QString> STATUS = {
         {CreatingSessionStatus::UNKNOWN, "Unknown"},
         {CreatingSessionStatus::WAIT_FOR_THE_HOST,
@@ -58,7 +56,6 @@ private:
     QString sessionId;
     CreatingSessionStatus status = CreatingSessionStatus::UNKNOWN;
     bool is_host = false;  // Wow, this is very cool
-    //    int ourRole = -1;
 };
 
 #endif  // CAVOKE_CLIENT_ROOMVIEW_H

@@ -1,30 +1,22 @@
 #ifndef CAVOKECLIENTCONTROLLER_H
 #define CAVOKECLIENTCONTROLLER_H
 
-#include <cache_manager.h>
-#include <views/gameslistview.h>
 #include <QObject>
 #include <QtQuick>
+#include "cache_manager.h"
 #include "cavokeclientmodel.h"
-#include "creategameview.h"
-#include "joingameview.h"
 #include "network_manager.h"
-//#include "protoroomview.h"
-#include "roomview.h"
-#include "sessionview.h"
-#include "settingsview.h"
-#include "startview.h"
-#include "statisticsview.h"
-#include "testwindowview.h"
+#include "views/creategameview.h"
+#include "views/gameslistview.h"
+#include "views/joingameview.h"
+#include "views/roomview.h"
+#include "views/sessionview.h"
+#include "views/settingsview.h"
+#include "views/startview.h"
+#include "views/statisticsview.h"
+#include "views/testwindowview.h"
 
 class CavokeClientController : public QObject {
-    //    enum class CreateJoinControllerStatus {
-    //        NOTHING,
-    //        CREATING,
-    //        JOINING,
-    //        POLLING_CREATE,
-    //        POLLING_JOIN
-    //    };
     enum class UserDisplacement { NOWHERE, ROOM, SESSION, GAME };
     enum class QMLDownloadStatus { NOT_STARTED, DOWNLOADING, DOWNLOADED };
     enum class HostGuestStatus { NOT_IN, HOST, GUEST };
@@ -89,7 +81,6 @@ private:
     SettingsView settingsView;
     RoomView roomView;
     SessionView sessionView;
-    //    ProtoRoomView protoRoomView;
     CavokeQmlGameModel *currentQmlGameModel = nullptr;
     RoomInfo currentRoomInfo;
     SessionInfo currentSessionInfo;

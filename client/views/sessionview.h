@@ -1,10 +1,10 @@
 #ifndef CAVOKE_CLIENT_SESSIONVIEW_H
 #define CAVOKE_CLIENT_SESSIONVIEW_H
 
-#include <entities/role.h>
-#include <entities/sessioninfo.h>
-#include <entities/validationresult.h>
 #include <QMainWindow>
+#include "entities/role.h"
+#include "entities/sessioninfo.h"
+#include "entities/validationresult.h"
 
 namespace Ui {
 class SessionView;

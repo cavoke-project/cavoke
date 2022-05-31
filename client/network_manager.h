@@ -38,7 +38,6 @@ public slots:
     void sendMove(const QString &jsonMove);
     void getPlayState();
 
-    //    void createSession(const QString &gameId);    // Outdated
     void joinSession(const QString &sessionId);
     void validateSession();
     void getSessionInfo();
@@ -125,7 +124,6 @@ private:
     const static inline QUrl LEAVE{"leave"};
     const static inline QUrl CREATE_SESSION{"create_session"};
 
-    // const static inline QUrl SESSIONS_CREATE{"sessions/create"}; DEPRECATED
     const static inline QUrl JOIN{"join"};
     const static inline QUrl SESSIONS{"sessions/"};
     const static inline QUrl VALIDATE{"validate"};

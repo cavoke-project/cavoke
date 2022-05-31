@@ -32,21 +32,6 @@ void RoomView::updateRoomInfo(const RoomInfo &roomInfo) {
     } else {
         updateSessionInfo(SessionInfo());
     }
-    //    if (!sessionId.isEmpty()) {
-    //        updateStatus(CreatingSessionStatus::NOW_YOU_CAN_JOIN);
-    //    } else {
-    //        if (roomInfo.isHost) {
-    //            updateStatus(CreatingSessionStatus::YOU_CAN_CREATE);
-    //        } else {
-    //            updateStatus(CreatingSessionStatus::WAIT_FOR_THE_HOST);
-    //        }
-    //    }
-
-    //    if (roomInfo.isHost) {
-    //        show_as_host();
-    //    } else {
-    //        show_as_guest();
-    //    }
 }
 
 void RoomView::updateSessionInfo(const SessionInfo &sessionInfo) {
@@ -93,7 +78,6 @@ void RoomView::gotGamesListUpdate(const std::vector<GameInfo> &newGamesList) {
 
 void RoomView::clear() {
     updateStatus(CreatingSessionStatus::UNKNOWN);
-    show_as_guest();
     ui->roomNameLabel->setText("<room_name>");
     ui->inviteCodeLabel->setText("<invite_code>");
     ui->membersListWidget->clear();
@@ -104,19 +88,6 @@ void RoomView::on_backButton_clicked() {
     this->close();
     emit leftRoom();
     emit shownStartView();
-}
-
-void RoomView::show_as_host() {
-    //    ui->sessionGameLabel->show();
-    //    ui->sessionGameComboBox->show();
-    //    ui->joinSessionButton->hide();
-    //    ui->createSessionButton->show();
-}
-void RoomView::show_as_guest() {
-    //    ui->sessionGameLabel->hide();
-    //    ui->sessionGameComboBox->hide();
-    //    ui->createSessionButton->hide();
-    //    ui->joinSessionButton->show();
 }
 
 void RoomView::on_joinSessionButton_clicked() {

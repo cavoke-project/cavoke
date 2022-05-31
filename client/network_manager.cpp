@@ -140,15 +140,6 @@ void NetworkManager::gotPlayState(QNetworkReply *reply) {
     emit gotGameUpdate(answer);
 }
 
-// void NetworkManager::createSession(const QString &gameId) {
-//     QUrl route = HOST.resolved(SESSIONS_CREATE);
-//     route.setQuery({{"game_id", gameId}, {"user_id", getUserId()}});
-//     qDebug() << route.toString();
-//     auto reply = oauth2->post(route, "{}");
-//     connect(reply, &QNetworkReply::finished, this,
-//             [reply, this]() { gotSession(reply); });
-// }
-
 void NetworkManager::joinSession(const QString &sessionId) {
     QUrl route =
         HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(JOIN);
