@@ -152,7 +152,9 @@ void NetworkManager::joinSession(const QString &sessionId) {
 
 void NetworkManager::gotSession(QNetworkReply *reply) {
     QByteArray answer = reply->readAll();
-    qDebug() << "Session ERROR:" << reply->errorString();
+    if (reply->error()) {
+        qDebug() << "Session ERROR:" << reply->errorString();
+    }
     reply->close();
     reply->deleteLater();
     qDebug() << "Got session: " << answer;
@@ -261,8 +263,7 @@ void NetworkManager::gotRoom(QNetworkReply *reply) {
     roomInfo.read(QJsonDocument::fromJson(answer).object());
     roomId = roomInfo.room_id;
     roomInfo.isHost = roomInfo.host_id ==
-                      queryUserId;  // using explicitly query user_id, as in
-                                    // prod mode it is returned from the server
+                      queryUserId;
 
     emit gotRoomInfo(roomInfo);
 }
