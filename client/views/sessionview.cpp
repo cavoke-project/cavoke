@@ -66,6 +66,7 @@ void SessionView::clear() {
 void SessionView::on_backButton_clicked() {
     this->clear();
     this->close();
+    qDebug() << "Pressed Back From Session";
     emit leftSession();
     emit shownRoomView();
 }

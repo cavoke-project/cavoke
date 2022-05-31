@@ -232,6 +232,7 @@ void NetworkManager::leaveSession() {
     QUrl route =
         HOST.resolved(SESSIONS).resolved(sessionId + "/").resolved(LEAVE);
     route.setQuery({{"user_id", getUserId()}});
+    qDebug() << route.toString();
     auto reply = oauth2->post(route, "{}");
     connect(reply, &QNetworkReply::finished, this,
             [reply, this]() { gotPostResponse(reply); });

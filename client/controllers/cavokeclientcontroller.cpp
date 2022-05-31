@@ -124,8 +124,8 @@ CavokeClientController::CavokeClientController(QObject *parent)
             SLOT(createSessionStart(QString)));
     connect(&roomView, SIGNAL(joinedSession(QString)), this,
             SLOT(joinSessionStart(QString)));
-    connect(&roomView, SIGNAL(requestedSessionUpdate(QString)),
-            &networkManager, SLOT(getSessionInfo(QString)));
+    connect(&roomView, SIGNAL(requestedSessionUpdate(QString)), &networkManager,
+            SLOT(getSessionInfo(QString)));
 
     // sessionView actions
     connect(&sessionView, SIGNAL(joinedCreatedGame()), this,
@@ -134,14 +134,12 @@ CavokeClientController::CavokeClientController(QObject *parent)
             &sessionView, SLOT(updateValidationResult(ValidationResult)));
     connect(&sessionView, SIGNAL(createdGame()), &networkManager,
             SLOT(startSession()));
-    connect(&sessionView, SIGNAL(leftSession()), this, SLOT(leftSession()));
-    connect(&sessionView, SIGNAL(leftSession()), &networkManager,
-            SLOT(leaveSession()));
     connect(this, SIGNAL(createdAvailableRolesList(std::vector<Role>)),
             &sessionView, SLOT(gotRolesListUpdate(std::vector<Role>)));
     connect(&sessionView, SIGNAL(newRoleChosen(int)), &networkManager,
             SLOT(changeRoleInSession(int)));
     connect(&sessionView, SIGNAL(leftSession()), this, SLOT(leftSession()));
+    connect(&sessionView, SIGNAL(shownRoomView()), this, SLOT(showRoomView()));
 
     // protoRoomView actions
 
@@ -204,6 +202,8 @@ void CavokeClientController::showTestWindowView() {
 }
 
 void CavokeClientController::leftSession() {
+    qDebug() << "LeftSession in CCC";
+    networkManager.leaveSession();
     networkManager.stopGamePolling();
     networkManager.stopSessionPolling();
     networkManager.stopValidationPolling();
@@ -211,7 +211,7 @@ void CavokeClientController::leftSession() {
     hostGuestStatus = HostGuestStatus::NOT_IN;
     currentGameInfo = GameInfo();
     currentSessionInfo = SessionInfo();
-    showRoomView();
+    //    showRoomView();
 }
 
 void CavokeClientController::leftRoom() {
