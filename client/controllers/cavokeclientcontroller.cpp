@@ -201,9 +201,11 @@ void CavokeClientController::showTestWindowView() {
     testWindowView.show();
 }
 
-void CavokeClientController::leftSession() {
+void CavokeClientController::leftSession(bool real_leave) {
     qDebug() << "LeftSession in CCC";
-    networkManager.leaveSession();
+    if (real_leave) {
+        networkManager.leaveSession();
+    }
     networkManager.stopGamePolling();
     networkManager.stopSessionPolling();
     networkManager.stopValidationPolling();
@@ -312,7 +314,7 @@ void CavokeClientController::startLoadedQml() {
 void CavokeClientController::stopQml() {
     networkManager.stopGamePolling();
     networkManager.startRoomPolling();
-    leftSession();
+    leftSession(false); // Without actual `leave` request, due to bug #XXX
     showRoomView();
     currentQmlGameModel->deleteLater();
 }

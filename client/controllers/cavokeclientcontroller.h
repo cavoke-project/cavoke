@@ -70,7 +70,7 @@ private slots:
     void becomeGuest();
     void becomeRoomHost();
     void becomeRoomGuest();
-    void leftSession();
+    void leftSession(bool real_leave = true);
     void leftRoom();
 
 private:
