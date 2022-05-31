@@ -184,7 +184,7 @@ room_error::room_error(std::string message)
 }
 
 RoomsStorage::RoomInfo RoomsStorage::RoomInfo::from_room_and_members(
-    const drogon_model::cavoke::Rooms &room_orm,
+    const drogon_model::cavoke_orm::Rooms &room_orm,
     const std::vector<GameSessionAccessObject::UserInfo> &members) {
     return {room_orm.getValueOfId(),
             room_orm.getValueOfInviteCode(),
