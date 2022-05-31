@@ -168,8 +168,6 @@ GameSessionAccessObject::GameSessionInfo RoomsStorage::create_session(
             throw room_error("Cannot create session in room " + room_id +
                              ". Session already exists and not "
                              "finished.");
-        } else {
-            current_session.delete_session();
         }
     }
 
