@@ -31,7 +31,7 @@ public:
         std::vector<GameSessionAccessObject::UserInfo> members;
 
         static RoomInfo from_room_and_members(
-            const drogon_model::cavoke::Rooms &room_orm,
+            const drogon_model::cavoke_orm::Rooms &room_orm,
             const std::vector<GameSessionAccessObject::UserInfo> &members);
     };
 
