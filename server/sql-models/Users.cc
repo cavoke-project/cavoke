@@ -9,10 +9,11 @@
 #include <drogon/utils/Utilities.h>
 #include <string>
 #include "Players.h"
+#include "RoomJoins.h"
 
 using namespace drogon;
 using namespace drogon::orm;
-using namespace drogon_model::cavoke;
+using namespace drogon_model::cavoke_orm;
 
 const std::string Users::Cols::_id = "id";
 const std::string Users::Cols::_display_name = "display_name";
@@ -419,6 +420,20 @@ void Users::getPlayers(const DbClientPtr &clientPtr,
         ret.reserve(r.size());
         for (auto const &row : r) {
             ret.emplace_back(Players(row));
+        }
+        rcb(ret);
+    } >> ecb;
+}
+void Users::getRoomJoins(const DbClientPtr &clientPtr,
+                         const std::function<void(std::vector<RoomJoins>)> &rcb,
+                         const ExceptionCallback &ecb) const {
+    const static std::string sql =
+        "select * from room_joins where user_id = $1";
+    *clientPtr << sql << *id_ >> [rcb = std::move(rcb)](const Result &r) {
+        std::vector<RoomJoins> ret;
+        ret.reserve(r.size());
+        for (auto const &row : r) {
+            ret.emplace_back(RoomJoins(row));
         }
         rcb(ret);
     } >> ecb;

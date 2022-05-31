@@ -68,9 +68,6 @@ struct GameSessionAccessObject {
 
     [[nodiscard]] std::string get_user_id(int player_id) const;
 
-    // TODO: useless?
-    [[nodiscard]] bool verify_invite_code(const std::string &invite_code) const;
-
     struct UserInfo {
         std::string user_id;
         std::string display_name;
@@ -90,7 +87,6 @@ struct GameSessionAccessObject {
     struct GameSessionInfo {
         std::string session_id;
         std::string game_id;
-        std::string invite_code;
         std::string host_id;
         SessionStatus status;
         std::vector<PlayerInfo> players;
@@ -142,7 +138,6 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSessionAccessObject::PlayerInfo,
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameSessionAccessObject::GameSessionInfo,
                                    session_id,
                                    game_id,
-                                   invite_code,
                                    host_id,
                                    status,
                                    players);

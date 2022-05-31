@@ -9,6 +9,10 @@
 namespace cavoke::server::model {
 
 class SessionsStorage {
+    std::shared_ptr<GameLogicManager> m_game_logic_manager;
+    std::shared_ptr<GamesStorage> m_games_storage;
+    std::shared_ptr<GameStateStorage> m_game_state_storage;
+
 public:
     SessionsStorage(std::shared_ptr<GameLogicManager> mGameLogicManager,
                     std::shared_ptr<GamesStorage> mGamesStorage,
@@ -17,7 +21,8 @@ public:
     /// Creates session for given user with given game_config
     GameSessionAccessObject::GameSessionInfo create_session(
         const GameConfig &game_config,
-        const std::string &host_user_id);
+        const std::string &host_user_id,
+        const std::string &room_id = "");
 
     /// Starts session with given settings
     void start_session(const std::string &session_id,
@@ -36,16 +41,8 @@ public:
 
     /// Gets an access object for given session
     GameSessionAccessObject get_sessionAO(const std::string &session_id);
-    /// Gets an access object for given session by an invite code
-    GameSessionAccessObject get_sessionAO_by_invite(
-        const std::string &invite_code);
 
-    std::shared_ptr<GameLogicManager> m_game_logic_manager;
-    std::shared_ptr<GamesStorage> m_games_storage;
-    std::shared_ptr<GameStateStorage> m_game_state_storage;
-
-private:
-    static std::string generate_invite_code();
+    friend class GameSessionAccessObject;
 };
 
 }  // namespace cavoke::server::model

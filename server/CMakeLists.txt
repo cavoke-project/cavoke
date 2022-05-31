@@ -34,6 +34,8 @@ add_executable(${PROJECT_NAME}
         model/sessions/game_session.cpp
         model/statistics/statistics_manager.cpp
         controllers/statistics_controller.cpp
+        model/rooms/rooms_storage.cpp
+        controllers/rooms_controller.cpp
         controllers/gamesubmissions_controller.cpp
         )
 install(TARGETS ${PROJECT_NAME})

@@ -30,7 +30,7 @@ public:
                   drogon::Post,
                   "AuthFilter");
     ADD_METHOD_TO(SessionsController::join,
-                  "/sessions/join",
+                  "/sessions/{session_id}/join",
                   drogon::Post,
                   "AuthFilter");
     ADD_METHOD_TO(SessionsController::leave,
@@ -43,10 +43,6 @@ public:
                   "AuthFilter");
     ADD_METHOD_TO(SessionsController::get_info,
                   "/sessions/{session_id}/get_info",
-                  drogon::Get,
-                  "AuthFilter");
-    ADD_METHOD_TO(SessionsController::get_info_by_invite_code,
-                  "/sessions/get_info_by_invite_code",
                   drogon::Get,
                   "AuthFilter");
     ADD_METHOD_TO(SessionsController::start,
@@ -65,7 +61,8 @@ protected:
         std::function<void(const drogon::HttpResponsePtr &)> &&callback);
 
     void join(const drogon::HttpRequestPtr &req,
-              std::function<void(const drogon::HttpResponsePtr &)> &&callback);
+              std::function<void(const drogon::HttpResponsePtr &)> &&callback,
+              const std::string &session_id);
 
     void leave(const drogon::HttpRequestPtr &req,
                std::function<void(const drogon::HttpResponsePtr &)> &&callback,
@@ -89,10 +86,6 @@ protected:
         const drogon::HttpRequestPtr &req,
         std::function<void(const drogon::HttpResponsePtr &)> &&callback,
         const std::string &session_id);
-
-    void get_info_by_invite_code(
-        const drogon::HttpRequestPtr &req,
-        std::function<void(const drogon::HttpResponsePtr &)> &&callback);
 };
 
 }  // namespace cavoke::server::controllers

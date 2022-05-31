@@ -31,7 +31,7 @@ using DbClientPtr = std::shared_ptr<DbClient>;
 }  // namespace orm
 }  // namespace drogon
 namespace drogon_model {
-namespace cavoke {
+namespace cavoke_orm {
 class Players;
 
 class Sessions {
@@ -39,7 +39,6 @@ public:
     struct Cols {
         static const std::string _id;
         static const std::string _game_id;
-        static const std::string _invite_code;
         static const std::string _host_id;
         static const std::string _game_settings;
     };
@@ -123,17 +122,6 @@ public:
     void setGameId(const std::string &pGameId) noexcept;
     void setGameId(std::string &&pGameId) noexcept;
 
-    /**  For column invite_code  */
-    /// Get the value of the column invite_code, returns the default value if
-    /// the column is null
-    const std::string &getValueOfInviteCode() const noexcept;
-    /// Return a shared_ptr object pointing to the column const value, or an
-    /// empty shared_ptr object if the column is null
-    const std::shared_ptr<std::string> &getInviteCode() const noexcept;
-    /// Set the value of the column invite_code
-    void setInviteCode(const std::string &pInviteCode) noexcept;
-    void setInviteCode(std::string &&pInviteCode) noexcept;
-
     /**  For column host_id  */
     /// Get the value of the column host_id, returns the default value if the
     /// column is null
@@ -144,7 +132,6 @@ public:
     /// Set the value of the column host_id
     void setHostId(const std::string &pHostId) noexcept;
     void setHostId(std::string &&pHostId) noexcept;
-    void setHostIdToNull() noexcept;
 
     /**  For column game_settings  */
     /// Get the value of the column game_settings, returns the default value if
@@ -159,7 +146,7 @@ public:
     void setGameSettingsToNull() noexcept;
 
     static size_t getColumnNumber() noexcept {
-        return 5;
+        return 4;
     }
     static const std::string &getColumnName(size_t index) noexcept(false);
 
@@ -184,7 +171,6 @@ private:
     void updateId(const uint64_t id);
     std::shared_ptr<std::string> id_;
     std::shared_ptr<std::string> gameId_;
-    std::shared_ptr<std::string> inviteCode_;
     std::shared_ptr<std::string> hostId_;
     std::shared_ptr<std::string> gameSettings_;
     struct MetaData {
@@ -197,7 +183,7 @@ private:
         const bool notNull_;
     };
     static const std::vector<MetaData> metaData_;
-    bool dirtyFlag_[5] = {false};
+    bool dirtyFlag_[4] = {false};
 
 public:
     static const std::string &sqlForFindingByPrimaryKey() {
@@ -224,14 +210,10 @@ public:
             ++parametersCount;
         }
         if (dirtyFlag_[2]) {
-            sql += "invite_code,";
-            ++parametersCount;
-        }
-        if (dirtyFlag_[3]) {
             sql += "host_id,";
             ++parametersCount;
         }
-        if (dirtyFlag_[4]) {
+        if (dirtyFlag_[3]) {
             sql += "game_settings,";
             ++parametersCount;
         }
@@ -260,10 +242,6 @@ public:
             n = sprintf(placeholderStr, "$%d,", placeholder++);
             sql.append(placeholderStr, n);
         }
-        if (dirtyFlag_[4]) {
-            n = sprintf(placeholderStr, "$%d,", placeholder++);
-            sql.append(placeholderStr, n);
-        }
         if (parametersCount > 0) {
             sql.resize(sql.length() - 1);
         }
@@ -276,5 +254,5 @@ public:
         return sql;
     }
 };
-}  // namespace cavoke
+}  // namespace cavoke_orm
 }  // namespace drogon_model

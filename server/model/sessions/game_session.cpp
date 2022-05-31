@@ -97,13 +97,6 @@ std::string GameSessionAccessObject::get_user_id(int player_id) const {
     }
 }
 
-/// Validates the invite code for this session
-bool GameSessionAccessObject::verify_invite_code(
-    const std::string &invite_code) const {
-    auto session = get_snapshot();
-    return invite_code == session.getValueOfInviteCode();
-}
-
 /// Generates an info object (representation for client)
 GameSessionAccessObject::GameSessionInfo
 GameSessionAccessObject::get_session_info() const {
@@ -210,9 +203,7 @@ GameSessionAccessObject::make_session_info(
     const drogon_model::cavoke_orm::Sessions &session,
     const drogon_model::cavoke_orm::Statuses &status,
     std::vector<PlayerInfo> players) {
-    return {session.getValueOfId(),
-            session.getValueOfGameId(),
-            session.getValueOfInviteCode(),
+    return {session.getValueOfId(), session.getValueOfGameId(),
             session.getValueOfHostId(),
             static_cast<SessionStatus>(status.getValueOfStatus()),
             std::move(players)};

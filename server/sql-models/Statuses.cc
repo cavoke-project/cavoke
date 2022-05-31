@@ -11,7 +11,7 @@
 
 using namespace drogon;
 using namespace drogon::orm;
-using namespace drogon_model::cavoke;
+using namespace drogon_model::cavoke_orm;
 
 const std::string Statuses::Cols::_session_id = "session_id";
 const std::string Statuses::Cols::_status = "status";
