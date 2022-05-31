@@ -156,7 +156,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Join game</string>
+           <string>Join room</string>
           </property>
          </widget>
         </item>
@@ -173,7 +173,7 @@
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="text">
-         <string>JOIN GAME</string>
+         <string>JOIN ROOM</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -203,7 +203,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>19</height>
+     <height>28</height>
     </rect>
    </property>
   </widget>

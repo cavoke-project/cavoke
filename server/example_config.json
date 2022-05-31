@@ -8,7 +8,8 @@
       "logic_name": "logic",
       "zip_name": "client.zip",
       "config_name": "config.json"
-    }
+    },
+    "cors": "*" // OPTIONAL cors header value
 //     // OPTIONAL Authentication settings. If commented out, `user_id` query will be used
 //        ,"auth": {
 //          "type": "JWT",
@@ -54,6 +55,7 @@
     //number_of_threads: The number of IO threads, 1 by default, if the value is set to 0, the number of threads
     //is the number of CPU cores
     "number_of_threads": 1,
+    "upload_path": "uploads",
     //enable_session: False by default
     "enable_session": false,
     "session_timeout": 0,
@@ -145,7 +147,7 @@
     "br_static": true,
     //client_max_body_size: Set the maximum body size of HTTP requests received by drogon. The default value is "1M".
     //One can set it to "1024", "1k", "10M", "1G", etc. Setting it to "" means no limit.
-    "client_max_body_size": "1M",
+    "client_max_body_size": "128M",
     //max_memory_body_size: Set the maximum body size in memory of HTTP requests received by drogon. The default value is "64K" bytes.
     //If the body size of an HTTP request exceeds this limit, the body is stored to a temporary file for processing.
     //Setting it to "" means no limit.

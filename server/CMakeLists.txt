@@ -36,6 +36,7 @@ add_executable(${PROJECT_NAME}
         controllers/statistics_controller.cpp
         model/rooms/rooms_storage.cpp
         controllers/rooms_controller.cpp
+        controllers/gamesubmissions_controller.cpp
         )
 install(TARGETS ${PROJECT_NAME})
 

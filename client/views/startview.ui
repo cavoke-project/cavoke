@@ -41,21 +41,34 @@
          <x>230</x>
          <y>160</y>
          <width>321</width>
-         <height>194</height>
+         <height>238</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <widget class="QPushButton" name="joinGameButton">
           <property name="text">
-           <string>Join game</string>
+           <string>Join room</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="createGameButton">
           <property name="text">
-           <string>Create game</string>
+           <string>Create room</string>
           </property>
          </widget>
         </item>
@@ -74,17 +87,11 @@
          </widget>
         </item>
         <item>
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
+         <widget class="QPushButton" name="statisticsButton">
+          <property name="text">
+           <string>Statistics</string>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
+         </widget>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,5,6">
@@ -103,7 +110,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="resources/resources.qrc">
+             <iconset>
               <normaloff>:/info</normaloff>:/info</iconset>
             </property>
            </widget>
@@ -136,6 +143,19 @@
           </item>
          </layout>
         </item>
+        <item>
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="horizontalLayoutWidget">
@@ -160,7 +180,7 @@
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap resource="resources/resources.qrc">:/cavoke</pixmap>
+           <pixmap>:/cavoke</pixmap>
           </property>
          </widget>
         </item>
@@ -197,7 +217,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>19</height>
+     <height>28</height>
     </rect>
    </property>
   </widget>
