@@ -1,5 +1,4 @@
 #include "joingameview.h"
-#include <QFileDialog>
 #include "authdialog.h"
 #include "ui_joingameview.h"
 

@@ -1,8 +1,8 @@
 #ifndef CAVOKE_GAMESLISTVIEW_H
 #define CAVOKE_GAMESLISTVIEW_H
 
-#include <entities/gameinfo.h>
 #include <QMainWindow>
+#include "entities/gameinfo.h"
 #include "entities/gamestatistics.h"
 
 namespace Ui {
