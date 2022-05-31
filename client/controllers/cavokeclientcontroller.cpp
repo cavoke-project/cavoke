@@ -34,7 +34,7 @@ CavokeClientController::CavokeClientController(QObject *parent)
 
     // Main navigation buttons from startView
     connect(&startView, SIGNAL(shownTestWindowView()), this,
-            SLOT(showTestWindowView()));    // Not displayed
+            SLOT(showTestWindowView()));  // Not displayed
     connect(&startView, SIGNAL(shownJoinGameView()), this,
             SLOT(showJoinGameView()));
     connect(&startView, SIGNAL(shownCreateGameView()), this,
@@ -295,7 +295,7 @@ void CavokeClientController::startLoadedQml() {
 void CavokeClientController::stopQml() {
     networkManager.stopGamePolling();
     networkManager.startRoomPolling();
-    leftSession(false); // Without actual `leave` request, due to issue #171
+    leftSession(false);  // Without actual `leave` request, due to issue #171
     showRoomView();
     currentQmlGameModel->deleteLater();
 }
