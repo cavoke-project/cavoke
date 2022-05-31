@@ -262,8 +262,7 @@ void NetworkManager::gotRoom(QNetworkReply *reply) {
     RoomInfo roomInfo;
     roomInfo.read(QJsonDocument::fromJson(answer).object());
     roomId = roomInfo.room_id;
-    roomInfo.isHost = roomInfo.host_id ==
-                      queryUserId;
+    roomInfo.isHost = roomInfo.host_id == queryUserId;
 
     emit gotRoomInfo(roomInfo);
 }
