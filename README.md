@@ -52,7 +52,7 @@
 </p>
 
 <!-- TODO: replace gif -->
-![screenshot](.github/assets/cavoke-demo.gif)
+![screenshot](https://raw.githubusercontent.com/cavoke-project/cavoke/develop/.github/assets/cavoke-demo.gif)]
 
 ## Overview
 
