@@ -57,6 +57,11 @@ bool is_valid_move(const std::string &board, int position) {
     return position >= 0 && position < board.size() && board[position] == ' ';
 }
 
+bool is_full(const std::string &board) {
+    return std::none_of(board.begin(), board.end(),
+                        [](char c) { return c == ' '; });
+}
+
 int coord_to_pos(int x, int y, int board_size) {
     return x * board_size + y;
 }
@@ -158,12 +163,13 @@ GameState apply_move(GameMove &new_move) {
 
     board[position] = player;
     bool win = winner(board);
+    bool full = is_full(board);
 
     std::vector<int> winners;
     if (win) {
         winners.push_back(new_move.player_id);
     }
 
-    return {win, board, {board, board}, winners};
+    return {win || full, board, {board, board}, winners};
 }
 }  // namespace cavoke

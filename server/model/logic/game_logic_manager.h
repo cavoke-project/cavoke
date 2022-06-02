@@ -17,7 +17,10 @@ struct validation_error : cavoke_base_exception {
 class GameLogicManager {
     std::shared_ptr<GamesStorage> m_games_storage;
 
-    std::string invoke_logic(const Game &game, const std::string &input);
+    std::string invoke_logic_local(const Game &game, const std::string &input);
+    std::string invoke_logic_external(const Game &game,
+                                      const std::string &method,
+                                      const std::string &input);
 
 public:
     explicit GameLogicManager(std::shared_ptr<GamesStorage> games_storage);

@@ -12,6 +12,8 @@ struct GameConfig {
     std::string id;
     std::string display_name;
     std::string description;
+    std::string app_type;
+    std::string url;
     int players_num;
     std::vector<std::string> role_names;
     json default_settings;
@@ -26,6 +28,8 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameConfig,
                                    id,
                                    display_name,
                                    description,
+                                   app_type,
+                                   url,
                                    players_num,
                                    role_names,
                                    default_settings)

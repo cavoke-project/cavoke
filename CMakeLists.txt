@@ -12,7 +12,7 @@ option(BUILD_CLIENT "Enable building client" OFF)
 option(BUILD_GAMES "Enable building games" OFF)
 
 # Add local drogon
-if (BUILD_ALL OR BUILD_SERVER)
+if (BUILD_ALL OR BUILD_SERVER OR BUILD_GAMES)
     option(USE_EXTERNAL_DROGON "Whether to use external drogon" OFF)
     if (USE_EXTERNAL_DROGON)
         message("Using external Drogon...")
@@ -79,3 +79,4 @@ endif ()
 if (BUILD_ALL OR BUILD_GAMES)
     add_subdirectory(games)
 endif ()
+
