@@ -139,7 +139,7 @@ std::string GameLogicManager::invoke_logic_external(const Game &game,
     request->setPath("/" + method);
     request->setMethod(drogon::Post);
     request->setBody(input);
-    auto result = client->sendRequest(request, 1.0);
+    auto result = client->sendRequest(request, 30.0);
 
     if (result.first != drogon::ReqResult::Ok) {
         LOG_ERROR << "Failed to connect with game logic on address "
