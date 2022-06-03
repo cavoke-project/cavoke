@@ -5,6 +5,7 @@
 StartView::StartView(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::StartView) {
     ui->setupUi(this);
+    ui->cavokeTestWindowButton->hide();
 }
 
 StartView::~StartView() {
@@ -29,6 +30,14 @@ void StartView::on_gamesListButton_clicked() {
 void StartView::on_cavokeTestWindowButton_clicked() {
     this->close();
     emit shownTestWindowView();
+}
+
+void StartView::on_statisticsButton_clicked() {
+    if (!AuthDialog::verifyAuth(this)) {
+        return;
+    }
+    this->close();
+    emit shownStatisticsView();
 }
 
 void StartView::on_settingsButton_clicked() {

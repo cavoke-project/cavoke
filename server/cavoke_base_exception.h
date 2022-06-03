@@ -8,7 +8,12 @@ namespace cavoke::server {
 /// Base exception for errors thrown in server
 struct cavoke_base_exception : std::runtime_error {
 public:
-    enum error_code { UnknownError = 0, InvalidClientInput, NotFound };
+    enum error_code {
+        UnknownError = 0,
+        InvalidClientInput,
+        NotFound,
+        InvalidConfig
+    };
 
     cavoke_base_exception(std::string message,
                           error_code code,

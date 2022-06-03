@@ -1,5 +1,5 @@
 #include "joingameview.h"
-#include <QFileDialog>
+#include "authdialog.h"
 #include "ui_joingameview.h"
 
 JoinGameView::JoinGameView(QWidget *parent)
@@ -18,6 +18,10 @@ void JoinGameView::on_backButton_clicked() {
 
 void JoinGameView::on_joinGameButton_clicked() {
     QString inviteCode = ui->inviteCodeInput->text();
+    // verify user is authenticated
+    if (!AuthDialog::verifyAuth(this)) {
+        return;
+    }
     if (!inviteCode.isEmpty()) {
         emit joinedGame(inviteCode);
     }

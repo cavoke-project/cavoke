@@ -1,0 +1,54 @@
+name: Deploy server (development version)
+on: workflow_call
+jobs:
+  server-publish-image-develop:
+    runs-on: ubuntu-latest
+    #    environment: develop
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          file: server.Dockerfile
+          push: true
+          tags: ghcr.io/cavoke-project/cavoke-server:latest  # TODO: different tag for different branches
+  server-deploy-cloud-run-develop:
+    runs-on: ubuntu-latest
+    environment:
+      name: develop
+      url: https://develop.api.cavoke.wlko.me
+    concurrency: develop
+    needs: [ server-publish-image-develop ]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Setup Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+      - name: 'Deploy to Cloud Run'
+        run: |
+          gcloud components install beta && \
+          gcloud beta run deploy cavoke-server-develop \
+            --execution-environment gen2 \
+            --source server/.gcp \
+            --allow-unauthenticated \
+            --service-account ${{ env.SERVICE_ACCOUNT }} \
+            --region=${{ env.REGION }} \
+            --update-env-vars BUCKET=${{ env.BUCKET_NAME }}
+env:
+  PROJECT_ID: waleko-personal
+  SERVICE_ACCOUNT: fs-identity
+  BUCKET_NAME: cavoke-test-1
+  REGION: europe-north1

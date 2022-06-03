@@ -1,8 +1,9 @@
 #ifndef CAVOKE_GAMESLISTVIEW_H
 #define CAVOKE_GAMESLISTVIEW_H
 
-#include <gameinfo.h>
 #include <QMainWindow>
+#include "entities/gameinfo.h"
+#include "entities/gamestatistics.h"
 
 namespace Ui {
 class GamesListView;
@@ -17,10 +18,13 @@ public:
 public slots:
     void gotGamesListUpdate(const std::vector<GameInfo> &newGamesList);
     void gotNewSelectedGame(const GameInfo &gameInfo);
+    void displayEmpty();
+    void gotNewGameStatistics(const GameStatistics &gameStatistics);
 
 signals:
     void shownStartView();
     void currentIndexChanged(int index);
+    void requestGameStatistics(const QString &gameId);
     void requestedDownloadGame(int index);
 
 private slots:

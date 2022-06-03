@@ -2,8 +2,9 @@
 #define CAVOKE_STATE_CONTROLLER_H
 
 #include <drogon/HttpController.h>
-#include "../model/game_logic_manager.h"
-#include "../model/games_storage.h"
+#include "filters/AuthFilter.h"
+#include "model/games/games_storage.h"
+#include "model/logic/game_logic_manager.h"
 #include "model/sessions/sessions_storage.h"
 
 namespace cavoke::server::controllers {
@@ -25,10 +26,12 @@ public:
     METHOD_LIST_BEGIN
     ADD_METHOD_TO(StateController::send_move,
                   "/play/{session_id}/send_move",
-                  drogon::Post);
+                  drogon::Post,
+                  "AuthFilter");
     ADD_METHOD_TO(StateController::get_state,
                   "/play/{session_id}/get_state",
-                  drogon::Get);
+                  drogon::Get,
+                  "AuthFilter");
     METHOD_LIST_END
 
 protected:

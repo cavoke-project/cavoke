@@ -1,0 +1,19 @@
+{
+  "id": "codenames",
+  "display_name": "Codenames",
+  "description": "Two teams compete by each having a \"spymaster\" give one-word clues that can point to multiple words on the board. The other players on the team attempt to guess their team's words while avoiding the words of the other team.",
+  "players_num": 6,
+  "role_names": [
+    "blue captain",
+    "red captain",
+    "blue player",
+    "red player",
+    "blue player",
+    "red player"
+  ],
+  "default_settings": {
+    "board_h": 5,
+    "board_w": 5,
+    "word_list": "ru"
+  }
+}

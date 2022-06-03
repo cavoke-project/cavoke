@@ -1,0 +1,14 @@
+name: Cavoke
+on:
+  push
+jobs:
+  tests:
+    uses: ./.github/workflows/tests.yml
+  bundle-client:
+    needs: [tests]
+    uses: ./.github/workflows/bundle-client-craft.yml
+  deploy-server-develop:
+    if: github.ref == 'refs/heads/develop'
+    needs: [tests]
+    uses: ./.github/workflows/deploy-server-develop.yml
+    secrets: inherit

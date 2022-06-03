@@ -1,0 +1,68 @@
+{
+  //rdbms: server type, postgresql,mysql or sqlite3
+  "rdbms": "postgresql",
+  //filename: sqlite3 db file name
+  //"filename":"",
+  //host: server address,localhost by default;
+  "host": "127.0.0.1",
+  //port: server port, 5432 by default;
+  "port": 5432,
+  //dbname: Database name;
+  "dbname": "cavoke",
+  //schema: valid for postgreSQL, "public" by default;
+  "schema": "public",
+  //user: User name
+  "user": "postgres",
+  //password or passwd: Password
+  "password": "local",
+  //client_encoding: The character set used by drogon_ctl. it is empty string by default which
+  //means use the default character set.
+  //"client_encoding": "",
+  //table: An array of tables to be modelized. if the array is empty, all revealed tables are modelized.
+  "tables": [],
+  "relationships": {
+    "enabled": true,
+    "items": [
+      {
+        "type": "has many",
+        "original_table_name": "sessions",
+        "original_table_alias": "Session",
+        "original_key": "id",
+        "target_table_name": "players",
+        "target_table_alias": "",
+        "target_key": "session_id",
+        "enable_reverse": true
+      },
+      {
+        "type": "has many",
+        "original_table_name": "users",
+        "original_table_alias": "User",
+        "original_key": "id",
+        "target_table_name": "players",
+        "target_table_alias": "",
+        "target_key": "user_id",
+        "enable_reverse": true
+      },
+      {
+        "type": "has many",
+        "original_table_name": "rooms",
+        "original_table_alias": "Room",
+        "original_key": "id",
+        "target_table_name": "room_joins",
+        "target_table_alias": "",
+        "target_key": "room_id",
+        "enable_reverse": true
+      },
+      {
+        "type": "has many",
+        "original_table_name": "users",
+        "original_table_alias": "User",
+        "original_key": "id",
+        "target_table_name": "room_joins",
+        "target_table_alias": "",
+        "target_key": "user_id",
+        "enable_reverse": true
+      }
+    ]
+  }
+}

@@ -16,13 +16,15 @@ void CavokeClientModel::loadQmlGame(const QString &gameId) {
 }
 void CavokeClientModel::updateGamesList(const QJsonArray &newGamesList) {
     std::vector<GameInfo> got_from;
-    for (auto obj : newGamesList) {
-        got_from.emplace_back(GameInfo());
-        got_from.back().read(obj.toObject());
-    }
-    gamesList = got_from;
+    std::transform(newGamesList.begin(), newGamesList.end(),
+                   std::back_inserter(got_from), [](const QJsonValue &obj) {
+                       GameInfo game_info;
+                       game_info.read(obj.toObject());
+                       return game_info;
+                   });
+    gamesList = std::move(got_from);
 
-    if (!gamesList.empty()) {
+    if (!newGamesList.empty()) {
         qDebug() << "First In Model: " << gamesList[0].id;
     }
     emit gamesListUpdated(gamesList);
@@ -39,8 +41,8 @@ void CavokeClientModel::gotIndexToDownload(int index) {
     gotGameIdToDownload(gamesList[index].id);
 }
 
-QString CavokeClientModel::getGameIdByIndex(int index) {
-    return gamesList[index].id;
+GameInfo CavokeClientModel::getGameByIndex(int index) {
+    return gamesList[index];
 }
 
 void CavokeClientModel::gotGameIdToDownload(const QString &gameId) {

@@ -3,14 +3,14 @@
 
 #include <QObject>
 #include "cavokeqmlgamemodel.h"
-#include "gameinfo.h"
+#include "entities/gameinfo.h"
 
 class CavokeClientModel : public QObject {
     Q_OBJECT
 
 public:
     explicit CavokeClientModel(QObject *parent = nullptr);
-    QString getGameIdByIndex(int index);  // FIXME: oh no, cringe
+    GameInfo getGameByIndex(int index);  // FIXME: oh no, cringe
 public slots:
     void loadQmlGame(const QString &gameId);
     void updateGamesList(const QJsonArray &newGamesList);
