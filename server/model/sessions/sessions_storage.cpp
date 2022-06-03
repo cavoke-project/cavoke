@@ -111,7 +111,8 @@ void SessionsStorage::start_session(const std::string &session_id,
     m_game_state_storage->save_state(
         session_id,
         m_game_logic_manager->init_state(game_id, game_settings.value(),
-                                         session.get_occupied_positions()));
+                                         session.get_occupied_positions()),
+        drogon::app().getDbClient());
 }
 
 /**
@@ -164,19 +165,21 @@ cavoke::ValidationResult SessionsStorage::validate_session(
  * Throws `game_session_error` if no such session
  */
 GameSessionAccessObject SessionsStorage::get_sessionAO(
-    const std::string &session_id) {
+    const std::string &session_id,
+    drogon::orm::DbClientPtr dbClient) {
     // INFO: redundancy to check that session actually exists
     try {
-        auto mp_sessions = MAPPER_FOR(
-            drogon_model::cavoke_orm::Sessions);  // TODO: use shared mappers
+        auto mp_sessions =
+            MAPPER_WITH_CLIENT_FOR(drogon_model::cavoke_orm::Sessions,
+                                   dbClient);  // TODO: use shared mappers
         // find session by invite
         auto session = mp_sessions.findOne(
             Criteria(drogon_model::cavoke_orm::Sessions::Cols::_id,
                      CompareOperator::EQ, session_id));
         return GameSessionAccessObject(
             session.getValueOfId(),
-            m_games_storage->get_game_by_id(session.getValueOfGameId())
-                ->config);
+            m_games_storage->get_game_by_id(session.getValueOfGameId())->config,
+            dbClient);
     } catch (const std::out_of_range &) {
         throw game_session_error("session does not exist: '" + session_id +
                                  "'");

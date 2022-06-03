@@ -40,7 +40,7 @@ public:
         std::optional<json> game_settings);
 
     /// Gets an access object for given session
-    GameSessionAccessObject get_sessionAO(const std::string &session_id);
+    GameSessionAccessObject get_sessionAO(const std::string &session_id, drogon::orm::DbClientPtr dbClient = drogon::app().getDbClient());
 
     friend class GameSessionAccessObject;
 };

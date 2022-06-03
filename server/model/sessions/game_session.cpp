@@ -178,11 +178,7 @@ bool GameSessionAccessObject::is_host(const std::string &user_id) const {
 }
 
 void GameSessionAccessObject::finish() {
-    auto session = default_mp_sessions.findOne(
-        Criteria(drogon_model::cavoke_orm::Sessions::Cols::_id,
-                 CompareOperator::EQ, id));
     set_status(FINISHED);
-    default_mp_sessions.update(session);
 }
 drogon_model::cavoke_orm::Sessions GameSessionAccessObject::get_snapshot()
     const {

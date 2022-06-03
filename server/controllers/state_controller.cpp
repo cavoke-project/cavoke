@@ -11,10 +11,11 @@ void StateController::send_move(
     const std::string &session_id) {
     // get user id
     auto user_id = AuthFilter::get_user_id(req);
-
+    
+    auto transaction = drogon::app().getDbClient()->newTransaction();
     model::GameSessionAccessObject session;
     try {
-        session = m_participation_storage->get_sessionAO(session_id);
+        session = m_participation_storage->get_sessionAO(session_id, transaction);
     } catch (const model::game_session_error &) {
         return CALLBACK_STATUS_CODE(k400BadRequest);
     }
@@ -49,7 +50,8 @@ void StateController::send_move(
 
     model::GameStateStorage::GameState current_state;
     try {
-        current_state = m_game_state_storage->get_state(session_id);
+        current_state =
+            m_game_state_storage->get_state(session_id, transaction);
     } catch (const model::game_state_error &) {
         return CALLBACK_STATUS_CODE(k404NotFound);
     }
@@ -57,7 +59,7 @@ void StateController::send_move(
     auto next_state = m_game_logic_manager->send_move(
         session_info.game_id, {player_id, move, current_state.global_state});
 
-    m_game_state_storage->save_state(session_id, next_state);
+    m_game_state_storage->save_state(session_id, next_state, transaction);
 
     if (next_state.is_terminal) {
         session.finish();
@@ -75,9 +77,10 @@ void StateController::get_state(
     // get user id
     auto user_id = AuthFilter::get_user_id(req);
 
+    auto transaction = drogon::app().getDbClient()->newTransaction();
     model::GameSessionAccessObject session;
     try {
-        session = m_participation_storage->get_sessionAO(session_id);
+        session = m_participation_storage->get_sessionAO(session_id, transaction);
     } catch (const model::game_session_error &) {
         return CALLBACK_STATUS_CODE(k404NotFound);
     }
@@ -104,7 +107,7 @@ void StateController::get_state(
 
     json resp_json;
     resp_json["state"] = std::move(player_state);
-    auto game_state = m_game_state_storage->get_state(session_id);
+    auto game_state = m_game_state_storage->get_state(session_id, transaction);
     resp_json["is_terminal"] = game_state.is_terminal;
     if (game_state.is_terminal) {
         std::vector<std::string> winners;
