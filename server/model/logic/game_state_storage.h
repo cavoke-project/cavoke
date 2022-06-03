@@ -28,12 +28,14 @@ public:
         std::vector<int> winners;
     };
 
-    void save_state(const std::string &session_id,
-                    GameStateStorage::GameState new_state,
-                    drogon::orm::DbClientPtr dbClient = drogon::app().getDbClient());
+    void save_state(
+        const std::string &session_id,
+        GameStateStorage::GameState new_state,
+        drogon::orm::DbClientPtr dbClient = drogon::app().getDbClient());
 
-    GameState get_state(const std::string &session_id,
-                        drogon::orm::DbClientPtr dbClient = drogon::app().getDbClient());
+    GameState get_state(
+        const std::string &session_id,
+        drogon::orm::DbClientPtr dbClient = drogon::app().getDbClient());
 
     std::string get_player_state(const std::string &session_id, int player_id);
 };

@@ -11,10 +11,9 @@ namespace cavoke::server::model {
 using json = nlohmann::json;
 using namespace drogon::orm;
 
-void GameStateStorage::save_state(
-    const std::string &session_id,
-    GameStateStorage::GameState new_state,
-    DbClientPtr dbClient) {
+void GameStateStorage::save_state(const std::string &session_id,
+                                  GameStateStorage::GameState new_state,
+                                  DbClientPtr dbClient) {
     auto mp_globalstates = MAPPER_WITH_CLIENT_FOR(
         drogon_model::cavoke_orm::Globalstates, dbClient);
     auto mp_players =

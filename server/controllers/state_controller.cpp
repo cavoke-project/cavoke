@@ -11,11 +11,12 @@ void StateController::send_move(
     const std::string &session_id) {
     // get user id
     auto user_id = AuthFilter::get_user_id(req);
-    
+
     auto transaction = drogon::app().getDbClient()->newTransaction();
     model::GameSessionAccessObject session;
     try {
-        session = m_participation_storage->get_sessionAO(session_id, transaction);
+        session =
+            m_participation_storage->get_sessionAO(session_id, transaction);
     } catch (const model::game_session_error &) {
         return CALLBACK_STATUS_CODE(k400BadRequest);
     }
@@ -80,7 +81,8 @@ void StateController::get_state(
     auto transaction = drogon::app().getDbClient()->newTransaction();
     model::GameSessionAccessObject session;
     try {
-        session = m_participation_storage->get_sessionAO(session_id, transaction);
+        session =
+            m_participation_storage->get_sessionAO(session_id, transaction);
     } catch (const model::game_session_error &) {
         return CALLBACK_STATUS_CODE(k404NotFound);
     }
