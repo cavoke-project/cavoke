@@ -30,10 +30,17 @@ struct game_session_error : cavoke_base_exception {
 /// Drogon ORM struct serves as the data holder.
 struct GameSessionAccessObject {
     enum SessionStatus { NOT_STARTED = 0, RUNNING = 1, FINISHED = 2 };
-    GameSessionAccessObject() = default;
-    explicit GameSessionAccessObject(std::string session_id,
-                                     GameConfig game_config)
-        : id(std::move(session_id)), m_game_config(std::move(game_config)) {
+    explicit GameSessionAccessObject(
+        drogon::orm::DbClientPtr dbClient = drogon::app().getDbClient())
+        : dbClient(std::move(dbClient)) {
+    }
+    explicit GameSessionAccessObject(
+        std::string session_id,
+        GameConfig game_config,
+        drogon::orm::DbClientPtr dbClient = drogon::app().getDbClient())
+        : id(std::move(session_id)),
+          m_game_config(std::move(game_config)),
+          dbClient(std::move(dbClient)) {
     }
 
     /// Adds given user to the session into given or minimal available position
@@ -113,14 +120,16 @@ struct GameSessionAccessObject {
 
 private:
     std::string id;
-    GameConfig m_game_config;
+    GameConfig m_game_config{};
+
+    drogon::orm::DbClientPtr dbClient;
 
     mutable drogon::orm::Mapper<drogon_model::cavoke_orm::Sessions>
-        default_mp_sessions{drogon::app().getDbClient()};
+        default_mp_sessions{dbClient};
     mutable drogon::orm::Mapper<drogon_model::cavoke_orm::Statuses>
-        default_mp_statuses{drogon::app().getDbClient()};
+        default_mp_statuses{dbClient};
     mutable drogon::orm::Mapper<drogon_model::cavoke_orm::Players>
-        default_mp_players{drogon::app().getDbClient()};
+        default_mp_players{dbClient};
 
     drogon_model::cavoke_orm::Sessions get_snapshot() const;
     drogon_model::cavoke_orm::Statuses get_actual_status() const;

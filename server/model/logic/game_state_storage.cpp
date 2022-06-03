@@ -12,9 +12,12 @@ using json = nlohmann::json;
 using namespace drogon::orm;
 
 void GameStateStorage::save_state(const std::string &session_id,
-                                  GameStateStorage::GameState new_state) {
-    auto mp_globalstates = MAPPER_FOR(drogon_model::cavoke_orm::Globalstates);
-    auto mp_players = MAPPER_FOR(drogon_model::cavoke_orm::Players);
+                                  GameStateStorage::GameState new_state,
+                                  DbClientPtr dbClient) {
+    auto mp_globalstates = MAPPER_WITH_CLIENT_FOR(
+        drogon_model::cavoke_orm::Globalstates, dbClient);
+    auto mp_players =
+        MAPPER_WITH_CLIENT_FOR(drogon_model::cavoke_orm::Players, dbClient);
 
     auto global_state = mp_globalstates.findOne(
         Criteria(drogon_model::cavoke_orm::Globalstates::Cols::_session_id,
@@ -25,12 +28,6 @@ void GameStateStorage::save_state(const std::string &session_id,
 
     global_state.setGlobalstate(new_state.global_state);
     global_state.setIsTerminal(new_state.is_terminal);
-
-    auto transaction = drogon::app().getDbClient()->newTransaction();
-    auto mp_sessions_trans = MAPPER_WITH_CLIENT_FOR(
-        drogon_model::cavoke_orm::Globalstates, transaction);
-    auto mp_players_trans =
-        MAPPER_WITH_CLIENT_FOR(drogon_model::cavoke_orm::Players, transaction);
 
     for (auto &player : players) {
         player.setPlayerstate(
@@ -46,23 +43,26 @@ void GameStateStorage::save_state(const std::string &session_id,
         } else {
             player.setScoreToNull();
         }
-        mp_players_trans.update(player);
+        mp_players.update(player);
     }
-    mp_sessions_trans.update(global_state);
+    mp_globalstates.update(global_state);
 }
 
 GameStateStorage::GameState GameStateStorage::get_state(
-    const std::string &session_id) {
-    GameState state;
+    const std::string &session_id,
+    drogon::orm::DbClientPtr dbClient) {
+    GameStateStorage::GameState state;
 
-    auto mp_globalstates = MAPPER_FOR(drogon_model::cavoke_orm::Globalstates);
+    auto mp_globalstates = MAPPER_WITH_CLIENT_FOR(
+        drogon_model::cavoke_orm::Globalstates, dbClient);
     auto global_state = mp_globalstates.findOne(drogon::orm::Criteria(
         drogon_model::cavoke_orm::Globalstates::Cols::_session_id,
         drogon::orm::CompareOperator::EQ, session_id));
     state.global_state = global_state.getValueOfGlobalstate();
     state.is_terminal = global_state.getValueOfIsTerminal();
 
-    auto mp_players = MAPPER_FOR(drogon_model::cavoke_orm::Players);
+    auto mp_players =
+        MAPPER_WITH_CLIENT_FOR(drogon_model::cavoke_orm::Players, dbClient);
     auto players = mp_players.findBy(drogon::orm::Criteria(
         drogon_model::cavoke_orm::Players::Cols::_session_id,
         drogon::orm::CompareOperator::EQ, session_id));
