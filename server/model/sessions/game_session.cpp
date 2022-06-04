@@ -32,6 +32,12 @@ void GameSessionAccessObject::add_user(const std::string &user_id,
     int pos;
     if (player_id.has_value()) {
         pos = player_id.value();
+        // check role's validity
+        if (!(0 <= pos && pos < m_game_config.players_num)) {
+            throw game_session_error("no such role " + std::to_string(pos));
+        }
+        // NOTE: same player_ids are not possible thanks to a constraint in sql
+        // schema
     } else {
         std::set<int> possible_positions;
         for (int candidate_pos = 0; candidate_pos < m_game_config.players_num;
