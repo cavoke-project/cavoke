@@ -12,58 +12,76 @@ void StateController::send_move(
     // get user id
     auto user_id = AuthFilter::get_user_id(req);
 
-    auto transaction = drogon::app().getDbClient()->newTransaction();
-    model::GameSessionAccessObject session;
-    try {
-        session =
-            m_participation_storage->get_sessionAO(session_id, transaction);
-    } catch (const model::game_session_error &) {
-        return CALLBACK_STATUS_CODE(k400BadRequest);
-    }
+    {
+        auto transaction = drogon::app().getDbClient()->newTransaction();
+        model::GameSessionAccessObject session;
+        try {
+            session =
+                m_participation_storage->get_sessionAO(session_id, transaction);
+        } catch (const model::game_session_error &) {
+            transaction->rollback();
+            return CALLBACK_STATUS_CODE(k400BadRequest);
+        }
 
-    int player_id;
-    try {
-        player_id = session.get_player_id(user_id);
-    } catch (const model::game_session_error &) {
-        return CALLBACK_STATUS_CODE(k403Forbidden);
-    }
+        int player_id;
+        try {
+            player_id = session.get_player_id(user_id);
+        } catch (const model::game_session_error &) {
+            transaction->rollback();
+            return CALLBACK_STATUS_CODE(k403Forbidden);
+        }
 
-    auto session_info = session.get_session_info();
+        auto session_info = session.get_session_info();
 
-    if (session_info.status == model::GameSessionAccessObject::FINISHED) {
-        return CALLBACK_STATUS_CODE(k403Forbidden);
-    }
-    if (session_info.status == model::GameSessionAccessObject::NOT_STARTED) {
-        return CALLBACK_STATUS_CODE(k404NotFound);
-    }
+        if (session_info.status == model::GameSessionAccessObject::FINISHED) {
+            transaction->rollback();
+            return CALLBACK_STATUS_CODE(k403Forbidden);
+        }
+        if (session_info.status ==
+            model::GameSessionAccessObject::NOT_STARTED) {
+            transaction->rollback();
+            return CALLBACK_STATUS_CODE(k404NotFound);
+        }
 
-    json json_body;
-    try {
-        json_body = json::parse(req->getBody());
-    } catch (const json::parse_error &) {
-        return CALLBACK_STATUS_CODE(k400BadRequest);
-    }
-    if (!json_body.contains("move")) {
-        return CALLBACK_STATUS_CODE(k400BadRequest);
-    }
+        json json_body;
+        try {
+            json_body = json::parse(req->getBody());
+        } catch (const json::parse_error &) {
+            transaction->rollback();
+            return CALLBACK_STATUS_CODE(k400BadRequest);
+        }
+        if (!json_body.contains("move")) {
+            transaction->rollback();
+            return CALLBACK_STATUS_CODE(k400BadRequest);
+        }
 
-    std::string move = json_body["move"];
+        std::string move = json_body["move"];
 
-    model::GameStateStorage::GameState current_state;
-    try {
-        current_state =
-            m_game_state_storage->get_state(session_id, transaction);
-    } catch (const model::game_state_error &) {
-        return CALLBACK_STATUS_CODE(k404NotFound);
-    }
+        model::GameStateStorage::GameState current_state;
+        try {
+            current_state =
+                m_game_state_storage->get_state(session_id, transaction);
+        } catch (const model::game_state_error &) {
+            transaction->rollback();
+            return CALLBACK_STATUS_CODE(k404NotFound);
+        }
 
-    auto next_state = m_game_logic_manager->send_move(
-        session_info.game_id, {player_id, move, current_state.global_state});
+        auto next_state = m_game_logic_manager->send_move(
+            session_info.game_id,
+            {player_id, move, current_state.global_state});
 
-    m_game_state_storage->save_state(session_id, next_state, transaction);
+        m_game_state_storage->save_state(session_id, next_state, transaction);
 
-    if (next_state.is_terminal) {
-        session.finish();
+        if (next_state.is_terminal) {
+            session.finish();
+            LOG_INFO << "Session " << session_id
+                     << " is being declared finished!";
+        }
+
+        transaction->setCommitCallback([next_state, player_id](bool committed) {
+            LOG_TRACE << "State set (" << committed << ") state: '"
+                      << next_state.global_state << "' player_id=" << player_id;
+        });
     }
 
     auto resp = drogon::HttpResponse::newHttpResponse();
@@ -84,6 +102,7 @@ void StateController::get_state(
         session =
             m_participation_storage->get_sessionAO(session_id, transaction);
     } catch (const model::game_session_error &) {
+        transaction->rollback();
         return CALLBACK_STATUS_CODE(k404NotFound);
     }
 
@@ -91,19 +110,21 @@ void StateController::get_state(
     try {
         player_id = session.get_player_id(user_id);
     } catch (const model::game_session_error &) {
+        transaction->rollback();
         return CALLBACK_STATUS_CODE(k403Forbidden);
     }
 
     auto session_info = session.get_session_info();
 
     if (session_info.status == model::GameSessionAccessObject::NOT_STARTED) {
+        transaction->rollback();
         return CALLBACK_STATUS_CODE(k404NotFound);
     }
 
     std::string player_state;
     try {
-        player_state =
-            m_game_state_storage->get_player_state(session_id, player_id);
+        player_state = m_game_state_storage->get_player_state(
+            session_id, player_id, transaction);
     } catch (const model::game_state_error &) {
     }
 
@@ -119,6 +140,13 @@ void StateController::get_state(
         }
         resp_json["winners"] = winners;
     }
+
+    transaction->setCommitCallback(
+        [player_state = resp_json["state"].get<std::string>(),
+         player_id](bool committed) {
+            LOG_TRACE << "Got state (" << committed << ") state: '"
+                      << player_state << "' player_id=" << player_id;
+        });
 
     auto resp = newNlohmannJsonResponse(resp_json);
     callback(resp);
