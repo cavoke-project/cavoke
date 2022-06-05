@@ -37,7 +37,10 @@ public:
         const std::string &session_id,
         drogon::orm::DbClientPtr dbClient = drogon::app().getDbClient());
 
-    std::string get_player_state(const std::string &session_id, int player_id);
+    std::string get_player_state(
+        const std::string &session_id,
+        int player_id,
+        drogon::orm::DbClientPtr = drogon::app().getDbClient());
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(GameStateStorage::GameState,

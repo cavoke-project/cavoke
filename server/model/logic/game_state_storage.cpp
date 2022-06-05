@@ -78,8 +78,10 @@ GameStateStorage::GameState GameStateStorage::get_state(
 }
 
 std::string GameStateStorage::get_player_state(const std::string &session_id,
-                                               int player_id) {
-    auto mp_players = MAPPER_FOR(drogon_model::cavoke_orm::Players);
+                                               int player_id,
+                                               DbClientPtr dbClient) {
+    auto mp_players =
+        MAPPER_WITH_CLIENT_FOR(drogon_model::cavoke_orm::Players, dbClient);
     try {
         auto player = mp_players.findOne(
             Criteria(drogon_model::cavoke_orm::Players::Cols::_session_id,
