@@ -1,2 +1,2 @@
-cavoke_openapi_client>=1.0.2
+cavoke_openapi_client>=1.0.3
 pytest
