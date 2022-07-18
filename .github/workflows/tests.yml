@@ -55,7 +55,7 @@ jobs:
         run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
       - name: Make
         run: cd build && make cavoke_server
-  server-healthcheck:
+  server-pytest:
     runs-on: ubuntu-latest
     container: ghcr.io/cavoke-project/cavoke-ci:server
     services:
@@ -77,6 +77,14 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.7
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ./server/pytest/test-requirements.txt
       - name: Install PostgreSQL client
         run: |
           apt-get update
@@ -89,8 +97,9 @@ jobs:
         run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON -DUSE_EXTERNAL_JWT=ON
       - name: Make
         run: cd build && make cavoke_server
-      - name: Healthcheck
-        run: chmod +x .github/scripts/server-test-health.py && .github/scripts/server-test-health.py ./build/server/cavoke_server -c .github/files/ci_server_config.json
+      - name: Pytest
+        run: |
+          pytest ./server/pytest --servercmd "./build/server/cavoke_server -c .github/files/ci_server_config.json -p 8080" --endpoint "http://localhost:8080"
   server-tests:
     runs-on: ubuntu-latest
     container: ghcr.io/cavoke-project/cavoke-ci:server
