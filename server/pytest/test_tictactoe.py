@@ -26,7 +26,6 @@ def test_simple_game():
         assert session.game_id == tictactoe_game_id
 
         s2 = api_instance.join_session(session.session_id, user_id=bob_id)
-        assert s2 == session
         assert s2.status == 0
 
         api_instance.start_session(session.session_id, user_id=alice_id)
@@ -44,8 +43,8 @@ def test_simple_game():
             (0, 'X 6'),
         ]
         for player_id, move in moves:
-            assert api_instance.join_session(session.session_id, user_id=bob_id).status == 1
-            api_instance.send_move(move, user_id=bob_id if player_id else alice_id)
+            assert api_instance.session_info(session.session_id, user_id=bob_id).status == 1
+            api_instance.send_move(session.session_id, user_id=bob_id if player_id else alice_id, game_move=default_api.GameMove(move))
 
         final_session: default_api.SessionInfo = api_instance.session_info(session.session_id, user_id=bob_id)
         assert final_session.id == session.session_id
