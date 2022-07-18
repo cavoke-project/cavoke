@@ -5,10 +5,9 @@ import pytest
 
 
 def pytest_addoption(parser: pytest.Parser):
-    parser.addoption("--endpoint", action="store", default="https://develop.api.cavoke.wlko.me", help="API endpoint "
-                                                                                                      "to test, "
-                                                                                                      "usually your "
-                                                                                                      "'localhost:8080'")
+    parser.addoption("--endpoint", action="store", default="http://localhost:8080", help="API endpoint "
+                                                                                         "to test, "
+                                                                                         "usually your localhost")
     parser.addoption("--servercmd", action="store", default=None, help="command to start the server process")
 
 
@@ -20,9 +19,8 @@ def pytest_configure(config: pytest.Config):
     """
     host = config.getoption("endpoint")
     print(f"Using this endpoint for testing: '{host}'", flush=True)
-    pytest.server_config = cavoke_openapi_client.Configuration(
-        host=host
-    )
+    print(f"Please make sure that the server is NOT using JWT Auth!!!", flush=True)
+    pytest.server_config = cavoke_openapi_client.Configuration(host=host)
 
 
 def pytest_sessionstart(session: pytest.Session):
