@@ -105,7 +105,7 @@ jobs:
         run: cd build && make cavoke_server
       - name: Pytest
         run: |
-          pytest ./server/pytest --servercmd "./build/server/cavoke_server -c .github/files/ci_server_config.json -p 8080" --endpoint "http://localhost:8080"
+          pytest ./server/pytest --servercmd "./build/server/cavoke_server -c .github/files/ci_server_config.json -p 8080" --endpoint "http://localhost:8080" -k 'test_health'
   server-tests:
     runs-on: ubuntu-latest
     container: ghcr.io/cavoke-project/cavoke-ci:server
@@ -136,9 +136,20 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.7
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ./server/pytest/test-requirements.txt
       - name: Start up the server with Docker Compose
         run: docker-compose up -d
       - name: Healthcheck
         run: test $(curl -s localhost:8080/health) = "OK"
       - name: Check that some games are available
         run: curl -s localhost:8080/games/list | jq -e 'length >= 1'
+      - name: Pytest
+        run: |
+          pytest ./server/pytest --endpoint "http://localhost:8080"
