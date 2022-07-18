@@ -35,7 +35,7 @@ def pytest_sessionstart(session: pytest.Session):
         print("No process started!!!", flush=True)
     else:
         print(f"Starting server process with '{server_cmd}'...", flush=True)
-        pytest.server_process = subprocess.Popen(args=server_cmd)
+        pytest.server_process = subprocess.Popen(args=server_cmd, shell=True)
 
 
 def pytest_sessionfinish(session, exitstatus):
