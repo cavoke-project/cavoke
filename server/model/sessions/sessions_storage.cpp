@@ -1,4 +1,6 @@
 #include "sessions_storage.h"
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
 #include <utility>
 #include "sql-models/Globalstates.h"
 #include "sql-models/Rooms.h"
@@ -26,7 +28,7 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
     // create session
     auto session = drogon_model::cavoke_orm::Sessions();
     {
-        session.setId(getLowerUUID());
+        session.setId(to_string(boost::uuids::random_generator()()));
         session.setGameSettingsToNull();
         session.setGameId(game_config.id);
     }
