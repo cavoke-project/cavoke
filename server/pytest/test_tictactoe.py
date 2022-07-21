@@ -1,3 +1,4 @@
+import time
 import uuid
 from typing import List
 
@@ -44,8 +45,12 @@ def test_simple_game():
         ]
         for player_id, move in moves:
             assert api_instance.session_info(session.session_id, user_id=bob_id).status == 1
-            api_instance.send_move(session.session_id, user_id=bob_id if player_id else alice_id, game_move=default_api.GameMove(move))
+            api_instance.send_move(session.session_id, user_id=bob_id if player_id else alice_id,
+                                   game_move=default_api.GameMove(move))
+            time.sleep(0.1)  # for synchronizing moves
 
         final_session: default_api.SessionInfo = api_instance.session_info(session.session_id, user_id=bob_id)
-        assert final_session.id == session.session_id
+        final_state: default_api.GameState = api_instance.get_update(session.session_id, user_id=alice_id)
+        assert final_session.session_id == session.session_id
         assert final_session.status == 2
+        assert final_state.state == 'OXOXXOXOX'

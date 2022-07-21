@@ -26,7 +26,7 @@ GameSessionAccessObject::GameSessionInfo SessionsStorage::create_session(
     // create session
     auto session = drogon_model::cavoke_orm::Sessions();
     {
-        session.setId(drogon::utils::getUuid());
+        session.setId(getLowerUUID());
         session.setGameSettingsToNull();
         session.setGameId(game_config.id);
     }

@@ -61,7 +61,7 @@ jobs:
         run: mkdir -p build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON
       - name: Make
         run: cd build && make cavoke_server
-  server-pytest:
+  server-healthcheck:
     runs-on: ubuntu-latest
     container: ghcr.io/cavoke-project/cavoke-ci:server
     services:
@@ -103,7 +103,7 @@ jobs:
         run: mkdir build && cd build && cmake .. -DBUILD_ALL=OFF -DBUILD_SERVER=ON -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON -DUSE_EXTERNAL_JWT=ON
       - name: Make
         run: cd build && make cavoke_server
-      - name: Pytest
+      - name: Pytest (Healthcheck)
         run: |
           pytest ./server/pytest --servercmd "./build/server/cavoke_server -c .github/files/ci_server_config.json -p 8080" --endpoint "http://localhost:8080" -k 'test_health'
   server-tests:
