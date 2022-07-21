@@ -79,14 +79,4 @@ inline std::string hide_password(std::string str) {
 /// ORM mapper for default database client
 #define MAPPER_FOR(T) MAPPER_WITH_CLIENT_FOR(T, drogon::app().getDbClient())
 
-/// Returns random uuid in format like `f3708899-d932-45e3-a4f8-6f43e7af8d1b`
-inline std::string getLowerUUID() {
-    std::string res = drogon::utils::getUuid();
-    for (char &c : res) {
-        // All characters to lower
-        c = tolower(c);
-    }
-    return res;
-}
-
 #endif  // CAVOKE_UTILS_H
