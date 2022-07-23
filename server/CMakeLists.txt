@@ -67,6 +67,7 @@ endif ()
 
 
 target_link_libraries(cavoke_server PRIVATE ${Boost_LIBRARIES} ${CMAKE_DL_LIBS})
+target_link_libraries(cavoke_server PRIVATE bcrypt) # workaround for https://github.com/boostorg/uuid/issues/68
 
 drogon_create_views(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/views
         ${CMAKE_CURRENT_BINARY_DIR})
