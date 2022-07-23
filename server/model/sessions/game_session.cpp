@@ -262,8 +262,7 @@ drogon_model::cavoke_orm::Statuses GameSessionAccessObject::get_actual_status()
 
 void GameSessionAccessObject::set_status(SessionStatus status) {
     drogon_model::cavoke::Statuses status_record;
-    auto session = get_snapshot();
-    status_record.setSessionId(session.getValueOfId());
+    status_record.setSessionId(id);
     status_record.setStatus(status);
     default_mp_statuses.insert(status_record);
 }
