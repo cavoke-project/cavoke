@@ -342,3 +342,5 @@ begin
 end;
 $$
     language plpgsql;
+
+SET DEFAULT_TRANSACTION_ISOLATION TO SERIALIZABLE ;
