@@ -12,11 +12,6 @@
     <a href="https://github.com/cavoke-project/cavoke/actions/workflows/app.yml">
         <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/cavoke-project/cavoke/app?style=flat-square&logo=github">
     </a>
-<!--
-    <a href="https://github.com/cavoke-project/cavoke/releases">
-        <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/v/release/cavoke-project/cavoke?include_prereleases&logo=github&style=flat-square">
-    </a>
--->
     <a href="">
         <img alt="GitHub deployments" src="https://img.shields.io/github/deployments/cavoke-project/cavoke/develop?label=deployment&logo=google-cloud&logoColor=white&style=flat-square">
     </a>
@@ -26,9 +21,6 @@
     <a href="https://cavoke.docs.apiary.io">
         <img alt="OpenAPI status" src="https://img.shields.io/badge/OpenAPI-passing-success?logo=swagger&logoColor=white&style=flat-square">
     </a>
-    <!--<a href="https://gitpod.io/#https://github.com/cavoke-project/cavoke">
-        <img alt="Gitpod Ready-to-Code" src="https://img.shields.io/badge/Gitpod-Ready--to--Code-orange?logo=gitpod&style=flat-square">
-    </a>-->
     <a href="./LICENSE">
         <img alt="License" src="https://img.shields.io/github/license/cavoke-project/cavoke?style=flat-square&color=6ad">
     </a>
