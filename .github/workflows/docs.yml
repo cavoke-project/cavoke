@@ -24,9 +24,18 @@ jobs:
         run: echo "PROJECT_NUMBER = `git describe --tags`" >> Doxyfile
       - name: Generate Documentation
         run: ./doxygen Doxyfile
-      - name: Publish generated content to GitHub Pages
-        uses: tsunematsu21/actions-publish-gh-pages@v1.0.1
+      - name: Git add & commit
+        run: |
+          cd docs/html
+          git init
+          git add -A
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -m "Publishing Doxygen"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
         with:
-          dir: docs/html
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
-          token: ${{ secrets.GITHUB_TOKEN }}
+          force: true
+          directory: docs/html
