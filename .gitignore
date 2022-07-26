@@ -179,3 +179,9 @@ local_server/
 *.log
 /games/codenames/client/client.zip
 uploads/
+
+# CMakeFiles
+CMakeFiles/
+
+# Doxygen output
+docs/html/
