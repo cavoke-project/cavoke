@@ -140,7 +140,7 @@ jobs:
         with:
           submodules: recursive
       - name: Install sponge
-        run: apt install -y moreutils
+        run: sudo apt-get update && sudo apt-get install -y moreutils
       - name: Set the number of threads (${{ matrix.threads_num }})
         run: jq '.app.number_of_threads = ${{ matrix.threads_num }}' example/server_data/drogon_config.json | sponge example/server_data/drogon_config.json 
       - name: Set up Python
