@@ -869,7 +869,7 @@ INPUT                  = cavoke-dev-lib \
                          client \
                          server \
                          README.md \
-                         docs/GameLogicProtocol.md
+                         docs
 
 
 # This tag can be used to specify the character encoding of the source files
