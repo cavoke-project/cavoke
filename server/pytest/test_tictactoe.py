@@ -58,7 +58,8 @@ def test_simple_game():
         assert final_state.state == 'OXOXXOXOX'
 
 
-def test_transaction_isolation_on_game_end():
+@pytest.mark.parametrize('execution_number', range(3))
+def test_transaction_isolation_on_game_end(execution_number):
     with cavoke_openapi_client.ApiClient(pytest.server_config) as api_client:
         api_instance = default_api.DefaultApi(api_client)
         alice_id = str(uuid.uuid4())
@@ -94,19 +95,24 @@ def test_transaction_isolation_on_game_end():
         def spam_x6_player_1():
             logging.debug('Commencing spamming')
             while do_spamming:
+                logging.debug('.')
                 api_instance.send_move(session.session_id, user_id=bob_id, game_move=default_api.GameMove('X 6'), async_req=True)
+                time.sleep(0.1)
 
         t_spam = threading.Thread(target=spam_x6_player_1)
         t_spam.start()
 
-        time.sleep(0.2)
+        time.sleep(1)
 
         api_instance.send_move(session.session_id, user_id=alice_id, game_move=default_api.GameMove('X 6'))
 
         do_spamming = False
 
+        logging.debug('Spamming stopped. Checking final.')
         final_session: default_api.SessionInfo = api_instance.session_info(session.session_id, user_id=alice_id)
         final_state: default_api.GameState = api_instance.get_update(session.session_id, user_id=alice_id)
+        logging.debug(str(final_state))
+
         assert final_session.session_id == session.session_id
         assert final_session.status == 2
         assert final_state.state == 'OXOXXOXOX'
