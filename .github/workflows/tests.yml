@@ -132,11 +132,16 @@ jobs:
         run: cd build && make all
   server-docker-compose-check:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        threads_num: [1, 4]
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set the number of threads
+        run: jq '.app.number_of_threads = ${{ matrix.threads_num }}' example/server_data/drogon_config.json | sponge example/server_data/drogon_config.json 
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.7
