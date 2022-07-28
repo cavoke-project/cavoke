@@ -185,3 +185,6 @@ CMakeFiles/
 
 # Doxygen output
 docs/html/
+
+# Python cache
+**/__pycache__
