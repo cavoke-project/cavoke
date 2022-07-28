@@ -1,3 +1,6 @@
+-- Transaction isolation (see
+set default_transaction_isolation to 'repeatable read';
+
 create table users
 (
     id           varchar not null
@@ -342,5 +345,3 @@ begin
 end;
 $$
     language plpgsql;
-
-SET DEFAULT_TRANSACTION_ISOLATION TO SERIALIZABLE ;
