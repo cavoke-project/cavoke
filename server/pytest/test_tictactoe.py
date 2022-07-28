@@ -64,7 +64,7 @@ def test_simple_game():
         assert final_state.state == 'OXOXXOXOX'
 
 
-@pytest.mark.parametrize('execution_number', range(3))
+@pytest.mark.parametrize('execution_number', range(5))
 def test_transaction_isolation_on_game_end(execution_number):
     """
     Test for correct transaction isolation. There was a bug, when transactions were not isolated properly,
@@ -128,7 +128,8 @@ def test_transaction_isolation_on_game_end(execution_number):
         assert final_state.state == 'OXOXXOXOX'
 
 
-def test_requests_flood():
+@pytest.mark.parametrize('execution_number', range(5))
+def test_requests_flood(execution_number):
     """
     Makes many requests to internal game (via boost process) and checks that the server is alive.
     Previously there was a server segmentation fault caused here.
