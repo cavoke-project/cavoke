@@ -12,6 +12,9 @@ tictactoe_game_id = "tictactoe"
 
 
 def test_check_tictactoe_available():
+    """
+    Checks whether tictactoe game is available
+    """
     with cavoke_openapi_client.ApiClient(pytest.server_config) as api_client:
         api_instance = default_api.DefaultApi(api_client)
         games: List[default_api.GameInfo] = api_instance.list_games()
@@ -20,6 +23,9 @@ def test_check_tictactoe_available():
 
 
 def test_simple_game():
+    """
+    Creates a tictactoe session and plays a simple round with itself, checking the state after every move.
+    """
     with cavoke_openapi_client.ApiClient(pytest.server_config) as api_client:
         api_instance = default_api.DefaultApi(api_client)
         alice_id = str(uuid.uuid4())
@@ -60,6 +66,10 @@ def test_simple_game():
 
 @pytest.mark.parametrize('execution_number', range(3))
 def test_transaction_isolation_on_game_end(execution_number):
+    """
+    Test for correct transaction isolation. There was a bug, when transactions were not isolated properly,
+    therefore producing invalid a game state with broken invariant
+    """
     with cavoke_openapi_client.ApiClient(pytest.server_config) as api_client:
         api_instance = default_api.DefaultApi(api_client)
         alice_id = str(uuid.uuid4())
@@ -116,3 +126,22 @@ def test_transaction_isolation_on_game_end(execution_number):
         assert final_session.session_id == session.session_id
         assert final_session.status == 2
         assert final_state.state == 'OXOXXOXOX'
+
+
+def test_requests_flood():
+    """
+    Makes many requests to internal game (via boost process) and checks that the server is alive.
+    Previously there was a server segmentation fault caused here.
+    """
+    with cavoke_openapi_client.ApiClient(pytest.server_config) as api_client:
+        api_instance = default_api.DefaultApi(api_client)
+        alice_id = str(uuid.uuid4())
+
+        session: default_api.SessionInfo = api_instance.create_session(tictactoe_game_id, user_id=alice_id)
+        assert session.game_id == tictactoe_game_id
+        logging.debug('Starting spamming...')
+        for i in range(50):
+            logging.debug(f'req {i}')
+            api_instance.validate_session(session.session_id, user_id=alice_id, async_req=True)
+        logging.debug('Spamming stopped.')
+        assert api_instance.health() == "OK"
