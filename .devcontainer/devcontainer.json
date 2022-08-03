@@ -8,14 +8,13 @@
     "vscode": {
       "extensions": [
         "ms-vscode.cpptools",
-        "ms-vscode.cmake-tools"
+        "ms-vscode.cmake-tools",
+        "ms-azuretools.vscode-docker",
+        "timonwong.shellcheck"
       ]
     }
   },
-
-  // Use 'forwardPorts' to make a list of ports inside the container available locally.
-//   "forwardPorts": [],
-
-  // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "mkdir -p CMakeFiles && cmake . -B CMakeFiles -DQT_MAJOR_VERSION=5"
+  "forwardPorts": [8080],
+  "postCreateCommand": "cmake . -B build -DQT_MAJOR_VERSION=5 -G Ninja",
+  "remoteUser": "gitpod"
 }

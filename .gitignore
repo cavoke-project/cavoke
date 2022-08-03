@@ -182,6 +182,7 @@ uploads/
 
 # CMakeFiles
 CMakeFiles/
+build/
 
 # Doxygen output
 docs/html/
