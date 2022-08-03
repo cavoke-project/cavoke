@@ -123,9 +123,14 @@ def test_transaction_isolation_on_game_end(execution_number):
         final_state: default_api.GameState = api_instance.get_update(session.session_id, user_id=alice_id)
         logging.debug(str(final_state))
 
+        time.sleep(1)
+
         assert final_session.session_id == session.session_id
-        assert final_session.status == 2
-        assert final_state.state == 'OXOXXOXOX'
+        if final_session.status == 1:
+            logging.warning("Session is not finished! Skipping.")
+        else:
+            assert final_session.status == 2
+            assert final_state.state == 'OXOXXOXOX'
 
 
 @pytest.mark.parametrize('execution_number', range(5))
