@@ -7,4 +7,5 @@ RUN sudo apt-get update -yqq \
     libboost-all-dev python3-pip \
     qtbase5-dev qtdeclarative5-dev libqt5networkauth5-dev\
     libkf5archive-dev \
+    extra-cmake-modules \
     && sudo rm -rf /var/lib/apt/lists/*

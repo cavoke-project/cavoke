@@ -2,6 +2,7 @@
 #define CAVOKE_UTILS_H
 
 #include <drogon/HttpResponse.h>
+#include <drogon/utils/Utilities.h>
 #include <json/json.h>
 #include <boost/filesystem/path.hpp>
 #include <nlohmann/json.hpp>

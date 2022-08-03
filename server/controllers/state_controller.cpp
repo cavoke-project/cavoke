@@ -14,9 +14,9 @@ void StateController::send_move(
 
     {
         auto transaction = drogon::app().getDbClient()->newTransaction();
-        model::GameSessionAccessObject session;
+        model::GameSessionAccessObject session_with_transaction;
         try {
-            session =
+            session_with_transaction =
                 m_participation_storage->get_sessionAO(session_id, transaction);
         } catch (const model::game_session_error &) {
             transaction->rollback();
@@ -25,13 +25,13 @@ void StateController::send_move(
 
         int player_id;
         try {
-            player_id = session.get_player_id(user_id);
+            player_id = session_with_transaction.get_player_id(user_id);
         } catch (const model::game_session_error &) {
             transaction->rollback();
             return CALLBACK_STATUS_CODE(k403Forbidden);
         }
 
-        auto session_info = session.get_session_info();
+        auto session_info = session_with_transaction.get_session_info();
 
         if (session_info.status == model::GameSessionAccessObject::FINISHED) {
             transaction->rollback();
@@ -50,7 +50,7 @@ void StateController::send_move(
             transaction->rollback();
             return CALLBACK_STATUS_CODE(k400BadRequest);
         }
-        if (!json_body.contains("move")) {
+        if (!json_body.contains("move") || !json_body["move"].is_string()) {
             transaction->rollback();
             return CALLBACK_STATUS_CODE(k400BadRequest);
         }
@@ -73,7 +73,7 @@ void StateController::send_move(
         m_game_state_storage->save_state(session_id, next_state, transaction);
 
         if (next_state.is_terminal) {
-            session.finish();
+            session_with_transaction.finish();
             LOG_INFO << "Session " << session_id
                      << " is being declared finished!";
         }
@@ -97,9 +97,9 @@ void StateController::get_state(
     auto user_id = AuthFilter::get_user_id(req);
 
     auto transaction = drogon::app().getDbClient()->newTransaction();
-    model::GameSessionAccessObject session;
+    model::GameSessionAccessObject session_with_transaction;
     try {
-        session =
+        session_with_transaction =
             m_participation_storage->get_sessionAO(session_id, transaction);
     } catch (const model::game_session_error &) {
         transaction->rollback();
@@ -108,13 +108,13 @@ void StateController::get_state(
 
     int player_id;
     try {
-        player_id = session.get_player_id(user_id);
+        player_id = session_with_transaction.get_player_id(user_id);
     } catch (const model::game_session_error &) {
         transaction->rollback();
         return CALLBACK_STATUS_CODE(k403Forbidden);
     }
 
-    auto session_info = session.get_session_info();
+    auto session_info = session_with_transaction.get_session_info();
 
     if (session_info.status == model::GameSessionAccessObject::NOT_STARTED) {
         transaction->rollback();
@@ -136,7 +136,7 @@ void StateController::get_state(
         std::vector<std::string> winners;
         for (const auto &e : game_state.winners) {
             // cppcheck-suppress useStlAlgorithm
-            winners.push_back(session.get_user_id(e));
+            winners.push_back(session_with_transaction.get_user_id(e));
         }
         resp_json["winners"] = winners;
     }

@@ -16,8 +16,6 @@ struct room_error : cavoke_base_exception {
 class RoomsStorage {
     std::shared_ptr<SessionsStorage> m_sessions_storage;
 
-    static std::string generate_invite_code();
-
 public:
     explicit RoomsStorage(std::shared_ptr<SessionsStorage> mSessionsStorage);
 

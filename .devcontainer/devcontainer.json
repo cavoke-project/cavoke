@@ -1,0 +1,20 @@
+{
+  "name": "Cavoke",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cmake-tools",
+        "ms-azuretools.vscode-docker",
+        "timonwong.shellcheck"
+      ]
+    }
+  },
+  "forwardPorts": [8080],
+  "postCreateCommand": "cmake . -B build -DQT_MAJOR_VERSION=5 -G Ninja",
+  "remoteUser": "gitpod"
+}

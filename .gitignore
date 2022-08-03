@@ -182,6 +182,10 @@ uploads/
 
 # CMakeFiles
 CMakeFiles/
+build/
 
 # Doxygen output
 docs/html/
+
+# Python cache
+**/__pycache__
