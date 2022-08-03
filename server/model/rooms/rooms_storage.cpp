@@ -11,20 +11,6 @@ RoomsStorage::RoomsStorage(std::shared_ptr<SessionsStorage> mSessionsStorage)
     : m_sessions_storage(std::move(mSessionsStorage)) {
 }
 
-/// Generates an invite code for session
-std::string RoomsStorage::generate_invite_code() {
-    // prepare template
-    std::string res = "......";
-    // random digits
-    std::random_device rd;
-    std::mt19937 engine(rd());
-    std::uniform_int_distribution<char> dist('0', '9');
-    // set every character to be a random digit
-    std::generate(res.begin(), res.end(),
-                  [&dist, &engine]() { return dist(engine); });
-    return res;
-}
-
 std::optional<RoomsStorage::RoomInfo> RoomsStorage::get_by_id(
     const std::string &room_id) {
     auto mp_rooms_trans = MAPPER_FOR(drogon_model::cavoke_orm::Rooms);
@@ -140,7 +126,7 @@ RoomsStorage::RoomInfo RoomsStorage::create_room(
 
         mp_rooms_trans.insert(room);
         mp_joins_trans.insert(join);
-        
+
         room = mp_rooms_trans.findByPrimaryKey(room.getValueOfId());
         room.setHostId(host_id);
         mp_rooms_trans.update(room);
