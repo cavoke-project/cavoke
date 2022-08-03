@@ -122,8 +122,6 @@ RoomsStorage::RoomInfo RoomsStorage::create_room(
     auto room = drogon_model::cavoke_orm::Rooms();
     {
         room.setId(drogon::utils::getUuid());
-        // TODO: there are only 1e6 invite codes, something has to be done about
-        room.setInviteCode(generate_invite_code());
         room.setDisplayName(display_name);
         room.setSessionIdToNull();
     }
@@ -142,7 +140,8 @@ RoomsStorage::RoomInfo RoomsStorage::create_room(
 
         mp_rooms_trans.insert(room);
         mp_joins_trans.insert(join);
-
+        
+        room = mp_rooms_trans.findByPrimaryKey(room.getValueOfId());
         room.setHostId(host_id);
         mp_rooms_trans.update(room);
     }

@@ -345,3 +345,53 @@ begin
 end;
 $$
     language plpgsql;
+
+create extension if not exists "pgcrypto";
+
+-- Generates unique invite codes for `rooms`
+create or replace function unique_short_invite_code()
+    returns trigger as
+$$
+declare
+    key   text;
+    qry   text;
+    found text;
+    len   int;
+begin
+    -- generate the first part of a query as a string with safely
+    -- escaped table name, using || to concat the parts
+    qry := 'SELECT invite_code FROM ' || quote_ident(TG_TABLE_NAME) || ' WHERE invite_code=';
+    len := 3;
+    -- This loop will probably only run once per call until we've generated
+    -- millions of ids.
+    loop
+        -- Generate our string bytes and re-encode as a hex string.
+        key := encode(gen_random_bytes(len), 'hex');
+        -- Concat the generated key (safely quoted) with the generated query
+        -- and run it.
+        -- SELECT invite_code FROM "test" WHERE invite_code='blahblah' INTO found
+        -- Now "found" will be the duplicated id or NULL.
+        execute qry || quote_literal(key) into found;
+        -- Check to see if found is NULL.
+        if found is null then
+            -- If we didn't find a collision then leave the LOOP.
+            exit;
+        end if;
+        -- We haven't EXITed yet, so return to the top of the LOOP
+        -- and try again with a longer key.
+        len := len + 1;
+    end loop;
+    -- We're replacing invite_code, regardless of what it was before
+    -- with our key variable.
+    NEW.invite_code = key;
+
+    return NEW;
+end;
+$$ language 'plpgsql';
+
+-- Auto generates unique invite codes for `rooms`
+create or replace trigger trigger_gen_invite_code
+    before insert
+    on rooms
+    for each row
+execute procedure unique_short_invite_code();
