@@ -183,9 +183,10 @@ bool GameSessionAccessObject::is_host(const std::string &user_id) const {
     return get_host() == user_id;
 }
 
-void GameSessionAccessObject::finish() {
-    set_status(FINISHED);
+void GameSessionAccessObject::update_status(bool is_terminal) {
+    set_status(is_terminal ? FINISHED : RUNNING);
 }
+
 drogon_model::cavoke_orm::Sessions GameSessionAccessObject::get_snapshot()
     const {
     return default_mp_sessions.findOne(

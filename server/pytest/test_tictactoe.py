@@ -66,7 +66,7 @@ def test_simple_game():
         assert final_state.state == 'OXOXXOXOX'
 
 
-@pytest.mark.parametrize('execution_number', range(5))
+@pytest.mark.parametrize('execution_number', range(10))
 def test_transaction_isolation_on_game_end(execution_number):
     """
     Test for correct transaction isolation. There was a bug, when transactions were not isolated properly,
