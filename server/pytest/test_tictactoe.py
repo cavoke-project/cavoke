@@ -34,6 +34,8 @@ def test_simple_game():
         session: default_api.SessionInfo = api_instance.create_session(tictactoe_game_id, user_id=alice_id)
         assert session.game_id == tictactoe_game_id
 
+        time.sleep(0.2)
+
         s2 = api_instance.join_session(session.session_id, user_id=bob_id)
         assert s2.status == 0
 
