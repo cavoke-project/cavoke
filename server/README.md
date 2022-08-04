@@ -1,18 +1,19 @@
-# Серверный компонент Cavoke
+# Cavoke Server
 
-## О сервере
+## About the server
+
 
 TODO
 
-## Как запустить
+## How to Use
 
 ### Docker
 
-Проще всего сервер запустить внутри docker контейнера.
+The simplest way to start up the server is inside a **docker container**.
 
 #### Docker Compose
 
-Для локальной разработки в одну команду можно запустить сервер через docker-compose.
+For local development or small-scale use you can start it using **docker-compose**.
 
 ```console
 cavoke@ubuntu:~$ docker-compose up -d
@@ -20,33 +21,41 @@ cavoke@ubuntu:~$ curl -s localhost:8080/games/list
 [{"display_name":"Tic-tac-toe","id":"tictactoe", ... }]
 ```
 
-Для этого можно воспользоваться актуальным
-image [`ghcr.io/cavoke-project/cavoke-server`](ghcr.io/cavoke-project/cavoke-server).
+#### Manual docker installation
 
-#### Пример с mount игр
+If you don't want to use docker-compose, for instance you want to run it inside a kubernetes, you can use a pre-built [docker image](https://ghcr.io/cavoke-project/cavoke-server). You must attach an
+initialized (with [schema.sql](./db/schema.sql)) **database** (Postgres14 recommended, other database might work, but
+have not been tested) and a **mounted directory with games**. Both these parameters are most easily specified using
+the [config file]. <!-- TODO -->
+
+Example with *local* games (see [local vs remote games]):
 
 ```console
 cavoke@ubuntu:~$ find . -type f
 ./local_games/tictactoe/client.zip
 ./local_games/tictactoe/logic
 ./local_games/tictactoe/config.json
+cavoke@ubuntu:~$ chmod +x ./local_games/tictactoe/logic  # Required for executing 
 cavoke@ubuntu:~$ docker run -v `pwd`/local_games:/mnt/games -p 8080:8080 -d ghcr.io/cavoke-project/cavoke-server -g /mnt/games
 cavoke@ubuntu:~$ curl -s localhost:8080/games/list
 [{"display_name":"Tic-tac-toe","id":"tictactoe", ... }]
 ```
 
-<!-- TODO: execution permissions required. Example above will only list games, etc.-->
+A detailed description of command line options is available by
+running `docker run -t ghcr.io/cavoke-project/cavoke-server --help`
 
-Подробное описание всех опций запуска см. в `docker run -t ghcr.io/cavoke-project/cavoke-server --help`
+### Build Server
 
-### Собрать самому
+#### On a local machine
 
-#### На своей машине
+This project uses CMake for building.
 
-Для сборки необходимо установить [boost](https://www.boost.org/) не старее 1.71, а также несколько пакетов для
-серверного фреймворка.
+Most external libraries are added as submodules into [third_party](../third_party) folder for easier configuration.
+Unfortunately, their dependencies are not particularly available and must be downloaded separately.
 
-Например, на ubuntu все зависимости можно загрузить с помощью `apt`.
+##### Ubuntu
+
+All required packages are available using `apt`:
 
 ```console
 cavoke@ubuntu:~$ apt install libboost-all-dev \
@@ -54,57 +63,66 @@ cavoke@ubuntu:~$ apt install libboost-all-dev \
     postgresql-server-dev-all
 ```
 
-После этого можно будет собрать проект с помощью `cmake`.
+Now you can build the server.
 
 ```console
-cavoke@ubuntu:~$ mkdir -p build-cmake && cmake . -B build-cmake
+cavoke@ubuntu:~$ cmake . -B build-server -DBUILD_ALL=OFF -DBUILD_SERVER=ON
 ```
 
-> :information_source: Для сборки, используя локальные библиотеки, может понадобиться
-> прописать `git submodule update --init --recursive` для загрузки подмодулей.
+> :information_source: If using libraries from submodules, you might need to execute
+> `git submodule update --init --recursive` to download them.
 
-#### Установка библиотек извне
+##### Windows
 
-Вообще же на сервере используются следующие библиотеки. Альтернативно можно установить каждую из них отдельно,
-следуя инструкциям в их документации.
+It is recommended to use [Msys2](https://www.msys2.org/). Download the equivalent msys packages via `packman`.
 
-- [drogon](https://github.com/drogonframework/drogon) не старее 1.7.3
-- [nlohmann/json](https://github.com/nlohmann/json) не старее 3.9.0
-- [boost](https://www.boost.org/) не старее 1.71
+##### Using external libraries
 
-После этого, чтобы указать установку библиотеки cmake, стоит использовать флаг. Например, `-DUSE_EXTERNAL_DROGON=ON`.
+Alternatively, you can link the following libraries if they are already installed on your machine:
 
-Итого команда для запуска `cmake` может выглядеть так:
+- [drogon](https://github.com/drogonframework/drogon) 1.7.3 or newer
+- [nlohmann/json](https://github.com/nlohmann/json) 3.9.0 or newer
+- [boost](https://www.boost.org/) 1.71 or newer
+
+To tell CMake to use external libraries, use a corresponding flag. For instance, `-DUSE_EXTERNAL_DROGON=ON`.
+
+A complete CMake command might look like this:
 
 ```console
-cavoke@ubuntu:~$ mkdir -p build-cmake && cmake . -B build-cmake -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON
+cavoke@ubuntu:~$ cmake . -B build-server -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON
 ```
 
 Более подробно смотрите в [CMakeLists.txt](./CMakeLists.txt)
 
+#### Dev-container
+
+For a simplified setup Cavoke also provides a [dev-container](../.devcontainer/Dockerfile) with all dependencies
+installed.
+
 #### Gitpod
 
-Альтернативно, можно попробовать разрабатывать в удаленной среде. Для этого подключён сервис Gitpod, с помощью которого
-можно в браузере запустить VS Code, в котором уже будут добавлены все зависимости, а работать он будет в облаке.
+Alternatively, you can develop remotely using a dev-container. For this you can use Gitpod. It starts up a remote VS
+Code Instance inside a dev-container.
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/cavoke-project/cavoke)
 
 ### SQL
 
-Для обработки большинства запросов сервера требуется база данных [Postgresql](https://www.postgresql.org/).
+Cavoke Server requires a working SQL database to store and update information about the games.
 
-После того как сервер postgres запущен, создайте необходимые таблицы с помощью [скрипта sql](db/schema.sql). Например,
-на linux:
+We use [Postgres 14](https://www.postgresql.org/). Any other database have not been tested, and are most likely not to
+work.
+
+To initialize your postgres database for cavoke, please use [schema.sql](db/schema.sql). Example using `psql`:
 
 ```bash
 PGPASSWORD="postgres_password"
 psql -h postgres -d cavoke -U postgres_user -f server/db/schema.sql
 ```
 
-После этого нужно обновить ваш конфигурационный файл Drogon ([шаблон конфигурационного файла](./example_config.json)),
-дополнив его информацией о подключении к базе данных.
+You should provide valid database credentials in [drogon configuration file]. <!-- TODO -->
 
-Для того чтобы передать серверу конфигурационный файл, запустите его с ключом `-c`. Например:
+To pass the configuration file to the server, please use `-c` option. For example:
 
 ```console
 cavoke@ubuntu:~$ cavoke_server -c my_config.json
@@ -116,18 +134,22 @@ Database connection: host=127.0.0.1 port=5432 dbname=cavoke user=postgres_user <
 Listening at 0.0.0.0:8080... 
 ```
 
-## Разработка
+## Development
 
 ### Drogon ORM
 
-Для работы с базой данных
-используется [Drogon ORM](https://github.com/drogonframework/drogon/wiki/ENG-08-3-DataBase-ORM). Модели находятся в
-директории [sql-models](./sql-models).
+For interacting with the database from
+C++ [Drogon ORM](https://github.com/drogonframework/drogon/wiki/ENG-08-3-DataBase-ORM) is used. You can find the
+**autogenerated** [models](https://github.com/drogonframework/drogon/wiki/ENG-08-3-DataBase-ORM#model) in
+the [sql-models](./sql-models) directory.
 
-Чтобы перегенерировать ORM, стоит воспользоваться утилитой
-[`drogon_ctl`](https://github.com/drogonframework/drogon/wiki/ENG-11-drogon_ctl-Command), которая
-устанавливается вместе с Drogon.
+To (re)generate ORM sql-models (from a running database instance), please use [`drogon_ctl`](https://github.com/drogonframework/drogon/wiki/ENG-11-drogon_ctl-Command). It is installed automatically together with Drogon.
 
+> :warning: Please do not manually edit c++ files in the [sql-models](./sql-models) directory.
+
+Example:
 ```console
 cavoke@ubuntu:~$ drogon_ctl create model sql-models
 ```
+
+> :information_source: You will have to provide your database credentials to connect to the database.
