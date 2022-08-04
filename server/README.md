@@ -1,7 +1,6 @@
-# Cavoke Server
+# Cavoke Server {#CavokeServer}
 
 ## About the server
-
 
 TODO
 
