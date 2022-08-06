@@ -85,8 +85,10 @@ if (BUILD_ALL OR BUILD_GAMES)
 endif ()
 
 # Doxygen Documentation
-set(DOXYGEN_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs)
 find_package(Doxygen 1.9.1 OPTIONAL_COMPONENTS dot)
+# Configure all options
+include(cmake/DoxygenConfig.cmake)
+
 if (DOXYGEN_FOUND)
     doxygen_add_docs(
         docs
