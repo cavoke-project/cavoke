@@ -1,11 +1,11 @@
 image: ghcr.io/cavoke-project/dev
 
 tasks:
-  - name: Install Python Dependencies
-    init: pip3 install --no-input -r server/pytest/test-requirements.txt
   - name: Cavoke Database
     before: docker build . -f db.Dockerfile -t cavoke_db
     command: docker run -t -p 5432:5432 cavoke_db
+  - name: Bash
+    init: pip3 install --no-input -r server/pytest/test-requirements.txt
 
 vscode:
   extensions:
