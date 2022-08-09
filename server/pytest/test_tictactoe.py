@@ -128,10 +128,9 @@ def test_transaction_isolation_on_game_end(execution_number):
         time.sleep(1)
 
         assert final_session.session_id == session.session_id
-        if final_session.status == 1:
+        if not final_state.is_terminal:
             logging.warning("Session is not finished! Skipping.")
         else:
-            assert final_session.status == 2
             assert final_state.state == 'OXOXXOXOX'
 
 
