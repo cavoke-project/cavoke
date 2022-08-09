@@ -1,9 +1,9 @@
 image: ghcr.io/cavoke-project/dev
 
 tasks:
-  - name: Database
+  - name: Cavoke Database
     before: docker build . -f db.Dockerfile -t cavoke_db
-    command: docker run -t -p 5432:5432 -e POSTGRES_USER=postgres_user -e POSTGRES_PASSWORD=postgres_password cavoke_db
+    command: docker run -t -p 5432:5432 cavoke_db
 
 vscode:
   extensions:

@@ -11,5 +11,6 @@
       ]
     }
   },
-  "forwardPorts": [8080]
+  "forwardPorts": [8080],
+  "onCreateCommand": "docker build . -f db.Dockerfile -t cavoke_db"
 }
