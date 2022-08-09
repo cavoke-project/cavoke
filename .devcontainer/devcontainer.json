@@ -1,9 +1,6 @@
 {
   "name": "Cavoke",
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
-
+  "image": "ghcr.io/cavoke-project/dev",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -15,6 +12,5 @@
     }
   },
   "forwardPorts": [8080],
-  "postCreateCommand": "cmake . -B build -DQT_MAJOR_VERSION=5 -G Ninja",
-  "remoteUser": "gitpod"
+  "postCreateCommand": "cmake . -B build -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_JWT=ON -DUSE_EXTERNAL_NLOHMANN=ON -DQT_MAJOR_VERSION=5 -G Ninja"
 }
