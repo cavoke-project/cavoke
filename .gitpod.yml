@@ -4,8 +4,6 @@ tasks:
   - name: Database
     before: docker build . -f db.Dockerfile -t cavoke_db
     command: docker run -t -p 5432:5432 -e POSTGRES_USER=postgres_user -e POSTGRES_PASSWORD=postgres_password cavoke_db
-  - name: Cmake
-    init: cmake . -B build -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_JWT=ON -DUSE_EXTERNAL_NLOHMANN=ON -DQT_MAJOR_VERSION=5 -G Ninja
 
 vscode:
   extensions:

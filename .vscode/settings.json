@@ -1,0 +1,8 @@
+{
+    "cmake.configureArgs": [
+        "-DQT_MAJOR_VERSION=5",
+        "-DUSE_EXTERNAL_JWT=ON",
+        "-DUSE_EXTERNAL_NLOHMANN=ON",
+        "-DUSE_EXTERNAL_DROGON=ON"
+    ]
+}
