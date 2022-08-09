@@ -12,5 +12,5 @@
     }
   },
   "forwardPorts": [8080],
-  "onCreateCommand": "docker build . -f db.Dockerfile -t cavoke_db"
+  "onCreateCommand": "pip3 install -r server/pytest/test-requirements.txt && docker build . -f db.Dockerfile -t cavoke_db"
 }
