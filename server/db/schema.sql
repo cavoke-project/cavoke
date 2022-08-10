@@ -1,5 +1,5 @@
 -- Transaction isolation (see https://github.com/cavoke-project/cavoke/issues/178)
-set default_transaction_isolation to 'repeatable read';
+set default_transaction_isolation to 'serializable';
 
 create table users
 (

@@ -72,8 +72,8 @@ void StateController::send_move(
 
         m_game_state_storage->save_state(session_id, next_state, transaction);
 
+        session_with_transaction.update_status(next_state.is_terminal);
         if (next_state.is_terminal) {
-            session_with_transaction.finish();
             LOG_INFO << "Session " << session_id
                      << " is being declared finished!";
         }

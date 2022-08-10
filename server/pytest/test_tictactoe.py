@@ -66,7 +66,7 @@ def test_simple_game():
         assert final_state.state == 'OXOXXOXOX'
 
 
-@pytest.mark.parametrize('execution_number', range(5))
+@pytest.mark.parametrize('execution_number', range(10))
 def test_transaction_isolation_on_game_end(execution_number):
     """
     Test for correct transaction isolation. There was a bug, when transactions were not isolated properly,
@@ -106,21 +106,24 @@ def test_transaction_isolation_on_game_end(execution_number):
 
         def spam_x6_player_1():
             logging.debug('Commencing spamming')
-            while do_spamming:
-                logging.debug('.')
+            for i in range(50):
+                logging.debug(f'req {i}')
                 api_instance.send_move(session.session_id, user_id=bob_id, game_move=default_api.GameMove('X 6'), async_req=True)
                 time.sleep(0.1)
+                if not do_spamming:
+                    break
+            logging.debug('Spamming stopped')
 
         t_spam = threading.Thread(target=spam_x6_player_1)
         t_spam.start()
 
         time.sleep(1)
 
-        api_instance.send_move(session.session_id, user_id=alice_id, game_move=default_api.GameMove('X 6'))
+        api_instance.send_move(session.session_id, user_id=alice_id, game_move=default_api.GameMove('X 6'), _request_timeout=10)
 
         do_spamming = False
-
         logging.debug('Spamming stopped. Checking final.')
+
         final_session: default_api.SessionInfo = api_instance.session_info(session.session_id, user_id=alice_id)
         final_state: default_api.GameState = api_instance.get_update(session.session_id, user_id=alice_id)
         logging.debug(str(final_state))
@@ -128,10 +131,9 @@ def test_transaction_isolation_on_game_end(execution_number):
         time.sleep(1)
 
         assert final_session.session_id == session.session_id
-        if final_session.status == 1:
+        if not final_state.is_terminal:
             logging.warning("Session is not finished! Skipping.")
         else:
-            assert final_session.status == 2
             assert final_state.state == 'OXOXXOXOX'
 
 
