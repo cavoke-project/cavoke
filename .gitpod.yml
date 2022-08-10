@@ -1,12 +1,11 @@
-image:
-  file: .devcontainer/Dockerfile
+image: ghcr.io/cavoke-project/dev
 
 tasks:
-  - name: Database
+  - name: Cavoke Database
     before: docker build . -f db.Dockerfile -t cavoke_db
-    command: docker run -t -p 5432:5432 -e POSTGRES_USER=postgres_user -e POSTGRES_PASSWORD=postgres_password cavoke_db
-  - name: Cmake
-    init: cmake . -B build -DQT_MAJOR_VERSION=5 -G Ninja
+    command: docker run -t -p 5432:5432 cavoke_db
+  - name: Bash
+    init: pip3 install --no-input -r server/pytest/test-requirements.txt
 
 vscode:
   extensions:
@@ -14,6 +13,11 @@ vscode:
     - timonwong.shellcheck
     - ms-vscode.cmake-tools
     - vscode.cpp
+
+#jetbrains:
+#  clion:
+#    prebuilds:
+#      version: stable
 
 github:
   prebuilds:

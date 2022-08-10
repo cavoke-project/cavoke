@@ -1,9 +1,6 @@
 {
   "name": "Cavoke",
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
-
+  "image": "ghcr.io/cavoke-project/dev",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -15,6 +12,5 @@
     }
   },
   "forwardPorts": [8080],
-  "postCreateCommand": "cmake . -B build -DQT_MAJOR_VERSION=5 -G Ninja",
-  "remoteUser": "gitpod"
+  "onCreateCommand": "pip3 install -r server/pytest/test-requirements.txt && docker build . -f db.Dockerfile -t cavoke_db"
 }
