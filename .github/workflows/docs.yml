@@ -18,9 +18,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y graphviz libclang-cpp1-9 libclang1-9 cmake
-          wget https://www.doxygen.nl/files/doxygen-1.9.2.linux.bin.tar.gz
-          tar -xvzf doxygen-1.9.2.linux.bin.tar.gz
-          ln -s doxygen-1.9.2/bin/doxygen doxygen && sudo cp doxygen /usr/local/bin
+          wget https://www.doxygen.nl/files/doxygen-1.9.4.linux.bin.tar.gz
+          tar -xvzf doxygen-1.9.4.linux.bin.tar.gz
+          ln -s doxygen-1.9.4/bin/doxygen doxygen && sudo cp doxygen /usr/local/bin
       - name: Generate Documentation
         run: cmake -B build . -DBUILD_ALL=OFF && cmake --build build --target docs
       - name: Git add & commit
