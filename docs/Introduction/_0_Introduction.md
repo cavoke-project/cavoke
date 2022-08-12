@@ -5,4 +5,6 @@ Welcome to Cavoke!
 
 - \subpage OverviewPage
 - \subpage Components
+- \subpage ComponentsDetailed
 - \subpage GameLogicProtocol
+- \subpage QMLComponentProtocol

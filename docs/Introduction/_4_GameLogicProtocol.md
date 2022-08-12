@@ -1,10 +1,10 @@
-# Game Logic Protocol {#GameLogicProtocol}
-
-## Main Structures
+# Server Component Protocol {#GameLogicProtocol}
 
 A more hands-on explanation is available on the Cavoke Developer OpenAPI website:
 
 [![openapi](https://img.shields.io/badge/Cavoke%20DEV-passing-success?logo=swagger&logoColor=white&style=for-the-badge)](https://cavokedev.docs.apiary.io)
+
+## Main Structures
 
 ### GameState
 
