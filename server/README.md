@@ -91,7 +91,7 @@ A complete CMake command might look like this:
 cavoke@ubuntu:~$ cmake . -B build-server -DUSE_EXTERNAL_DROGON=ON -DUSE_EXTERNAL_NLOHMANN=ON
 ```
 
-Более подробно смотрите в [CMakeLists.txt](./CMakeLists.txt)
+More details in the [CMakeLists.txt](./CMakeLists.txt)
 
 #### Dev-container
 
