@@ -154,4 +154,4 @@ def test_requests_flood(execution_number):
             logging.debug(f'req {i}')
             api_instance.validate_session(session.session_id, user_id=alice_id, async_req=True)
         logging.debug('Spamming stopped.')
-        assert api_instance.health() == "OK"
+        assert api_instance.health(_request_timeout=10) == "OK"
