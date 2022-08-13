@@ -1,5 +1,3 @@
-\mainpage Home
-
 <h1 align="center">
   <br>
   <a href="https://cavoke.wlko.me"><img src="https://avatars.githubusercontent.com/u/52053547?s=200&v=4" alt="Cavoke" width="200"></a>

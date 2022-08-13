@@ -96,7 +96,7 @@ if (DOXYGEN_FOUND)
         cavoke-dev-server-lib
         client
         server
-        README.md
+        docs/mainpage.md
         docs/Introduction
         docs/Quick-Start
         docs/Deep-Dive

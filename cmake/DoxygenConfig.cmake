@@ -7,9 +7,10 @@ set(DOXYGEN_RECURSIVE YES)
 set(DOXYGEN_EXCLUDE
         ${CMAKE_CURRENT_SOURCE_DIR}/server/sql-models
         ${CMAKE_CURRENT_SOURCE_DIR}/client/cavoke_client_autogen
-        ${CMAKE_CURRENT_SOURCE_DIR}/server/pytest/.pytest_cache)
+        ${CMAKE_CURRENT_SOURCE_DIR}/server/pytest/.pytest_cache
+        ${CMAKE_CURRENT_SOURCE_DIR}/README.md)
 set(DOXYGEN_IMAGE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/img ${CMAKE_CURRENT_SOURCE_DIR}/docs/img)
-set(DOXYGEN_USE_MDFILE_AS_MAINPAGE ${CMAKE_CURRENT_SOURCE_DIR}/README.md)
+set(DOXYGEN_USE_MDFILE_AS_MAINPAGE ${CMAKE_CURRENT_SOURCE_DIR}/docs/mainpage.md)
 set(DOXYGEN_HTML_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/.github/assets/doxygen-header.html)
 set(DOXYGEN_HTML_EXTRA_STYLESHEET
         ${CMAKE_CURRENT_SOURCE_DIR}/third_party/doxygen-awesome-css/doxygen-awesome.css
