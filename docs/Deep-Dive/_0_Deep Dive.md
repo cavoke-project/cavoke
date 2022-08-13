@@ -4,3 +4,4 @@ Here you can find out the details about the structure of cavoke.
 
 - \subpage CavokeClient
 - \subpage CavokeServer
+- \subpage ClientServerProtocol

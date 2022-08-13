@@ -2,7 +2,8 @@
 
 ## About the server
 
-TODO
+**Cavoke server** (aka. main cavoke server, main server) is the server-application that is responsible for connecting
+players with their games and persisting the game session information.
 
 ## How to Use
 
