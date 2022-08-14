@@ -76,6 +76,15 @@ To make these obstacles easier to avoid, we developed a framework for developing
 that comes with built-in solutions to solve all the above-mentioned problems.
 
 ### Our solution
+
+We have developed a solution that works for many board games. Your board game can work with cavoke if:
+
+| Requirement              | Description                                                                                                                                                                                                                                                 |
+|--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ✅ **Is a board game**    | Has a **simple 2D interface**. Game interface must be implementable using QML.                                                                                                                                                                              |
+| ✅ **Is based on moves**  | All changes during the game are based on the **moves** and **updates** that are representable as a string.                                                                                                                                                  |
+| ✅ **No race conditions** | If multiple players are eligible to move at the given moment, there is no guarantee that the first one to move will be recorded as such. However, there is **a guarantee that the resulting game state is achieved via a valid subsequence of game moves**. |
+
 #### Developers side
 
 Our platform provides an easy way for developers to create a desktop game. A developer should provide only two
