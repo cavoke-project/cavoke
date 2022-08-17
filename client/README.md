@@ -1,59 +1,38 @@
-# Cavoke Client
-Клиент cavoke, запускающий QML приложения.
+# Cavoke Client {#CavokeClient}
 
-## Функциональность
-- К xx.xx.2022:
-   - [ ] (см. статус документ)
-- К 07.02.2022:
-   - [x] Динамический запуск QML из C++ из ресурсов (Саша)
-   - [x] Двусторонний обмен данными QML <--> C++ (Саша)
-   - [x] Отрезать логику крестиков-ноликов от QML и подключить к C++
-   - [x] Загрузка данных для обмена в файл/из файла (альтернативно из TextEdit)
-   - [x] Подгрузка QML по переданному абсолютному пути (см. [QFileDialog](https://doc.qt.io/qt-5/qfiledialog.html) и [пример](https://github.com/waleko/PictureCrypt/blob/master/src/app/view/encryptdialog.cpp#L60))
-   - [x] Загрузка QML из Zip файла в какой-то кеш ([QStandardPaths](https://doc.qt.io/qt-5/qstandardpaths.html#StandardLocation-enum))
+## About the client
 
-## Как запустить
-### Установка
-Есть два варианта установки Qt и нужных библиотек: напрямую и через [KDE Craft](https://community.kde.org/Craft).
-Поддерживаются две major версии Qt: Qt6 и Qt5. Основной является Qt6.
-#### Установка напрямую
-1. Загрузить Qt: https://doc.qt.io/qt-6/get-and-install-qt.html. Он будет весить много (потенциально > 5гб).
-1. Установить KArchive:
-   1. Склонировать extra-cmake-modules: https://github.com/KDE/extra-cmake-modules, собрать cmake-ом
-   1. Склонировать KArchive (важно: версии не меньше, чем extra-cmake-modules): https://invent.kde.org/frameworks/karchive, собрать cmake-ом
-#### Установка через KDE Craft
-1. Установить KDE Craft (meta build system and package manager): https://community.kde.org/Craft#Setting_up_Craft. Этот вариант кажется удачнее, потому что это специальная утилита от KDE для установки их фреймворков (Саша).
-1. В интерфейсе KDE Craft установить библиотеки:
-   - Для Qt5 достаточно прописать.
-      ```bash
-      craft karchive
-      ```
-      Qt5 и зависимости загрузятся автоматически.
-   - Для Qt6, к сожалению, пока нет поддержки KArchive. Поэтому можно поставить qt6 через craft `craft libs/qt6`, но KArchive придётся собирать вручную (см. выше). [Статус KF6](https://phabricator.kde.org/project/board/310/query/all/).
-1. Установить QT Creator / загрузить профиль с Qt в CLion.
-### Запуск проекта
-1. Открыть проект и запустить. Для использования Qt5 добавить cmake флаг `-DQT_MAJOR_VERSION=5`.
-1. Выбрать путь к основному qml файлу приложения либо выбрать .zip архив, в корне которого будет лежать app.qml файл с приложением
-![load zip demo](https://user-images.githubusercontent.com/24986722/153585100-28454edc-8b63-46e5-bda1-85337694a045.png)
-1. Открыть панель с выводом приложения. Убедиться, что соединение между C++ и QML работает.
-![playing tictactoe demo](https://user-images.githubusercontent.com/24986722/152444859-047f9972-9603-4114-8706-79bcc5af0bfb.png)
+**Cavoke Client** (aka. main cavoke client, main client, host application) is the application that a user interacts with
+before joining the desired game.
 
-### Комментарии
-#### Про архитектуру клиента (04.02.2022 Саша)
+This application dynamically launches QML client components and attaches to them,
+allowing them to send requests through it: without any authentication, game session information (this is added by the
+cavoke client).
 
-##### Терминология
-* **move** -- то, что отправляет QML серверу. Таким образом у QML сигнал `sendMove`
-* **update** -- то, что сервер отправляет QML. У QML слот `receiveUpdate`
+Cavoke Client is also responsible for persisting the connection, authentication. All game rooms,
+sessions interfaces are also shown directly in the cavoke client application.
 
-##### Про MVC и общую структуру
-Я решил прототип сразу сделать каким-никаким MVC. Это несколько нагромождает, но упрощает дальнейшую разработку, чтобы об это потом не спотыкаться.
-- **View** отвечает только за отображение MainWindow (то где только кнопка TicTacToe)
-- **Controller** отвечает за связь View и Model (чтобы View не висла, когда Model что-либо делает), а также за запуск QML подприложений.
-- **Model** отвечает за связь с сервером (пока что с файлом).
+## How to Use
 
-В Model есть ещё класс `CavokeQmlGameModel`. Он в сущности контроллирует инстанс qml -- именно к нему подключены сигналы/слоты у QML.
+### Qt
 
-Почему нельзя было подключить QML напрямую к Model? Потому что сигнал нужно подключать напрямую, а значит если Model хочет отправить update одному QML, то пришлось бы триггерить все (и/или дополнительный код для пользователя). Поэтому сделал такой контроллирующий объект для каждого QML.
+Cavoke client is a Qt application, hence it is required to run it. Both **Qt 5 and Qt 6** are supported. Qt 5 required:
+5.15.3 or newer.
 
-##### Про утечки памяти
-В коде создаётся много динамических объектов, и они не удалюятся. Такова жизнь. Вероятно, не первый приоритет.
+#### External dependencies
+
+[ECM](https://api.kde.org/frameworks/extra-cmake-modules/html/index.html)
+and [KArchive](https://api.kde.org/frameworks/karchive/html/index.html) by KDE are required as external dependencies,
+you can find their sources in
+the [third_party](../third_party) folder.
+
+### KDE Craft
+
+The easiest way to build the cavoke client is through the [KDE Craft](https://community.kde.org/Craft) buildsystem.
+Craft blueprint is available [here](https://github.com/cavoke-project/craft-blueprints-cavoke).
+
+## Packaging
+
+Cavoke Client is automatically released on Windows, macOS and Linux (using [AppImage](https://appimage.github.io)) via
+KDE Craft and CPack. You can
+find the latest release on [GitHub](https://github.com/cavoke-project/cavoke/releases).

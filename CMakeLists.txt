@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
-project(cavoke)
+project(Cavoke
+        VERSION 1.1.0
+        DESCRIPTION "A Platform for creating and hosting multiplayer turn-based board games"
+        HOMEPAGE_URL "https://cavoke.wlko.me"
+        LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -80,3 +84,22 @@ if (BUILD_ALL OR BUILD_GAMES)
     add_subdirectory(games)
 endif ()
 
+# Doxygen Documentation
+find_package(Doxygen 1.9.1 OPTIONAL_COMPONENTS dot)
+# Configure all options
+include(cmake/DoxygenConfig.cmake)
+
+if (DOXYGEN_FOUND)
+    doxygen_add_docs(
+        docs
+        cavoke-dev-lib
+        cavoke-dev-server-lib
+        client
+        server
+        docs/mainpage.md
+        docs/Introduction
+        docs/Quick-Start
+        docs/Deep-Dive
+        COMMENT "Generate html docs"
+    )
+endif (DOXYGEN_FOUND)

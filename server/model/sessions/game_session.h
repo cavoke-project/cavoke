@@ -62,8 +62,11 @@ struct GameSessionAccessObject {
     /// Marks session as starts
     void start(const json &game_settings);
 
-    /// Marks sessions as finished
-    void finish();
+    /// Updates current session status using given `is_terminal` value.
+    /// Finishes if terminal, Rewrites status if not.
+    /// This is required for transaction isolation, so that `is_terminal`
+    /// correlates with the session status.
+    void update_status(bool is_terminal);
 
     [[nodiscard]] int get_player_id(const std::string &user_id) const;
 

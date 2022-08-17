@@ -179,3 +179,13 @@ local_server/
 *.log
 /games/codenames/client/client.zip
 uploads/
+
+# CMakeFiles
+CMakeFiles/
+build/
+
+# Doxygen output
+docs/html/
+
+# Python cache
+**/__pycache__

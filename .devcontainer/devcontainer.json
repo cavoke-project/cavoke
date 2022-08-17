@@ -1,0 +1,16 @@
+{
+  "name": "Cavoke",
+  "image": "ghcr.io/cavoke-project/dev",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cmake-tools",
+        "ms-azuretools.vscode-docker",
+        "timonwong.shellcheck"
+      ]
+    }
+  },
+  "forwardPorts": [8080],
+  "onCreateCommand": "pip3 install -r server/pytest/test-requirements.txt && docker build . -f db.Dockerfile -t cavoke_db"
+}

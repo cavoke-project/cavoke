@@ -47,8 +47,8 @@ jobs:
       - name: Restore cache
         uses: actions/cache@v2
         with:
-          path: ~/craft/cache
-          key: ${{ runner.os }}-${{ matrix.target }}-v3
+          path: ${{ env.HOME }}/craft/cache
+          key: ${{ runner.os }}-${{ matrix.target }}-v4
 
       - name: Clone CraftMaster
         run: git clone --depth=1 https://invent.kde.org/kde/craftmaster.git "$env:HOME/craft/CraftMaster/CraftMaster"
@@ -59,7 +59,7 @@ jobs:
           & "${env:GITHUB_WORKSPACE}/.github/scripts/.craft.ps1" --setup
       - name: Craft unshelve
         run: |
-          & "${env:GITHUB_WORKSPACE}/.github/scripts/.craft.ps1" -c --unshelve "${env:GITHUB_WORKSPACE}/.craft.shelf"
+          & "${env:GITHUB_WORKSPACE}/.github/scripts/.craft.ps1" -c --unshelve "${env:GITHUB_WORKSPACE}/.github/scripts/.craft.shelf"
       - name: Prepare
         run: |
           if ($IsWindows) {
@@ -81,8 +81,8 @@ jobs:
         run: |
           New-Item -ItemType Directory "${env:GITHUB_WORKSPACE}/binaries/" -ErrorAction SilentlyContinue
           Copy-Item "$env:HOME/craft/binaries/*" "${env:GITHUB_WORKSPACE}/binaries/"
-          & "${env:GITHUB_WORKSPACE}/.github/scripts/.craft.ps1" -c --shelve "${env:GITHUB_WORKSPACE}/.craft.shelf"
-          Copy-Item "${env:GITHUB_WORKSPACE}/.craft.shelf" "${env:GITHUB_WORKSPACE}/binaries/"
+          & "${env:GITHUB_WORKSPACE}/.github/scripts/.craft.ps1" -c --shelve "${env:GITHUB_WORKSPACE}/.github/scripts/.craft.shelf"
+          Copy-Item "${env:GITHUB_WORKSPACE}/.github/scripts/.craft.shelf" "${env:GITHUB_WORKSPACE}/binaries/"
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
