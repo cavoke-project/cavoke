@@ -13,7 +13,7 @@
 <div style="text-align: center; padding-bottom: 5px;">
 <p align="center">
     <a href="https://github.com/cavoke-project/cavoke/actions/workflows/app.yml">
-        <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/cavoke-project/cavoke/app?style=flat-square&logo=github">
+        <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/cavoke-project/cavoke/app.yml?style=flat-square&logo=github">
     </a>
     <a href="">
         <img alt="GitHub deployments" src="https://img.shields.io/github/deployments/cavoke-project/cavoke/develop?label=deployment&logo=google-cloud&logoColor=white&style=flat-square">
