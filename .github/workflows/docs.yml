@@ -37,4 +37,4 @@ jobs:
           force: true
           directory: docs/html
 env:
-  DOXYGEN_VERSION: 1.9.4
+  DOXYGEN_VERSION: 1.9.6
