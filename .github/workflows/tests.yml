@@ -45,7 +45,7 @@ jobs:
       - name: Make
         run: cd build && make cavoke_client
   server-compiles-with-submodules:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - run: sudo apt-get update && sudo apt-get install -y openssl libssl-dev libjsoncpp-dev uuid-dev zlib1g-dev libc-ares-dev postgresql-server-dev-all libboost-all-dev
       - uses: actions/checkout@v2
@@ -86,10 +86,9 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
-          python-version: 3.7
+          python-version: 3.9
       - name: Install Python dependencies
         run: |
-          python -m pip install --upgrade pip
           pip install -r ./server/pytest/test-requirements.txt
       - name: Install PostgreSQL client
         run: |
