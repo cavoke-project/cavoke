@@ -1,0 +1,9 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" title=" " alt="" coords="5,109,120,134"/>
+<area shape="rect" id="node2" title=" " alt="" coords="168,109,307,134"/>
+<area shape="rect" id="node3" href="$structcavoke_1_1server_1_1cavoke__base__exception.html" title="Base exception for errors thrown in server." alt="" coords="355,101,525,141"/>
+<area shape="rect" id="node4" href="$structcavoke_1_1server_1_1model_1_1game__session__error.html" title="exception for errors thrown during actions with sessions" alt="" coords="573,5,740,45"/>
+<area shape="rect" id="node5" href="$structcavoke_1_1server_1_1model_1_1game__state__error.html" title="exception for errors thrown during actions with game states" alt="" coords="573,69,740,109"/>
+<area shape="rect" id="node6" href="$structcavoke_1_1server_1_1model_1_1room__error.html" title="exception for errors thrown during actions with rooms" alt="" coords="573,133,740,173"/>
+<area shape="rect" id="node7" href="$structcavoke_1_1server_1_1model_1_1validation__error.html" title="is thrown when trying to start a new session with invalid config" alt="" coords="573,197,740,237"/>
+</map>

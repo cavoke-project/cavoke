@@ -1,0 +1,12 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" title=" " alt="" coords="5,203,121,228"/>
+<area shape="rect" id="node2" href="$classCreateGameView.html" title=" " alt="" coords="169,5,305,31"/>
+<area shape="rect" id="node3" href="$classGamesListView.html" title=" " alt="" coords="176,55,299,80"/>
+<area shape="rect" id="node4" href="$classJoinGameView.html" title=" " alt="" coords="179,104,296,129"/>
+<area shape="rect" id="node5" href="$classRoomView.html" title=" " alt="" coords="191,153,283,179"/>
+<area shape="rect" id="node6" href="$classSessionView.html" title=" " alt="" coords="185,203,289,228"/>
+<area shape="rect" id="node7" href="$classSettingsView.html" title=" " alt="" coords="184,252,291,277"/>
+<area shape="rect" id="node8" href="$classStartView.html" title=" " alt="" coords="195,301,280,327"/>
+<area shape="rect" id="node9" href="$classStatisticsView.html" title=" " alt="" coords="180,351,295,376"/>
+<area shape="rect" id="node10" href="$classTestWindowView.html" title=" " alt="" coords="171,400,303,425"/>
+</map>

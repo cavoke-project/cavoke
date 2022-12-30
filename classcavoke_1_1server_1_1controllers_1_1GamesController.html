@@ -1,0 +1,335 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=9"/>
+  <meta name="generator" content="Doxygen 1.9.6"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <!-- BEGIN opengraph metadata -->
+  <meta property="og:title" content="Cavoke" />
+  <meta property="og:image" content="https://opengraph.githubassets.com/3578ce4391b1dea8c66c1a2b0696e99ad00c539da62f9d115ed6eff5ba32828f/cavoke-project/cavoke" />
+  <meta property="og:description" content="A Platform for creating and hosting multiplayer turn-based board games." />
+  <meta property="og:url" content="https://cavoke.wlko.me/" />
+  <!-- END opengraph metadata -->
+  <!-- BEGIN twitter metadata -->
+  <meta name="twitter:image:src" content="https://opengraph.githubassets.com/3578ce4391b1dea8c66c1a2b0696e99ad00c539da62f9d115ed6eff5ba32828f/cavoke-project/cavoke" />
+  <meta name="twitter:title" content="Cavoke" />
+  <meta name="twitter:description" content="A Platform for creating and hosting multiplayer turn-based board games." />
+  <!-- END twitter metadata -->
+  <title>Cavoke: cavoke::server::controllers::GamesController Class Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css"/>
+  <link rel="icon" type="image/png" href="logo55.png"/>
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="toggle-alternative-theme.js"></script>
+  <script type="text/javascript">
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeDarkModeToggle.init()
+    DoxygenAwesomeParagraphLink.init()
+  </script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+  <link href="doxygen.css" rel="stylesheet" type="text/css" />
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="custom.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+<link href="custom-alternative.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<!-- https://tholman.com/github-corners/ -->
+<a href="https://github.com/cavoke-project/cavoke" class="github-corner" title="View source on GitHub" target="_blank">
+  <svg viewBox="0 0 250 250" width="40" height="40" style="position: absolute; top: 0; border: 0; right: 0; z-index: 99;" aria-hidden="true">
+    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+  <div id="titlearea">
+    <table cellspacing="0" cellpadding="0">
+      <tbody>
+      <tr style="height: 56px;">
+        <td id="projectlogo"><img alt="Logo" src="logo55.png"/></td>
+        <td id="projectalign" style="padding-left: 0.5em;">
+          <div id="projectname">Cavoke
+            &#160;<span id="projectnumber">1.1.0</span>
+          </div>
+          <div id="projectbrief">A Platform for creating and hosting multiplayer turn-based board games</div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- end header part -->
+<!-- Generated by Doxygen 1.9.6 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Search');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('classcavoke_1_1server_1_1controllers_1_1GamesController.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="classcavoke_1_1server_1_1controllers_1_1GamesController-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">cavoke::server::controllers::GamesController Class Reference</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="dynheader">
+Inheritance diagram for cavoke::server::controllers::GamesController:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="classcavoke_1_1server_1_1controllers_1_1GamesController__inherit__graph.svg" width="214" height="139"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a0eeaf725e94ddcf1f6fe699367066ba5"><td class="memItemLeft" align="right" valign="top"><a id="a0eeaf725e94ddcf1f6fe699367066ba5" name="a0eeaf725e94ddcf1f6fe699367066ba5"></a>
+METHOD_LIST_BEGIN&#160;</td><td class="memItemRight" valign="bottom"><b>ADD_METHOD_TO</b> (GamesController::games_list, &quot;/games/list&quot;, drogon::Get, drogon::Options)</td></tr>
+<tr class="separator:a0eeaf725e94ddcf1f6fe699367066ba5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc83a934e1dbae64ae2bd57b71d53dff"><td class="memItemLeft" align="right" valign="top"><a id="adc83a934e1dbae64ae2bd57b71d53dff" name="adc83a934e1dbae64ae2bd57b71d53dff"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>ADD_METHOD_TO</b> (GamesController::game_config, &quot;/games/{game_id}/get_config&quot;, drogon::Get, drogon::Options)</td></tr>
+<tr class="separator:adc83a934e1dbae64ae2bd57b71d53dff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3554fa687f5b9a56c6be77dd58c516eb"><td class="memItemLeft" align="right" valign="top"><a id="a3554fa687f5b9a56c6be77dd58c516eb" name="a3554fa687f5b9a56c6be77dd58c516eb"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>ADD_METHOD_TO</b> (GamesController::game_client_file, &quot;/games/{game_id}/get_client&quot;, drogon::Get, drogon::Options)</td></tr>
+<tr class="separator:a3554fa687f5b9a56c6be77dd58c516eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34fd88d2a23fd24801eea63daa142ce4"><td class="memItemLeft" align="right" valign="top">METHOD_LIST_END&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcavoke_1_1server_1_1controllers_1_1GamesController.html#a34fd88d2a23fd24801eea63daa142ce4">GamesController</a> (std::shared_ptr&lt; <a class="el" href="classcavoke_1_1server_1_1model_1_1GamesStorage.html">model::GamesStorage</a> &gt; games_storage)</td></tr>
+<tr class="separator:a34fd88d2a23fd24801eea63daa142ce4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:aa8ffd8d048a568b797c112d869f821df"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcavoke_1_1server_1_1controllers_1_1GamesController.html#aa8ffd8d048a568b797c112d869f821df">games_list</a> (const drogon::HttpRequestPtr &amp;req, std::function&lt; void(const drogon::HttpResponsePtr &amp;)&gt; &amp;&amp;callback)</td></tr>
+<tr class="separator:aa8ffd8d048a568b797c112d869f821df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae17900b3834094a354c79cd4d09dbc95"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcavoke_1_1server_1_1controllers_1_1GamesController.html#ae17900b3834094a354c79cd4d09dbc95">game_config</a> (const drogon::HttpRequestPtr &amp;req, std::function&lt; void(const drogon::HttpResponsePtr &amp;)&gt; &amp;&amp;callback, const std::string &amp;game_id)</td></tr>
+<tr class="separator:ae17900b3834094a354c79cd4d09dbc95"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a472373f61bcef375e10bd9dbe56d5219"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcavoke_1_1server_1_1controllers_1_1GamesController.html#a472373f61bcef375e10bd9dbe56d5219">game_client_file</a> (const drogon::HttpRequestPtr &amp;req, std::function&lt; void(const drogon::HttpResponsePtr &amp;)&gt; &amp;&amp;callback, const std::string &amp;game_id)</td></tr>
+<tr class="separator:a472373f61bcef375e10bd9dbe56d5219"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock">
+<p class="definition">Definition at line <a class="el" href="games__controller_8h_source.html#l00011">11</a> of file <a class="el" href="games__controller_8h_source.html">games_controller.h</a>.</p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a34fd88d2a23fd24801eea63daa142ce4" name="a34fd88d2a23fd24801eea63daa142ce4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a34fd88d2a23fd24801eea63daa142ce4">&#9670;&#160;</a></span>GamesController()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">cavoke::server::controllers::GamesController::GamesController </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classcavoke_1_1server_1_1model_1_1GamesStorage.html">model::GamesStorage</a> &gt;&#160;</td>
+          <td class="paramname"><em>games_storage</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="games__controller_8cpp_source.html#l00005">5</a> of file <a class="el" href="games__controller_8cpp_source.html">games_controller.cpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a472373f61bcef375e10bd9dbe56d5219" name="a472373f61bcef375e10bd9dbe56d5219"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a472373f61bcef375e10bd9dbe56d5219">&#9670;&#160;</a></span>game_client_file()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cavoke::server::controllers::GamesController::game_client_file </td>
+          <td>(</td>
+          <td class="paramtype">const drogon::HttpRequestPtr &amp;&#160;</td>
+          <td class="paramname"><em>req</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::function&lt; void(const drogon::HttpResponsePtr &amp;)&gt; &amp;&amp;&#160;</td>
+          <td class="paramname"><em>callback</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>game_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="games__controller_8cpp_source.html#l00037">37</a> of file <a class="el" href="games__controller_8cpp_source.html">games_controller.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ae17900b3834094a354c79cd4d09dbc95" name="ae17900b3834094a354c79cd4d09dbc95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae17900b3834094a354c79cd4d09dbc95">&#9670;&#160;</a></span>game_config()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cavoke::server::controllers::GamesController::game_config </td>
+          <td>(</td>
+          <td class="paramtype">const drogon::HttpRequestPtr &amp;&#160;</td>
+          <td class="paramname"><em>req</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::function&lt; void(const drogon::HttpResponsePtr &amp;)&gt; &amp;&amp;&#160;</td>
+          <td class="paramname"><em>callback</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>game_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="games__controller_8cpp_source.html#l00022">22</a> of file <a class="el" href="games__controller_8cpp_source.html">games_controller.cpp</a>.</p>
+
+</div>
+</div>
+<a id="aa8ffd8d048a568b797c112d869f821df" name="aa8ffd8d048a568b797c112d869f821df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa8ffd8d048a568b797c112d869f821df">&#9670;&#160;</a></span>games_list()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cavoke::server::controllers::GamesController::games_list </td>
+          <td>(</td>
+          <td class="paramtype">const drogon::HttpRequestPtr &amp;&#160;</td>
+          <td class="paramname"><em>req</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::function&lt; void(const drogon::HttpResponsePtr &amp;)&gt; &amp;&amp;&#160;</td>
+          <td class="paramname"><em>callback</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="games__controller_8cpp_source.html#l00010">10</a> of file <a class="el" href="games__controller_8cpp_source.html">games_controller.cpp</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
+<li>server/controllers/<a class="el" href="games__controller_8h_source.html">games_controller.h</a></li>
+<li>server/controllers/<a class="el" href="games__controller_8cpp_source.html">games_controller.cpp</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><b>cavoke</b></li><li class="navelem"><b>server</b></li><li class="navelem"><b>controllers</b></li><li class="navelem"><a class="el" href="classcavoke_1_1server_1_1controllers_1_1GamesController.html">GamesController</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+  </ul>
+</div>
+</body>
+</html>

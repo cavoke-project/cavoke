@@ -1,0 +1,416 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=9"/>
+  <meta name="generator" content="Doxygen 1.9.6"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <!-- BEGIN opengraph metadata -->
+  <meta property="og:title" content="Cavoke" />
+  <meta property="og:image" content="https://opengraph.githubassets.com/3578ce4391b1dea8c66c1a2b0696e99ad00c539da62f9d115ed6eff5ba32828f/cavoke-project/cavoke" />
+  <meta property="og:description" content="A Platform for creating and hosting multiplayer turn-based board games." />
+  <meta property="og:url" content="https://cavoke.wlko.me/" />
+  <!-- END opengraph metadata -->
+  <!-- BEGIN twitter metadata -->
+  <meta name="twitter:image:src" content="https://opengraph.githubassets.com/3578ce4391b1dea8c66c1a2b0696e99ad00c539da62f9d115ed6eff5ba32828f/cavoke-project/cavoke" />
+  <meta name="twitter:title" content="Cavoke" />
+  <meta name="twitter:description" content="A Platform for creating and hosting multiplayer turn-based board games." />
+  <!-- END twitter metadata -->
+  <title>Cavoke: cavoke::server::model::RoomsStorage Class Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css"/>
+  <link rel="icon" type="image/png" href="logo55.png"/>
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="toggle-alternative-theme.js"></script>
+  <script type="text/javascript">
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeDarkModeToggle.init()
+    DoxygenAwesomeParagraphLink.init()
+  </script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+  <link href="doxygen.css" rel="stylesheet" type="text/css" />
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="custom.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+<link href="custom-alternative.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<!-- https://tholman.com/github-corners/ -->
+<a href="https://github.com/cavoke-project/cavoke" class="github-corner" title="View source on GitHub" target="_blank">
+  <svg viewBox="0 0 250 250" width="40" height="40" style="position: absolute; top: 0; border: 0; right: 0; z-index: 99;" aria-hidden="true">
+    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+  <div id="titlearea">
+    <table cellspacing="0" cellpadding="0">
+      <tbody>
+      <tr style="height: 56px;">
+        <td id="projectlogo"><img alt="Logo" src="logo55.png"/></td>
+        <td id="projectalign" style="padding-left: 0.5em;">
+          <div id="projectname">Cavoke
+            &#160;<span id="projectnumber">1.1.0</span>
+          </div>
+          <div id="projectbrief">A Platform for creating and hosting multiplayer turn-based board games</div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- end header part -->
+<!-- Generated by Doxygen 1.9.6 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Search');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('classcavoke_1_1server_1_1model_1_1RoomsStorage.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="classcavoke_1_1server_1_1model_1_1RoomsStorage-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">cavoke::server::model::RoomsStorage Class Reference</div></div>
+</div><!--header-->
+<div class="contents">
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcavoke_1_1server_1_1model_1_1RoomsStorage_1_1RoomInfo.html">RoomInfo</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a51994f9aac94227eb09e42d52de85c4c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcavoke_1_1server_1_1model_1_1RoomsStorage.html#a51994f9aac94227eb09e42d52de85c4c">RoomsStorage</a> (std::shared_ptr&lt; <a class="el" href="classcavoke_1_1server_1_1model_1_1SessionsStorage.html">SessionsStorage</a> &gt; mSessionsStorage)</td></tr>
+<tr class="separator:a51994f9aac94227eb09e42d52de85c4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abdb7b969f1f77ba4468ec34f2c7f047e"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structcavoke_1_1server_1_1model_1_1GameSessionAccessObject_1_1UserInfo.html">GameSessionAccessObject::UserInfo</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcavoke_1_1server_1_1model_1_1RoomsStorage.html#abdb7b969f1f77ba4468ec34f2c7f047e">get_members</a> (const std::string &amp;room_id)</td></tr>
+<tr class="separator:abdb7b969f1f77ba4468ec34f2c7f047e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3cf74a472ff438b971ae5721cf6dc23"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="structcavoke_1_1server_1_1model_1_1RoomsStorage_1_1RoomInfo.html">RoomInfo</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcavoke_1_1server_1_1model_1_1RoomsStorage.html#ab3cf74a472ff438b971ae5721cf6dc23">get_by_id</a> (const std::string &amp;room_id)</td></tr>
+<tr class="separator:ab3cf74a472ff438b971ae5721cf6dc23"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52f8f0169882a38f344a64f76f9ff030"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="structcavoke_1_1server_1_1model_1_1RoomsStorage_1_1RoomInfo.html">RoomInfo</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcavoke_1_1server_1_1model_1_1RoomsStorage.html#a52f8f0169882a38f344a64f76f9ff030">get_by_invite_code</a> (const std::string &amp;invite_code)</td></tr>
+<tr class="separator:a52f8f0169882a38f344a64f76f9ff030"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a206a5193c7c9becd7b1d69631b93792a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structcavoke_1_1server_1_1model_1_1RoomsStorage_1_1RoomInfo.html">RoomInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcavoke_1_1server_1_1model_1_1RoomsStorage.html#a206a5193c7c9becd7b1d69631b93792a">create_room</a> (const std::string &amp;host_id, const std::string &amp;display_name)</td></tr>
+<tr class="separator:a206a5193c7c9becd7b1d69631b93792a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed9ffb219f62f2972f4ebbee7dd6fc1e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcavoke_1_1server_1_1model_1_1RoomsStorage.html#aed9ffb219f62f2972f4ebbee7dd6fc1e">add_user</a> (const std::string &amp;room_id, const std::string &amp;user_id)</td></tr>
+<tr class="separator:aed9ffb219f62f2972f4ebbee7dd6fc1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a636492c10b0e6c97fe98345da7f6fff8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcavoke_1_1server_1_1model_1_1RoomsStorage.html#a636492c10b0e6c97fe98345da7f6fff8">remove_user</a> (const std::string &amp;room_id, const std::string &amp;user_id)</td></tr>
+<tr class="separator:a636492c10b0e6c97fe98345da7f6fff8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99fda16223053065f7d313e132447cf0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcavoke_1_1server_1_1model_1_1RoomsStorage.html#a99fda16223053065f7d313e132447cf0">is_member</a> (const std::string &amp;room_id, const std::string &amp;user_id)</td></tr>
+<tr class="separator:a99fda16223053065f7d313e132447cf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c86d66d103a1ad902a09f429b151ff9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structcavoke_1_1server_1_1model_1_1GameSessionAccessObject_1_1GameSessionInfo.html">GameSessionAccessObject::GameSessionInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcavoke_1_1server_1_1model_1_1RoomsStorage.html#a1c86d66d103a1ad902a09f429b151ff9">create_session</a> (const std::string &amp;room_id, const <a class="el" href="structcavoke_1_1server_1_1model_1_1GameConfig.html">GameConfig</a> &amp;game_config)</td></tr>
+<tr class="separator:a1c86d66d103a1ad902a09f429b151ff9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock">
+<p class="definition">Definition at line <a class="el" href="rooms__storage_8h_source.html#l00016">16</a> of file <a class="el" href="rooms__storage_8h_source.html">rooms_storage.h</a>.</p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a51994f9aac94227eb09e42d52de85c4c" name="a51994f9aac94227eb09e42d52de85c4c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51994f9aac94227eb09e42d52de85c4c">&#9670;&#160;</a></span>RoomsStorage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">cavoke::server::model::RoomsStorage::RoomsStorage </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classcavoke_1_1server_1_1model_1_1SessionsStorage.html">SessionsStorage</a> &gt;&#160;</td>
+          <td class="paramname"><em>mSessionsStorage</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="rooms__storage_8cpp_source.html#l00010">10</a> of file <a class="el" href="rooms__storage_8cpp_source.html">rooms_storage.cpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="aed9ffb219f62f2972f4ebbee7dd6fc1e" name="aed9ffb219f62f2972f4ebbee7dd6fc1e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed9ffb219f62f2972f4ebbee7dd6fc1e">&#9670;&#160;</a></span>add_user()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cavoke::server::model::RoomsStorage::add_user </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>room_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>user_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="rooms__storage_8cpp_source.html#l00065">65</a> of file <a class="el" href="rooms__storage_8cpp_source.html">rooms_storage.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a206a5193c7c9becd7b1d69631b93792a" name="a206a5193c7c9becd7b1d69631b93792a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a206a5193c7c9becd7b1d69631b93792a">&#9670;&#160;</a></span>create_room()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structcavoke_1_1server_1_1model_1_1RoomsStorage_1_1RoomInfo.html">RoomsStorage::RoomInfo</a> cavoke::server::model::RoomsStorage::create_room </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>host_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>display_name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="rooms__storage_8cpp_source.html#l00105">105</a> of file <a class="el" href="rooms__storage_8cpp_source.html">rooms_storage.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a1c86d66d103a1ad902a09f429b151ff9" name="a1c86d66d103a1ad902a09f429b151ff9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c86d66d103a1ad902a09f429b151ff9">&#9670;&#160;</a></span>create_session()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structcavoke_1_1server_1_1model_1_1GameSessionAccessObject_1_1GameSessionInfo.html">GameSessionAccessObject::GameSessionInfo</a> cavoke::server::model::RoomsStorage::create_session </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>room_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structcavoke_1_1server_1_1model_1_1GameConfig.html">GameConfig</a> &amp;&#160;</td>
+          <td class="paramname"><em>game_config</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="rooms__storage_8cpp_source.html#l00139">139</a> of file <a class="el" href="rooms__storage_8cpp_source.html">rooms_storage.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ab3cf74a472ff438b971ae5721cf6dc23" name="ab3cf74a472ff438b971ae5721cf6dc23"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab3cf74a472ff438b971ae5721cf6dc23">&#9670;&#160;</a></span>get_by_id()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; <a class="el" href="structcavoke_1_1server_1_1model_1_1RoomsStorage_1_1RoomInfo.html">RoomsStorage::RoomInfo</a> &gt; cavoke::server::model::RoomsStorage::get_by_id </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>room_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="rooms__storage_8cpp_source.html#l00014">14</a> of file <a class="el" href="rooms__storage_8cpp_source.html">rooms_storage.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a52f8f0169882a38f344a64f76f9ff030" name="a52f8f0169882a38f344a64f76f9ff030"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52f8f0169882a38f344a64f76f9ff030">&#9670;&#160;</a></span>get_by_invite_code()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; <a class="el" href="structcavoke_1_1server_1_1model_1_1RoomsStorage_1_1RoomInfo.html">RoomsStorage::RoomInfo</a> &gt; cavoke::server::model::RoomsStorage::get_by_invite_code </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>invite_code</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="rooms__storage_8cpp_source.html#l00049">49</a> of file <a class="el" href="rooms__storage_8cpp_source.html">rooms_storage.cpp</a>.</p>
+
+</div>
+</div>
+<a id="abdb7b969f1f77ba4468ec34f2c7f047e" name="abdb7b969f1f77ba4468ec34f2c7f047e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abdb7b969f1f77ba4468ec34f2c7f047e">&#9670;&#160;</a></span>get_members()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="structcavoke_1_1server_1_1model_1_1GameSessionAccessObject_1_1UserInfo.html">GameSessionAccessObject::UserInfo</a> &gt; cavoke::server::model::RoomsStorage::get_members </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>room_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="rooms__storage_8cpp_source.html#l00026">26</a> of file <a class="el" href="rooms__storage_8cpp_source.html">rooms_storage.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a99fda16223053065f7d313e132447cf0" name="a99fda16223053065f7d313e132447cf0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a99fda16223053065f7d313e132447cf0">&#9670;&#160;</a></span>is_member()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cavoke::server::model::RoomsStorage::is_member </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>room_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>user_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="rooms__storage_8cpp_source.html#l00094">94</a> of file <a class="el" href="rooms__storage_8cpp_source.html">rooms_storage.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a636492c10b0e6c97fe98345da7f6fff8" name="a636492c10b0e6c97fe98345da7f6fff8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a636492c10b0e6c97fe98345da7f6fff8">&#9670;&#160;</a></span>remove_user()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cavoke::server::model::RoomsStorage::remove_user </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>room_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>user_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="rooms__storage_8cpp_source.html#l00085">85</a> of file <a class="el" href="rooms__storage_8cpp_source.html">rooms_storage.cpp</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
+<li>server/model/rooms/<a class="el" href="rooms__storage_8h_source.html">rooms_storage.h</a></li>
+<li>server/model/rooms/<a class="el" href="rooms__storage_8cpp_source.html">rooms_storage.cpp</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><b>cavoke</b></li><li class="navelem"><b>server</b></li><li class="navelem"><b>model</b></li><li class="navelem"><a class="el" href="classcavoke_1_1server_1_1model_1_1RoomsStorage.html">RoomsStorage</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+  </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['game_5fsession_5ferror_0',['game_session_error',['../structcavoke_1_1server_1_1model_1_1game__session__error.html',1,'cavoke::server::model']]],
+  ['game_5fstate_5ferror_1',['game_state_error',['../structcavoke_1_1server_1_1model_1_1game__state__error.html',1,'cavoke::server::model']]],
+  ['gameconfig_2',['GameConfig',['../structcavoke_1_1server_1_1model_1_1GameConfig.html',1,'cavoke::server::model']]],
+  ['gameinfo_3',['GameInfo',['../structGameInfo.html',1,'']]],
+  ['gamelogicmanager_4',['GameLogicManager',['../classcavoke_1_1server_1_1model_1_1GameLogicManager.html',1,'cavoke::server::model']]],
+  ['gamescontroller_5',['GamesController',['../classcavoke_1_1server_1_1controllers_1_1GamesController.html',1,'cavoke::server::controllers']]],
+  ['gamesessionaccessobject_6',['GameSessionAccessObject',['../structcavoke_1_1server_1_1model_1_1GameSessionAccessObject.html',1,'cavoke::server::model']]],
+  ['gamesessioninfo_7',['GameSessionInfo',['../structcavoke_1_1server_1_1model_1_1GameSessionAccessObject_1_1GameSessionInfo.html',1,'cavoke::server::model::GameSessionAccessObject']]],
+  ['gameslistview_8',['GamesListView',['../classGamesListView.html',1,'']]],
+  ['gamesstorage_9',['GamesStorage',['../classcavoke_1_1server_1_1model_1_1GamesStorage.html',1,'cavoke::server::model']]],
+  ['gamesstorageconfig_10',['GamesStorageConfig',['../structcavoke_1_1server_1_1model_1_1GamesStorageConfig.html',1,'cavoke::server::model']]],
+  ['gamestate_11',['GameState',['../structcavoke_1_1GameState.html',1,'cavoke::GameState'],['../structcavoke_1_1server_1_1model_1_1GameStateStorage_1_1GameState.html',1,'cavoke::server::model::GameStateStorage::GameState']]],
+  ['gamestatestorage_12',['GameStateStorage',['../classcavoke_1_1server_1_1model_1_1GameStateStorage.html',1,'cavoke::server::model']]],
+  ['gamestatistics_13',['GameStatistics',['../structcavoke_1_1server_1_1model_1_1StatisticsManager_1_1GameStatistics.html',1,'cavoke::server::model::StatisticsManager::GameStatistics'],['../structGameStatistics.html',1,'GameStatistics']]],
+  ['gamesubmissionreq_14',['GameSubmissionReq',['../structcavoke_1_1server_1_1controllers_1_1GameSubmissionsController_1_1GameSubmissionReq.html',1,'cavoke::server::controllers::GameSubmissionsController']]],
+  ['gamesubmissionscontroller_15',['GameSubmissionsController',['../classcavoke_1_1server_1_1controllers_1_1GameSubmissionsController.html',1,'cavoke::server::controllers']]],
+  ['get_5fplayer_5fid_16',['get_player_id',['../structcavoke_1_1server_1_1model_1_1GameSessionAccessObject.html#a308b4501ac24349d3f7752a05018191e',1,'cavoke::server::model::GameSessionAccessObject']]],
+  ['get_5fsession_5finfo_17',['get_session_info',['../structcavoke_1_1server_1_1model_1_1GameSessionAccessObject.html#a3bb06ca270bc60b806d9d08e91f758d3',1,'cavoke::server::model::GameSessionAccessObject']]],
+  ['get_5fsessionao_18',['get_sessionAO',['../classcavoke_1_1server_1_1model_1_1SessionsStorage.html#a8de0a293f77913448616e23165016b25',1,'cavoke::server::model::SessionsStorage']]],
+  ['get_5fsnapshot_19',['get_snapshot',['../structcavoke_1_1server_1_1model_1_1GameSessionAccessObject.html#af05c96d954d6ccff5a2821d0d09de02c',1,'cavoke::server::model::GameSessionAccessObject']]],
+  ['get_5fuser_5fid_20',['get_user_id',['../classAuthFilter.html#a02e34ab2719760d79f725c7a84d4416e',1,'AuthFilter::get_user_id()'],['../structcavoke_1_1server_1_1model_1_1GameSessionAccessObject.html#af53f7ec25cba47c27079f5d24facec5b',1,'cavoke::server::model::GameSessionAccessObject::get_user_id()']]],
+  ['getinstance_21',['getInstance',['../structcavoke_1_1auth_1_1AuthenticationManager.html#a6613d36ffb4e6b9d9b6bf0ac8e4561f0',1,'cavoke::auth::AuthenticationManager']]]
+];

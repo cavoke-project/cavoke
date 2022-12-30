@@ -1,0 +1,1216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=9"/>
+  <meta name="generator" content="Doxygen 1.9.6"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <!-- BEGIN opengraph metadata -->
+  <meta property="og:title" content="Cavoke" />
+  <meta property="og:image" content="https://opengraph.githubassets.com/3578ce4391b1dea8c66c1a2b0696e99ad00c539da62f9d115ed6eff5ba32828f/cavoke-project/cavoke" />
+  <meta property="og:description" content="A Platform for creating and hosting multiplayer turn-based board games." />
+  <meta property="og:url" content="https://cavoke.wlko.me/" />
+  <!-- END opengraph metadata -->
+  <!-- BEGIN twitter metadata -->
+  <meta name="twitter:image:src" content="https://opengraph.githubassets.com/3578ce4391b1dea8c66c1a2b0696e99ad00c539da62f9d115ed6eff5ba32828f/cavoke-project/cavoke" />
+  <meta name="twitter:title" content="Cavoke" />
+  <meta name="twitter:description" content="A Platform for creating and hosting multiplayer turn-based board games." />
+  <!-- END twitter metadata -->
+  <title>Cavoke: NetworkManager Struct Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css"/>
+  <link rel="icon" type="image/png" href="logo55.png"/>
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="toggle-alternative-theme.js"></script>
+  <script type="text/javascript">
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeDarkModeToggle.init()
+    DoxygenAwesomeParagraphLink.init()
+  </script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+  <link href="doxygen.css" rel="stylesheet" type="text/css" />
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="custom.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+<link href="custom-alternative.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<!-- https://tholman.com/github-corners/ -->
+<a href="https://github.com/cavoke-project/cavoke" class="github-corner" title="View source on GitHub" target="_blank">
+  <svg viewBox="0 0 250 250" width="40" height="40" style="position: absolute; top: 0; border: 0; right: 0; z-index: 99;" aria-hidden="true">
+    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+  <div id="titlearea">
+    <table cellspacing="0" cellpadding="0">
+      <tbody>
+      <tr style="height: 56px;">
+        <td id="projectlogo"><img alt="Logo" src="logo55.png"/></td>
+        <td id="projectalign" style="padding-left: 0.5em;">
+          <div id="projectname">Cavoke
+            &#160;<span id="projectnumber">1.1.0</span>
+          </div>
+          <div id="projectbrief">A Platform for creating and hosting multiplayer turn-based board games</div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- end header part -->
+<!-- Generated by Doxygen 1.9.6 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Search');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('structNetworkManager.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#pub-slots">Public Slots</a> &#124;
+<a href="#signals">Signals</a> &#124;
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
+<a href="structNetworkManager-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">NetworkManager Struct Reference</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="dynheader">
+Inheritance diagram for NetworkManager:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="structNetworkManager__inherit__graph.svg" width="146" height="110"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-slots" name="pub-slots"></a>
+Public Slots</h2></td></tr>
+<tr class="memitem:ad65e5667830b508b28837fa98732d64f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#ad65e5667830b508b28837fa98732d64f">getHealth</a> ()</td></tr>
+<tr class="separator:ad65e5667830b508b28837fa98732d64f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87823a5e9cad47d882d3da8a6bc9063b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a87823a5e9cad47d882d3da8a6bc9063b">getGamesList</a> ()</td></tr>
+<tr class="separator:a87823a5e9cad47d882d3da8a6bc9063b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a249217ab71dc2ba441e7025e8849fbb1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a249217ab71dc2ba441e7025e8849fbb1">getGamesConfig</a> (const QString &amp;gameId)</td></tr>
+<tr class="separator:a249217ab71dc2ba441e7025e8849fbb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b5e4702b2afc9814eb7164ee736cad3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a1b5e4702b2afc9814eb7164ee736cad3">getGamesClient</a> (const QString &amp;gameId)</td></tr>
+<tr class="separator:a1b5e4702b2afc9814eb7164ee736cad3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58839e930c0a01fb58979c13a6457c33"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a58839e930c0a01fb58979c13a6457c33">sendMove</a> (const QString &amp;jsonMove)</td></tr>
+<tr class="separator:a58839e930c0a01fb58979c13a6457c33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a771bb8248dcd0fdef826d092ee87c88c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a771bb8248dcd0fdef826d092ee87c88c">getPlayState</a> ()</td></tr>
+<tr class="separator:a771bb8248dcd0fdef826d092ee87c88c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2190f19b3d9dd09cc3d5172aca983dbb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a2190f19b3d9dd09cc3d5172aca983dbb">joinSession</a> (const QString &amp;sessionId)</td></tr>
+<tr class="separator:a2190f19b3d9dd09cc3d5172aca983dbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb46c62e38b9cb68d19ed7d2f73fafaf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#abb46c62e38b9cb68d19ed7d2f73fafaf">validateSession</a> ()</td></tr>
+<tr class="separator:abb46c62e38b9cb68d19ed7d2f73fafaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1fc21742dcea4f5cffaacbb4ddb7b5c0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a1fc21742dcea4f5cffaacbb4ddb7b5c0">getSessionInfo</a> ()</td></tr>
+<tr class="separator:a1fc21742dcea4f5cffaacbb4ddb7b5c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add0b2085ca009a7c5f5716d6bec8c909"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#add0b2085ca009a7c5f5716d6bec8c909">getSessionInfo</a> (const QString &amp;sessionId)</td></tr>
+<tr class="separator:add0b2085ca009a7c5f5716d6bec8c909"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04b50a88402ba22663c38bc42b27af2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a04b50a88402ba22663c38bc42b27af2d">startSession</a> ()</td></tr>
+<tr class="separator:a04b50a88402ba22663c38bc42b27af2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a116297a9993a19d46001113a94ee43e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a116297a9993a19d46001113a94ee43e5">leaveSession</a> ()</td></tr>
+<tr class="separator:a116297a9993a19d46001113a94ee43e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47a55573abceecf86219b86d5b293a87"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a47a55573abceecf86219b86d5b293a87">changeRoleInSession</a> (int newRole)</td></tr>
+<tr class="separator:a47a55573abceecf86219b86d5b293a87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeeab6ed1185849405c8aad7205e96dd3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#aeeab6ed1185849405c8aad7205e96dd3">getRoomInfo</a> ()</td></tr>
+<tr class="separator:aeeab6ed1185849405c8aad7205e96dd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a130fc4acc07efeacbbe27e2724ed67a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a130fc4acc07efeacbbe27e2724ed67a3">createRoom</a> (const QString &amp;display_name)</td></tr>
+<tr class="separator:a130fc4acc07efeacbbe27e2724ed67a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7b4cc2698f89c57e5d9fede7a8897d2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#aa7b4cc2698f89c57e5d9fede7a8897d2">joinRoom</a> (const QString &amp;invite_code)</td></tr>
+<tr class="separator:aa7b4cc2698f89c57e5d9fede7a8897d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1214d4d09261e08a181861655e05b53e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a1214d4d09261e08a181861655e05b53e">leaveRoom</a> ()</td></tr>
+<tr class="separator:a1214d4d09261e08a181861655e05b53e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67f0ce14a07525c954142aec22b724a8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a67f0ce14a07525c954142aec22b724a8">roomCreateSession</a> (const QString &amp;game_id)</td></tr>
+<tr class="separator:a67f0ce14a07525c954142aec22b724a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a162aa2ee4c27cc86807dfa795eb03505"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a162aa2ee4c27cc86807dfa795eb03505">getMe</a> ()</td></tr>
+<tr class="separator:a162aa2ee4c27cc86807dfa795eb03505"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7151c0e3bac7931269501f50ee36d921"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a7151c0e3bac7931269501f50ee36d921">changeName</a> (const QString &amp;new_name)</td></tr>
+<tr class="separator:a7151c0e3bac7931269501f50ee36d921"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a0881aefceda6c4a221ac429853e306"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a8a0881aefceda6c4a221ac429853e306">getMyUserStatistics</a> ()</td></tr>
+<tr class="separator:a8a0881aefceda6c4a221ac429853e306"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e8aedc1816b3654640a9fb04b5331ef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a0e8aedc1816b3654640a9fb04b5331ef">getMyUserGameStatistics</a> (const QString &amp;gameId)</td></tr>
+<tr class="separator:a0e8aedc1816b3654640a9fb04b5331ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7559a1a855ea375cb71620e5f85b89c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#af7559a1a855ea375cb71620e5f85b89c">getGameStatistics</a> (const QString &amp;gameId)</td></tr>
+<tr class="separator:af7559a1a855ea375cb71620e5f85b89c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7464bbf7f13a81a2c5aa700e0cfbe12f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a7464bbf7f13a81a2c5aa700e0cfbe12f">startGamePolling</a> ()</td></tr>
+<tr class="separator:a7464bbf7f13a81a2c5aa700e0cfbe12f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1772608e226fafb2b356cb6b3dc40c85"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a1772608e226fafb2b356cb6b3dc40c85">stopGamePolling</a> ()</td></tr>
+<tr class="separator:a1772608e226fafb2b356cb6b3dc40c85"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6eb75ed89efd27d68cda1820f9d3caef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a6eb75ed89efd27d68cda1820f9d3caef">startSessionPolling</a> ()</td></tr>
+<tr class="separator:a6eb75ed89efd27d68cda1820f9d3caef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a93736ddc1ef7f7cbee61bb85383eb1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a4a93736ddc1ef7f7cbee61bb85383eb1">stopSessionPolling</a> ()</td></tr>
+<tr class="separator:a4a93736ddc1ef7f7cbee61bb85383eb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc374305c064f9ad992a5a5d9f32f5a9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#acc374305c064f9ad992a5a5d9f32f5a9">startValidationPolling</a> ()</td></tr>
+<tr class="separator:acc374305c064f9ad992a5a5d9f32f5a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afafdf87ed2529ce80eba564d7822f46a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#afafdf87ed2529ce80eba564d7822f46a">stopValidationPolling</a> ()</td></tr>
+<tr class="separator:afafdf87ed2529ce80eba564d7822f46a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52c233effaaf90a9791fa36f564903e8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a52c233effaaf90a9791fa36f564903e8">startRoomPolling</a> ()</td></tr>
+<tr class="separator:a52c233effaaf90a9791fa36f564903e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd5c33deeea72e81212f0c74977df663"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#acd5c33deeea72e81212f0c74977df663">stopRoomPolling</a> ()</td></tr>
+<tr class="separator:acd5c33deeea72e81212f0c74977df663"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="signals" name="signals"></a>
+Signals</h2></td></tr>
+<tr class="memitem:a7880c39609d4b076c26c415036b222fc"><td class="memItemLeft" align="right" valign="top"><a id="a7880c39609d4b076c26c415036b222fc" name="a7880c39609d4b076c26c415036b222fc"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>finalizedGamesList</b> (QJsonArray list)</td></tr>
+<tr class="separator:a7880c39609d4b076c26c415036b222fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83b6ad98770dc2b7fc6ad0cb6905f6ae"><td class="memItemLeft" align="right" valign="top"><a id="a83b6ad98770dc2b7fc6ad0cb6905f6ae" name="a83b6ad98770dc2b7fc6ad0cb6905f6ae"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>gotGameUpdate</b> (const QString &amp;jsonField)</td></tr>
+<tr class="separator:a83b6ad98770dc2b7fc6ad0cb6905f6ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39948e3a64b8b08e29307078c4197778"><td class="memItemLeft" align="right" valign="top"><a id="a39948e3a64b8b08e29307078c4197778" name="a39948e3a64b8b08e29307078c4197778"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>downloadedGameFile</b> (QFile *file, const QString &amp;gameId)</td></tr>
+<tr class="separator:a39948e3a64b8b08e29307078c4197778"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13d623af48c41fb4135b5187653420db"><td class="memItemLeft" align="right" valign="top"><a id="a13d623af48c41fb4135b5187653420db" name="a13d623af48c41fb4135b5187653420db"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>gotGameInfo</b> (const <a class="el" href="structGameInfo.html">GameInfo</a> &amp;gameInfo)</td></tr>
+<tr class="separator:a13d623af48c41fb4135b5187653420db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9821c0af623acc43a3c97a94ef6b8a6f"><td class="memItemLeft" align="right" valign="top"><a id="a9821c0af623acc43a3c97a94ef6b8a6f" name="a9821c0af623acc43a3c97a94ef6b8a6f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>gotSessionInfo</b> (const <a class="el" href="structSessionInfo.html">SessionInfo</a> &amp;sessionInfo)</td></tr>
+<tr class="separator:a9821c0af623acc43a3c97a94ef6b8a6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1a67d6424f6bd585f80bcaa48f84bf1"><td class="memItemLeft" align="right" valign="top"><a id="ad1a67d6424f6bd585f80bcaa48f84bf1" name="ad1a67d6424f6bd585f80bcaa48f84bf1"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>gotValidationResult</b> (const <a class="el" href="structValidationResult.html">ValidationResult</a> &amp;validationResult)</td></tr>
+<tr class="separator:ad1a67d6424f6bd585f80bcaa48f84bf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad78fb2dec7f3794876bd6ddde2d2ad7b"><td class="memItemLeft" align="right" valign="top"><a id="ad78fb2dec7f3794876bd6ddde2d2ad7b" name="ad78fb2dec7f3794876bd6ddde2d2ad7b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>gotDisplayName</b> (const QString &amp;displayName)</td></tr>
+<tr class="separator:ad78fb2dec7f3794876bd6ddde2d2ad7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0434cc61e13c060959e8b65ee8c9aa7"><td class="memItemLeft" align="right" valign="top"><a id="ae0434cc61e13c060959e8b65ee8c9aa7" name="ae0434cc61e13c060959e8b65ee8c9aa7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>gotUserStatistics</b> (const <a class="el" href="structUserStatistics.html">UserStatistics</a> &amp;userStatistics)</td></tr>
+<tr class="separator:ae0434cc61e13c060959e8b65ee8c9aa7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaec94fe2214326a29f87d9c19f228e30"><td class="memItemLeft" align="right" valign="top"><a id="aaec94fe2214326a29f87d9c19f228e30" name="aaec94fe2214326a29f87d9c19f228e30"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>gotUserGameStatistics</b> (const <a class="el" href="structUserGameStatistics.html">UserGameStatistics</a> &amp;userGameStatistics)</td></tr>
+<tr class="separator:aaec94fe2214326a29f87d9c19f228e30"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38162eabd24d2ab281eff3fbd6a44e02"><td class="memItemLeft" align="right" valign="top"><a id="a38162eabd24d2ab281eff3fbd6a44e02" name="a38162eabd24d2ab281eff3fbd6a44e02"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>gotGameStatistics</b> (const <a class="el" href="structGameStatistics.html">GameStatistics</a> &amp;gameStatistics)</td></tr>
+<tr class="separator:a38162eabd24d2ab281eff3fbd6a44e02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab813b07788b3a297f5283cbcb2296985"><td class="memItemLeft" align="right" valign="top"><a id="ab813b07788b3a297f5283cbcb2296985" name="ab813b07788b3a297f5283cbcb2296985"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>gotRoomInfo</b> (const <a class="el" href="structRoomInfo.html">RoomInfo</a> &amp;roomInfo)</td></tr>
+<tr class="separator:ab813b07788b3a297f5283cbcb2296985"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a25e5a69c0dba31cc028050c2b6eea855"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a25e5a69c0dba31cc028050c2b6eea855">NetworkManager</a> (QObject *parent=nullptr)</td></tr>
+<tr class="separator:a25e5a69c0dba31cc028050c2b6eea855"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06a41d6d450b7446b379ab8820d094c2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a06a41d6d450b7446b379ab8820d094c2">changeHost</a> (const QUrl &amp;newHost)</td></tr>
+<tr class="separator:a06a41d6d450b7446b379ab8820d094c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeffdb79ac198bfaeaf611d65496f3b5f"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#aeffdb79ac198bfaeaf611d65496f3b5f">getUserId</a> ()</td></tr>
+<tr class="separator:aeffdb79ac198bfaeaf611d65496f3b5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:a59e9e4c1884f8cc220f8434d7caf9366"><td class="memItemLeft" align="right" valign="top">static const QUrl&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNetworkManager.html#a59e9e4c1884f8cc220f8434d7caf9366">DEFAULT_HOST</a> {&quot;https://develop.api.cavoke.wlko.me&quot;}</td></tr>
+<tr class="separator:a59e9e4c1884f8cc220f8434d7caf9366"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock">
+<p class="definition">Definition at line <a class="el" href="network__manager_8h_source.html#l00023">23</a> of file <a class="el" href="network__manager_8h_source.html">network_manager.h</a>.</p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a25e5a69c0dba31cc028050c2b6eea855" name="a25e5a69c0dba31cc028050c2b6eea855"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25e5a69c0dba31cc028050c2b6eea855">&#9670;&#160;</a></span>NetworkManager()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">NetworkManager::NetworkManager </td>
+          <td>(</td>
+          <td class="paramtype">QObject *&#160;</td>
+          <td class="paramname"><em>parent</em> = <code>nullptr</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00003">3</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a06a41d6d450b7446b379ab8820d094c2" name="a06a41d6d450b7446b379ab8820d094c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a06a41d6d450b7446b379ab8820d094c2">&#9670;&#160;</a></span>changeHost()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::changeHost </td>
+          <td>(</td>
+          <td class="paramtype">const QUrl &amp;&#160;</td>
+          <td class="paramname"><em>newHost</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00428">428</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a7151c0e3bac7931269501f50ee36d921" name="a7151c0e3bac7931269501f50ee36d921"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7151c0e3bac7931269501f50ee36d921">&#9670;&#160;</a></span>changeName</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::changeName </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;&#160;</td>
+          <td class="paramname"><em>new_name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00328">328</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a47a55573abceecf86219b86d5b293a87" name="a47a55573abceecf86219b86d5b293a87"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47a55573abceecf86219b86d5b293a87">&#9670;&#160;</a></span>changeRoleInSession</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::changeRoleInSession </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>newRole</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00236">236</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a130fc4acc07efeacbbe27e2724ed67a3" name="a130fc4acc07efeacbbe27e2724ed67a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a130fc4acc07efeacbbe27e2724ed67a3">&#9670;&#160;</a></span>createRoom</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::createRoom </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;&#160;</td>
+          <td class="paramname"><em>display_name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00270">270</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a1b5e4702b2afc9814eb7164ee736cad3" name="a1b5e4702b2afc9814eb7164ee736cad3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b5e4702b2afc9814eb7164ee736cad3">&#9670;&#160;</a></span>getGamesClient</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::getGamesClient </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;&#160;</td>
+          <td class="paramname"><em>gameId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00075">75</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a249217ab71dc2ba441e7025e8849fbb1" name="a249217ab71dc2ba441e7025e8849fbb1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a249217ab71dc2ba441e7025e8849fbb1">&#9670;&#160;</a></span>getGamesConfig</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::getGamesConfig </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;&#160;</td>
+          <td class="paramname"><em>gameId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00052">52</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a87823a5e9cad47d882d3da8a6bc9063b" name="a87823a5e9cad47d882d3da8a6bc9063b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87823a5e9cad47d882d3da8a6bc9063b">&#9670;&#160;</a></span>getGamesList</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::getGamesList </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00037">37</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="af7559a1a855ea375cb71620e5f85b89c" name="af7559a1a855ea375cb71620e5f85b89c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af7559a1a855ea375cb71620e5f85b89c">&#9670;&#160;</a></span>getGameStatistics</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::getGameStatistics </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;&#160;</td>
+          <td class="paramname"><em>gameId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00379">379</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ad65e5667830b508b28837fa98732d64f" name="ad65e5667830b508b28837fa98732d64f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad65e5667830b508b28837fa98732d64f">&#9670;&#160;</a></span>getHealth</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::getHealth </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00024">24</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a162aa2ee4c27cc86807dfa795eb03505" name="a162aa2ee4c27cc86807dfa795eb03505"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a162aa2ee4c27cc86807dfa795eb03505">&#9670;&#160;</a></span>getMe</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::getMe </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00306">306</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a0e8aedc1816b3654640a9fb04b5331ef" name="a0e8aedc1816b3654640a9fb04b5331ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e8aedc1816b3654640a9fb04b5331ef">&#9670;&#160;</a></span>getMyUserGameStatistics</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::getMyUserGameStatistics </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;&#160;</td>
+          <td class="paramname"><em>gameId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00357">357</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a8a0881aefceda6c4a221ac429853e306" name="a8a0881aefceda6c4a221ac429853e306"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a0881aefceda6c4a221ac429853e306">&#9670;&#160;</a></span>getMyUserStatistics</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::getMyUserStatistics </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00337">337</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a771bb8248dcd0fdef826d092ee87c88c" name="a771bb8248dcd0fdef826d092ee87c88c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a771bb8248dcd0fdef826d092ee87c88c">&#9670;&#160;</a></span>getPlayState</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::getPlayState </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00121">121</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="aeeab6ed1185849405c8aad7205e96dd3" name="aeeab6ed1185849405c8aad7205e96dd3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeeab6ed1185849405c8aad7205e96dd3">&#9670;&#160;</a></span>getRoomInfo</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::getRoomInfo </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00247">247</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a1fc21742dcea4f5cffaacbb4ddb7b5c0" name="a1fc21742dcea4f5cffaacbb4ddb7b5c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1fc21742dcea4f5cffaacbb4ddb7b5c0">&#9670;&#160;</a></span>getSessionInfo <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::getSessionInfo </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00195">195</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="add0b2085ca009a7c5f5716d6bec8c909" name="add0b2085ca009a7c5f5716d6bec8c909"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add0b2085ca009a7c5f5716d6bec8c909">&#9670;&#160;</a></span>getSessionInfo <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::getSessionInfo </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;&#160;</td>
+          <td class="paramname"><em>sessionId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00205">205</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="aeffdb79ac198bfaeaf611d65496f3b5f" name="aeffdb79ac198bfaeaf611d65496f3b5f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeffdb79ac198bfaeaf611d65496f3b5f">&#9670;&#160;</a></span>getUserId()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString NetworkManager::getUserId </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00432">432</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="aa7b4cc2698f89c57e5d9fede7a8897d2" name="aa7b4cc2698f89c57e5d9fede7a8897d2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7b4cc2698f89c57e5d9fede7a8897d2">&#9670;&#160;</a></span>joinRoom</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::joinRoom </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;&#160;</td>
+          <td class="paramname"><em>invite_code</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00279">279</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a2190f19b3d9dd09cc3d5172aca983dbb" name="a2190f19b3d9dd09cc3d5172aca983dbb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2190f19b3d9dd09cc3d5172aca983dbb">&#9670;&#160;</a></span>joinSession</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::joinSession </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;&#160;</td>
+          <td class="paramname"><em>sessionId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00143">143</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a1214d4d09261e08a181861655e05b53e" name="a1214d4d09261e08a181861655e05b53e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1214d4d09261e08a181861655e05b53e">&#9670;&#160;</a></span>leaveRoom</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::leaveRoom </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00288">288</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a116297a9993a19d46001113a94ee43e5" name="a116297a9993a19d46001113a94ee43e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a116297a9993a19d46001113a94ee43e5">&#9670;&#160;</a></span>leaveSession</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::leaveSession </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00226">226</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a67f0ce14a07525c954142aec22b724a8" name="a67f0ce14a07525c954142aec22b724a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a67f0ce14a07525c954142aec22b724a8">&#9670;&#160;</a></span>roomCreateSession</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::roomCreateSession </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;&#160;</td>
+          <td class="paramname"><em>game_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00297">297</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a58839e930c0a01fb58979c13a6457c33" name="a58839e930c0a01fb58979c13a6457c33"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a58839e930c0a01fb58979c13a6457c33">&#9670;&#160;</a></span>sendMove</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::sendMove </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;&#160;</td>
+          <td class="paramname"><em>jsonMove</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00104">104</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a7464bbf7f13a81a2c5aa700e0cfbe12f" name="a7464bbf7f13a81a2c5aa700e0cfbe12f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7464bbf7f13a81a2c5aa700e0cfbe12f">&#9670;&#160;</a></span>startGamePolling</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::startGamePolling </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00399">399</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a52c233effaaf90a9791fa36f564903e8" name="a52c233effaaf90a9791fa36f564903e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52c233effaaf90a9791fa36f564903e8">&#9670;&#160;</a></span>startRoomPolling</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::startRoomPolling </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00421">421</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a04b50a88402ba22663c38bc42b27af2d" name="a04b50a88402ba22663c38bc42b27af2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04b50a88402ba22663c38bc42b27af2d">&#9670;&#160;</a></span>startSession</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::startSession </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00216">216</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a6eb75ed89efd27d68cda1820f9d3caef" name="a6eb75ed89efd27d68cda1820f9d3caef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6eb75ed89efd27d68cda1820f9d3caef">&#9670;&#160;</a></span>startSessionPolling</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::startSessionPolling </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00407">407</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="acc374305c064f9ad992a5a5d9f32f5a9" name="acc374305c064f9ad992a5a5d9f32f5a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc374305c064f9ad992a5a5d9f32f5a9">&#9670;&#160;</a></span>startValidationPolling</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::startValidationPolling </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00413">413</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a1772608e226fafb2b356cb6b3dc40c85" name="a1772608e226fafb2b356cb6b3dc40c85"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1772608e226fafb2b356cb6b3dc40c85">&#9670;&#160;</a></span>stopGamePolling</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::stopGamePolling </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00403">403</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="acd5c33deeea72e81212f0c74977df663" name="acd5c33deeea72e81212f0c74977df663"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd5c33deeea72e81212f0c74977df663">&#9670;&#160;</a></span>stopRoomPolling</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::stopRoomPolling </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00425">425</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a4a93736ddc1ef7f7cbee61bb85383eb1" name="a4a93736ddc1ef7f7cbee61bb85383eb1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a93736ddc1ef7f7cbee61bb85383eb1">&#9670;&#160;</a></span>stopSessionPolling</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::stopSessionPolling </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00410">410</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="afafdf87ed2529ce80eba564d7822f46a" name="afafdf87ed2529ce80eba564d7822f46a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afafdf87ed2529ce80eba564d7822f46a">&#9670;&#160;</a></span>stopValidationPolling</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::stopValidationPolling </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00417">417</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<a id="abb46c62e38b9cb68d19ed7d2f73fafaf" name="abb46c62e38b9cb68d19ed7d2f73fafaf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb46c62e38b9cb68d19ed7d2f73fafaf">&#9670;&#160;</a></span>validateSession</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkManager::validateSession </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8cpp_source.html#l00173">173</a> of file <a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a59e9e4c1884f8cc220f8434d7caf9366" name="a59e9e4c1884f8cc220f8434d7caf9366"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a59e9e4c1884f8cc220f8434d7caf9366">&#9670;&#160;</a></span>DEFAULT_HOST</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const QUrl NetworkManager::DEFAULT_HOST {&quot;https://develop.api.cavoke.wlko.me&quot;}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="network__manager_8h_source.html#l00026">26</a> of file <a class="el" href="network__manager_8h_source.html">network_manager.h</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following files:<ul>
+<li>client/<a class="el" href="network__manager_8h_source.html">network_manager.h</a></li>
+<li>client/<a class="el" href="network__manager_8cpp_source.html">network_manager.cpp</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="structNetworkManager.html">NetworkManager</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
+  </ul>
+</div>
+</body>
+</html>
